@@ -145,7 +145,7 @@ export class UserController {
   @Roles(Role.ADMIN, Role.MANAGER)
   @PreventManagerAdminAccess('id')
   @UseGuards(AuthGuard('jwt'), RoleGuard, PreventManagerAdminAccessGuard)
-  async updateUser(@Query('id') id: string, @Body() dto: UpdateUserDto) {
+  async updateUser(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     try {
       return this.updateUserService.updateUser(id, dto);
     } catch (e) {
@@ -170,7 +170,7 @@ export class UserController {
   @Roles(Role.ADMIN, Role.MANAGER)
   @PreventManagerAdminAccess('id')
   @UseGuards(AuthGuard('jwt'), RoleGuard, PreventManagerAdminAccessGuard)
-  async toggleUserActive(@Query('id') id: string) {
+  async toggleUserActive(@Param('id') id: string) {
     try {
       await this.updateUserService.toggleUserActive(id);
       return { message: 'User active status has been successfully toggled.' };
@@ -218,7 +218,7 @@ export class UserController {
   @Roles(Role.ADMIN, Role.MANAGER)
   @PreventManagerAdminAccess('id')
   @UseGuards(AuthGuard('jwt'), RoleGuard, PreventManagerAdminAccessGuard)
-  async deleteUser(@Query('id') id: string) {
+  async deleteUser(@Param('id') id: string) {
     try {
       await this.deleteUserService.deleteUserById(id);
       return { message: 'User has been successfully deleted.' };

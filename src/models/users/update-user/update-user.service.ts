@@ -33,7 +33,7 @@ export class UpdateUserService {
     if (!user) throw new UserNotFoundException();
 
     user.isActive = !user.isActive;
-    await this.userRepository.updateUserByEmail(userId, {
+    await this.userRepository.updateUserById(userId, {
       isActive: user.isActive,
     });
   }
