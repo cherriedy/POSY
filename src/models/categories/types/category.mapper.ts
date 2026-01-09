@@ -1,6 +1,7 @@
 import { Category as PrismaCategory } from '@prisma/client';
 import { Category as DomainCategory } from './category.class';
 import { MissingRequireFieldsException } from '../../../common/exceptions';
+import { getSlug } from 'src/common/utilities/string.util';
 
 export class CategoryMapper {
   static toDomain(this: void, prismaCategory: PrismaCategory): DomainCategory {
@@ -19,9 +20,15 @@ export class CategoryMapper {
     if (!domainCategory.name) {
       throw new MissingRequireFieldsException();
     }
+
+    const slug =
+    domainCategory.slug && domainCategory.slug.trim() !== ''
+      ? domainCategory.slug
+      : getSlug(domainCategory.name);
+
     return {
       name: domainCategory.name,
-      slug: domainCategory.slug,
+      slug,
       description: domainCategory.description ?? null,
       is_active: domainCategory.isActive ?? true,
       created_at: domainCategory.createdAt ?? new Date(),

@@ -6,7 +6,7 @@ import { CategoryNotFoundException } from '../exceptions';
 
 @Injectable()
 export class GetCategoriesService {
-  constructor(private readonly categoryRepository: CategoryRepository) {}
+  constructor(private readonly categoryRepository: CategoryRepository) { }
 
   /**
    * Retrieves a paginated list of categories.
@@ -18,7 +18,7 @@ export class GetCategoriesService {
     page?: number,
     pageSize?: number,
   ): Promise<Page<Category>> {
-    return await this.categoryRepository.getCategories(page, pageSize);
+    return this.categoryRepository.getCategories(page, pageSize);
   }
 
   /**
@@ -29,7 +29,9 @@ export class GetCategoriesService {
    */
   async getCategoryById(id: string): Promise<Category> {
     const category = await this.categoryRepository.findById(id);
-    if (!category) throw new CategoryNotFoundException(id);
+    if (!category) {
+      throw new CategoryNotFoundException(id);
+    }
     return category;
   }
 }

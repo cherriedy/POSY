@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   InternalServerErrorException,
+  Param,
   Post,
   Put,
   Query,
@@ -37,6 +38,7 @@ import { Page } from '../../common/interfaces';
 import { JwtPayload } from '../../authentication/interfaces';
 import { Request } from 'express';
 import { DeleteUserService } from './delete-user/delete-user.service';
+import { PaginationQueryDto } from 'src/common/config/pagination.query.dto';
 
 @Controller('user')
 export class UserController {
@@ -48,72 +50,48 @@ export class UserController {
     private readonly updateUserService: UpdateUserService,
     private readonly getUsersService: GetUsersService,
     private readonly deleteUserService: DeleteUserService,
-  ) {}
+  ) { }
 
   @Get(':id')
   @Roles(Role.ADMIN, Role.MANAGER)
   @PreventManagerAdminAccess('id')
   @UseGuards(AuthGuard('jwt'), RoleGuard, PreventManagerAdminAccessGuard)
-  async getUserById(@Req() req: Request): Promise<UserDetailedResponseDto> {
-    const userId = req.params['userId'];
-
-    let user: User;
-    try {
-      user = await this.getUsersService.getUserById(userId);
-      return plainToInstance(UserDetailedResponseDto, user, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof UserNotFoundException) {
-        throw new BadRequestException(e.message);
-      } else if (e instanceof BadRequestException) {
-        throw e;
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+  async getUserById(
+    @Param('id') userId: string,
+  ): Promise<UserDetailedResponseDto> {
+    const user = await this.getUsersService.getUserById(userId);
+    return plainToInstance(UserDetailedResponseDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  @Get('')
+  @Get()
   @Roles(Role.ADMIN, Role.MANAGER)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   async getUsers(
-    @Query() query: any,
+    @Query() pagination: PaginationQueryDto,
     @Req() req: Request,
   ): Promise<Page<UserPreviewResponseDto>> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
-    const page = query.page ? parseInt(query.page) : undefined;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
-    const pageSize = query.pageSize ? parseInt(query.pageSize) : undefined;
     const requesterRole = (req.user as JwtPayload).role;
 
-    try {
-      const userPage = await this.getUsersService.getAllUsers(
-        page,
-        pageSize,
-        requesterRole,
-      );
-      const userPreviewItems = plainToInstance(
-        UserPreviewResponseDto,
-        userPage.items,
-        {
-          excludeExtraneousValues: true,
-        },
-      );
+    const userPage = await this.getUsersService.getAllUsers(
+      pagination.page,
+      pagination.pageSize,
+      requesterRole,
+    );
 
-      return {
-        ...userPage,
-        items: userPreviewItems,
-      };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const userPreviewItems = plainToInstance(
+      UserPreviewResponseDto,
+      userPage.items,
+      { excludeExtraneousValues: true },
+    );
+
+    return {
+      ...userPage,
+      items: userPreviewItems,
+    };
   }
+
 
   @Post('')
   @Roles(Role.ADMIN, Role.MANAGER)

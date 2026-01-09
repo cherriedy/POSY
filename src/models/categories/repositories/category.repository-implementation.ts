@@ -6,16 +6,19 @@ import {
   DuplicateEntryException,
   ForeignKeyViolationException,
 } from '../../../common/exceptions';
-import { CategoryNotFoundException } from '../exceptions';
 import { paginationConfig } from '../../../common/config';
 import { Page } from '../../../common/interfaces';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
+import { Injectable } from '@nestjs/common';
+import { buildPage } from 'src/common/utilities/pagination.util';
+import { CategoryNotFoundException } from '../exceptions';
 
+@Injectable()
 export class CategoryRepositoryImpl implements CategoryRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   /**
    * Creates a new category in the database.
@@ -70,11 +73,11 @@ export class CategoryRepositoryImpl implements CategoryRepository {
    * @returns A promise that resolves to the found category or null if not found.
    */
   async findById(id: string): Promise<Category | null> {
-    return await this.prismaService.category
-      .findUnique({
-        where: { id },
-      })
-      ?.then(CategoryMapper.toDomain);
+    const prismaCategory = await this.prismaService.category.findUnique({
+      where: { id },
+    });
+
+    return prismaCategory ? CategoryMapper.toDomain(prismaCategory) : null;
   }
 
   /**
@@ -84,27 +87,23 @@ export class CategoryRepositoryImpl implements CategoryRepository {
    * @returns A promise that resolves to a paginated list of categories.
    */
   async getCategories(
-    page: number = this.pageDefault,
-    pageSize: number = this.pageSizeDefault,
+    page = this.pageDefault,
+    pageSize = this.pageSizeDefault,
   ): Promise<Page<Category>> {
-    const categories = await this.prismaService.category
-      .findMany({
+    const [categories, total] = await this.prismaService.$transaction([
+      this.prismaService.category.findMany({
         skip: (page - 1) * pageSize,
         take: pageSize,
-      })
-      .then((prismaCategories) =>
-        prismaCategories.map(CategoryMapper.toDomain),
-      );
+      }),
+      this.prismaService.category.count(),
+    ]);
 
-    const totalItems = await this.prismaService.category.count();
-
-    return {
-      items: categories,
+    return buildPage(
+      categories.map(CategoryMapper.toDomain),
       page,
       pageSize,
-      total: totalItems,
-      totalPages: Math.ceil(totalItems / pageSize),
-    };
+      total,
+    );
   }
 
   /**
@@ -122,10 +121,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     const category = await this.findById(id);
     if (!category) throw new CategoryNotFoundException(id);
 
-    const dataWithoutId = { ...updateData };
-    delete dataWithoutId.id;
-
-    const dataSnakeCase = Object.entries(dataWithoutId).reduce(
+    const dataSnakeCase = Object.entries(updateData).reduce(
       (acc, [key, value]) => {
         const snakeKey = camelCaseToSnakeCase(key);
         acc[snakeKey] = value;
@@ -134,6 +130,14 @@ export class CategoryRepositoryImpl implements CategoryRepository {
       {} as Record<string, any>,
     );
 
+    if (dataSnakeCase.slug) {
+      const existing = await this.prismaService.category.findUnique({
+        where: { slug: dataSnakeCase.slug },
+      });
+      if (existing && existing.id !== id) {
+        throw new DuplicateEntryException('Slug already exists.');
+      }
+    }
     try {
       return await this.prismaService.category
         .update({

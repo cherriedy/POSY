@@ -22,11 +22,6 @@ services:
     depends_on:
       - postgres
 
-  redis:
-    image: redis:7
-    ports:
-      - "6379:6379"
-
   # backend:
   #   build: ./backend
   #   environment:

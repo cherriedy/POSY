@@ -13,6 +13,7 @@ export function IsValidSlug(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(value: any): Promise<boolean> | boolean {
+          if (value === undefined || value === null) return true;
           if (typeof value !== 'string') return false;
           return true;
         },

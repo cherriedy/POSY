@@ -12,12 +12,13 @@ export function IsValidCategoryDescription(
 ) {
   return function (object: object, propertyName: string) {
     registerDecorator({
-      name: 'isValidaCategoryDescription',
+      name: 'isValidCategoryDescription',
       target: object.constructor,
       propertyName,
       options: validationOptions,
       validator: {
         validate(value: any): Promise<boolean> | boolean {
+          if (value === undefined || value === null) return true;
           if (typeof value !== 'string') return false;
           if (value.length > DesConstraint.maxLength) return false;
           return true;

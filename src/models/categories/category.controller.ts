@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   InternalServerErrorException,
+  Param,
   Post,
   Put,
   Query,
@@ -22,6 +23,7 @@ import { GetCategoriesService } from './get-categories/get-categories.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { plainToInstance } from 'class-transformer';
 import {
+  CategoryDetailedResponseDto,
   CategoryPreviewResponseDto,
   CreateCategoryDto,
   UpdateCategoryDto,
@@ -34,6 +36,7 @@ import {
   ForeignKeyViolationException,
   RelatedRecordNotFoundException,
 } from '../../common/exceptions';
+import { PaginationQueryDto } from '../../common/config/pagination.query.dto';
 
 @Controller('category')
 export class CategoryController {
@@ -45,61 +48,42 @@ export class CategoryController {
     private readonly createCategoryService: CreateCategoryService,
     private readonly updateCategoryService: UpdateCategoryService,
     private readonly deleteCategoryService: DeleteCategoryService,
-  ) {}
+  ) { }
 
   @Get(':id')
   @Roles(Role.MANAGER, Role.ADMIN)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   async getCategoryById(
-    @Query('id') id: string,
-  ): Promise<CategoryPreviewResponseDto> {
-    try {
-      const category = await this.getCategoriesService.getCategoryById(id);
-      return plainToInstance(CategoryPreviewResponseDto, category, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof CategoryNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    @Param('id') id: string,
+  ): Promise<CategoryDetailedResponseDto> {
+    const category = await this.getCategoriesService.getCategoryById(id);
+
+    return plainToInstance(CategoryDetailedResponseDto, category, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  @Get('')
+  @Get()
   @Roles(Role.MANAGER, Role.ADMIN)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   async getCategories(
-    @Query() query: any,
+    @Query() pagination: PaginationQueryDto,
   ): Promise<Page<CategoryPreviewResponseDto>> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
-    const page = query.page ? parseInt(query.page) : undefined;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
-    const pageSize = query.pageSize ? parseInt(query.pageSize) : undefined;
+    const categoryPage = await this.getCategoriesService.getCategories(
+      pagination.page,
+      pagination.pageSize,
+    );
 
-    try {
-      const categoryPage = await this.getCategoriesService.getCategories(
-        page,
-        pageSize,
-      );
-      const categoryPreviewItems = plainToInstance(
-        CategoryPreviewResponseDto,
-        categoryPage.items,
-        { excludeExtraneousValues: true },
-      );
-      return {
-        ...categoryPage,
-        items: categoryPreviewItems,
-      };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const categoryPreviewItems = plainToInstance(
+      CategoryPreviewResponseDto,
+      categoryPage.items,
+      { excludeExtraneousValues: true },
+    );
+
+    return {
+      ...categoryPage,
+      items: categoryPreviewItems,
+    };
   }
 
   @Post('')
@@ -130,7 +114,7 @@ export class CategoryController {
   @Roles(Role.ADMIN, Role.MANAGER)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   async updateCategory(
-    @Query('id') id: string,
+    @Param('id') id: string,
     @Body() dto: UpdateCategoryDto,
   ) {
     try {
@@ -157,7 +141,7 @@ export class CategoryController {
   @Post(':id/toggle-active')
   @Roles(Role.ADMIN, Role.MANAGER)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
-  async toggleCategoryActive(@Query('id') id: string) {
+  async toggleCategoryActive(@Param('id') id: string) {
     try {
       await this.updateCategoryService.toggleCategoryActive(id);
       return {
@@ -177,7 +161,7 @@ export class CategoryController {
   @Delete(':id')
   @Roles(Role.ADMIN, Role.MANAGER)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
-  async deleteCategory(@Query('id') id: string) {
+  async deleteCategory(@Param('id') id: string) {
     try {
       await this.deleteCategoryService.deleteCategoryById(id);
       return { message: 'Category has been successfully deleted.' };

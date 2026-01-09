@@ -15,15 +15,16 @@ export function IsValidCategoryName(validationOptions?: ValidationOptions) {
       propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any): Promise<boolean> | boolean {
+        validate(value: any): boolean {
           if (typeof value !== 'string') return false;
+
           return (
-            value.length < nameConstraints.minLength ||
-            value.length > nameConstraints.maxLength
+            value.length >= nameConstraints.minLength &&
+            value.length <= nameConstraints.maxLength
           );
         },
         defaultMessage(args: ValidationArguments): string {
-          const value: unknown = args.value;
+          const value = args.value;
           if (typeof value !== 'string') {
             return nameConstraints.message.mustString;
           }
