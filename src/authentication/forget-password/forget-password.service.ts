@@ -20,7 +20,7 @@ export class ForgetPasswordService {
     private mailerSendService: MailerSendService,
   ) {}
 
-  async forgetPassword(
+  async forgotPassword(
     email: string,
     subject: string,
     deviceContext: DeviceContext,

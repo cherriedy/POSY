@@ -122,7 +122,7 @@ export class CategoryController {
         id,
         dto as Partial<Category>,
       );
-      return plainToInstance(CategoryPreviewResponseDto, category, {
+      return plainToInstance(CategoryDetailedResponseDto, category, {
         excludeExtraneousValues: true,
       });
     } catch (e) {
@@ -138,7 +138,7 @@ export class CategoryController {
     }
   }
 
-  @Post(':id/toggle-active')
+  @Post('toggle-active/:id')
   @Roles(Role.ADMIN, Role.MANAGER)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   async toggleCategoryActive(@Param('id') id: string) {

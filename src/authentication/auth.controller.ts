@@ -94,7 +94,7 @@ export class AuthController {
 
   @Post('forget-password')
   @Throttle({ default: { limit, ttl } })
-  async forgetPassword(@Body() dto: ForgetPasswordDto, @Req() req: Request) {
+  async forgotPassword(@Body() dto: ForgetPasswordDto, @Req() req: Request) {
     const deviceContext: DeviceContext = {
       date: req['date'] as string,
       device: req['device'] as string,
@@ -102,7 +102,7 @@ export class AuthController {
     };
 
     try {
-      await this.forgetPasswordService.forgetPassword(
+      await this.forgetPasswordService.forgotPassword(
         dto.email,
         'Password Reset Request',
         deviceContext,

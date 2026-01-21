@@ -32,7 +32,7 @@ export class MyProfileController {
     private readonly logger: Logger,
   ) {}
 
-  @Get('')
+  @Get()
   async getProfile(@Req() req: Request): Promise<UserDetailedResponseDto> {
     const userId = (req.user as JwtPayload).sub;
 
