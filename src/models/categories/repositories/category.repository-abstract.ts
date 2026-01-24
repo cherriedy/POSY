@@ -1,24 +1,14 @@
 import { Category } from '../types';
-import { Page } from '../../../common/interfaces';
+import { BaseRepository, Page } from '../../../common/interfaces';
+import { CategoryQueryParams } from '../interfaces';
 
-export abstract class CategoryRepository {
+export abstract class CategoryRepository implements BaseRepository<Category> {
   /**
    * Creates a new category in the repository.
-   * @param category - The category entity to create.
+   * @param entity - The category entity to create.
    * @returns A promise that resolves to the created category.
    */
-  abstract createCategory(category: Category): Promise<Category>;
-
-  /**
-   * Updates an existing category by its unique identifier.
-   * @param id - The unique identifier of the category to update.
-   * @param updateData - Partial data to update the category with.
-   * @returns A promise that resolves to the updated category.
-   */
-  abstract updateCategoryById(
-    id: string,
-    updateData: Partial<Category>,
-  ): Promise<Category>;
+  abstract create(entity: Category): Promise<Category>;
 
   /**
    * Finds a category by its unique identifier.
@@ -32,16 +22,20 @@ export abstract class CategoryRepository {
    * @param id - The unique identifier of the category to delete.
    * @returns A promise that resolves when the category is deleted.
    */
-  abstract deleteCategoryById(id: string): Promise<void>;
+  abstract delete(id: string): Promise<void>;
 
   /**
-   * Retrieves a paginated list of categories.
-   * @param page - The page number to retrieve (optional).
-   * @param pageSize - The number of items per page (optional).
+   * Updates an existing category by its unique identifier.
+   * @param id - The unique identifier of the category to update.
+   * @param entity - Partial data to update the category with.
+   * @returns A promise that resolves to the updated category.
+   */
+  abstract update(id: string, entity: Partial<Category>): Promise<Category>;
+
+  /**
+   * Retrieves a paginated list of categories based on query parameters.
+   * @param params - The query parameters for pagination, filtering, and sorting.
    * @returns A promise that resolves to a paginated list of categories.
    */
-  abstract getCategories(
-    page?: number,
-    pageSize?: number,
-  ): Promise<Page<Category>>;
+  abstract getAllPaged(params: CategoryQueryParams): Promise<Page<Category>>;
 }

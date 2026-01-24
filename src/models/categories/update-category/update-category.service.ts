@@ -19,7 +19,7 @@ export class UpdateCategoryService {
    * @throws CategoryNotFoundException if the category does not exist (from repository layer).
    */
   async updateCategoryById(id: string, updateDate: Partial<Category>) {
-    return await this.categoryRepository.updateCategoryById(id, updateDate);
+    return await this.categoryRepository.update(id, updateDate);
   }
 
   /**
@@ -38,7 +38,7 @@ export class UpdateCategoryService {
     if (!category) throw new CategoryNotFoundException(id);
 
     category.isActive = !category.isActive;
-    await this.categoryRepository.updateCategoryById(id, {
+    await this.categoryRepository.update(id, {
       isActive: category.isActive,
     });
   }

@@ -10,8 +10,13 @@ import { paginationConfig } from '../../../common/config';
 import { Page } from '../../../common/interfaces';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 import { Injectable } from '@nestjs/common';
-import { buildPage } from 'src/common/utilities/pagination.util';
 import { CategoryNotFoundException } from '../exceptions';
+import {
+  CategoryOrderBy,
+  CategoryQueryFilter,
+  CategoryQueryParams,
+} from '../interfaces';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CategoryRepositoryImpl implements CategoryRepository {
@@ -22,12 +27,12 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
   /**
    * Creates a new category in the database.
-   * @param category - The category entity to create.
+   * @param entity - The category entity to create.
    * @returns A promise that resolves to the created category.
    * @throws DuplicateEntryException if a category with a unique field already exists.
    */
-  async createCategory(category: Category): Promise<Category> {
-    const prismaCategory = CategoryMapper.toPrisma(category);
+  async create(entity: Category): Promise<Category> {
+    const prismaCategory = CategoryMapper.toPrisma(entity);
     try {
       return await this.prismaService.category
         .create({ data: prismaCategory })
@@ -51,7 +56,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
    * @throws CategoryNotFoundException if the category does not exist.
    * @throws ForeignKeyViolationException if the category is referenced by another record.
    */
-  async deleteCategoryById(id: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     try {
       await this.prismaService.category.delete({ where: { id } });
     } catch (e) {
@@ -81,47 +86,18 @@ export class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   /**
-   * Retrieves a paginated list of categories.
-   * @param page - The page number to retrieve (default is the configured default).
-   * @param pageSize - The number of items per page (default is the configured default).
-   * @returns A promise that resolves to a paginated list of categories.
-   */
-  async getCategories(
-    page = this.pageDefault,
-    pageSize = this.pageSizeDefault,
-  ): Promise<Page<Category>> {
-    const [categories, total] = await this.prismaService.$transaction([
-      this.prismaService.category.findMany({
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-      }),
-      this.prismaService.category.count(),
-    ]);
-
-    return buildPage(
-      categories.map(CategoryMapper.toDomain),
-      page,
-      pageSize,
-      total,
-    );
-  }
-
-  /**
    * Updates an existing category by its unique identifier.
    * @param id - The unique identifier of the category to update.
-   * @param updateData - Partial data to update the category with.
+   * @param entity - Partial data to update the category with.
    * @returns A promise that resolves to the updated category.
    * @throws CategoryNotFoundException if the category does not exist.
    * @throws DuplicateEntryException if a category with a unique field already exists.
    */
-  async updateCategoryById(
-    id: string,
-    updateData: Partial<Category>,
-  ): Promise<Category> {
+  async update(id: string, entity: Partial<Category>): Promise<Category> {
     const category = await this.findById(id);
     if (!category) throw new CategoryNotFoundException(id);
 
-    const dataSnakeCase = Object.entries(updateData).reduce(
+    const dataSnakeCase = Object.entries(entity).reduce(
       (acc, [key, value]) => {
         const snakeKey = camelCaseToSnakeCase(key);
         acc[snakeKey] = value;
@@ -130,7 +106,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
       {} as Record<string, any>,
     );
 
-    if (dataSnakeCase.slug) {
+    if (dataSnakeCase.slug && typeof dataSnakeCase.slug === 'string') {
       const existing = await this.prismaService.category.findUnique({
         where: { slug: dataSnakeCase.slug },
       });
@@ -153,5 +129,99 @@ export class CategoryRepositoryImpl implements CategoryRepository {
       }
       throw e;
     }
+  }
+
+  /**
+   * Retrieves a paginated list of categories based on query parameters.
+   *
+   * @param {CategoryQueryParams} params - The query parameters for pagination, filtering, and sorting.
+   *   - page: The page number to retrieve (default is from config).
+   *   - pageSize: The number of items per page (default is from config).
+   *   - filter: Filtering options for categories (see CategoryQueryFilter).
+   *   - orderBy: Array of sorting options for specific fields and direction.
+   * @returns {Promise<Page<Category>>} A promise that resolves to a paginated result containing categories and pagination info.
+   */
+  async getAllPaged(params: CategoryQueryParams): Promise<Page<Category>> {
+    const {
+      page = this.pageDefault,
+      pageSize = this.pageSizeDefault,
+      filter,
+      orderBy: pairs,
+    } = params;
+
+    const where = this.buildWhereClause(filter);
+    const orderBy = this.buildOrderByClause(pairs);
+
+    const [items, total] = await Promise.all([
+      this.prismaService.category.findMany({
+        where,
+        orderBy,
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      this.prismaService.category.count({ where }),
+    ]);
+
+    return {
+      items: items.map((c) => CategoryMapper.toDomain(c)),
+      page,
+      pageSize,
+      total,
+      totalPages: Math.ceil(total / pageSize),
+    };
+  }
+
+  /**
+   * Builds the Prisma orderBy clause from the provided order by pairs.
+   *
+   * @param {CategoryOrderBy} [pairs] - The order by pairs specifying fields and directions.
+   * @returns {Prisma.CategoryOrderByWithRelationInput | Prisma.CategoryOrderByWithRelationInput[]} The Prisma orderBy clause for sorting.
+   */
+  private buildOrderByClause(
+    pairs?: CategoryOrderBy,
+  ):
+    | Prisma.CategoryOrderByWithRelationInput
+    | Prisma.CategoryOrderByWithRelationInput[] {
+    if (!pairs || pairs.length === 0) {
+      return { created_at: 'desc' };
+    }
+
+    const mapping: Record<string, string> = {
+      name: 'name',
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+    };
+
+    return pairs.map((pair) => {
+      const snakeField = mapping[pair.field] || pair.field;
+      return { [snakeField]: pair.direction };
+    });
+  }
+
+  /**
+   * Builds the Prisma where clause from the provided category query filters.
+   *
+   * @param {CategoryQueryFilter} [filters] - The filters to apply to the category query.
+   * @returns {Prisma.CategoryWhereInput} The Prisma where clause for filtering categories.
+   */
+  private buildWhereClause(
+    filters?: CategoryQueryFilter,
+  ): Prisma.CategoryWhereInput {
+    if (!filters) return {};
+
+    const where: Prisma.CategoryWhereInput = {};
+
+    if (filters.query) {
+      where.name = {
+        contains: filters.query,
+        mode: 'insensitive',
+      };
+    }
+
+    if (filters.isActive !== undefined) {
+      where.is_active = filters.isActive;
+    }
+
+    return where;
   }
 }

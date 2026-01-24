@@ -3,22 +3,19 @@ import { CategoryRepository } from '../repositories';
 import { Page } from '../../../common/interfaces';
 import { Category } from '../types';
 import { CategoryNotFoundException } from '../exceptions';
+import { CategoryQueryParams } from '../interfaces';
 
 @Injectable()
 export class GetCategoriesService {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
   /**
-   * Retrieves a paginated list of categories.
-   * @param {number} [page] - The page number to retrieve. If not provided, the default is used.
-   * @param {number} [pageSize] - The number of categories per page. If not provided, the default is used.
+   * Retrieves a paginated list of categories with advanced filtering and sorting.
+   * @param {CategoryQueryParams} params - The query parameters for filtering, sorting, and pagination.
    * @returns {Promise<Page<Category>>} A promise that resolves to a paginated list of categories.
    */
-  async getCategories(
-    page?: number,
-    pageSize?: number,
-  ): Promise<Page<Category>> {
-    return this.categoryRepository.getCategories(page, pageSize);
+  async getAll(params: CategoryQueryParams): Promise<Page<Category>> {
+    return this.categoryRepository.getAllPaged(params);
   }
 
   /**
