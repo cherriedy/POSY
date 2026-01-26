@@ -17,6 +17,6 @@ export class DeleteCategoryService {
    * @throws ForeignKeyViolationException if the category is referenced by another record (from repository layer).
    */
   async deleteCategoryById(id: string) {
-    await this.categoryRepository.deleteCategoryById(id);
+    await this.categoryRepository.delete(id);
   }
 }

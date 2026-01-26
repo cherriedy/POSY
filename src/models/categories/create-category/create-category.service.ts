@@ -18,6 +18,6 @@ export class CreateCategoryService {
    * @throws RelatedRecordNotFoundException if a related record is not found (from repository layer).
    */
   async createCategory(category: Category): Promise<Category> {
-    return await this.categoryRepository.createCategory(category);
+    return await this.categoryRepository.create(category);
   }
 }

@@ -17,6 +17,8 @@ import Joi from '@hapi/joi';
           .valid('development', 'production', 'test')
           .default('development'),
         APP_PORT: Joi.number().default(3001),
+        APP_UPLOAD_DIR: Joi.string().default('./uploads'),
+        APP_URL: Joi.string().uri().default('http://localhost:3001'),
       }),
     }),
   ],

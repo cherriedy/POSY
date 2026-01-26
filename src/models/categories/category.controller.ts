@@ -25,6 +25,7 @@ import { plainToInstance } from 'class-transformer';
 import {
   CategoryDetailedResponseDto,
   CategoryPreviewResponseDto,
+  CategoryQueryParamsDto,
   CreateCategoryDto,
   UpdateCategoryDto,
 } from './dto';
@@ -36,8 +37,19 @@ import {
   ForeignKeyViolationException,
   RelatedRecordNotFoundException,
 } from '../../common/exceptions';
-import { PaginationQueryDto } from '../../common/config/pagination.query.dto';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBody,
+  ApiQuery,
+} from '@nestjs/swagger';
+import { createPageResponseSchema } from '../../common/dto';
 
+@ApiTags('Category')
+@ApiBearerAuth()
 @Controller('category')
 export class CategoryController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
@@ -53,6 +65,18 @@ export class CategoryController {
   @Get(':id')
   @Roles(Role.MANAGER, Role.ADMIN)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @ApiOperation({
+    summary: 'Get category by ID',
+    description: `Fetches detailed information for a specific category by its unique ID. Accessible by 
+    MANAGER and ADMIN roles. Returns 400 if the category is not found.`,
+  })
+  @ApiParam({ name: 'id', type: String })
+  @ApiResponse({
+    status: 200,
+    description: 'Category details',
+    type: CategoryDetailedResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Category not found' })
   async getCategoryById(
     @Param('id') id: string,
   ): Promise<CategoryDetailedResponseDto> {
@@ -66,29 +90,62 @@ export class CategoryController {
   @Get()
   @Roles(Role.MANAGER, Role.ADMIN)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @ApiOperation({
+    summary: 'Get all categories',
+    description: `Returns a paginated list of all categories. Accessible by MANAGER and ADMIN roles. 
+    Supports filtering by query parameters such as search query (by name), active status, etc. 
+    Used for listing and searching categories.`,
+  })
+  @ApiQuery({ name: 'query', required: false, type: CategoryQueryParamsDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Paginated list of categories',
+    schema: createPageResponseSchema(CategoryPreviewResponseDto),
+  })
   async getCategories(
-    @Query() pagination: PaginationQueryDto,
+    @Query() query: CategoryQueryParamsDto,
   ): Promise<Page<CategoryPreviewResponseDto>> {
-    const categoryPage = await this.getCategoriesService.getCategories(
-      pagination.page,
-      pagination.pageSize,
-    );
+    try {
+      const queryParams = query.toQueryParams();
+      const categoryPage = await this.getCategoriesService.getAll(queryParams);
 
-    const categoryPreviewItems = plainToInstance(
-      CategoryPreviewResponseDto,
-      categoryPage.items,
-      { excludeExtraneousValues: true },
-    );
+      const categoryPreviewItems = plainToInstance(
+        CategoryPreviewResponseDto,
+        categoryPage.items,
+        { excludeExtraneousValues: true },
+      );
 
-    return {
-      ...categoryPage,
-      items: categoryPreviewItems,
-    };
+      return {
+        ...categoryPage,
+        items: categoryPreviewItems,
+      };
+    } catch (e) {
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
   }
 
   @Post('')
   @Roles(Role.ADMIN, Role.MANAGER)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @ApiOperation({
+    summary: 'Create a new category',
+    description: `Creates a new category with the provided details. Only accessible by ADMIN 
+    and MANAGER roles. Returns the created category preview. Throws 400 for duplicate entries 
+    or related record not found.`,
+  })
+  @ApiBody({ type: CreateCategoryDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Category created',
+    type: CategoryPreviewResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Duplicate entry or related record not found',
+  })
   async createCategory(@Body() dto: CreateCategoryDto) {
     try {
       const category = await this.createCategoryService.createCategory(
@@ -113,6 +170,22 @@ export class CategoryController {
   @Put(':id')
   @Roles(Role.ADMIN, Role.MANAGER)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @ApiOperation({
+    summary: 'Update a category',
+    description: `Updates an existing category by its ID. Only accessible by ADMIN and MANAGER roles. 
+    Returns the updated category preview. Throws 400 for not found or duplicate entries.`,
+  })
+  @ApiParam({ name: 'id', type: String })
+  @ApiBody({ type: UpdateCategoryDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Category updated',
+    type: CategoryPreviewResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Category not found or duplicate entry',
+  })
   async updateCategory(
     @Param('id') id: string,
     @Body() dto: UpdateCategoryDto,
@@ -141,6 +214,17 @@ export class CategoryController {
   @Post(':id/toggle-active')
   @Roles(Role.ADMIN, Role.MANAGER)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @ApiOperation({
+    summary: 'Toggle category active status',
+    description: `Toggles the active status of a category by its ID. Only accessible by ADMIN and 
+    MANAGER roles. Returns a success message. Throws 400 if the category is not found.`,
+  })
+  @ApiParam({ name: 'id', type: String })
+  @ApiResponse({
+    status: 200,
+    description: 'Category active status toggled',
+  })
+  @ApiResponse({ status: 400, description: 'Category not found' })
   async toggleCategoryActive(@Param('id') id: string) {
     try {
       await this.updateCategoryService.toggleCategoryActive(id);
@@ -161,6 +245,18 @@ export class CategoryController {
   @Delete(':id')
   @Roles(Role.ADMIN, Role.MANAGER)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @ApiOperation({
+    summary: 'Delete a category',
+    description: `Deletes a category by its ID. Only accessible by ADMIN and MANAGER roles. 
+    Returns a success message. Throws 400 if the category is not found or if it is referenced 
+    by other records (foreign key violation).`,
+  })
+  @ApiParam({ name: 'id', type: String })
+  @ApiResponse({ status: 200, description: 'Category deleted' })
+  @ApiResponse({
+    status: 400,
+    description: 'Category not found or foreign key violation',
+  })
   async deleteCategory(@Param('id') id: string) {
     try {
       await this.deleteCategoryService.deleteCategoryById(id);
