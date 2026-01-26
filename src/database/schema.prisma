@@ -7,6 +7,26 @@ datasource db {
   provider = "postgresql"
 }
 
+model Image {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  file_name     String   @db.VarChar(255)
+  original_name String   @db.VarChar(255)
+  mime_type     String   @db.VarChar(100)
+  size          Int
+  path          String   @db.VarChar(500)
+  entity_type   String?  @db.VarChar(100) // e.g., "USER", "PRODUCT"
+  entity_id     String?  @db.Uuid
+  session_id    String?  @db.Uuid
+  is_confirmed  Boolean  @default(false)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @default(now()) @updatedAt
+
+  @@index([entity_id, entity_type])
+  @@index([session_id])
+  @@index([is_confirmed, created_at])
+  @@map("images")
+}
+
 // --------------------- Start of User model ---------------------
 model User {
   id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid

@@ -6,4 +6,6 @@ export default registerAs('app', () => ({
   env: process.env.APP_ENV,
   name: process.env.APP_NAME,
   port: process.env.APP_PORT,
+  url: process.env.APP_URL,
+  upload_dir: process.env.APP_UPLOAD_DIR,
 }));

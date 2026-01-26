@@ -21,6 +21,7 @@ import { PromotionModule } from './models/promotions/promotion.module';
 import { ProductModule } from './models/products/product.module';
 import { MeilisearchConfigModule } from './config/meilisearch/config.module';
 import { MeilisearchModule } from './providers/meilisearch/meilisearch.module';
+import { ImageModule } from './models/images/image.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { MeilisearchModule } from './providers/meilisearch/meilisearch.module';
     ProductModule,
     MeilisearchConfigModule,
     MeilisearchModule,
+    ImageModule,
   ],
   providers: [
     // {
