@@ -3,8 +3,6 @@ import { IsValidPassword, Match } from '../../../common/decorators';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdatePasswordDto {
-<<<<<<< HEAD:src/models/users/dto/update-password.dto.ts
-=======
   @ApiProperty({
     type: String,
     description: 'User ID',
@@ -19,7 +17,6 @@ export class UpdatePasswordDto {
     description: 'New password',
     example: 'StrongPassword123!',
   })
->>>>>>> db13a8f43cb27deeaed7143bd11a9d1a336114d5:src/models/users/dto/update-password-request.dto.ts
   @IsValidPassword()
   newPassword: string;
 

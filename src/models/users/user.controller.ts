@@ -272,9 +272,6 @@ export class UserController {
   @Roles(Role.ADMIN, Role.MANAGER)
   @PreventManagerAdminAccess('id')
   @UseGuards(AuthGuard('jwt'), RoleGuard, PreventManagerAdminAccessGuard)
-<<<<<<< HEAD
-  async updateUserPassword(@Param('id') id: string, @Body() dto: UpdatePasswordDto) {
-=======
   @ApiOperation({
     summary: 'Update user password',
     description: `Updates the password for a user. Only accessible by ADMIN and MANAGER roles. 
@@ -286,14 +283,7 @@ export class UserController {
     description: 'User password updated',
   })
   @ApiResponse({ status: 400, description: 'User not found' })
-  async updateUserPassword(@Body() dto: UpdatePasswordDto) {
->>>>>>> db13a8f43cb27deeaed7143bd11a9d1a336114d5
-    // if (dto.newPassword !== dto.newPasswordConfirmation) {
-    //   throw new BadRequestException(
-    //     'New password and confirmation do not match.',
-    //   );
-    // }
-
+  async updateUserPassword(@Param('id') id: string, @Body() dto: UpdatePasswordDto) {
     try {
       await this.updateUserService.updatePassword(id, dto.newPassword);
       return { message: 'User password has been successfully updated.' };
@@ -355,7 +345,7 @@ export class UserController {
     status: 400,
     description: 'User not found or account not locked',
   })
-  async unlockUser(@Query('id') id: string) {
+  async unlockUser(@Param('id') id: string) {
     try {
       await this.updateUserService.unlockUser(id);
       return { message: 'User account has been successfully unlocked.' };
