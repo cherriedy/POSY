@@ -64,11 +64,11 @@ export abstract class ImageRepository implements BaseRepository<Image> {
    * @returns A promise that resolves to an array of orphaned images.
    */
   abstract findOrphanedImages(olderThan: Date): Promise<Image[]>;
-
+  
   /**
-   * Deletes multiple images by their IDs.
-   * @param ids - The array of image IDs to delete.
-   * @returns A promise that resolves to the number of images deleted.
+   * Finds all unconfirmed images by session ID.
+   * @param sessionId - The session ID to filter images.
+   * @returns A promise that resolves to an array of unconfirmed images.
    */
-  abstract deleteMany(ids: string[]): Promise<number>;
+  abstract findUnconfirmedBySession(sessionId: string): Promise<Image[]>;
 }

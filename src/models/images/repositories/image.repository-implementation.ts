@@ -8,7 +8,7 @@ import { ImageNotFoundException } from '../exceptions';
 
 @Injectable()
 export class ImageRepositoryImpl implements ImageRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   /**
    * Creates a new image in the database.
@@ -154,17 +154,18 @@ export class ImageRepositoryImpl implements ImageRepository {
   }
 
   /**
-   * Deletes multiple images by their IDs.
-   * @param ids - The array of image IDs to delete.
-   * @returns A promise that resolves to the number of images deleted.
+   * Finds all unconfirmed images by session ID.
+   * @param sessionId - The session ID to filter images.
+   * @returns A promise that resolves to an array of unconfirmed images.
    */
-  async deleteMany(ids: string[]): Promise<number> {
-    const result = await this.prismaService.image.deleteMany({
+  async findUnconfirmedBySession(sessionId: string): Promise<Image[]> {
+    const images = await this.prismaService.image.findMany({
       where: {
-        id: { in: ids },
+        session_id: sessionId,
+        is_confirmed: false,
       },
     });
 
-    return result.count;
+    return images.map(ImageMapper.toDomain);
   }
 }

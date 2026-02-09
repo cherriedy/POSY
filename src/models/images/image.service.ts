@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ImageRepository } from './repositories';
 import { Image, ImageMapper } from './types';
 import { ImageNotFoundException } from './exceptions';
-import fs from 'fs';
+import * as fs from 'fs/promises';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { imageConfig } from './image.config';
@@ -38,14 +38,18 @@ export class ImageService {
    * @param entityId - (Optional) The ID of the entity the image may be associated with.
    * @returns The created Image domain object.
    */
-  async uploadImage(
-    file: Express.Multer.File,
+  async uploadImages(
+    files: Express.Multer.File[],
     sessionId: string,
     entityType?: string,
     entityId?: string,
-  ): Promise<Image> {
-    return await this.imageRepository.create(
-      ImageMapper.fileToDomain(file, sessionId, entityType, entityId),
+  ): Promise<Image[]> {
+    return Promise.all(
+      files.map(file =>
+        this.imageRepository.create(
+          ImageMapper.fileToDomain(file, sessionId, entityType, entityId),
+        ),
+      ),
     );
   }
 
@@ -61,8 +65,12 @@ export class ImageService {
     sessionId: string,
     entityType?: string,
     entityId?: string,
-  ): Promise<void> {
-    await this.imageRepository.confirmSession(sessionId, entityType, entityId);
+  ): Promise<number> {
+    return this.imageRepository.confirmSession(
+      sessionId,
+      entityType,
+      entityId,
+    );
   }
 
   /**
@@ -71,8 +79,16 @@ export class ImageService {
    *
    * @param sessionId - The session identifier whose images should be deleted.
    */
-  async cancelSession(sessionId: string): Promise<void> {
-    await this.imageRepository.cancelSession(sessionId);
+  async cancelSession(sessionId: string): Promise<number> {
+    const images = await this.imageRepository.findUnconfirmedBySession(sessionId);
+
+    // delete files
+    for (const image of images) {
+      await fs.unlink(image.path).catch(() => { });
+    }
+
+    // delete DB
+    return this.imageRepository.cancelSession(sessionId);
   }
 
   /**
@@ -89,9 +105,7 @@ export class ImageService {
     // Delete the image file from database
     await this.imageRepository.delete(id);
     // Delete the image file from storage
-    if (fs.existsSync(image.path)) {
-      fs.unlinkSync(image.path);
-    }
+    await fs.unlink(image.path).catch(() => { });
   }
 
   /**
@@ -144,9 +158,7 @@ export class ImageService {
     const twoDaysAgo = new Date(Date.now() - this.tempImageExpiryTime);
     const images = await this.imageRepository.findOrphanedImages(twoDaysAgo);
     for (const image of images) {
-      if (fs.existsSync(image.path)) {
-        fs.unlinkSync(image.path);
-      }
+      await fs.unlink(image.path).catch(() => { });
       await this.imageRepository.delete(image.id!);
     }
     this.logger.debug(`Cleaned up ${images.length} orphaned images.`);
