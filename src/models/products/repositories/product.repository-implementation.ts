@@ -330,18 +330,18 @@ export class ProductRepositoryImpl implements ProductRepository {
       }
     }
     if (filters.stockQuantityMin || filters.stockQuantityMax) {
-      where.discount_value = {};
+      where.stock_quantity = {};
       if (filters.stockQuantityMin) {
-        where.discount_value = { gte: filters.stockQuantityMin };
+        where.stock_quantity = { gte: filters.stockQuantityMin };
       }
       if (filters.stockQuantityMax) {
-        where.discount_value = { lte: filters.stockQuantityMax };
+        where.stock_quantity = { lte: filters.stockQuantityMax };
       }
     }
-    if (filters.isAvailable) {
+    if (filters.isAvailable !== undefined) {
       where.is_available = filters.isAvailable;
     }
-    if (filters.isDeleted) {
+    if (filters.isDeleted !== undefined) {
       where.is_deleted = filters.isDeleted;
     }
 

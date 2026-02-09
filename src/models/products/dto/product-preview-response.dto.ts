@@ -13,6 +13,10 @@ export class ProductPreviewResponseDto {
   @Expose()
   name: string;
 
+  @ApiProperty({ type: String, description: 'Product SKU', nullable: true })
+  @Expose()
+  sku: string;
+
   @ApiProperty({ type: Number, description: 'Product price' })
   @Expose()
   price: number;
@@ -28,6 +32,10 @@ export class ProductPreviewResponseDto {
   @ApiProperty({ type: String, description: 'Product image URL' })
   @Expose()
   imageUrl: string;
+
+  @ApiProperty({ type: Number, description: 'Stock quantity' })
+  @Expose()
+  stockQuantity: number;
 
   @ApiProperty({ type: Boolean, description: 'Is deleted' })
   @Expose()
