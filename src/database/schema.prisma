@@ -383,7 +383,7 @@ model Promotion {
   start_at            DateTime
   end_at              DateTime
   usage_limit         Int?
-  // usage_count         Int                    @default(0)
+  usage_count         Int                    @default(0)
   version             Int                    @default(1)
   status              PromotionStatus        @default(DRAFT)
   is_stackable        Boolean                @default(false)

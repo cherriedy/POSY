@@ -9,7 +9,7 @@ import {
   Param,
   Post,
   Query,
-  UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -24,7 +24,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ImageService } from './image.service';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import e from 'express';
 import path from 'path';
@@ -49,8 +49,59 @@ export class ImageController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: import('winston').Logger;
 
-  constructor(private readonly imageService: ImageService) {}
+  constructor(private readonly imageService: ImageService) { }
 
+  // ======== GET IMAGES BY ENTITY =========
+  @Get('entity')
+  @ApiOperation({
+    summary: 'Get all images by entity type and entity ID',
+    description:
+      'Returns all images associated with a specific entity type and entity ID.',
+  })
+  @ApiQuery({
+    name: 'entityType',
+    type: String,
+    required: true,
+    description: 'Entity type (e.g., product)',
+  })
+  @ApiQuery({
+    name: 'entityId',
+    type: String,
+    required: true,
+    description: 'Entity ID',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of images for the entity.',
+    schema: {
+      example: [
+        {
+          id: '1',
+          filename: '12345.png',
+          originalName: 'photo.png',
+          mimeType: 'image/png',
+          size: 12345,
+          path: './uploads/12345.png',
+          entityType: 'product',
+          entityId: 1,
+          sessionId: 'session-uuid',
+          isConfirmed: true,
+          createdAt: '2026-01-25T12:00:00.000Z',
+          updatedAt: '2026-01-25T12:00:00.000Z',
+        },
+      ],
+    },
+  })
+  async getImagesByEntity(
+    @Query('entityType') entityType: string,
+    @Query('entityId') entityId: string,
+  ) {
+    return await this.imageService.getImagesByEntity(entityType, entityId);
+  }
+
+  
+
+  // ======== GET IMAGE BY ID =========
   @Get(':id')
   @ApiOperation({
     summary: 'Get image metadata by ID',
@@ -122,53 +173,9 @@ export class ImageController {
     return await this.imageService.getImagesBySession(sessionId);
   }
 
-  @Get('entity')
-  @ApiOperation({
-    summary: 'Get all images by entity type and entity ID',
-    description:
-      'Returns all images associated with a specific entity type and entity ID.',
-  })
-  @ApiQuery({
-    name: 'entityType',
-    type: String,
-    required: true,
-    description: 'Entity type (e.g., product)',
-  })
-  @ApiQuery({
-    name: 'entityId',
-    type: String,
-    required: true,
-    description: 'Entity ID',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'List of images for the entity.',
-    schema: {
-      example: [
-        {
-          id: '1',
-          filename: '12345.png',
-          originalName: 'photo.png',
-          mimeType: 'image/png',
-          size: 12345,
-          path: './uploads/12345.png',
-          entityType: 'product',
-          entityId: 1,
-          sessionId: 'session-uuid',
-          isConfirmed: true,
-          createdAt: '2026-01-25T12:00:00.000Z',
-          updatedAt: '2026-01-25T12:00:00.000Z',
-        },
-      ],
-    },
-  })
-  async getImagesByEntity(
-    @Query('entityType') entityType: string,
-    @Query('entityId') entityId: string,
-  ) {
-    return await this.imageService.getImagesByEntity(entityType, entityId);
-  }
 
+
+  // ======== UPLOAD IMAGES =========
   @Post('upload')
   @ApiOperation({
     summary: 'Upload an image',
@@ -222,7 +229,7 @@ export class ImageController {
     description: 'Bad request - invalid file or validation failed.',
   })
   @UseInterceptors(
-    FileInterceptor('file', {
+    FilesInterceptor('file', 10, {
       storage: diskStorage({
         destination: './uploads',
         filename(
@@ -236,13 +243,13 @@ export class ImageController {
       }),
     }),
   )
-  async uploadImage(
+  async uploadImages(
     @Body() dto: UploadImageDto,
-    @UploadedFile(new FileValidationPipe()) file: Express.Multer.File,
+    @UploadedFiles(new FileValidationPipe()) files: Express.Multer.File[],
   ) {
     try {
-      return await this.imageService.uploadImage(
-        file,
+      return await this.imageService.uploadImages(
+        files,
         dto.sessionId,
         dto.entityType,
         dto.entityId,
@@ -258,6 +265,8 @@ export class ImageController {
     }
   }
 
+
+  // ======== CONFIRM SESSION =========
   @Post('session/:sessionId/confirm')
   @ApiOperation({
     summary: 'Confirm all images in a session',
@@ -283,9 +292,20 @@ export class ImageController {
     @Query('entityType') entityType?: string,
     @Query('entityId') entityId?: string,
   ) {
-    await this.imageService.confirmSession(sessionId, entityType, entityId);
+    const count = await this.imageService.confirmSession(
+      sessionId,
+      entityType,
+      entityId,
+    );
+
+    return {
+      message: 'Session confirmed',
+      updated: count,
+    };
   }
 
+
+  // ======== CANCEL SESSION =========
   @Post('session/:sessionId/cancel')
   @ApiOperation({
     summary: 'Cancel a session',
@@ -297,19 +317,30 @@ export class ImageController {
     description: 'Session images cancelled and deleted.',
   })
   async cancelSession(@Param('sessionId') sessionId: string) {
-    await this.imageService.cancelSession(sessionId);
+    const count = await this.imageService.cancelSession(sessionId);
+
+    return {
+      message: 'Session images cancelled and deleted.',
+      deleted: count,
+    };
   }
 
-  @Delete(':id/delete')
+
+  // ======== DELETE IMAGE BY ID =========
+  @Delete(':id')
   @ApiOperation({
     summary: 'Delete an image by ID',
     description: 'Deletes an image by its unique ID.',
   })
   @ApiParam({ name: 'id', type: String, description: 'Image ID' })
-  @ApiResponse({ status: 200, description: 'Image deleted.' })
+  @ApiResponse({ status: 200, description: 'Image deleted successfully.' })
   async deleteImage(@Param('id') id: string) {
     try {
       await this.imageService.deleteImage(id);
+
+      return {
+        message: 'Image deleted successfully.'
+      };
     } catch (e) {
       if (e instanceof ImageNotFoundException) {
         throw new BadRequestException(e.message);
