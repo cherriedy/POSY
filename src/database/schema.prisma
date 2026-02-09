@@ -142,7 +142,7 @@ enum ProductDiscountType {
 
 model Product {
   id             String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  category_id    String?              @db.Uuid
+  category_id    String               @db.Uuid
   sku            String?              @unique
   name           String               @db.VarChar(255)
   description    String?              @db.Text
@@ -158,7 +158,7 @@ model Product {
   updated_at     DateTime             @default(now()) @updatedAt
 
   // Relations
-  category                   Category?                   @relation(fields: [category_id], references: [id])
+  category                   Category                    @relation(fields: [category_id], references: [id])
   promotionProducts          PromotionProduct[]
   orderItems                 OrderItem[]
   productIngredients         ProductIngredient[]
