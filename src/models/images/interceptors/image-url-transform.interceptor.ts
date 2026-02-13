@@ -27,7 +27,7 @@ export class ImageUrlTransformInterceptor implements NestInterceptor {
   /**
    * @param appConfigService - Injected service to access the application's base URL
    */
-  constructor(private readonly appConfigService: AppConfigService) {}
+  constructor(private readonly appConfigService: AppConfigService) { }
 
   /**
    * Intercepts the response stream and transforms any Image objects or arrays of Images
@@ -71,10 +71,19 @@ export class ImageUrlTransformInterceptor implements NestInterceptor {
    * @returns The full URL to access the image (e.g., 'http://host/uploads/abc.jpg')
    */
   private generateImageUrl(path: string): string {
+    if (path.startsWith('http')) return path;
     const baseUrl = this.appConfigService.url;
-    // Remove leading './' if present
-    const cleanPath = path.replace(/^\.\//, '');
-    return `${baseUrl}/${cleanPath}`;
+
+    // normalize windows path
+    let cleanPath = path.replace(/\\/g, '/');
+
+    // remove leading ./
+    cleanPath = cleanPath.replace(/^\.\//, '');
+
+    // avoid double slash
+    const safeBase = baseUrl.replace(/\/$/, '');
+
+    return `${safeBase}/${cleanPath}`;
   }
 
   /**

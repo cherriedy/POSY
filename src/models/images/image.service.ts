@@ -92,20 +92,28 @@ export class ImageService {
   }
 
   /**
-   * Deletes an image by its ID, removing both the file from storage and its metadata from the repository.
-   * Throws ImageNotFoundException if the image does not exist.
+   * Deletes images by their IDs.
+   * Throws ImageNotFoundException if any image is not found.
+   * Deletes both the image files from storage and their metadata from the repository.
    *
-   * @param id - The ID of the image to delete.
-   * @throws ImageNotFoundException if the image is not found.
+   * @param ids - An array of image IDs to delete.
    */
-  async deleteImage(id: string): Promise<void> {
-    const image = await this.imageRepository.findById(id);
-    if (!image) throw new ImageNotFoundException(id);
+  async deleteImages(ids: string[]): Promise<void> {
+    const images = await this.imageRepository.findByIds(ids);
 
-    // Delete the image file from database
-    await this.imageRepository.delete(id);
-    // Delete the image file from storage
-    await fs.unlink(image.path).catch(() => { });
+    if (images.length !== ids.length) {
+      throw new ImageNotFoundException('One or more images not found');
+    }
+
+    // delete DB first
+    await this.imageRepository.deleteMany(ids);
+
+    // delete files (parallel, ignore errors)
+    await Promise.all(
+      images.map(img =>
+        fs.unlink(img.path).catch(() => { }),
+      ),
+    );
   }
 
   /**
@@ -157,10 +165,19 @@ export class ImageService {
   async cleanupOrphanedImages() {
     const twoDaysAgo = new Date(Date.now() - this.tempImageExpiryTime);
     const images = await this.imageRepository.findOrphanedImages(twoDaysAgo);
-    for (const image of images) {
-      await fs.unlink(image.path).catch(() => { });
-      await this.imageRepository.delete(image.id!);
-    }
+    if (!images.length) return 0;
+
+    const ids = images.map(i => i.id!);
+
+    // delete DB in bulk
+    await this.imageRepository.deleteMany(ids);
+
+    // delete files in parallel
+    await Promise.all(
+      images.map(img =>
+        fs.unlink(img.path).catch(() => { }),
+      ),
+    );
     this.logger.debug(`Cleaned up ${images.length} orphaned images.`);
     return images.length;
   }

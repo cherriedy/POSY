@@ -35,25 +35,6 @@ export class ImageRepositoryImpl implements ImageRepository {
   }
 
   /**
-   * Deletes an image by its unique identifier.
-   * @param id - The unique identifier of the image to delete.
-   * @returns A promise that resolves when the image is deleted.
-   * @throws ImageNotFoundException if the image does not exist.
-   */
-  async delete(id: string): Promise<void> {
-    try {
-      await this.prismaService.image.delete({ where: { id } });
-    } catch (e) {
-      if (e instanceof PrismaClientKnownRequestError) {
-        if (e.code === 'P2025') {
-          throw new ImageNotFoundException(id);
-        }
-      }
-      throw e;
-    }
-  }
-
-  /**
    * Finds an image by its unique identifier.
    * @param id - The unique identifier of the image to find.
    * @returns A promise that resolves to the found image or null if not found.
@@ -167,5 +148,33 @@ export class ImageRepositoryImpl implements ImageRepository {
     });
 
     return images.map(ImageMapper.toDomain);
+  }
+
+  /**
+   * Finds images by their IDs.
+   * @param ids - An array of image IDs to find.
+   * @returns A promise that resolves to an array of images.
+   */
+  async findByIds(ids: string[]): Promise<Image[]> {
+    const data = await this.prismaService.image.findMany({
+      where: {
+        id: { in: ids },
+      },
+    });
+
+    return data.map(ImageMapper.toDomain);
+  }
+
+  /**
+   * Deletes multiple images by their unique identifiers.
+   * @param ids - An array of unique identifiers of the images to delete.
+   * @returns A promise that resolves when all images are deleted.
+   */
+  async deleteMany(ids: string[]): Promise<void> {
+    await this.prismaService.image.deleteMany({
+      where: {
+        id: { in: ids },
+      },
+    });
   }
 }
