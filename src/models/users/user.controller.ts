@@ -98,8 +98,9 @@ export class UserController {
   @ApiOperation({
     summary: 'Get all users',
     description: `Returns a paginated list of all users. Accessible by ADMIN and MANAGER roles. 
-    Managers cannot see admin users. Supports filtering by query parameters such as search query 
-    (by name, email, username), role, active status, etc. Used for listing and searching users.`,
+    Managers cannot see admin users. The currently authenticated user is excluded from the results.
+    Supports filtering by query parameters such as search query (by name, email, username), role, 
+    active status, etc. Used for listing and searching users.`,
   })
   @ApiQuery({ name: 'query', required: false, type: UserQueryParamsDto })
   @ApiResponse({
@@ -112,12 +113,15 @@ export class UserController {
     @Req() req: Request,
   ): Promise<Page<UserPreviewResponseDto>> {
     try {
-      const requesterRole = (req.user as JwtPayload).role;
+      const user = req.user as JwtPayload;
+      const requesterRole = user.role;
+      const requesterId = user.sub;
       const queryParams = query.toQueryParams();
 
       const userPage = await this.getUsersService.getAll(
         queryParams,
         requesterRole,
+        requesterId,
       );
 
       const userPreviewItems = plainToInstance(
