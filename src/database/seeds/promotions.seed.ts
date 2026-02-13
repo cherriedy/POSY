@@ -81,7 +81,6 @@ export async function seedPromotions(prisma: PrismaClient) {
       end_at,
       usage_limit:
         Math.random() > 0.5 ? Math.floor(Math.random() * 100) + 10 : null,
-      usage_count: 0,
       version: 1,
       status,
       is_stackable: Math.random() > 0.5,
