@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
 import { ProductDiscountType } from '../enums';
-import { CategoryPreviewResponseDto } from '../../categories/dto';
+import { ProductCategoryResponseDto } from './product-category-response.dto';
 
 @Exclude()
 export class ProductPreviewResponseDto {
@@ -12,6 +12,10 @@ export class ProductPreviewResponseDto {
   @ApiProperty({ type: String, description: 'Product name' })
   @Expose()
   name: string;
+
+  @ApiProperty({ type: String, description: 'Product slug' })
+  @Expose()
+  slug: string;
 
   @ApiProperty({ type: String, description: 'Product SKU', nullable: true })
   @Expose()
@@ -54,10 +58,10 @@ export class ProductPreviewResponseDto {
   updatedAt: Date;
 
   @ApiProperty({
-    type: () => CategoryPreviewResponseDto,
+    type: () => ProductCategoryResponseDto,
     description: 'Product category',
   })
   @Expose()
-  @Type(() => CategoryPreviewResponseDto)
-  category: CategoryPreviewResponseDto;
+  @Type(() => ProductCategoryResponseDto)
+  category: ProductCategoryResponseDto;
 }

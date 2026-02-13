@@ -40,6 +40,15 @@ export class CreateProductDto {
 
   @ApiPropertyOptional({
     type: String,
+    description: 'Product slug.',
+    example: 'premium-coffee-beans',
+  })
+  @IsOptional()
+  @IsString()
+  slug?: string;
+
+  @ApiPropertyOptional({
+    type: String,
     description: 'Product description',
     example: 'High-quality Arabica coffee beans from Colombia',
   })
