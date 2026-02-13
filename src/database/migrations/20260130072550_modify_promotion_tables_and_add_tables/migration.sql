@@ -1,7 +1,7 @@
 /*
   Warnings:
 
-  - You are about to drop the column `usage_count` on the `promotions` table. All the data in the column will be lost.
+  - You are about to drop the column `usage_count` on the `promotions` tables. All the data in the column will be lost.
 
 */
 -- CreateEnum
@@ -993,3 +993,4 @@ ALTER TABLE "user_notifications" ADD CONSTRAINT "user_notifications_notification
 
 -- AddForeignKey
 ALTER TABLE "user_notifications" ADD CONSTRAINT "user_notifications_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+

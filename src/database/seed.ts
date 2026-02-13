@@ -4,9 +4,13 @@ import { PrismaClient } from '@prisma/client';
 import {
   seedAdmin,
   seedCategories,
+  seedFloors,
   seedProducts,
   seedPromotions,
   seedStaff,
+  seedTables,
+  seedTaxes,
+  seedZones,
 } from './seeds';
 
 const connectionString = process.env.DATABASE_URL;
@@ -23,6 +27,10 @@ async function main() {
   await seedCategories(prisma);
   await seedPromotions(prisma);
   await seedProducts(prisma);
+  await seedZones(prisma);
+  await seedFloors(prisma);
+  await seedTables(prisma);
+  await seedTaxes(prisma);
 }
 
 main()
