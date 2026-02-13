@@ -1,0 +1,7 @@
+export enum TaxType {
+  VAT = 'VAT',
+  SERVICE_CHARGE = 'SERVICE_CHARGE',
+  ENVIRONMENTAL = 'ENVIRONMENTAL',
+  LOCAL_TAX = 'LOCAL_TAX',
+  OTHER = 'OTHER',
+}
