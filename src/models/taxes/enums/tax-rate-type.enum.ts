@@ -1,0 +1,5 @@
+export enum TaxRateType {
+  PERCENTAGE = 'PERCENTAGE',
+  FIXED_AMOUNT = 'FIXED_AMOUNT',
+  PER_UNIT = 'PER_UNIT',
+}
