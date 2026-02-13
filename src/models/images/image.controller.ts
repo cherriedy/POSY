@@ -38,6 +38,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ImageNotFoundException } from './exceptions';
 import { ImageUrlTransformInterceptor } from './interceptors';
 import { UploadImageDto } from './dto';
+import { DeleteImagesDto } from './dto/delete-images.dto';
 
 @ApiTags('Image')
 @ApiBearerAuth()
@@ -99,7 +100,7 @@ export class ImageController {
     return await this.imageService.getImagesByEntity(entityType, entityId);
   }
 
-  
+
 
   // ======== GET IMAGE BY ID =========
   @Get(':id')
@@ -326,25 +327,25 @@ export class ImageController {
   }
 
 
-  // ======== DELETE IMAGE BY ID =========
-  @Delete(':id')
+  // ======== DELETE IMAGES BY IDS =========
+  @Post('delete')
   @ApiOperation({
-    summary: 'Delete an image by ID',
-    description: 'Deletes an image by its unique ID.',
+    summary: 'Bulk delete images',
+    description: 'Deletes multiple images by IDs.',
   })
-  @ApiParam({ name: 'id', type: String, description: 'Image ID' })
-  @ApiResponse({ status: 200, description: 'Image deleted successfully.' })
-  async deleteImage(@Param('id') id: string) {
+  @ApiResponse({ status: 200, description: 'Images deleted successfully.' })
+  async deleteImages(@Body() dto: DeleteImagesDto) {
     try {
-      await this.imageService.deleteImage(id);
+      await this.imageService.deleteImages(dto.ids);
 
       return {
-        message: 'Image deleted successfully.'
+        message: 'Images deleted successfully.',
       };
     } catch (e) {
       if (e instanceof ImageNotFoundException) {
         throw new BadRequestException(e.message);
       }
+
       this.logger.error(e);
       throw new InternalServerErrorException(
         'An error occurred while processing your request.',

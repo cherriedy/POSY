@@ -17,13 +17,6 @@ export abstract class ImageRepository implements BaseRepository<Image> {
   abstract findById(id: string): Promise<Image | null>;
 
   /**
-   * Deletes an image by its unique identifier.
-   * @param id - The unique identifier of the image to delete.
-   * @returns A promise that resolves when the image is deleted.
-   */
-  abstract delete(id: string): Promise<void>;
-
-  /**
    * Finds all images by session ID.
    * @param sessionId - The session ID to filter images.
    * @returns A promise that resolves to an array of images.
@@ -64,11 +57,25 @@ export abstract class ImageRepository implements BaseRepository<Image> {
    * @returns A promise that resolves to an array of orphaned images.
    */
   abstract findOrphanedImages(olderThan: Date): Promise<Image[]>;
-  
+
   /**
    * Finds all unconfirmed images by session ID.
    * @param sessionId - The session ID to filter images.
    * @returns A promise that resolves to an array of unconfirmed images.
    */
   abstract findUnconfirmedBySession(sessionId: string): Promise<Image[]>;
+
+  /**
+ * Deletes multiple images by their unique identifiers.
+ * @param ids - An array of unique identifiers of the images to delete.
+ * @returns A promise that resolves when all images are deleted.
+ */
+  abstract deleteMany(ids: string[]): Promise<void>;
+
+  /**
+   * Finds multiple images by their unique identifiers.
+   * @param ids - An array of unique identifiers of the images to find.
+   * @returns A promise that resolves to an array of found images.
+   */
+  abstract findByIds(ids: string[]): Promise<Image[]>;
 }
