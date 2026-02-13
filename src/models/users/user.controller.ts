@@ -283,7 +283,10 @@ export class UserController {
     description: 'User password updated',
   })
   @ApiResponse({ status: 400, description: 'User not found' })
-  async updateUserPassword(@Param('id') id: string, @Body() dto: UpdatePasswordDto) {
+  async updateUserPassword(
+    @Param('id') id: string,
+    @Body() dto: UpdatePasswordDto,
+  ) {
     try {
       await this.updateUserService.updatePassword(id, dto.newPassword);
       return { message: 'User password has been successfully updated.' };
