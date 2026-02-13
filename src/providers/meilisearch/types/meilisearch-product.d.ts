@@ -12,4 +12,5 @@ export type MeiliSearchProduct = Omit<
 > & {
   category: { id: string; name: string };
   id: string;
+  slug: string;
 };
