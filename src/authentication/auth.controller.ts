@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
-  ForgetPasswordDto,
+  ForgotPasswordDto,
   ResetPasswordDto,
   SignInDto,
   ValidateResetCodeDto,
@@ -123,7 +123,7 @@ export class AuthController {
     summary: 'Request password reset',
     description: 'Send password reset link to user email if it exists.',
   })
-  @ApiBody({ type: ForgetPasswordDto })
+  @ApiBody({ type: ForgotPasswordDto })
   @ApiResponse({
     status: 200,
     description: 'Password reset link sent',
@@ -134,7 +134,7 @@ export class AuthController {
     },
   })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-    async forgotPassword(@Body() dto: ForgetPasswordDto, @Req() req: Request) {
+  async forgotPassword(@Body() dto: ForgotPasswordDto, @Req() req: Request) {
     const deviceContext: DeviceContext = {
       date: req['date'] as string,
       device: req['device'] as string,
