@@ -69,11 +69,13 @@ export abstract class UserRepository implements BaseRepository<User> {
    *
    * @param params - The query parameters for pagination, filtering, and sorting.
    * @param requesterRole - The role of the user making the request (optional). Used to filter results by role.
+   * @param requesterId - The ID of the user making the request (optional). Used to exclude the requester from results.
    * @returns A promise that resolves to a paginated list of users.
    */
   abstract getAllPaged(
     params: UserQueryParams,
     requesterRole?: string,
+    requesterId?: string,
   ): Promise<Page<User>>;
 
   /**

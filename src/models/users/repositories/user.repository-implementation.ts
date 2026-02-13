@@ -198,6 +198,7 @@ export class UserRepositoryImpl implements UserRepository {
    *   - filter: Filtering options for users (see UserQueryFilter).
    *   - orderBy: Array of sorting options for specific fields and direction.
    * @param {string} [requesterRole] - The role of the user making the request. Managers cannot see admin users.
+   * @param {string} [requesterId] - The ID of the user making the request. This user will be excluded from results.
    * @returns {Promise<Page<User>>} A promise that resolves to a paginated result containing users and pagination info.
    *
    * @example
@@ -208,11 +209,12 @@ export class UserRepositoryImpl implements UserRepository {
    *   filter: { query: 'john', role: 'STAFF', isActive: true },
    *   orderBy: [{ field: 'fullName', direction: 'asc' }]
    * };
-   * const page = await userRepository.getAllPaged(params, 'ADMIN');
+   * const page = await userRepository.getAllPaged(params, 'ADMIN', 'user-id-123');
    */
   async getAllPaged(
     params: UserQueryParams,
     requesterRole?: string,
+    requesterId?: string,
   ): Promise<Page<User>> {
     const {
       page = this.pageDefault,
@@ -221,7 +223,7 @@ export class UserRepositoryImpl implements UserRepository {
       orderBy: pairs,
     } = params;
 
-    const where = this.buildWhereClause(filter, requesterRole);
+    const where = this.buildWhereClause(filter, requesterRole, requesterId);
     const orderBy = this.buildOrderByClause(pairs);
 
     const [items, total] = await Promise.all([
@@ -278,13 +280,20 @@ export class UserRepositoryImpl implements UserRepository {
    *
    * @param {UserQueryFilter} [filters] - The filters to apply to the user query.
    * @param {string} [requesterRole] - The role of the user making the request. Managers cannot see admin users.
+   * @param {string} [requesterId] - The ID of the user making the request. This user will be excluded from results.
    * @returns {Prisma.UserWhereInput} The Prisma where clause for filtering users.
    */
   private buildWhereClause(
     filters?: UserQueryFilter,
     requesterRole?: string,
+    requesterId?: string,
   ): Prisma.UserWhereInput {
     const where: Prisma.UserWhereInput = {};
+
+    // Exclude the current user from results
+    if (requesterId) {
+      where.id = { not: requesterId };
+    }
 
     // Manager role restriction
     if (requesterRole === 'MANAGER') {

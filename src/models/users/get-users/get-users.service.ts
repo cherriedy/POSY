@@ -29,12 +29,14 @@ export class GetUsersService {
    *
    * @param {UserQueryParams} params - The query parameters for filtering, sorting, and pagination.
    * @param {string} [requesterRole] - The role of the user making the request (to filter results).
+   * @param {string} [requesterId] - The ID of the user making the request (to exclude from results).
    * @returns {Promise<Page<User>>} A promise that resolves to a paginated list of users.
    */
   async getAll(
     params: UserQueryParams,
     requesterRole?: string,
+    requesterId?: string,
   ): Promise<Page<User>> {
-    return this.userRepository.getAllPaged(params, requesterRole);
+    return this.userRepository.getAllPaged(params, requesterRole, requesterId);
   }
 }
