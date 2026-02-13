@@ -7,6 +7,7 @@ export class Product {
     public categoryId: string | null,
     public sku: string | null,
     public name: string,
+    public slug: string | null,
     public description: string | null,
     public price: number,
     public discountType: ProductDiscountType | null,

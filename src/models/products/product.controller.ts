@@ -151,7 +151,7 @@ export class ProductController {
   @Roles(Role.ADMIN)
   @ApiOperation({
     summary: 'Create a new product',
-    description: `Creates a new product with the provided details. Only accessible by 
+    description: `Creates a new product with the provided details. Only accessible by
     ADMIN role. Returns the created product preview. Throws 400 for duplicate entries.`,
   })
   @ApiBody({ type: CreateProductDto })
@@ -191,7 +191,7 @@ export class ProductController {
   @Roles(Role.ADMIN)
   @ApiOperation({
     summary: 'Update a product',
-    description: `Updates an existing product by its ID. Only accessible by ADMIN role. 
+    description: `Updates an existing product by its ID. Only accessible by ADMIN role.
     Returns the updated product preview. Throws 400 for not found or duplicate entries.`,
   })
   @ApiParam({ name: 'id', type: String })

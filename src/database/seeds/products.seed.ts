@@ -18,6 +18,18 @@ const meiliClient = new MeiliSearch({
   apiKey: process.env.MEILI_MASTER_KEY,
 });
 
+/**
+ * Generate a URL-friendly slug from a string
+ */
+function generateSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-'); // Replace multiple hyphens with single hyphen
+}
+
 export async function seedProducts(prisma: PrismaClient) {
   // Fetch all categories from the database
   const categories = await prisma.category.findMany({
@@ -31,6 +43,7 @@ export async function seedProducts(prisma: PrismaClient) {
 
   const products = Array.from({ length: 30 }).map(() => {
     const category = faker.helpers.arrayElement(categories);
+    const productName = faker.commerce.productName();
     const discountType = faker.helpers.arrayElement([
       ProductDiscountType.PERCENTAGE,
       ProductDiscountType.FIXED_AMOUNT,
@@ -53,7 +66,11 @@ export async function seedProducts(prisma: PrismaClient) {
     return {
       category_id: category.id,
       sku: faker.string.alphanumeric(8).toUpperCase(),
-      name: faker.commerce.productName(),
+      name: productName,
+      slug:
+        generateSlug(productName) +
+        '-' +
+        faker.string.alphanumeric(6).toLowerCase(),
       description: faker.commerce.productDescription(),
       price: faker.number.float({ min: 1, max: 500, fractionDigits: 2 }),
       discount_type: discountType,
@@ -69,11 +86,14 @@ export async function seedProducts(prisma: PrismaClient) {
   });
 
   for (const product of products) {
-    // Ensure SKU uniqueness
-    const exists = await prisma.product.findUnique({
+    // Ensure SKU and slug uniqueness
+    const existsBySku = await prisma.product.findUnique({
       where: { sku: product.sku },
     });
-    if (!exists) {
+    const existsBySlug = await prisma.product.findUnique({
+      where: { slug: product.slug },
+    });
+    if (!existsBySku && !existsBySlug) {
       await prisma.product.create({ data: product });
     }
   }
@@ -87,6 +107,7 @@ export async function seedProducts(prisma: PrismaClient) {
   const productsForMeili = seededProducts.map((p) => ({
     id: p.id,
     name: p.name,
+    slug: p.slug,
     price:
       typeof p.price === 'object' && p.price !== null && 'toNumber' in p.price
         ? p.price.toNumber()

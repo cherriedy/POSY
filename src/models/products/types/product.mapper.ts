@@ -10,6 +10,7 @@ export class ProductMapper {
       prisma.category_id,
       prisma.sku,
       prisma.name,
+      prisma.slug,
       prisma.description,
       prisma.price.toNumber(),
       prisma.discount_type
@@ -39,6 +40,7 @@ export class ProductMapper {
       category_id: domain.categoryId,
       sku: domain.sku,
       name: domain.name,
+      slug: domain.slug,
       description: domain.description,
       price: new Prisma.Decimal(domain.price),
       discount_type: domain.discountType,
