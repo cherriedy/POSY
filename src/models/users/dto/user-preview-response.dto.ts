@@ -33,7 +33,11 @@ export class UserPreviewResponseDto {
   @Expose()
   isActive: boolean;
 
-  @ApiProperty({ type: Boolean, description: 'Has user been deleted', example: true })
+  @ApiProperty({
+    type: Boolean,
+    description: 'Has user been deleted',
+    example: true,
+  })
   @Expose()
   isDeleted: boolean;
 
