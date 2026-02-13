@@ -29,6 +29,7 @@ export class MeilisearchProductMapper {
     return {
       id: product.id,
       name: product.name,
+      slug: product.slug ?? '',
       price: product.price,
       discountType: product.discountType,
       discountValue: product.discountValue,
