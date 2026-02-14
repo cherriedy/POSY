@@ -61,7 +61,7 @@ export class ProductController {
     private readonly createProductService: CreateProductService,
     private readonly updateProductService: UpdateProductService,
     private readonly deleteProductService: DeleteProductService,
-  ) {}
+  ) { }
 
   @Get('')
   @UseGuards(AuthGuard('jwt'))
@@ -84,11 +84,7 @@ export class ProductController {
       const queryParams = query.toQueryParams();
 
       // Non-admin users cannot see deleted products
-      if (
-        role !== Role.ADMIN.toString() &&
-        queryParams.filter?.isDeleted !== false
-      ) {
-        // Force isDeleted to false for non-admin users
+      if (role !== Role.ADMIN.toString()) {
         if (!queryParams.filter) queryParams.filter = {};
         queryParams.filter.isDeleted = false;
       }

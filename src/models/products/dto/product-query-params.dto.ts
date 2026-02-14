@@ -96,13 +96,26 @@ export class ProductQueryParamsDto {
   @ApiPropertyOptional({ type: Boolean, description: 'Is available' })
   @IsOptional()
   @IsBoolean()
-  @Transform(({ value }) => value === 'true' || value === true)
+  @Transform(({ value }) => {
+    if (value === 'true' || value === true) return true;
+    if (value === 'false' || value === false) return false;
+    return undefined;
+  })
+
   isAvailable?: boolean;
 
   @ApiPropertyOptional({ type: Boolean, description: 'Is deleted' })
   @IsOptional()
   @IsBoolean()
-  @Transform(({ value }) => value === 'true' || value === true)
+  @Transform(({ value }) => {
+    if (value === 'true' || value === true) return true;
+    if (value === 'false' || value === false) return false;
+
+    console.log('DTO isDeleted raw:', value);
+
+    return undefined;
+  })
+
   isDeleted?: boolean;
 
   @ApiPropertyOptional({ type: Number, description: 'Page number' })
