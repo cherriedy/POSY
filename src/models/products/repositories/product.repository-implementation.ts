@@ -27,7 +27,7 @@ export class ProductRepositoryImpl implements ProductRepository {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly meilisearchProductService: MeilisearchProductService,
-  ) {}
+  ) { }
 
   /**
    * Creates a new product in the database.
@@ -219,6 +219,8 @@ export class ProductRepositoryImpl implements ProductRepository {
       }),
       this.prismaService.product.count({ where }),
     ]);
+    console.log(JSON.stringify(where, null, 2));
+
 
     return {
       items: items.map((p) => ProductMapper.toDomain(p)),
@@ -304,47 +306,61 @@ export class ProductRepositoryImpl implements ProductRepository {
     if (!filters) return {};
 
     const where: Prisma.ProductWhereInput = {};
+    
 
-    if (filters.priceMin || filters.priceMax) {
+    if (filters.priceMin !== undefined || filters.priceMax !== undefined) {
       where.price = {};
-      if (filters.priceMin) {
-        where.price = { gte: filters.priceMin };
-      }
-      if (filters.priceMax) {
-        where.price = { lte: filters.priceMax };
-      }
+
+      if (filters.priceMin !== undefined)
+        where.price.gte = filters.priceMin;
+
+      if (filters.priceMax !== undefined)
+        where.price.lte = filters.priceMax;
     }
-    if (filters.categoryId) {
+
+    if (filters.categoryId?.length) {
       where.category_id = { in: filters.categoryId };
     }
-    if (filters.discountType) {
+
+    if (filters.discountType !== undefined) {
       where.discount_type = filters.discountType;
     }
-    if (filters.discountValueMin || filters.discountValueMax) {
+
+    if (
+      filters.discountValueMin !== undefined ||
+      filters.discountValueMax !== undefined
+    ) {
       where.discount_value = {};
-      if (filters.discountValueMin) {
-        where.discount_value = { gte: filters.discountValueMin };
-      }
-      if (filters.discountValueMax) {
-        where.discount_value = { lte: filters.discountValueMax };
-      }
+
+      if (filters.discountValueMin !== undefined)
+        where.discount_value.gte = filters.discountValueMin;
+
+      if (filters.discountValueMax !== undefined)
+        where.discount_value.lte = filters.discountValueMax;
     }
-    if (filters.stockQuantityMin || filters.stockQuantityMax) {
+
+    if (
+      filters.stockQuantityMin !== undefined ||
+      filters.stockQuantityMax !== undefined
+    ) {
       where.stock_quantity = {};
-      if (filters.stockQuantityMin) {
-        where.stock_quantity = { gte: filters.stockQuantityMin };
-      }
-      if (filters.stockQuantityMax) {
-        where.stock_quantity = { lte: filters.stockQuantityMax };
-      }
+
+      if (filters.stockQuantityMin !== undefined)
+        where.stock_quantity.gte = filters.stockQuantityMin;
+
+      if (filters.stockQuantityMax !== undefined)
+        where.stock_quantity.lte = filters.stockQuantityMax;
     }
+
     if (filters.isAvailable !== undefined) {
       where.is_available = filters.isAvailable;
     }
+
     if (filters.isDeleted !== undefined) {
       where.is_deleted = filters.isDeleted;
     }
 
     return where;
   }
+
 }
