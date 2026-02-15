@@ -43,7 +43,6 @@ import { DeleteImagesDto } from './dto/delete-images.dto';
 @ApiTags('Image')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'), RoleGuard)
-@Roles(Role.ADMIN)
 @UseInterceptors(ImageUrlTransformInterceptor)
 @Controller('image')
 export class ImageController {
@@ -103,6 +102,7 @@ export class ImageController {
 
 
   // ======== GET IMAGE BY ID =========
+  @Roles(Role.ADMIN)
   @Get(':id')
   @ApiOperation({
     summary: 'Get image metadata by ID',
@@ -138,6 +138,9 @@ export class ImageController {
     return await this.imageService.getImageById(id);
   }
 
+
+  // ======== GET IMAGE BY SESSION ID =========
+  @Roles(Role.ADMIN)
   @Get('session/:sessionId')
   @ApiOperation({
     summary: 'Get all images by session ID',
@@ -177,6 +180,7 @@ export class ImageController {
 
 
   // ======== UPLOAD IMAGES =========
+  @Roles(Role.ADMIN)
   @Post('upload')
   @ApiOperation({
     summary: 'Upload an image',
@@ -268,6 +272,7 @@ export class ImageController {
 
 
   // ======== CONFIRM SESSION =========
+  @Roles(Role.ADMIN)
   @Post('session/:sessionId/confirm')
   @ApiOperation({
     summary: 'Confirm all images in a session',
@@ -307,6 +312,7 @@ export class ImageController {
 
 
   // ======== CANCEL SESSION =========
+  @Roles(Role.ADMIN)
   @Post('session/:sessionId/cancel')
   @ApiOperation({
     summary: 'Cancel a session',
@@ -328,6 +334,7 @@ export class ImageController {
 
 
   // ======== DELETE IMAGES BY IDS =========
+  @Roles(Role.ADMIN)
   @Post('delete')
   @ApiOperation({
     summary: 'Bulk delete images',

@@ -7,6 +7,8 @@ export class Category {
     public slug: string | null,
     public description: string | null,
     public isActive: boolean,
+    public isDeleted: boolean = false,
+    public deletedAt: Date | null,
     public createdAt: Date | null,
     public updatedAt: Date | null,
   ) {}

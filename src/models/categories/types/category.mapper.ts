@@ -11,6 +11,8 @@ export class CategoryMapper {
       prismaCategory.slug,
       prismaCategory.description,
       prismaCategory.is_active,
+      prismaCategory.is_deleted,
+      prismaCategory.deleted_at,
       prismaCategory.created_at,
       prismaCategory.updated_at,
     );
@@ -32,6 +34,8 @@ export class CategoryMapper {
       slug,
       description: domainCategory.description ?? null,
       is_active: domainCategory.isActive ?? true,
+      is_deleted: domainCategory.isDeleted ?? true,
+      deleted_at: domainCategory.deletedAt ?? new Date(),
       created_at: domainCategory.createdAt ?? new Date(),
       updated_at: domainCategory.updatedAt ?? new Date(),
       ...(domainCategory.id ? { id: domainCategory.id } : {}),

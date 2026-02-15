@@ -37,12 +37,28 @@ export class CategoryPreviewResponseDto {
   isActive: boolean;
 
   @ApiProperty({
+    type: Boolean,
+    description: 'Is category active',
+    example: true,
+  })
+  @Expose()
+  isDeleted: boolean;
+
+  @ApiProperty({
     type: String,
     description: 'Category slug',
     example: 'beverages',
   })
   @Expose()
   slug: string;
+
+  @ApiProperty({
+    type: Date,
+    description: 'Deletion date',
+    example: '2026-01-24T12:34:56.789Z',
+  })
+  @Expose()
+  deletedAt: Date;
 
   @ApiProperty({
     type: Date,
