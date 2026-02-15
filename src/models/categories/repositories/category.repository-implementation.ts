@@ -23,7 +23,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   /**
    * Creates a new category in the database.
@@ -49,27 +49,11 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     }
   }
 
-  /**
-   * Deletes a category by its unique identifier.
-   * @param id - The unique identifier of the category to delete.
-   * @returns A promise that resolves when the category is deleted.
-   * @throws CategoryNotFoundException if the category does not exist.
-   * @throws ForeignKeyViolationException if the category is referenced by another record.
-   */
   async delete(id: string): Promise<void> {
-    try {
-      await this.prismaService.category.delete({ where: { id } });
-    } catch (e) {
-      if (e instanceof PrismaClientKnownRequestError) {
-        if (e.code === 'P2025') {
-          throw new CategoryNotFoundException(id);
-        } else if (e.code === 'P2003') {
-          const fields = e.meta?.field_name as string[];
-          throw new ForeignKeyViolationException(fields);
-        }
-      }
-      throw e;
-    }
+    // Implement soft delete by setting is_deleted to true
+    const category = await this.findById(id);
+    if (!category) throw new CategoryNotFoundException(id);
+    await this.update(id, { isDeleted: true, deletedAt: new Date() });
   }
 
   /**
