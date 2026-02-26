@@ -4,6 +4,7 @@ import {
   PromotionProductRepository,
   PromotionRepository,
 } from '../repositories';
+import { PromotionNotFoundException } from '../exceptions';
 
 @Injectable()
 export class DeletePromotionService {
@@ -11,7 +12,7 @@ export class DeletePromotionService {
     private readonly promotionRepository: PromotionRepository,
     private readonly promotionCategoryRepository: PromotionCategoryRepository,
     private readonly promotionProductRepository: PromotionProductRepository,
-  ) {}
+  ) { }
 
   /**
    * Deletes a promotion by its ID.
@@ -28,16 +29,20 @@ export class DeletePromotionService {
     await this.promotionRepository.delete(id);
   }
 
-  /**
-   * Deletes a promotion category by its ID.
-   *
-   * Directly deletes the promotion category with the specified ID.
-   *
-   * @param {string} id - The unique identifier of the promotion category to delete.
-   * @returns {Promise<void>} Resolves when the operation is complete.
-   */
-  async deletePromotionCategory(id: string): Promise<void> {
-    await this.promotionCategoryRepository.delete(id);
+  async deletePromotionCategoriesByCategoryIds(
+    promotionId: string,
+    categoryIds: string[],
+  ): Promise<void> {
+    const promotion = await this.promotionRepository.findById(promotionId);
+
+    if (!promotion || promotion.isDeleted) {
+      throw new PromotionNotFoundException({ id: promotionId });
+    }
+
+    await this.promotionCategoryRepository.deleteByCategoryIds(
+      promotionId,
+      categoryIds,
+    );
   }
 
   /**

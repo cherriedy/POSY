@@ -69,6 +69,17 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     return prismaCategory ? CategoryMapper.toDomain(prismaCategory) : null;
   }
 
+  async findByIds(ids: string[]): Promise<Category[]> {
+    return this.prismaService.category
+      .findMany({
+        where: {
+          id: { in: ids },
+          is_deleted: false,
+        },
+      })
+      .then((items) => items.map(CategoryMapper.toDomain));
+  }
+
   /**
    * Updates an existing category by its unique identifier.
    * @param id - The unique identifier of the category to update.

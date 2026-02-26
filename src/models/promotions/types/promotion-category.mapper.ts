@@ -1,34 +1,46 @@
-import { PromotionCategory as PrismaPromotionCategory } from '@prisma/client';
 import { PromotionCategory as DomainPromotionCategory } from './promotion-category.class';
 import { PromotionMapper } from './promotion.mapper';
 import { CategoryMapper } from '../../categories/types';
 
+import { Prisma } from '@prisma/client';
+
+type PrismaPromotionCategory =
+  Prisma.PromotionCategoryGetPayload<{}>;
+
+type PrismaPromotionCategoryWithRelations =
+  Prisma.PromotionCategoryGetPayload<{
+    include: {
+      promotion: true;
+      category: true;
+    };
+  }>;
+
 export class PromotionCategoryMapper {
   static toDomain(
-    this: void,
-    prisma: PrismaPromotionCategory,
+    prisma:
+      | PrismaPromotionCategory
+      | PrismaPromotionCategoryWithRelations,
   ): DomainPromotionCategory {
+    const promotion =
+      'promotion' in prisma && prisma.promotion
+        ? PromotionMapper.toDomain(prisma.promotion)
+        : undefined;
+
+    const category =
+      'category' in prisma && prisma.category
+        ? CategoryMapper.toDomain(prisma.category)
+        : undefined;
+
     return new DomainPromotionCategory(
-      prisma.id,
       prisma.promotion_id,
       prisma.category_id,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      (prisma as any).promotion
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
-          PromotionMapper.toDomain((prisma as any).promotion)
-        : undefined,
-
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      (prisma as any).category
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
-          CategoryMapper.toDomain((prisma as any).category)
-        : undefined,
+      promotion,
+      category,
     );
   }
 
-  static toPrisma(domain: DomainPromotionCategory): PrismaPromotionCategory {
-    return <PrismaPromotionCategory>{
-      ...(domain.id ? { id: domain.id } : {}),
+  static toPrisma(domain: DomainPromotionCategory) {
+    return {
       promotion_id: domain.promotionId,
       category_id: domain.categoryId,
     };

@@ -6,3 +6,9 @@ export class CategoryNotFoundException extends NotFoundException {
     this.name = 'CategoryNotFoundException';
   }
 }
+
+export class CategoriesNotFoundException extends NotFoundException {
+  constructor() {
+    super('One or more categories not found or deleted.');
+  }
+}

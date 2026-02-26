@@ -1,4 +1,4 @@
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsOptional,
   IsBoolean,
@@ -16,177 +16,171 @@ import {
 } from '../interfaces';
 import { SortDirection } from '../../../common/interfaces';
 
+/* -------------------------------------------------------------------------- */
+/*                           BOOLEAN TRANSFORM HELPER                         */
+/* -------------------------------------------------------------------------- */
+
+const toBoolean = (value: any): boolean | undefined => {
+  if (value === true || value === 'true') return true;
+  if (value === false || value === 'false') return false;
+  return undefined;
+};
+
 export class ProductQueryParamsDto {
+  /* -------------------------------------------------------------------------- */
+  /*                                   SEARCH                                   */
+  /* -------------------------------------------------------------------------- */
+
   @ApiPropertyOptional({ type: String, description: 'Search query' })
   @IsOptional()
   @IsString()
   query?: string;
 
+  /* -------------------------------------------------------------------------- */
+  /*                                   PRICE                                    */
+  /* -------------------------------------------------------------------------- */
+
   @ApiPropertyOptional({ type: Number, description: 'Minimum price' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
-  @Transform(({ value }) => parseFloat(value as string))
   priceMin?: number;
 
   @ApiPropertyOptional({ type: Number, description: 'Maximum price' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
-  @Transform(({ value }) => parseFloat(value as string))
   priceMax?: number;
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  CATEGORY                                  */
+  /* -------------------------------------------------------------------------- */
 
   @ApiPropertyOptional({
     type: [String],
-    description: 'Category IDs',
-    example: 'categoryId1,categoryId2,categoryId3',
+    description: 'Category IDs (comma separated)',
+    example: 'category1,category2',
   })
   @IsOptional()
   @IsArray()
   @Transform(({ value }) =>
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     typeof value === 'string' ? value.split(',') : value,
   )
   @IsString({ each: true })
   categoryId?: string[];
 
-  @ApiPropertyOptional({
-    type: String,
-    enum: ProductDiscountType,
-    description: 'Discount type',
-  })
+  /* -------------------------------------------------------------------------- */
+  /*                                  DISCOUNT                                  */
+  /* -------------------------------------------------------------------------- */
+
+  @ApiPropertyOptional({ enum: ProductDiscountType, description: 'Discount type' })
   @IsOptional()
   @IsEnum(ProductDiscountType)
   discountType?: ProductDiscountType;
 
-  @ApiPropertyOptional({
-    type: Number,
-    description: 'Minimum discount value',
-  })
+  @ApiPropertyOptional({ type: Number, description: 'Minimum discount value' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
-  @Transform(({ value }) => parseFloat(value as string))
   discountValueMin?: number;
 
-  @ApiPropertyOptional({
-    type: Number,
-    description: 'Maximum discount value',
-  })
+  @ApiPropertyOptional({ type: Number, description: 'Maximum discount value' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
-  @Transform(({ value }) => parseFloat(value as string))
   discountValueMax?: number;
 
-  @ApiPropertyOptional({
-    type: Number,
-    description: 'Minimum stock quantity',
-  })
+  /* -------------------------------------------------------------------------- */
+  /*                                   STOCK                                    */
+  /* -------------------------------------------------------------------------- */
+
+  @ApiPropertyOptional({ type: Number, description: 'Minimum stock quantity' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
-  @Transform(({ value }) => parseInt(value as string))
   stockQuantityMin?: number;
 
-  @ApiPropertyOptional({
-    type: Number,
-    description: 'Maximum stock quantity',
-  })
+  @ApiPropertyOptional({ type: Number, description: 'Maximum stock quantity' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
-  @Transform(({ value }) => parseInt(value as string))
   stockQuantityMax?: number;
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  BOOLEAN                                   */
+  /* -------------------------------------------------------------------------- */
 
   @ApiPropertyOptional({ type: Boolean, description: 'Is available' })
   @IsOptional()
+  @Transform(({ value }) => toBoolean(value))
   @IsBoolean()
-  @Transform(({ value }) => {
-    if (value === 'true' || value === true) return true;
-    if (value === 'false' || value === false) return false;
-    return undefined;
-  })
-
   isAvailable?: boolean;
 
   @ApiPropertyOptional({ type: Boolean, description: 'Is deleted' })
   @IsOptional()
+  @Transform(({ value }) => toBoolean(value))
   @IsBoolean()
-  @Transform(({ value }) => {
-    if (value === 'true' || value === true) return true;
-    if (value === 'false' || value === false) return false;
-
-    console.log('DTO isDeleted raw:', value);
-
-    return undefined;
-  })
-
   isDeleted?: boolean;
+
+  /* -------------------------------------------------------------------------- */
+  /*                                 PAGINATION                                 */
+  /* -------------------------------------------------------------------------- */
 
   @ApiPropertyOptional({ type: Number, description: 'Page number' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
-  @Transform(({ value }) => parseInt(value as string))
   page?: number;
 
   @ApiPropertyOptional({ type: Number, description: 'Page size' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
-  @Transform(({ value }) => parseInt(value as string))
   pageSize?: number;
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  SORTING                                   */
+  /* -------------------------------------------------------------------------- */
 
   @ApiPropertyOptional({
     type: String,
-    description: `Order by fields in format: field:direction,field:direction. 
-    Available fields: price, name, stockQuantity, createdAt, updatedAt`,
+    description:
+      'Order by fields in format: field:direction,field:direction',
     example: 'price:asc,stockQuantity:desc',
   })
   @IsOptional()
   @IsString()
   orderBy?: string;
 
-  toQueryParams(): ProductQueryParams {
-    const {
-      page,
-      pageSize,
-      query,
-      priceMin,
-      priceMax,
-      categoryId,
-      discountType,
-      discountValueMin,
-      discountValueMax,
-      stockQuantityMin,
-      stockQuantityMax,
-      isAvailable,
-      isDeleted,
-      orderBy,
-    } = this;
+  /* -------------------------------------------------------------------------- */
+  /*                               MAPPER METHOD                                */
+  /* -------------------------------------------------------------------------- */
 
-    // Parse orderBy string into ProductOrderBy array
+  toQueryParams(): ProductQueryParams {
+    const { page, pageSize, orderBy, ...filter } = this;
+
     let parsedOrderBy: ProductOrderBy | undefined;
+
     if (orderBy) {
-      parsedOrderBy = orderBy.split(',').map((item) => {
-        const [field, direction] = item.split(':');
-        return {
-          field: field as ProductSortField,
-          direction: direction as SortDirection,
-        };
-      });
+      parsedOrderBy = orderBy
+        .split(',')
+        .map((item) => {
+          const [field, direction] = item.split(':');
+          if (!field || !direction) return undefined;
+
+          return {
+            field: field as ProductSortField,
+            direction: direction as SortDirection,
+          };
+        })
+        .filter(Boolean) as ProductOrderBy;
     }
 
     return {
       page,
       pageSize,
       orderBy: parsedOrderBy,
-      filter: {
-        query,
-        priceMin,
-        priceMax,
-        categoryId,
-        discountType,
-        discountValueMin,
-        discountValueMax,
-        stockQuantityMin,
-        stockQuantityMax,
-        isAvailable,
-        isDeleted,
-      },
+      filter,
     };
   }
 }

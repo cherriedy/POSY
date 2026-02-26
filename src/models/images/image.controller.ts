@@ -24,7 +24,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ImageService } from './image.service';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import e from 'express';
 import path from 'path';
@@ -44,7 +44,7 @@ import { DeleteImagesDto } from './dto/delete-images.dto';
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'), RoleGuard)
 @UseInterceptors(ImageUrlTransformInterceptor)
-@Controller('image')
+@Controller('images')
 export class ImageController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: import('winston').Logger;

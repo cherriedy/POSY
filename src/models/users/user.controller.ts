@@ -55,7 +55,7 @@ import { createPageResponseSchema } from '../../common/dto';
 
 @ApiTags('User')
 @ApiBearerAuth()
-@Controller('user')
+@Controller('users')
 export class UserController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: import('winston').Logger;

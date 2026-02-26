@@ -50,7 +50,7 @@ import { createPageResponseSchema } from '../../common/dto';
 
 @ApiTags('Category')
 @ApiBearerAuth()
-@Controller('category')
+@Controller('categories')
 export class CategoryController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: import('winston').Logger;
