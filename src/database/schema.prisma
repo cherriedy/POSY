@@ -503,7 +503,6 @@ model PromotionProduct {
 }
 
 model PromotionCategory {
-  id           String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   promotion_id String @db.Uuid
   category_id  String @db.Uuid
 
@@ -511,7 +510,7 @@ model PromotionCategory {
   promotion Promotion @relation(fields: [promotion_id], references: [id], onDelete: Cascade)
   category  Category  @relation(fields: [category_id], references: [id], onDelete: Cascade)
 
-  @@unique([promotion_id, category_id])
+  @@id([promotion_id, category_id])
   @@index([promotion_id])
   @@index([category_id])
   @@map("promotion_categories")

@@ -1,4 +1,6 @@
-export class PromotionNotFoundException extends Error {
+import { NotFoundException } from "@nestjs/common";
+
+export class PromotionNotFoundException extends NotFoundException {
   constructor(details?: { id?: string; code?: string }) {
     const placeholder = details && (details.id || details.code) ? 'with ' : '';
     let message = `Promotion ${placeholder}`;

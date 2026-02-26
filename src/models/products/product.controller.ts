@@ -51,7 +51,7 @@ import { JwtPayload } from '../../authentication/interfaces';
 
 @ApiTags('Product')
 @ApiBearerAuth()
-@Controller('product')
+@Controller('products')
 export class ProductController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: import('winston').Logger;

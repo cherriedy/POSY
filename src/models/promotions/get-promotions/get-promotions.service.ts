@@ -23,7 +23,7 @@ export class GetPromotionsService {
     private readonly promotionCategoryRepository: PromotionCategoryRepository,
     private readonly promotionProductRepository: PromotionProductRepository,
     private readonly productRepository: ProductRepository,
-  ) {}
+  ) { }
 
   /**
    * Retrieves a paginated list of promotions based on the provided query parameters.
@@ -68,19 +68,16 @@ export class GetPromotionsService {
     return await this.promotionCategoryRepository.getAll();
   }
 
-  /**
-   * Retrieves a promotion category by its unique identifier.
-   * Throws PromotionCategoryNotFoundException if the category does not exist.
-   * @param {string} id - The unique identifier of the promotion category.
-   * @returns {Promise<PromotionCategory>} A promise that resolves to the promotion category object.
-   * @throws {PromotionCategoryNotFoundException} If the category is not found.
-   */
-  async getPromotionCategoryById(
-    id: string,
-  ): Promise<PromotionCategory | null> {
-    const result = await this.promotionCategoryRepository.findById(id);
-    if (!result) throw new PromotionCategoryNotFoundException(id);
-    return result;
+  async getPromotionCategoriesByPromotionId(
+    promotionId: string,
+  ): Promise<PromotionCategory[]> {
+    const promotion = await this.promotionRepository.findById(promotionId);
+
+    if (!promotion || promotion.isDeleted) {
+      throw new PromotionNotFoundException({ id: promotionId });
+    }
+
+    return this.promotionCategoryRepository.findByPromotionId(promotionId);
   }
 
   /**

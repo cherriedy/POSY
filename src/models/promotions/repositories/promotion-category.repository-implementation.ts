@@ -18,73 +18,63 @@ export class PromotionCategoryRepositoryImpl implements PromotionCategoryReposit
   constructor(
     private readonly prismaService: PrismaService,
     private readonly categoryRepository: CategoryRepository,
-  ) {}
+  ) { }
+  async bulkCreate(
+    entities: PromotionCategory[],
+  ): Promise<PromotionCategory[]> {
+    const prismaData = entities.map((e) =>
+      PromotionCategoryMapper.toPrisma(e),
+    );
 
-  /**
-   * Creates a new PromotionCategory entity in the database.
-   * @param entity - The PromotionCategory domain object to create.
-   * @returns The created PromotionCategory domain object.
-   * @throws {DuplicateEntryException} If a PromotionCategory with the same unique field already exists.
-   * @throws {PrismaClientKnownRequestError} For other Prisma errors.
-   */
-  async create(entity: PromotionCategory): Promise<PromotionCategory> {
-    try {
-      const prismaData = PromotionCategoryMapper.toPrisma(entity);
-      return await this.prismaService.promotionCategory
-        .create({
-          data: prismaData,
-        })
-        .then(PromotionCategoryMapper.toDomain);
-    } catch (e) {
-      if (e instanceof PrismaClientKnownRequestError) {
-        if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
-            'PromotionCategory with given unique field already exists.',
-          );
-        }
-      }
-      throw e;
-    }
+    await this.prismaService.promotionCategory.createMany({
+      data: prismaData,
+      skipDuplicates: true,
+    });
+
+    const created = await this.prismaService.promotionCategory.findMany({
+      where: {
+        OR: prismaData.map((d) => ({
+          promotion_id: d.promotion_id,
+          category_id: d.category_id,
+        })),
+      },
+      include: {
+        category: true,
+      },
+    });
+
+    return created.map(PromotionCategoryMapper.toDomain);
   }
 
-  /**
-   * Deletes a PromotionCategory entity by its unique identifier.
-   * @param id - The unique identifier of the PromotionCategory to delete.
-   * @returns Resolves when the entity is deleted.
-   * @throws {PromotionCategoryNotFoundException} If the PromotionCategory with the given id does not exist.
-   * @throws {PrismaClientKnownRequestError} For other Prisma errors.
-   */
-  async delete(id: string): Promise<void> {
-    try {
-      await this.prismaService.promotionCategory.delete({
-        where: { id },
-      });
-    } catch (e) {
-      if (e instanceof PrismaClientKnownRequestError) {
-        if (e.code === 'P2025') {
-          throw new PromotionCategoryNotFoundException(id);
-        }
-      }
-      throw e;
-    }
-  }
-
-  /**
-   * Finds a PromotionCategory entity by its unique identifier.
-   * @param id - The unique identifier of the PromotionCategory.
-   * @returns The PromotionCategory domain object if found, otherwise null.
-   */
-  async findById(id: string): Promise<PromotionCategory | null> {
-    return await this.prismaService.promotionCategory
-      .findUnique({
-        where: { id },
+  async findByPromotionId(
+    promotionId: string,
+  ): Promise<PromotionCategory[]> {
+    return this.prismaService.promotionCategory
+      .findMany({
+        where: {
+          promotion_id: promotionId,
+        },
         include: {
-          promotion: true,
           category: true,
         },
       })
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      ?.then(PromotionCategoryMapper.toDomain as any);
+      .then((items) =>
+        items.map(PromotionCategoryMapper.toDomain),
+      );
+  }
+
+  async deleteByCategoryIds(
+    promotionId: string,
+    categoryIds: string[],
+  ): Promise<number> {
+    const result = await this.prismaService.promotionCategory.deleteMany({
+      where: {
+        promotion_id: promotionId,
+        category_id: { in: categoryIds },
+      },
+    });
+
+    return result.count;
   }
 
   /**
@@ -125,12 +115,12 @@ export class PromotionCategoryRepositoryImpl implements PromotionCategoryReposit
     const whereClause = includeAll
       ? { category_id: categoryId }
       : {
-          category_id: categoryId,
-          promotion: {
-            status: PromotionStatus.ACTIVE,
-            is_deleted: false,
-          },
-        };
+        category_id: categoryId,
+        promotion: {
+          status: PromotionStatus.ACTIVE,
+          is_deleted: false,
+        },
+      };
 
     const items = await this.prismaService.promotionCategory.findMany({
       where: whereClause,

@@ -6,7 +6,7 @@ import {
   PromotionRepository,
 } from '../repositories';
 import { PromotionApplicability, PromotionStatus } from '../enums';
-import { CategoryNotFoundException } from '../../categories/exceptions';
+import { CategoriesNotFoundException, CategoryNotFoundException } from '../../categories/exceptions';
 import { CategoryRepository } from '../../categories/repositories';
 import { PromotionNotFoundException } from '../exceptions';
 import { ProductRepository } from '../../products/repositories';
@@ -21,7 +21,7 @@ export class CreatePromotionService {
     private readonly categoryRepository: CategoryRepository,
     private readonly promotionProductRepository: PromotionProductRepository,
     private readonly productRepository: ProductRepository,
-  ) {}
+  ) { }
 
   /**
    * Creates a new promotion. If the promotion is not quantity-based, clears the minQuantity field.
@@ -47,47 +47,48 @@ export class CreatePromotionService {
    * @throws {PromotionNotFoundException} If the promotion does not exist or is deleted.
    * @throws {PromotionUnusableException} If the promotion is not active or applicability is invalid.
    */
-  async createPromotionCategory(
-    promotionCategory: PromotionCategory,
-  ): Promise<PromotionCategory> {
-    const category = await this.categoryRepository.findById(
-      promotionCategory.categoryId,
-    );
+  async bulkCreatePromotionCategories(
+    promotionId: string,
+    categoryIds: string[],
+  ): Promise<PromotionCategory[]> {
+    // Validate promotion
+    const promotion = await this.promotionRepository.findById(promotionId);
 
-    // Validate that the category exists
-    if (!category) {
-      throw new CategoryNotFoundException(promotionCategory.categoryId);
-    }
-
-    const promotion = await this.promotionRepository.findById(
-      promotionCategory.promotionId,
-    );
-
-    // Validate that the promotion exists
     if (!promotion || promotion.isDeleted) {
-      throw new PromotionNotFoundException({
-        id: promotionCategory.promotionId,
-      });
+      throw new PromotionNotFoundException({ id: promotionId });
     }
-    // Validate that the promotion is ACTIVE
+
     if (promotion.status !== PromotionStatus.ACTIVE) {
       throw new PromotionUnusableException(
-        promotionCategory.promotionId,
+        promotionId,
         'Promotion is not active.',
       );
     }
-    // Validate that the promotion applicability is SPECIFIC_CATEGORIES
+
     if (
       promotion.applicability !== PromotionApplicability.SPECIFIC_CATEGORIES
     ) {
       throw new PromotionUnusableException(
-        promotionCategory.promotionId,
+        promotionId,
         'Promotion applicability does not allow adding categories.',
         { applicability: promotion.applicability },
       );
     }
 
-    return await this.promotionCategoryRepository.create(promotionCategory);
+    // Validate categories exist
+    const categories = await this.categoryRepository.findByIds(categoryIds);
+
+    if (categories.length !== categoryIds.length) {
+      throw new CategoriesNotFoundException();
+    }
+
+    // Create entities
+    const entities: PromotionCategory[] = categoryIds.map((categoryId) => ({
+      promotionId,
+      categoryId,
+    }));
+
+    return this.promotionCategoryRepository.bulkCreate(entities);
   }
 
   /**

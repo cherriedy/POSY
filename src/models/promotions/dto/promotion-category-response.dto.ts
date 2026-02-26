@@ -5,10 +5,6 @@ import { CategoryPreviewResponseDto } from '../../categories/dto';
 
 @Exclude()
 export class PromotionCategoryPreviewResponseDto {
-  @ApiProperty({ type: String, description: 'Promotion category ID' })
-  @Expose()
-  id: string;
-
   @ApiProperty({
     type: () => PromotionPreviewResponseDto,
     description: 'Promotion preview',
