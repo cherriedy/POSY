@@ -2,11 +2,29 @@ import { BaseRepository, PaginationParams } from '../../../common/interfaces';
 import { Promotion, PromotionProduct } from '../types';
 
 export abstract class PromotionProductRepository implements BaseRepository<PromotionProduct> {
-  abstract create(entity: PromotionProduct): Promise<PromotionProduct>;
+  // abstract create(entity: PromotionProduct): Promise<PromotionProduct>;
 
-  abstract delete(id: string): Promise<void>;
+  // abstract delete(id: string): Promise<void>;
 
-  abstract findById(id: string): Promise<PromotionProduct | null>;
+  // abstract findById(id: string): Promise<PromotionProduct | null>;
+
+  abstract bulkCreate(
+    entities: PromotionProduct[],
+  ): Promise<PromotionProduct[]>;
+
+  abstract findByPromotionId(
+    promotionId: string,
+  ): Promise<PromotionProduct[]>;
+
+  abstract findExistingByProduct(
+    promotionId: string,
+    productIds: string[],
+  ): Promise<PromotionProduct[]>;
+
+  abstract deleteByProductIds(
+    promotionId: string,
+    productIds: string[],
+  ): Promise<number>;
 
   abstract getAll(params?: PaginationParams): Promise<PromotionProduct[]>;
 

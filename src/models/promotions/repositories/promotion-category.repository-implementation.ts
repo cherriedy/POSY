@@ -6,18 +6,12 @@ import {
 } from '../types';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions';
-import { PromotionCategoryNotFoundException } from '../exceptions';
 import { PromotionStatus } from '@prisma/client';
-import { CategoryRepository } from '../../categories/repositories';
-import { CategoryNotFoundException } from '../../categories/exceptions';
 
 @Injectable()
 export class PromotionCategoryRepositoryImpl implements PromotionCategoryRepository {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly categoryRepository: CategoryRepository,
   ) { }
   async bulkCreate(
     entities: PromotionCategory[],
@@ -35,86 +29,14 @@ export class PromotionCategoryRepositoryImpl implements PromotionCategoryReposit
         OR: prismaData.map((d) => ({
           promotion_id: d.promotion_id,
           category_id: d.category_id,
-          floor_id: d.floor_id ?? null,
-          zone_id: d.zone_id ?? null,
         })),
       },
       include: {
-        category: true,
-        floor: true,
-        zone: true,
+        category: true
       },
     });
 
     return created.map(PromotionCategoryMapper.toDomain);
-  }
-
-  async bulkUpdateByPromotion(
-    promotionId: string,
-    items: {
-      categoryId: string;
-      floorId?: string;
-      zoneId?: string;
-    }[],
-  ): Promise<PromotionCategory[]> {
-
-    return this.prismaService.$transaction(async prisma => {
-
-      const existing = await prisma.promotionCategory.findMany({
-        where: { promotion_id: promotionId },
-      });
-
-      const existingIds = existing.map(e => e.category_id);
-      const incomingIds = items.map(i => i.categoryId);
-
-      // DELETE removed
-      const toDelete = existingIds.filter(
-        id => !incomingIds.includes(id),
-      );
-
-      if (toDelete.length) {
-        await prisma.promotionCategory.deleteMany({
-          where: {
-            promotion_id: promotionId,
-            category_id: { in: toDelete },
-          },
-        });
-      }
-
-      // UPSERT incoming
-      for (const item of items) {
-        await prisma.promotionCategory.upsert({
-          where: {
-            promotion_id_category_id: {
-              promotion_id: promotionId,
-              category_id: item.categoryId,
-            },
-          },
-          update: {
-            floor_id: item.floorId ?? null,
-            zone_id: item.zoneId ?? null,
-          },
-          create: {
-            promotion_id: promotionId,
-            category_id: item.categoryId,
-            floor_id: item.floorId ?? null,
-            zone_id: item.zoneId ?? null,
-          },
-        });
-      }
-
-      const finalState = await prisma.promotionCategory.findMany({
-        where: { promotion_id: promotionId },
-        include: {
-          promotion: true,
-          category: true,
-          floor: true,
-          zone: true,
-        },
-      });
-
-      return finalState.map(PromotionCategoryMapper.toDomain);
-    });
   }
 
   async findByPromotionId(
@@ -172,7 +94,7 @@ export class PromotionCategoryRepositoryImpl implements PromotionCategoryReposit
           category: true,
         },
       })
-      .then((records) => records.map(PromotionCategoryMapper.toDomain));
+      .then((result) => result.map(PromotionCategoryMapper.toDomain));
   }
 
   /**

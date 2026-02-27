@@ -487,14 +487,10 @@ model PromotionProduct {
   id           String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   promotion_id String  @db.Uuid
   product_id   String  @db.Uuid
-  floor_id     String? @db.Uuid
-  zone_id      String? @db.Uuid
 
   // Relations
   promotion Promotion @relation(fields: [promotion_id], references: [id], onDelete: Cascade)
   product   Product   @relation(fields: [product_id], references: [id], onDelete: Cascade)
-  floor     Floor?    @relation(fields: [floor_id], references: [id])
-  zone      Zone?     @relation(fields: [zone_id], references: [id])
 
   @@unique([promotion_id, product_id])
   @@index([promotion_id])
@@ -506,14 +502,10 @@ model PromotionCategory {
   id           String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   promotion_id String  @db.Uuid
   category_id  String  @db.Uuid
-  floor_id     String? @db.Uuid
-  zone_id      String? @db.Uuid
 
   // Relations
   promotion Promotion @relation(fields: [promotion_id], references: [id], onDelete: Cascade)
   category  Category  @relation(fields: [category_id], references: [id], onDelete: Cascade)
-  floor     Floor?    @relation(fields: [floor_id], references: [id])
-  zone      Zone?     @relation(fields: [zone_id], references: [id])
 
   @@unique([promotion_id, category_id])
   @@index([promotion_id])

@@ -68,7 +68,12 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
     return prismaCategory ? CategoryMapper.toDomain(prismaCategory) : null;
   }
-
+  
+  /**
+   * Finds multiple categories by their unique identifiers.
+   * @param ids - An array of unique identifiers of the categories to find.
+   * @returns A promise that resolves to an array of found categories.
+   */
   async findByIds(ids: string[]): Promise<Category[]> {
     return this.prismaService.category
       .findMany({

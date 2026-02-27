@@ -96,17 +96,36 @@ export class GetPromotionsService {
   }
 
   /**
+   * Retrieves all promotion products associated with a given promotion ID.
+   * Throws PromotionNotFoundException if the promotion does not exist or is deleted.
+   * @param {string} promotionId - The unique identifier of the promotion.
+   * @returns {Promise<PromotionProduct[]>} A promise that resolves to an array of promotion products.
+   * @throws {PromotionNotFoundException} If the promotion is not found or is deleted.
+   */
+  async getPromotionProductsByPromotionId(
+    promotionId: string,
+  ): Promise<PromotionProduct[]> {
+    const promotion = await this.promotionRepository.findById(promotionId);
+
+    if (!promotion || promotion.isDeleted) {
+      throw new PromotionNotFoundException({ id: promotionId });
+    }
+
+    return this.promotionProductRepository.findByPromotionId(promotionId);
+  }
+
+  /**
    * Retrieves a promotion product by its unique identifier.
    * Throws PromotionProductNotFoundException if the product does not exist.
    * @param {string} id - The unique identifier of the promotion product.
    * @returns {Promise<PromotionProduct>} A promise that resolves to the promotion product object.
    * @throws {PromotionProductNotFoundException} If the product is not found.
    */
-  async getPromotionProductById(id: string): Promise<PromotionProduct | null> {
-    const result = await this.promotionProductRepository.findById(id);
-    if (!result) throw new PromotionProductNotFoundException(id);
-    return result;
-  }
+  // async getPromotionProductById(id: string): Promise<PromotionProduct | null> {
+  //   const result = await this.promotionProductRepository.findById(id);
+  //   if (!result) throw new PromotionProductNotFoundException(id);
+  //   return result;
+  // }
 
   /**
    * Retrieves all promotions associated with a given product ID.
