@@ -18,6 +18,13 @@ export abstract class ZoneRepository implements BaseRepository<Zone> {
   abstract findById(id: string): Promise<Zone | null>;
 
   /**
+   * Finds multiple zones by their unique identifiers.
+   * @param ids - An array of unique identifiers of the zones to find.
+   * @returns A promise that resolves to an array of found zones.
+   */
+  abstract findByIds(ids: string[]): Promise<Zone[]>;
+
+  /**
    * Deletes a zone by its unique identifier.
    * @param id - The unique identifier of the zone to delete.
    * @returns A promise that resolves when the zone is deleted.

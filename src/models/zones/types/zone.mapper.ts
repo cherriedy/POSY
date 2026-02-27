@@ -10,6 +10,7 @@ export class ZoneMapper {
       prismaZone.name,
       prismaZone.description,
       prismaZone.is_active,
+      prismaZone.floor_id,
       prismaZone.created_at,
       prismaZone.updated_at,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -18,6 +19,12 @@ export class ZoneMapper {
           (prismaZone as any).tables.map((table: any) =>
             TableMapper.toDomain(table),
           )
+        : null,
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      (prismaZone as any).floor
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+          (prismaZone as any).floor
         : null,
     );
   }
@@ -33,6 +40,7 @@ export class ZoneMapper {
       is_active: domainZone.isActive ?? true,
       created_at: domainZone.createdAt ?? new Date(),
       updated_at: domainZone.updatedAt ?? new Date(),
+      floor_id: domainZone.floorId,
       ...(domainZone.id ? { id: domainZone.id } : {}),
     };
   }

@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -76,15 +77,24 @@ export class CategoryController {
     description: 'Category details',
     type: CategoryDetailedResponseDto,
   })
-  @ApiResponse({ status: 400, description: 'Category not found' })
+  @ApiResponse({ status: 404, description: 'Category not found' })
   async getCategoryById(
     @Param('id') id: string,
   ): Promise<CategoryDetailedResponseDto> {
-    const category = await this.getCategoriesService.getCategoryById(id);
-
-    return plainToInstance(CategoryDetailedResponseDto, category, {
-      excludeExtraneousValues: true,
-    });
+    try {
+      const category = await this.getCategoriesService.getCategoryById(id);
+      return plainToInstance(CategoryDetailedResponseDto, category, {
+        excludeExtraneousValues: true,
+      });
+    } catch (e) {
+      if (e instanceof CategoryNotFoundException) {
+        throw new NotFoundException(e.message);
+      }
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
   }
 
   @Get()

@@ -19,7 +19,7 @@ export class ZoneRepositoryImpl implements ZoneRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   /**
    * Creates a new zone in the database.
@@ -83,6 +83,21 @@ export class ZoneRepositoryImpl implements ZoneRepository {
   }
 
   /**
+   * Finds multiple zones by their unique identifiers.
+   * @param ids - An array of unique identifiers of the zones to find.
+   * @returns A promise that resolves to an array of found zones.
+   */
+  async findByIds(ids: string[]): Promise<Zone[]> {
+    return this.prismaService.zone
+      .findMany({
+        where: {
+          id: { in: ids }
+        },
+      })
+      .then((items) => items.map(ZoneMapper.toDomain));
+  }
+
+  /**
    * Updates an existing zone by its unique identifier.
    * @param id - The unique identifier of the zone to update.
    * @param entity - Partial data to update the zone with.
@@ -91,9 +106,6 @@ export class ZoneRepositoryImpl implements ZoneRepository {
    * @throws DuplicateEntryException if a zone with a unique field already exists.
    */
   async update(id: string, entity: Partial<Zone>): Promise<Zone> {
-    const zone = await this.findById(id);
-    if (!zone) throw new ZoneNotFoundException(id);
-
     const dataSnakeCase = Object.entries(entity).reduce(
       (acc, [key, value]) => {
         const snakeKey = camelCaseToSnakeCase(key);

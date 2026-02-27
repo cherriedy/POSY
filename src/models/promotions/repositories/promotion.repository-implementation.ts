@@ -71,24 +71,24 @@ export class PromotionRepositoryImpl implements PromotionRepository {
    * @returns The promotion domain object if found, otherwise null.
    */
   async findByCode(code: string): Promise<Promotion | null> {
-    return await this.prismaService.promotion
-      .findUnique({
-        where: { code },
-      })
-      ?.then(PromotionMapper.toDomain);
-  }
+    const record = await this.prismaService.promotion.findUnique({
+      where: { code },
+    });
 
+    return record ? PromotionMapper.toDomain(record) : null;
+  }
+  
   /**
-   * Finds a promotion by its unique ID.
+   * Finds a promotion by its unique identifier.
    * @param id - The unique ID of the promotion.
    * @returns The promotion domain object if found, otherwise null.
    */
   async findById(id: string): Promise<Promotion | null> {
-    return await this.prismaService.promotion
-      .findUnique({
-        where: { id },
-      })
-      ?.then(PromotionMapper.toDomain);
+    const record = await this.prismaService.promotion.findUnique({
+      where: { id },
+    });
+
+    return record ? PromotionMapper.toDomain(record) : null;
   }
 
   /**

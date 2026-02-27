@@ -34,20 +34,4 @@ export class FloorPreviewResponseDto {
   })
   @Expose()
   isActive: boolean;
-
-  @ApiProperty({
-    type: Date,
-    description: 'Creation date',
-    example: '2026-02-13T12:34:56.789Z',
-  })
-  @Expose()
-  createdAt: Date;
-
-  @ApiProperty({
-    type: Date,
-    description: 'Last update date',
-    example: '2026-02-13T12:34:56.789Z',
-  })
-  @Expose()
-  updatedAt: Date;
 }
