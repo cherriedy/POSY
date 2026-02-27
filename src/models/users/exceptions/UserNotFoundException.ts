@@ -1,11 +1,9 @@
-import { NotFoundException } from '@nestjs/common';
-
 /**
  * Exception thrown when a user with a specified ID is not found. This exception
  * can be used in user-related services and repositories to indicate that a
  * requested user does not exist in the database.
  */
-export class UserNotFoundException extends NotFoundException {
+export class UserNotFoundException extends Error {
   constructor(details?: { email?: string; id?: string }) {
     const placeholder = details && (details.id || details.email) ? 'with ' : '';
     let message = `User ${placeholder}`;

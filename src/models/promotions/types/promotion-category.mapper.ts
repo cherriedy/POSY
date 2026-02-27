@@ -1,48 +1,48 @@
+import { PromotionCategory as PrismaPromotionCategory } from '@prisma/client';
 import { PromotionCategory as DomainPromotionCategory } from './promotion-category.class';
 import { PromotionMapper } from './promotion.mapper';
 import { CategoryMapper } from '../../categories/types';
-
-import { Prisma } from '@prisma/client';
-
-type PrismaPromotionCategory =
-  Prisma.PromotionCategoryGetPayload<{}>;
-
-type PrismaPromotionCategoryWithRelations =
-  Prisma.PromotionCategoryGetPayload<{
-    include: {
-      promotion: true;
-      category: true;
-    };
-  }>;
+import { FloorMapper } from 'src/models/floors/types';
+import { ZoneMapper } from 'src/models/zones/types';
 
 export class PromotionCategoryMapper {
   static toDomain(
-    prisma:
-      | PrismaPromotionCategory
-      | PrismaPromotionCategoryWithRelations,
+    this: void,
+    prisma: PrismaPromotionCategory,
   ): DomainPromotionCategory {
-    const promotion =
-      'promotion' in prisma && prisma.promotion
-        ? PromotionMapper.toDomain(prisma.promotion)
-        : undefined;
-
-    const category =
-      'category' in prisma && prisma.category
-        ? CategoryMapper.toDomain(prisma.category)
-        : undefined;
-
     return new DomainPromotionCategory(
+      prisma.id,
       prisma.promotion_id,
       prisma.category_id,
-      promotion,
-      category,
+
+      (prisma as any).floor_id ?? null,
+      (prisma as any).zone_id ?? null,
+
+      (prisma as any).promotion
+        ? PromotionMapper.toDomain((prisma as any).promotion)
+        : undefined,
+
+      (prisma as any).category
+        ? CategoryMapper.toDomain((prisma as any).category)
+        : undefined,
+
+      (prisma as any).floor
+        ? FloorMapper.toDomain((prisma as any).floor)
+        : undefined,
+
+      (prisma as any).zone
+        ? ZoneMapper.toDomain((prisma as any).zone)
+        : undefined,
     );
   }
 
-  static toPrisma(domain: DomainPromotionCategory) {
-    return {
+  static toPrisma(domain: DomainPromotionCategory): PrismaPromotionCategory {
+    return <PrismaPromotionCategory>{
+      ...(domain.id ? { id: domain.id } : {}),
       promotion_id: domain.promotionId,
       category_id: domain.categoryId,
+      floor_id: domain.floorId ?? null,
+      zone_id: domain.zoneId ?? null,
     };
   }
 }

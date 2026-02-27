@@ -5,6 +5,9 @@ import {
   PromotionRepository,
 } from '../repositories';
 import { PromotionNotFoundException } from '../exceptions';
+import { CategoryRepository } from 'src/models/categories/repositories';
+import { CategoriesNotFoundException } from 'src/models/categories/exceptions';
+import { RelatedRecordNotFoundException } from 'src/common/exceptions';
 
 @Injectable()
 export class DeletePromotionService {
@@ -12,6 +15,7 @@ export class DeletePromotionService {
     private readonly promotionRepository: PromotionRepository,
     private readonly promotionCategoryRepository: PromotionCategoryRepository,
     private readonly promotionProductRepository: PromotionProductRepository,
+    private readonly categoryRepository: CategoryRepository,
   ) { }
 
   /**
@@ -33,10 +37,51 @@ export class DeletePromotionService {
     promotionId: string,
     categoryIds: string[],
   ): Promise<void> {
+    // Validate promotion
     const promotion = await this.promotionRepository.findById(promotionId);
 
     if (!promotion || promotion.isDeleted) {
       throw new PromotionNotFoundException({ id: promotionId });
+    }
+
+    // Validate categories
+    const uniqueCategoryIds = [...new Set(categoryIds)];
+
+    const categories =
+      await this.categoryRepository.findByIds(uniqueCategoryIds);
+
+    if (categories.length !== uniqueCategoryIds.length) {
+      throw new CategoriesNotFoundException({
+        missingIds: uniqueCategoryIds.filter(
+          id => !categories.some(c => c.id === id),
+        ),
+      });
+    }
+
+    // Validate that the categories are linked to the promotion
+    const existing =
+      await this.promotionCategoryRepository.findExistingByCategory(
+        promotionId,
+        uniqueCategoryIds,
+      );
+
+    if (!existing.length) {
+      throw new RelatedRecordNotFoundException(
+        'None of the provided categories belong to this promotion.',
+      );
+    }
+
+    if (existing.length !== uniqueCategoryIds.length) {
+      const existingIds = existing.map(e => e.categoryId);
+
+      const notLinked = uniqueCategoryIds.filter(
+        id => !existingIds.includes(id),
+      );
+
+      throw new RelatedRecordNotFoundException(
+        'Some categories are not attached to this promotion.',
+        notLinked,
+      );
     }
 
     await this.promotionCategoryRepository.deleteByCategoryIds(

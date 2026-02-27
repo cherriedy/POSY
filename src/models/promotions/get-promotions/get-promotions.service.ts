@@ -68,6 +68,13 @@ export class GetPromotionsService {
     return await this.promotionCategoryRepository.getAll();
   }
 
+  /**
+   * Retrieves all promotion categories associated with a given promotion ID.
+   * Throws PromotionNotFoundException if the promotion does not exist or is deleted.
+   * @param {string} promotionId - The unique identifier of the promotion.
+   * @returns {Promise<PromotionCategory[]>} A promise that resolves to an array of promotion categories.
+   * @throws {PromotionNotFoundException} If the promotion is not found or is deleted.
+   */
   async getPromotionCategoriesByPromotionId(
     promotionId: string,
   ): Promise<PromotionCategory[]> {

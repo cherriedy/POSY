@@ -22,6 +22,9 @@ import { ProductModule } from './models/products/product.module';
 import { MeilisearchConfigModule } from './config/meilisearch/config.module';
 import { MeilisearchModule } from './providers/meilisearch/meilisearch.module';
 import { ImageModule } from './models/images/image.module';
+import { F } from '@faker-js/faker/dist/airline-CWrCIUHH';
+import { FloorModule } from './models/floors/floor.module';
+import { ZoneModule } from './models/zones/zone.module';
 
 @Module({
   imports: [
@@ -45,6 +48,8 @@ import { ImageModule } from './models/images/image.module';
     MeilisearchConfigModule,
     MeilisearchModule,
     ImageModule,
+    FloorModule,
+    ZoneModule,
   ],
   providers: [
     // {

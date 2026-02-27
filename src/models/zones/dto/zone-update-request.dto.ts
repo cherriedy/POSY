@@ -1,4 +1,4 @@
-import { IsBoolean, IsOptional } from 'class-validator';
+import { IsBoolean, IsOptional, IsUUID } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsValidZoneDescription, IsValidZoneName } from '../decorators';
 
@@ -26,4 +26,12 @@ export class ZoneUpdateRequestDto {
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'Unique identifier of the floor this zone belongs to',
+    example: 'floor-uuid',
+  })
+  @IsOptional()
+  @IsUUID()
+  floorId?: string;
 }

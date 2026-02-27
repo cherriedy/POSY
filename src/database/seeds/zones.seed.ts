@@ -1,6 +1,14 @@
 import { PrismaClient } from '@prisma/client';
 
 export async function seedZones(prisma: PrismaClient) {
+  const groundFloor = await prisma.floor.findUnique({
+    where: { name: 'Ground Floor' },
+  });
+
+  if (!groundFloor) {
+    throw new Error('Ground Floor not found. Seed floors first.');
+  }
+
   const zones = [
     {
       name: 'Main Hall',
@@ -59,7 +67,12 @@ export async function seedZones(prisma: PrismaClient) {
       where: { name: zone.name },
     });
     if (!exists) {
-      await prisma.zone.create({ data: zone });
+      await prisma.zone.create({ data: {
+        ...zone,
+        floor: {
+          connect: { id: groundFloor.id }
+        },
+      }, });
     }
   }
 }

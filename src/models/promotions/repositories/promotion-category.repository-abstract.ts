@@ -17,6 +17,20 @@ export abstract class PromotionCategoryRepository implements BaseRepository<Prom
     categoryIds: string[],
   ): Promise<number>;
 
+  abstract findExistingByCategory(
+    promotionId: string,
+    categoryIds: string[],
+  ): Promise<PromotionCategory[]>;
+
+  abstract bulkUpdateByPromotion(
+    promotionId: string,
+    items: {
+      categoryId: string;
+      floorId?: string;
+      zoneId?: string;
+    }[],
+  ): Promise<PromotionCategory[]>;
+
   abstract getPromotionsByCategoryId(
     categoryId: string,
     includeAll?: boolean,

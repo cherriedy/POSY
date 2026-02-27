@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -28,7 +29,7 @@ import {
 } from './dto';
 import { Promotion, PromotionCategory, PromotionProduct } from './types';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { DuplicateEntryException } from '../../common/exceptions';
+import { DuplicateEntryException, RelatedRecordNotFoundException } from '../../common/exceptions';
 import { plainToInstance } from 'class-transformer';
 import { UpdatePromotionService } from './update-promotion/update-promotion.service';
 import {
@@ -57,6 +58,9 @@ import { ProductNotFoundException } from '../products/exceptions';
 import { createPageResponseSchema } from '../../common/dto';
 import { BulkDeletePromotionCategoryDto } from './dto/promotion-category-delete-request.dto';
 import { BulkCreatePromotionCategoryDto } from './dto/promotion-category-create.dto';
+import { ZonesNotFoundException } from '../zones/exceptions';
+import { el } from '@faker-js/faker/.';
+import { FloorsNotFoundException } from '../floors/exceptions';
 
 @ApiTags('Promotion')
 @ApiBearerAuth()
@@ -136,7 +140,7 @@ export class PromotionController {
       );
     } catch (e) {
       if (e instanceof PromotionNotFoundException) {
-        throw new BadRequestException({ message: e.message });
+        throw new NotFoundException({ message: e.message });
       }
 
       this.logger.error(e);
@@ -167,7 +171,7 @@ export class PromotionController {
       const result =
         await this.createPromotionService.bulkCreatePromotionCategories(
           promotionId,
-          dto.categoryIds,
+          dto.items,
         );
 
       return plainToInstance(
@@ -181,9 +185,19 @@ export class PromotionController {
     } catch (e) {
       if (
         e instanceof PromotionNotFoundException ||
+        e instanceof CategoriesNotFoundException ||
+        e instanceof ZonesNotFoundException ||
+        e instanceof FloorsNotFoundException ||
+        e instanceof RelatedRecordNotFoundException
+      ) {
+        const response: any = { message: e.message };
+        if ((e as any).meta) {
+          response.meta = (e as any).meta;
+        }
+        throw new NotFoundException(response);
+      } else if (
         e instanceof DuplicateEntryException ||
-        e instanceof PromotionUnusableException ||
-        e instanceof CategoriesNotFoundException
+        e instanceof PromotionUnusableException
       ) {
         const response: any = { message: e.message };
         if ((e as any).meta) {
@@ -199,32 +213,60 @@ export class PromotionController {
     }
   }
 
-  @Post(':id/categories/delete')
+  @Put(':id/categories')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
   @ApiOperation({
-    summary: 'Bulk delete categories from a promotion',
+    summary: 'Update categories of a promotion',
   })
   @ApiParam({ name: 'id', type: String })
-  @ApiBody({ type: BulkDeletePromotionCategoryDto })
+  @ApiBody({ type: BulkCreatePromotionCategoryDto })
   @ApiResponse({
     status: 200,
-    description: 'Bulk delete success',
+    description: 'Promotion categories updated',
+    type: [PromotionCategoryPreviewResponseDto],
   })
-  async bulkDeletePromotionCategories(
+  async updatePromotionCategories(
     @Param('id') promotionId: string,
-    @Body() dto: BulkDeletePromotionCategoryDto,
+    @Body() dto: BulkCreatePromotionCategoryDto,
   ) {
     try {
-      await this.deletePromotionService.deletePromotionCategoriesByCategoryIds(
-        promotionId,
-        dto.categoryIds,
-      );
+      const result =
+        await this.updatePromotionService.bulkUpdatePromotionCategories(
+          promotionId,
+          dto.items,
+        );
 
-      return { message: 'Bulk delete success' };
+      return plainToInstance(
+        PromotionCategoryPreviewResponseDto,
+        result,
+        {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        },
+      );
     } catch (e) {
-      if (e instanceof PromotionNotFoundException) {
-        throw new BadRequestException({ message: e.message });
+      if (
+        e instanceof PromotionNotFoundException ||
+        e instanceof CategoriesNotFoundException ||
+        e instanceof ZonesNotFoundException ||
+        e instanceof FloorsNotFoundException ||
+        e instanceof RelatedRecordNotFoundException
+      ) {
+        const response: any = { message: e.message };
+        if ((e as any).meta) {
+          response.meta = (e as any).meta;
+        }
+        throw new NotFoundException(response);
+      } else if (
+        e instanceof DuplicateEntryException ||
+        e instanceof PromotionUnusableException
+      ) {
+        const response: any = { message: e.message };
+        if ((e as any).meta) {
+          response.meta = (e as any).meta;
+        }
+        throw new BadRequestException(response);
       }
 
       this.logger.error(e);
@@ -234,7 +276,46 @@ export class PromotionController {
     }
   }
 
-  @Get('product')
+  // @Post(':id/categories/delete')
+  // @UseGuards(AuthGuard('jwt'), RoleGuard)
+  // @Roles(Role.ADMIN, Role.MANAGER)
+  // @ApiOperation({
+  //   summary: 'Bulk delete categories from a promotion',
+  // })
+  // @ApiParam({ name: 'id', type: String })
+  // @ApiBody({ type: BulkDeletePromotionCategoryDto })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Bulk delete success',
+  // })
+  // async bulkDeletePromotionCategories(
+  //   @Param('id') promotionId: string,
+  //   @Body() dto: BulkDeletePromotionCategoryDto,
+  // ) {
+  //   try {
+  //     await this.deletePromotionService.deletePromotionCategoriesByCategoryIds(
+  //       promotionId,
+  //       dto.categoryIds,
+  //     );
+
+  //     return { message: 'Bulk delete success' };
+  //   } catch (e) {
+  //     if (e instanceof PromotionNotFoundException) {
+  //       throw new BadRequestException({ message: e.message });
+  //     }else if (e instanceof CategoriesNotFoundException) {
+  //       throw new NotFoundException({ message: e.message, meta: (e as any).meta });
+  //     } else if (e instanceof RelatedRecordNotFoundException) {
+  //       throw new NotFoundException({ message: e.message });
+  //     }
+
+  //     this.logger.error(e);
+  //     throw new InternalServerErrorException(
+  //       'An error occurred while processing your request.',
+  //     );
+  //   }
+  // }
+
+  @Get('products')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
   @ApiOperation({
@@ -296,43 +377,43 @@ export class PromotionController {
     }
   }
 
-  @Get('/product/:id')
-  @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
-  @ApiOperation({
-    summary: 'Get promotion product by ID',
-    description: `Fetches details for a specific promotion-product relationship by its ID. 
-    Only accessible by ADMIN and MANAGER roles. Returns 400 if not found.`,
-  })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({
-    status: 200,
-    description: 'Promotion product details',
-    type: PromotionProductPreviewResponseDto,
-  })
-  @ApiResponse({ status: 400, description: 'Promotion product not found' })
-  async getPromotionProductById(@Param('id') id: string) {
-    try {
-      const promotionProduct =
-        await this.getPromotionsService.getPromotionProductById(id);
-      return plainToInstance(
-        PromotionProductPreviewResponseDto,
-        promotionProduct,
-        {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        },
-      );
-    } catch (e) {
-      if (e instanceof PromotionProductNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
-  }
+  // @Get('/products/:id')
+  // @UseGuards(AuthGuard('jwt'), RoleGuard)
+  // @Roles(Role.ADMIN, Role.MANAGER)
+  // @ApiOperation({
+  //   summary: 'Get promotion product by ID',
+  //   description: `Fetches details for a specific promotion-product relationship by its ID. 
+  //   Only accessible by ADMIN and MANAGER roles. Returns 400 if not found.`,
+  // })
+  // @ApiParam({ name: 'id', type: String })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Promotion product details',
+  //   type: PromotionProductPreviewResponseDto,
+  // })
+  // @ApiResponse({ status: 400, description: 'Promotion product not found' })
+  // async getPromotionProductById(@Param('id') id: string) {
+  //   try {
+  //     const promotionProduct =
+  //       await this.getPromotionsService.getPromotionProductById(id);
+  //     return plainToInstance(
+  //       PromotionProductPreviewResponseDto,
+  //       promotionProduct,
+  //       {
+  //         excludeExtraneousValues: true,
+  //         enableImplicitConversion: true,
+  //       },
+  //     );
+  //   } catch (e) {
+  //     if (e instanceof PromotionProductNotFoundException) {
+  //       throw new BadRequestException(e.message);
+  //     }
+  //     this.logger.error(e);
+  //     throw new InternalServerErrorException(
+  //       'An error occurred while processing your request.',
+  //     );
+  //   }
+  // }
 
   @Post(':id/product')
   @UseGuards(AuthGuard('jwt'), RoleGuard)

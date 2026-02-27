@@ -94,15 +94,15 @@ model UserGroup {
 
 // --------------------- Start of Category model ---------------------
 model Category {
-  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name         String
-  slug         String    @unique
-  description  String?
-  is_active Boolean   @default(true)
-  is_deleted   Boolean   @default(false)
-  deleted_at   DateTime?
-  created_at   DateTime  @default(now())
-  updated_at   DateTime  @default(now()) @updatedAt
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  slug        String    @unique
+  description String?
+  is_active   Boolean   @default(true)
+  is_deleted  Boolean   @default(false)
+  deleted_at  DateTime?
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @default(now()) @updatedAt
 
   // Relations
   products            Product[]
@@ -484,17 +484,17 @@ model PromotionRedemption {
 }
 
 model PromotionProduct {
-  id           String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  promotion_id String @db.Uuid
-  product_id   String @db.Uuid
+  id           String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  promotion_id String  @db.Uuid
+  product_id   String  @db.Uuid
+  floor_id     String? @db.Uuid
+  zone_id      String? @db.Uuid
 
   // Relations
   promotion Promotion @relation(fields: [promotion_id], references: [id], onDelete: Cascade)
   product   Product   @relation(fields: [product_id], references: [id], onDelete: Cascade)
-  floor     Floor?    @relation(fields: [floorId], references: [id])
-  floorId   String?   @db.Uuid
-  zone      Zone?     @relation(fields: [zoneId], references: [id])
-  zoneId    String?   @db.Uuid
+  floor     Floor?    @relation(fields: [floor_id], references: [id])
+  zone      Zone?     @relation(fields: [zone_id], references: [id])
 
   @@unique([promotion_id, product_id])
   @@index([promotion_id])
@@ -503,14 +503,19 @@ model PromotionProduct {
 }
 
 model PromotionCategory {
-  promotion_id String @db.Uuid
-  category_id  String @db.Uuid
+  id           String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  promotion_id String  @db.Uuid
+  category_id  String  @db.Uuid
+  floor_id     String? @db.Uuid
+  zone_id      String? @db.Uuid
 
   // Relations
   promotion Promotion @relation(fields: [promotion_id], references: [id], onDelete: Cascade)
   category  Category  @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  floor     Floor?    @relation(fields: [floor_id], references: [id])
+  zone      Zone?     @relation(fields: [zone_id], references: [id])
 
-  @@id([promotion_id, category_id])
+  @@unique([promotion_id, category_id])
   @@index([promotion_id])
   @@index([category_id])
   @@map("promotion_categories")
@@ -540,8 +545,10 @@ model Floor {
   updated_at DateTime @default(now()) @updatedAt
 
   // Relations
-  tables            Table[]
-  promotionProducts PromotionProduct[]
+  tables              Table[]
+  promotionProducts   PromotionProduct[]
+  promotionCategories PromotionCategory[]
+  zones               Zone[]
 
   @@unique([name])
   @@index([order])
@@ -553,12 +560,15 @@ model Zone {
   name        String   @db.VarChar(50)
   description String?  @db.Text
   is_active   Boolean  @default(true)
+  floor_id    String  @db.Uuid
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now()) @updatedAt
 
   // Relations
-  tables            Table[]
-  promotionProducts PromotionProduct[]
+  tables              Table[]
+  floor               Floor              @relation(fields: [floor_id], references: [id], onDelete: Cascade)
+  promotionProducts   PromotionProduct[]
+  promotionCategories PromotionCategory[]
 
   @@unique([name])
   @@map("zones")
