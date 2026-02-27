@@ -12,6 +12,8 @@ export abstract class ProductRepository implements BaseRepository<Product> {
 
   abstract findById(id: string): Promise<Product | null>;
 
+  abstract findByIds(ids: string[]): Promise<Product[]>;
+
   abstract getAllPaged(params: PaginationParams): Promise<Page<Product>>;
 
   abstract update(id: string, entity: Partial<Product>): Promise<Product>;

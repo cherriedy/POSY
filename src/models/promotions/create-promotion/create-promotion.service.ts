@@ -10,7 +10,7 @@ import { CategoriesNotFoundException } from '../../categories/exceptions';
 import { CategoryRepository } from '../../categories/repositories';
 import { PromotionNotFoundException } from '../exceptions';
 import { ProductRepository } from '../../products/repositories';
-import { ProductNotFoundException } from '../../products/exceptions';
+import { ProductsNotFoundException } from '../../products/exceptions';
 import { PromotionUnusableException } from '../exceptions/PromotionUnusableException';
 import { FloorRepository } from 'src/models/floors/repositories';
 import { ZoneRepository } from 'src/models/zones/repositories';
@@ -60,11 +60,7 @@ export class CreatePromotionService {
    */
   async bulkCreatePromotionCategories(
     promotionId: string,
-    items: {
-      categoryId: string;
-      floorId?: string;
-      zoneId?: string;
-    }[],
+    categoryIds: string[],
   ): Promise<PromotionCategory[]> {
     // Check promotion
     const promotion = await this.promotionRepository.findById(promotionId);
@@ -91,13 +87,14 @@ export class CreatePromotionService {
     }
 
     // Check categories
-    const categoryIds = [...new Set(items.map(i => i.categoryId))];
+    const uniqueCategoryIds = [...new Set(categoryIds)];
 
-    const categories = await this.categoryRepository.findByIds(categoryIds);
+    const categories =
+      await this.categoryRepository.findByIds(uniqueCategoryIds);
 
-    if (categories.length !== categoryIds.length) {
+    if (categories.length !== uniqueCategoryIds.length) {
       throw new CategoriesNotFoundException({
-        missingIds: categoryIds.filter(
+        missingIds: uniqueCategoryIds.filter(
           id => !categories.some(c => c.id === id),
         ),
       });
@@ -117,128 +114,80 @@ export class CreatePromotionService {
         },
       );
     }
-
-    // Collect floor + zone ids
-    const floorIds = [
-      ...new Set(items.filter(i => i.floorId).map(i => i.floorId!)),
-    ];
-
-    const zoneIds = [
-      ...new Set(items.filter(i => i.zoneId).map(i => i.zoneId!)),
-    ];
-
-    // Check floors exist
-    if (floorIds.length) {
-      const floors = await this.floorRepository.findByIds(floorIds);
-
-      if (floors.length !== floorIds.length) {
-        throw new FloorsNotFoundException({
-          missingIds: floorIds.filter(
-            id => !floors.some(f => f.id === id),
-          ),
-        });
-      }
-    }
-
-    // Check zones exist
-    let zones: any[] = [];
-    if (zoneIds.length) {
-      zones = await this.zoneRepository.findByIds(zoneIds);
-
-      if (zones.length !== zoneIds.length) {
-        throw new ZonesNotFoundException({
-          missingIds: zoneIds.filter(
-            id => !zones.some(z => z.id === id),
-          ),
-        });
-      }
-    }
-
-    // Check zone belongs to floor (nếu có cả 2)
-    for (const item of items) {
-      if (item.zoneId && item.floorId) {
-        const zone = zones.find(z => z.id === item.zoneId);
-
-        if (zone && zone.floorId !== item.floorId) {
-          throw new RelatedRecordNotFoundException(
-            `Zone ${item.zoneId} does not belong to floor ${item.floorId}`,
-          );
-        }
-      }
-    }
-
-    // Prevent duplicate in same request
-    const uniqueCategoryIds = new Set(
-      items.map(i => i.categoryId),
-    );
-
-    if (uniqueCategoryIds.size !== items.length) {
-      throw new DuplicateEntryException(
-        'Duplicate categoryId in request is not allowed.',
-      );
-    }
-
     // Create entities
-    const entities: PromotionCategory[] = items.map((item) => ({
+    const entities: PromotionCategory[] = categoryIds.map((categoryId) => ({
       id: null,
       promotionId,
-      categoryId: item.categoryId,
-      floorId: item.floorId ?? null,
-      zoneId: item.zoneId ?? null,
+      categoryId,
     }));
 
     return this.promotionCategoryRepository.bulkCreate(entities);
   }
 
-  /**
-   * Creates a new promotion-product association after validating the product and promotion.
-   * Throws an exception if the product or promotion does not exist, is deleted, is not active,
-   * or if the promotion's applicability does not allow adding products.
-   *
-   * @param {PromotionProduct} promotionProduct - The promotion-product association to create.
-   * @returns {Promise<PromotionProduct>} The created promotion-product association.
-   * @throws {ProductNotFoundException} If the product does not exist.
-   * @throws {PromotionNotFoundException} If the promotion does not exist or is deleted.
-   * @throws {PromotionUnusableException} If the promotion is not active or applicability is invalid.
-   */
-  async createPromotionProduct(
-    promotionProduct: PromotionProduct,
-  ): Promise<PromotionProduct> {
-    const product = await this.productRepository.findById(
-      promotionProduct.productId,
-    );
+  async bulkCreatePromotionProducts(
+    promotionId: string,
+    productIds: string[]
+  ): Promise<PromotionProduct[]> {
+    // Check promotion
+    const promotion = await this.promotionRepository.findById(promotionId);
 
-    // Validate that the product exists
-    if (!product) {
-      throw new ProductNotFoundException(promotionProduct.productId);
-    }
-
-    const promotion = await this.promotionRepository.findById(
-      promotionProduct.promotionId,
-    );
-
-    // Validate that the promotion exists
     if (!promotion || promotion.isDeleted) {
-      throw new PromotionNotFoundException({
-        id: promotionProduct.promotionId,
-      });
+      throw new PromotionNotFoundException({ id: promotionId });
     }
-    // Validate that the promotion is ACTIVE
+
     if (promotion.status !== PromotionStatus.ACTIVE) {
       throw new PromotionUnusableException(
-        promotionProduct.promotionId,
+        promotionId,
         'Promotion is not active.',
       );
     }
-    // Validate that the promotion applicability is SPECIFIC_ITEMS
-    if (promotion.applicability !== PromotionApplicability.SPECIFIC_ITEMS) {
+
+    if (
+      promotion.applicability !== PromotionApplicability.SPECIFIC_ITEMS
+    ) {
       throw new PromotionUnusableException(
-        promotionProduct.promotionId,
+        promotionId,
         'Promotion applicability does not allow adding products.',
         { applicability: promotion.applicability },
       );
     }
 
-    return await this.promotionProductRepository.create(promotionProduct);
+    // Check products
+    const uniqueProductIds = [...new Set(productIds)];
+
+    const products =
+      await this.productRepository.findByIds(uniqueProductIds);
+    if (products.length !== uniqueProductIds.length) {
+      throw new ProductsNotFoundException({
+        missingIds: uniqueProductIds.filter(
+          id => !products.some(p => p.id === id),
+        ),
+      });
+    }
+
+    const existing =
+      await this.promotionProductRepository.findExistingByProduct(
+        promotionId,
+        productIds,
+      );
+
+    if (existing.length) {
+      throw new DuplicateEntryException(
+        'Some products already attached to this promotion.',
+        {
+          duplicatedProductIds: existing.map(e => e.productId),
+        },
+      );
+    }
+    
+    // Create entities
+    const entities: PromotionProduct[] = productIds.map((productId) => ({
+      id: null,
+      promotionId,
+      productId,
+    }));
+
+    return this.promotionProductRepository.bulkCreate(entities);
   }
+
 }
