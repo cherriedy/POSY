@@ -85,6 +85,17 @@ export class CreatePromotionService {
         { applicability: promotion.applicability },
       );
     }
+    
+    const duplicateCategoryIds = categoryIds.filter(
+      (id, index, arr) => arr.indexOf(id) !== index,
+    );
+
+    if (duplicateCategoryIds.length > 0) {
+      throw new DuplicateEntryException(
+        'Duplicate categoryIds in request.',
+        { duplicateCategoryIds: [...new Set(duplicateCategoryIds)] },
+      );
+    }
 
     // Check categories
     const uniqueCategoryIds = [...new Set(categoryIds)];
@@ -152,6 +163,17 @@ export class CreatePromotionService {
       );
     }
 
+    const duplicateProductIds = productIds.filter(
+      (id, index, arr) => arr.indexOf(id) !== index,
+    );
+
+    if (duplicateProductIds.length > 0) {
+      throw new DuplicateEntryException(
+        'Duplicate productIds in request.',
+        { duplicateProductIds: [...new Set(duplicateProductIds)] },
+      );
+    }
+
     // Check products
     const uniqueProductIds = [...new Set(productIds)];
 
@@ -179,7 +201,7 @@ export class CreatePromotionService {
         },
       );
     }
-    
+
     // Create entities
     const entities: PromotionProduct[] = productIds.map((productId) => ({
       id: null,

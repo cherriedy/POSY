@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   PromotionCategoryRepository,
   PromotionProductRepository,
@@ -15,6 +15,8 @@ import { Promotion, PromotionCategory, PromotionProduct } from '../types';
 import { ProductRepository } from '../../products/repositories';
 import { ProductNotFoundException } from '../../products/exceptions';
 import { Page } from '../../../common/interfaces';
+import { CategoryRepository } from 'src/models/categories/repositories';
+import { CategoryNotFoundException } from 'src/models/categories/exceptions';
 
 @Injectable()
 export class GetPromotionsService {
@@ -23,6 +25,7 @@ export class GetPromotionsService {
     private readonly promotionCategoryRepository: PromotionCategoryRepository,
     private readonly promotionProductRepository: PromotionProductRepository,
     private readonly productRepository: ProductRepository,
+    private readonly categoryRepository: CategoryRepository,
   ) { }
 
   /**
@@ -140,7 +143,13 @@ export class GetPromotionsService {
     productId: string,
     role: string,
   ): Promise<Promotion[]> {
-    const includeAll = Role[role] === Role.ADMIN || Role[role] === Role.MANAGER;
+    const product = await this.productRepository.findById(productId);
+
+    if (!product || product.isDeleted) {
+      throw new ProductNotFoundException(productId);
+    }
+
+    const includeAll = role === Role.ADMIN || role === Role.MANAGER;
     return await this.promotionProductRepository.getPromotionsByProductId(
       productId,
       includeAll,
@@ -160,6 +169,12 @@ export class GetPromotionsService {
     categoryId: string,
     role: string,
   ): Promise<Promotion[]> {
+    const category = await this.categoryRepository.findById(categoryId);
+
+    if (!category || category.isDeleted) {
+      throw new CategoryNotFoundException(categoryId);
+    }
+
     const includeAll = Role[role] === Role.ADMIN || Role[role] === Role.MANAGER;
     return await this.promotionCategoryRepository.getPromotionsByCategoryId(
       categoryId,
