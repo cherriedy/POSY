@@ -484,9 +484,9 @@ model PromotionRedemption {
 }
 
 model PromotionProduct {
-  id           String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  promotion_id String  @db.Uuid
-  product_id   String  @db.Uuid
+  id           String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  promotion_id String @db.Uuid
+  product_id   String @db.Uuid
 
   // Relations
   promotion Promotion @relation(fields: [promotion_id], references: [id], onDelete: Cascade)
@@ -499,9 +499,9 @@ model PromotionProduct {
 }
 
 model PromotionCategory {
-  id           String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  promotion_id String  @db.Uuid
-  category_id  String  @db.Uuid
+  id           String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  promotion_id String @db.Uuid
+  category_id  String @db.Uuid
 
   // Relations
   promotion Promotion @relation(fields: [promotion_id], references: [id], onDelete: Cascade)
@@ -537,10 +537,8 @@ model Floor {
   updated_at DateTime @default(now()) @updatedAt
 
   // Relations
-  tables              Table[]
-  promotionProducts   PromotionProduct[]
-  promotionCategories PromotionCategory[]
-  zones               Zone[]
+  tables Table[]
+  zones  Zone[]
 
   @@unique([name])
   @@index([order])
@@ -552,15 +550,13 @@ model Zone {
   name        String   @db.VarChar(50)
   description String?  @db.Text
   is_active   Boolean  @default(true)
-  floor_id    String  @db.Uuid
+  floor_id    String   @db.Uuid
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now()) @updatedAt
 
   // Relations
-  tables              Table[]
-  floor               Floor              @relation(fields: [floor_id], references: [id], onDelete: Cascade)
-  promotionProducts   PromotionProduct[]
-  promotionCategories PromotionCategory[]
+  tables Table[]
+  floor  Floor   @relation(fields: [floor_id], references: [id], onDelete: Cascade)
 
   @@unique([name])
   @@map("zones")

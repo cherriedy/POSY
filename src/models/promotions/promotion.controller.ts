@@ -8,6 +8,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -237,7 +238,7 @@ export class PromotionController {
     } catch (e) {
       if (e instanceof PromotionNotFoundException) {
         throw new BadRequestException({ message: e.message });
-      }else if (e instanceof CategoriesNotFoundException) {
+      } else if (e instanceof CategoriesNotFoundException) {
         throw new NotFoundException({ message: e.message, meta: (e as any).meta });
       } else if (e instanceof RelatedRecordNotFoundException) {
         throw new NotFoundException({ message: e.message });
@@ -437,7 +438,7 @@ export class PromotionController {
     } catch (e) {
       if (e instanceof PromotionNotFoundException) {
         throw new BadRequestException({ message: e.message });
-      }else if (e instanceof ProductsNotFoundException) {
+      } else if (e instanceof ProductsNotFoundException) {
         throw new NotFoundException({ message: e.message, meta: (e as any).meta });
       } else if (e instanceof RelatedRecordNotFoundException) {
         throw new NotFoundException({ message: e.message });
@@ -514,6 +515,122 @@ export class PromotionController {
   //     );
   //   }
   // }
+
+  @Get('by-code/:code')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({
+    summary: 'Get promotion by code',
+    description: `Fetches detailed information for a specific promotion by its unique code. 
+    Accessible by all authenticated users. Returns 400 if the promotion is not found.`,
+  })
+  @ApiParam({ name: 'code', type: String })
+  @ApiResponse({
+    status: 200,
+    description: 'Promotion details',
+    type: PromotionDetailedResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Promotion not found' })
+  async getByCode(@Param('code') code: string) {
+    try {
+      const promotion = await this.getPromotionsService.getByCode(code);
+      return plainToInstance(PromotionDetailedResponseDto, promotion, {
+        excludeExtraneousValues: true,
+      });
+    } catch (e) {
+      if (e instanceof PromotionNotFoundException) {
+        throw new NotFoundException(e.message);
+      }
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
+
+  @Get('by-product/:productId')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({
+    summary: 'Get promotions by product ID',
+    description: `Returns all promotions for a specific product. 
+    For STAFF users, only active and non-deleted promotions are returned. 
+    For ADMIN and MANAGER, all promotions (including deleted/disabled) are returned. 
+    Used for checking which promotions are linked to a product.`,
+  })
+  @ApiParam({ name: 'productId', type: String })
+  @ApiResponse({
+    status: 200,
+    description: 'List of promotions for the product',
+    type: [PromotionPreviewResponseDto],
+  })
+  async getPromotionsByProductId(
+    @Param('productId', ParseUUIDPipe) productId: string,
+    @Req() req: Request,
+  ) {
+    try {
+      const role = (req.user as JwtPayload).role;
+
+      const promotions =
+        await this.getPromotionsService.getPromotionsByProductId(
+          productId,
+          role,
+        );
+
+      return plainToInstance(
+        PromotionPreviewResponseDto,
+        promotions,
+        { excludeExtraneousValues: true },
+      );
+
+    } catch (e) {
+      if (e instanceof ProductNotFoundException) {
+        throw new NotFoundException(e.message);
+      }
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
+
+  @Get('by-category/:categoryId')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({
+    summary: 'Get promotions by category ID',
+    description: `Returns all promotions for a specific category. 
+    For STAFF users, only active and non-deleted promotions are returned. 
+    For ADMIN and MANAGER, all promotions (including deleted/disabled) are returned. 
+    Used for checking which promotions are linked to a category.`,
+  })
+  @ApiParam({ name: 'categoryId', type: String })
+  @ApiResponse({
+    status: 200,
+    description: 'List of promotions for the category',
+    type: [PromotionPreviewResponseDto],
+  })
+  async getPromotionsByCategoryId(
+    @Param('categoryId', ParseUUIDPipe) categoryId: string,
+    @Req() req: Request,
+  ) {
+    try {
+      const role = (req.user as JwtPayload).role;
+      const promotions =
+        await this.getPromotionsService.getPromotionsByCategoryId(
+          categoryId,
+          role,
+        );
+      return plainToInstance(PromotionPreviewResponseDto, promotions, {
+        excludeExtraneousValues: true,
+      });
+    } catch (e) {
+      if (e instanceof CategoryNotFoundException) {
+        throw new NotFoundException(e.message);
+      }
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
@@ -677,111 +794,6 @@ export class PromotionController {
       if (e instanceof PromotionNotFoundException) {
         throw new BadRequestException(e.message);
       }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
-  }
-
-  @Get('by-code/:code')
-  @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({
-    summary: 'Get promotion by code',
-    description: `Fetches detailed information for a specific promotion by its unique code. 
-    Accessible by all authenticated users. Returns 400 if the promotion is not found.`,
-  })
-  @ApiParam({ name: 'code', type: String })
-  @ApiResponse({
-    status: 200,
-    description: 'Promotion details',
-    type: PromotionDetailedResponseDto,
-  })
-  @ApiResponse({ status: 400, description: 'Promotion not found' })
-  async getByCode(@Param('code') code: string) {
-    try {
-      const promotion = await this.getPromotionsService.getByCode(code);
-      return plainToInstance(PromotionDetailedResponseDto, promotion, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof PromotionNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
-  }
-
-  @Get('by-product/:productId')
-  @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({
-    summary: 'Get promotions by product ID',
-    description: `Returns all promotions for a specific product. 
-    For STAFF users, only active and non-deleted promotions are returned. 
-    For ADMIN and MANAGER, all promotions (including deleted/disabled) are returned. 
-    Used for checking which promotions are linked to a product.`,
-  })
-  @ApiParam({ name: 'productId', type: String })
-  @ApiResponse({
-    status: 200,
-    description: 'List of promotions for the product',
-    type: [PromotionPreviewResponseDto],
-  })
-  async getPromotionsByProductId(
-    @Param('productId') productId: string,
-    @Req() req: Request,
-  ) {
-    try {
-      const role = (req.user as JwtPayload).role;
-      const promotions =
-        await this.getPromotionsService.getPromotionsByProductId(
-          productId,
-          role,
-        );
-      return plainToInstance(PromotionPreviewResponseDto, promotions, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
-  }
-
-  @Get('by-category/:categoryId')
-  @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({
-    summary: 'Get promotions by category ID',
-    description: `Returns all promotions for a specific category. 
-    For STAFF users, only active and non-deleted promotions are returned. 
-    For ADMIN and MANAGER, all promotions (including deleted/disabled) are returned. 
-    Used for checking which promotions are linked to a category.`,
-  })
-  @ApiParam({ name: 'categoryId', type: String })
-  @ApiResponse({
-    status: 200,
-    description: 'List of promotions for the category',
-    type: [PromotionPreviewResponseDto],
-  })
-  async getPromotionsByCategoryId(
-    @Param('categoryId') categoryId: string,
-    @Req() req: Request,
-  ) {
-    try {
-      const role = (req.user as JwtPayload).role;
-      const promotions =
-        await this.getPromotionsService.getPromotionsByCategoryId(
-          categoryId,
-          role,
-        );
-      return plainToInstance(PromotionPreviewResponseDto, promotions, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
       this.logger.error(e);
       throw new InternalServerErrorException(
         'An error occurred while processing your request.',

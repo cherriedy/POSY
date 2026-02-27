@@ -82,9 +82,7 @@ export class FloorRepositoryImpl implements FloorRepository {
       where: { id },
       include: {
         tables: true,
-        zones: true,
-        promotionProducts: true,
-        promotionCategories: true,
+        zones: true
       },
     });
 
@@ -104,9 +102,7 @@ export class FloorRepositoryImpl implements FloorRepository {
         },
         include: {
           tables: true,
-          zones: true,
-          promotionProducts: true,
-          promotionCategories: true,
+          zones: true
         },
       })
       .then((items) => items.map(FloorMapper.toDomain));
