@@ -221,6 +221,9 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     if (filters.isActive !== undefined) {
       where.is_active = filters.isActive;
     }
+    if (filters.isDeleted !== undefined) {
+      where.is_deleted = filters.isDeleted;
+    }
 
     return where;
   }
