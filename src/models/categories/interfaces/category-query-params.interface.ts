@@ -21,6 +21,7 @@ export type CategoryOrderBy = Array<SortField<CategorySortField>>;
 export interface CategoryQueryFilter {
   query?: string;
   isActive?: boolean;
+  isDeleted?: boolean;
 }
 
 /**
