@@ -54,7 +54,7 @@ export class UpdateEntityTaxAssociationService {
         if (e instanceof TaxAssociationNotFoundException) {
           errorMessage = `Association with ID ${update.id} not found`;
         } else if (e instanceof Error) {
-          errorMessage = e.message;
+          
         }
 
         failures.push({
