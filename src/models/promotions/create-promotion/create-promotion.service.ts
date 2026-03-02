@@ -69,12 +69,12 @@ export class CreatePromotionService {
       throw new PromotionNotFoundException({ id: promotionId });
     }
 
-    if (promotion.status !== PromotionStatus.ACTIVE) {
-      throw new PromotionUnusableException(
-        promotionId,
-        'Promotion is not active.',
-      );
-    }
+    // if (promotion.status !== PromotionStatus.ACTIVE) {
+    //   throw new PromotionUnusableException(
+    //     promotionId,
+    //     'Promotion is not active.',
+    //   );
+    // }
 
     if (
       promotion.applicability !== PromotionApplicability.SPECIFIC_CATEGORIES
@@ -146,12 +146,12 @@ export class CreatePromotionService {
       throw new PromotionNotFoundException({ id: promotionId });
     }
 
-    if (promotion.status !== PromotionStatus.ACTIVE) {
-      throw new PromotionUnusableException(
-        promotionId,
-        'Promotion is not active.',
-      );
-    }
+    // if (promotion.status !== PromotionStatus.ACTIVE) {
+    //   throw new PromotionUnusableException(
+    //     promotionId,
+    //     'Promotion is not active.',
+    //   );
+    // }
 
     if (
       promotion.applicability !== PromotionApplicability.SPECIFIC_ITEMS

@@ -63,7 +63,7 @@ export class ProductController {
     private readonly deleteProductService: DeleteProductService,
   ) { }
 
-  @Get('')
+  @Get()
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
     summary: 'Get all products',
@@ -94,6 +94,40 @@ export class ProductController {
         excludeExtraneousValues: true,
       });
       return { ...products, items };
+    } catch (e) {
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
+
+  @Get('available')
+  @Roles(Role.MANAGER, Role.ADMIN)
+  @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @ApiOperation({
+    summary: 'Get available products',
+    description: 'Returns available and non-deleted products',
+  })
+  async getAvailableProducts(): Promise<
+    ProductPreviewResponseDto[]
+  > {
+    try {
+      const productPage =
+        await this.getProductsService.getAll({
+          filter: {
+            isAvailable: true,
+            isDeleted: false,
+          },
+          page: 1,
+          pageSize: 1000,
+        });
+
+      return plainToInstance(
+        ProductPreviewResponseDto,
+        productPage.items,
+        { excludeExtraneousValues: true },
+      );
     } catch (e) {
       this.logger.error(e);
       throw new InternalServerErrorException(
