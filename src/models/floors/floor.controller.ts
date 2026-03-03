@@ -48,9 +48,8 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { createPageResponseSchema } from '../../common/dto';
-import { tr } from '@faker-js/faker/.';
 
-@ApiTags('Floor')
+@ApiTags('Floors')
 @ApiBearerAuth()
 @Controller('floors')
 export class FloorController {

@@ -1,6 +1,7 @@
 import { ZonePreviewResponseDto } from './zone-preview-response.dto';
-import { Exclude, Expose } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
+import { Exclude, Expose, Type } from 'class-transformer';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { TablePreviewResponseDto } from 'src/models/tables/dto';
 
 @Exclude()
 export class ZoneDetailedResponseDto extends ZonePreviewResponseDto {
@@ -12,4 +13,13 @@ export class ZoneDetailedResponseDto extends ZonePreviewResponseDto {
     example: 'Outdoor seating area with scenic views.',
   })
   description: string | null;
+
+  @ApiPropertyOptional({
+    type: () => TablePreviewResponseDto,
+    description: 'Table information',
+    nullable: true,
+  })
+  @Expose()
+  @Type(() => TablePreviewResponseDto)
+  tables: TablePreviewResponseDto | null;
 }

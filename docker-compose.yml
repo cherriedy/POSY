@@ -6,7 +6,7 @@ services:
     #      POSTGRES_USER: pos
     #      POSTGRES_PASSWORD: 12345
     #      POSTGRES_DB: posdb
-    image: postgres:17
+    image: postgres:16
     env_file:
       - .env
 

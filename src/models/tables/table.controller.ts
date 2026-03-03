@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -48,9 +49,9 @@ import {
 } from '@nestjs/swagger';
 import { createPageResponseSchema } from '../../common/dto';
 
-@ApiTags('Table')
+@ApiTags('Tables')
 @ApiBearerAuth()
-@Controller('table')
+@Controller('tables')
 export class TableController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: import('winston').Logger;
@@ -60,31 +61,7 @@ export class TableController {
     private readonly createTableService: CreateTableService,
     private readonly updateTableService: UpdateTableService,
     private readonly deleteTableService: DeleteTableService,
-  ) {}
-
-  @Get(':id')
-  @Roles(Role.MANAGER, Role.ADMIN)
-  @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @ApiOperation({
-    summary: 'Get table by ID',
-    description: `Fetches detailed information for a specific table by its unique ID. Accessible
-     by MANAGER and ADMIN roles.`,
-  })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({
-    status: 200,
-    description: 'Table details',
-    type: TableDetailedResponseDto,
-  })
-  @ApiResponse({ status: 400, description: 'Table not found' })
-  async getTableById(
-    @Param('id') id: string,
-  ): Promise<TableDetailedResponseDto> {
-    const table = await this.getTablesService.getTableById(id);
-    return plainToInstance(TableDetailedResponseDto, table, {
-      excludeExtraneousValues: true,
-    });
-  }
+  ) { }
 
   @Get()
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -122,7 +99,41 @@ export class TableController {
     }
   }
 
-  @Post('')
+  @Get(':id')
+  @Roles(Role.MANAGER, Role.ADMIN)
+  @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @ApiOperation({
+    summary: 'Get table by ID',
+    description: `Fetches detailed information for a specific table by its unique ID. Accessible
+     by MANAGER and ADMIN roles.`,
+  })
+  @ApiParam({ name: 'id', type: String })
+  @ApiResponse({
+    status: 200,
+    description: 'Table details',
+    type: TableDetailedResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Table not found' })
+  async getTableById(
+    @Param('id') id: string,
+  ): Promise<TableDetailedResponseDto> {
+    try {
+      const table = await this.getTablesService.getTableById(id);
+      return plainToInstance(TableDetailedResponseDto, table, {
+        excludeExtraneousValues: true,
+      });
+    } catch (e) {
+      if (e instanceof TableNotFoundException) {
+        throw new NotFoundException(e.message);
+      }
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
+
+  @Post()
   @Roles(Role.ADMIN, Role.MANAGER)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @ApiOperation({
@@ -149,7 +160,7 @@ export class TableController {
       if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
       } else if (e instanceof RelatedRecordNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -191,7 +202,7 @@ export class TableController {
       });
     } catch (e) {
       if (e instanceof TableNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       } else if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
       }
@@ -222,7 +233,7 @@ export class TableController {
       return { message: 'Table has been successfully deleted.' };
     } catch (e) {
       if (e instanceof TableNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       } else if (e instanceof ForeignKeyViolationException) {
         throw new BadRequestException(e.message);
       }

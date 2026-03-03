@@ -537,7 +537,6 @@ model Floor {
   updated_at DateTime @default(now()) @updatedAt
 
   // Relations
-  tables Table[]
   zones  Zone[]
 
   @@unique([name])
@@ -564,7 +563,6 @@ model Zone {
 
 model Table {
   id         String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  floor_id   String?     @db.Uuid
   zone_id    String?     @db.Uuid
   name       String      @db.VarChar(100)
   capacity   Int         @db.SmallInt
@@ -579,12 +577,10 @@ model Table {
   orders   Order[]
   sessions TableSession[]
   zone     Zone?          @relation(fields: [zone_id], references: [id], onDelete: SetNull)
-  floor    Floor?         @relation(fields: [floor_id], references: [id], onDelete: SetNull)
 
-  @@unique([name, floor_id])
+  @@unique([name, zone_id])
   @@index([name])
   @@index([status])
-  @@index([floor_id])
   @@index([zone_id])
   @@map("tables")
 }

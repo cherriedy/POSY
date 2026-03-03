@@ -5,12 +5,13 @@ import {
   seedAdmin,
   seedCategories,
   seedFloors,
+  seedZones,
   seedProducts,
   seedPromotions,
   seedStaff,
   seedTables,
   seedTaxes,
-  seedZones,
+  seedCuisines
 } from './seeds';
 
 const connectionString = process.env.DATABASE_URL;
@@ -31,6 +32,7 @@ async function main() {
   await seedZones(prisma);
   await seedTables(prisma);
   await seedTaxes(prisma);
+  await seedCuisines(prisma);
 }
 
 main()
