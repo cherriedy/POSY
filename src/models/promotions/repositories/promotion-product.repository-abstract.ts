@@ -12,9 +12,7 @@ export abstract class PromotionProductRepository implements BaseRepository<Promo
     entities: PromotionProduct[],
   ): Promise<PromotionProduct[]>;
 
-  abstract findByPromotionId(
-    promotionId: string,
-  ): Promise<PromotionProduct[]>;
+  abstract findByPromotionId(promotionId: string): Promise<PromotionProduct[]>;
 
   abstract findExistingByProduct(
     promotionId: string,

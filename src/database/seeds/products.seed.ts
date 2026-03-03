@@ -1,5 +1,12 @@
 import { faker } from '@faker-js/faker';
-import { PrismaClient, ProductDiscountType } from '@prisma/client';
+import {
+  DietaryTag,
+  MealSession,
+  PrismaClient,
+  ProductDiscountType,
+  Season,
+  Taste,
+} from '@prisma/client';
 import { MeiliSearch } from 'meilisearch';
 import { ProductDiscountType as DomainProductDiscountType } from '../../models/products/enums/product.enum';
 
@@ -98,12 +105,119 @@ export async function seedProducts(prisma: PrismaClient) {
     }
   }
 
-  // After seeding, fetch all products with their categories
+  // After seeding, fetch all created products
   const seededProducts = await prisma.product.findMany({
     include: { category: true },
   });
 
-  // Convert seededProducts (Prisma result) to Product[] (camelCase, all required fields)
+  // ── Fetch ingredients from DB for use in product ingredient seeds ──────────
+  const ingredients = await prisma.ingredient.findMany({
+    select: { id: true },
+  });
+
+  if (!ingredients.length) {
+    throw new Error('No ingredients found. Seed ingredients first.');
+  }
+
+  // ── Fetch cuisines from DB for use in product attribute seeds ──────────────
+  const cuisines = await prisma.cuisine.findMany({
+    where: { is_deleted: false },
+    select: { id: true, name: true, region: true },
+  });
+
+  if (!cuisines.length) {
+    throw new Error('No cuisines found. Seed cuisines first.');
+  }
+
+  // ── Seed product attributes & ingredients for each product ─────────────────
+  for (const product of seededProducts) {
+    // Skip if attributes already exist
+    const existingAttr = await prisma.productAttribute.findUnique({
+      where: { product_id: product.id },
+    });
+
+    if (!existingAttr) {
+      const cuisine = faker.helpers.arrayElement(cuisines);
+
+      const isSeasonal = faker.datatype.boolean({ probability: 0.3 });
+      const season = isSeasonal
+        ? faker.helpers.arrayElement<Season>([
+            Season.SPRING,
+            Season.SUMMER,
+            Season.AUTUMN,
+            Season.WINTER,
+          ])
+        : null;
+
+      await prisma.productAttribute.create({
+        data: {
+          product_id: product.id,
+          cuisine_id: cuisine.id,
+          meal_session: faker.helpers.arrayElement<MealSession>([
+            MealSession.BREAKFAST,
+            MealSession.LUNCH,
+            MealSession.DINNER,
+            MealSession.SNACK,
+          ]),
+          taste_profile: faker.helpers.arrayElements<Taste>(
+            [Taste.SPICY, Taste.SWEET, Taste.SOUR, Taste.SALTY, Taste.BITTER],
+            { min: 1, max: 3 },
+          ),
+          dietary_tags: faker.helpers.arrayElements<DietaryTag>(
+            [
+              DietaryTag.VEGETARIAN,
+              DietaryTag.VEGAN,
+              DietaryTag.GLUTEN_FREE,
+              DietaryTag.DAIRY_FREE,
+              DietaryTag.NUT_FREE,
+              DietaryTag.HALAL,
+              DietaryTag.KOSHER,
+            ],
+            { min: 0, max: 3 },
+          ),
+          preparation_time: faker.helpers.maybe(
+            () => faker.number.int({ min: 5, max: 60 }),
+            { probability: 0.8 },
+          ),
+          spice_level: faker.helpers.maybe(
+            () => faker.number.int({ min: 0, max: 5 }),
+            { probability: 0.8 },
+          ),
+          is_seasonal: isSeasonal,
+          season,
+        },
+      });
+    }
+
+    // Seed 1–4 random ingredients per product (skip duplicates)
+    const existingIngredients = await prisma.productIngredient.findMany({
+      where: { product_id: product.id },
+      select: { ingredient_id: true },
+    });
+    const existingIds = new Set(
+      existingIngredients.map((i) => i.ingredient_id),
+    );
+
+    const selectedIngredients = faker.helpers
+      .arrayElements(ingredients, { min: 1, max: 4 })
+      .filter((i) => !existingIds.has(i.id));
+
+    for (const ingredient of selectedIngredients) {
+      await prisma.productIngredient.create({
+        data: {
+          product_id: product.id,
+          ingredient_id: ingredient.id,
+          quantity: faker.number.float({
+            min: 0.05,
+            max: 5,
+            fractionDigits: 4,
+          }),
+        },
+      });
+    }
+  }
+
+  // ── Index to Meilisearch ───────────────────────────────────────────────────
   const productsForMeili = seededProducts.map((p) => ({
     id: p.id,
     name: p.name,
@@ -132,6 +246,5 @@ export async function seedProducts(prisma: PrismaClient) {
     category: p.category,
   }));
 
-  // Index to Meilisearch
   await meiliClient.index('products').addDocuments(productsForMeili);
 }

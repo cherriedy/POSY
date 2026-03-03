@@ -1,4 +1,3 @@
-
 import { Floor } from 'src/models/floors/types';
 import { Table } from '../../tables/types';
 

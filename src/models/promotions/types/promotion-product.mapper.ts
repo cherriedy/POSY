@@ -1,7 +1,7 @@
 import { PromotionProduct as PrismaPromotionProduct } from '@prisma/client';
 import { PromotionProduct as DomainPromotionProduct } from './promotion-product.class';
 import { PromotionMapper } from './promotion.mapper';
-import { ProductMapper } from 'src/models/products/types';
+import { ProductMapper } from 'src/models/products/entities';
 
 export class PromotionProductMapper {
   static toDomain(
@@ -19,7 +19,7 @@ export class PromotionProductMapper {
 
       (prisma as any).product
         ? ProductMapper.toDomain((prisma as any).product)
-        : undefined
+        : undefined,
     );
   }
 
@@ -27,7 +27,7 @@ export class PromotionProductMapper {
     return <PrismaPromotionProduct>{
       ...(domain.id ? { id: domain.id } : {}),
       promotion_id: domain.promotionId,
-      product_id: domain.productId
+      product_id: domain.productId,
     };
   }
 }

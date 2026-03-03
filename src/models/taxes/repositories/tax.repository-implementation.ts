@@ -87,9 +87,9 @@ export class TaxRepositoryImpl implements TaxRepository {
   }
 
   /**
-   * Finds tax configurations by their types.
-   * @param type - An array of tax types to filter by.
-   * @returns An array of tax configuration domain objects matching the specified types.
+   * Finds tax configurations by their entities.
+   * @param type - An array of tax entities to filter by.
+   * @returns An array of tax configuration domain objects matching the specified entities.
    */
   async findByType(type: TaxType[]): Promise<TaxConfig[]> {
     return await this.prismaService.taxConfig

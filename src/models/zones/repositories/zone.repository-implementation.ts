@@ -19,7 +19,7 @@ export class ZoneRepositoryImpl implements ZoneRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   /**
    * Creates a new zone in the database.
@@ -91,7 +91,7 @@ export class ZoneRepositoryImpl implements ZoneRepository {
     return this.prismaService.zone
       .findMany({
         where: {
-          id: { in: ids }
+          id: { in: ids },
         },
       })
       .then((items) => items.map(ZoneMapper.toDomain));

@@ -37,6 +37,12 @@ export class CreateProductMapper {
             season: dto.attributes.season,
           }
         : undefined,
+      ingredients: dto.ingredients
+        ? dto.ingredients.map((ing) => ({
+            ingredientId: ing.ingredientId,
+            quantity: ing.quantity,
+          }))
+        : undefined,
     };
   }
 }

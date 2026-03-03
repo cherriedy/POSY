@@ -7,6 +7,6 @@ export class PromotionCategory {
     public readonly promotionId: string,
     public readonly categoryId: string,
     public readonly promotion?: Promotion,
-    public readonly category?: Category
+    public readonly category?: Category,
   ) {}
 }

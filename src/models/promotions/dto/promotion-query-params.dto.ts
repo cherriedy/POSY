@@ -43,7 +43,7 @@ export class PromotionQueryParamsDto {
   @ApiPropertyOptional({
     enum: PromotionDiscountType,
     isArray: true,
-    description: 'Discount types',
+    description: 'Discount entities',
   })
   @IsOptional()
   @IsArray()
@@ -56,7 +56,7 @@ export class PromotionQueryParamsDto {
   @ApiPropertyOptional({
     enum: PromotionApplicability,
     isArray: true,
-    description: 'Applicability types',
+    description: 'Applicability entities',
   })
   @IsOptional()
   @IsArray()
@@ -144,11 +144,7 @@ export class PromotionQueryParamsDto {
   /* -------------------------------------------------------------------------- */
 
   toQueryParams(): PromotionQueryParams {
-    const {
-      page,
-      pageSize,
-      ...filter
-    } = this;
+    const { page, pageSize, ...filter } = this;
 
     return {
       page,

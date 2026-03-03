@@ -9,14 +9,10 @@ import { PromotionStatus } from '@prisma/client';
 
 @Injectable()
 export class PromotionProductRepositoryImpl implements PromotionProductRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
-  async bulkCreate(
-    entities: PromotionProduct[],
-  ): Promise<PromotionProduct[]> {
-    const prismaData = entities.map((e) =>
-      PromotionProductMapper.toPrisma(e),
-    );
+  async bulkCreate(entities: PromotionProduct[]): Promise<PromotionProduct[]> {
+    const prismaData = entities.map((e) => PromotionProductMapper.toPrisma(e));
 
     await this.prismaService.promotionProduct.createMany({
       data: prismaData,
@@ -26,20 +22,18 @@ export class PromotionProductRepositoryImpl implements PromotionProductRepositor
       where: {
         OR: prismaData.map((d) => ({
           promotion_id: d.promotion_id,
-          product_id: d.product_id
+          product_id: d.product_id,
         })),
       },
       include: {
-        product: true
+        product: true,
       },
     });
 
     return created.map(PromotionProductMapper.toDomain);
   }
 
-  async findByPromotionId(
-    promotionId: string,
-  ): Promise<PromotionProduct[]> {
+  async findByPromotionId(promotionId: string): Promise<PromotionProduct[]> {
     return this.prismaService.promotionProduct
       .findMany({
         where: {
@@ -49,21 +43,18 @@ export class PromotionProductRepositoryImpl implements PromotionProductRepositor
           product: true,
         },
       })
-      .then((items) =>
-        items.map(PromotionProductMapper.toDomain),
-      );
+      .then((items) => items.map(PromotionProductMapper.toDomain));
   }
 
-  async findExistingByProduct(
-    promotionId: string,
-    productIds: string[],
-  ) {
-    return this.prismaService.promotionProduct.findMany({
-      where: {
-        promotion_id: promotionId,
-        product_id: { in: productIds },
-      },
-    }).then((items) => items.map(PromotionProductMapper.toDomain));
+  async findExistingByProduct(promotionId: string, productIds: string[]) {
+    return this.prismaService.promotionProduct
+      .findMany({
+        where: {
+          promotion_id: promotionId,
+          product_id: { in: productIds },
+        },
+      })
+      .then((items) => items.map(PromotionProductMapper.toDomain));
   }
 
   async deleteByProductIds(
@@ -130,7 +121,7 @@ export class PromotionProductRepositoryImpl implements PromotionProductRepositor
       .findMany({
         include: {
           promotion: true,
-          product: true
+          product: true,
         },
       })
       .then((results) => results.map(PromotionProductMapper.toDomain));
@@ -159,12 +150,12 @@ export class PromotionProductRepositoryImpl implements PromotionProductRepositor
     const whereClause = includeAll
       ? { product_id: productId }
       : {
-        product_id: productId,
-        promotion: {
-          status: PromotionStatus.ACTIVE,
-          is_deleted: false,
-        },
-      };
+          product_id: productId,
+          promotion: {
+            status: PromotionStatus.ACTIVE,
+            is_deleted: false,
+          },
+        };
 
     return await this.prismaService.promotionProduct
       .findMany({

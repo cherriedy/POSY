@@ -316,13 +316,13 @@ export class CreateOrderService {
   }
 
   /**
-   * Returns active tax configurations for the provided tax types.
+   * Returns active tax configurations for the provided tax entities.
    *
    * This helper centralizes the "find by type + only active" pattern used
-   * for VAT, service charges, and any future top-level tax types.
+   * for VAT, service charges, and any future top-level tax entities.
    *
-   * @param types - Array of tax types to select (e.g., `[TaxType.VAT]`).
-   * @returns Array of active tax configs matching the given types.
+   * @param types - Array of tax entities to select (e.g., `[TaxType.VAT]`).
+   * @returns Array of active tax configs matching the given entities.
    */
   private async getActiveTaxesByType(types: TaxType[]) {
     return await this.taxRepository

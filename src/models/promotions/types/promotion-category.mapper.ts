@@ -19,7 +19,7 @@ export class PromotionCategoryMapper {
 
       (prisma as any).category
         ? CategoryMapper.toDomain((prisma as any).category)
-        : undefined
+        : undefined,
     );
   }
 
@@ -27,7 +27,7 @@ export class PromotionCategoryMapper {
     return <PrismaPromotionCategory>{
       ...(domain.id ? { id: domain.id } : {}),
       promotion_id: domain.promotionId,
-      category_id: domain.categoryId
+      category_id: domain.categoryId,
     };
   }
 }

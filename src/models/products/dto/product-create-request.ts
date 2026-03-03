@@ -12,6 +12,7 @@ import {
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ProductDiscountType } from '../enums';
 import { ProductAttributeUpsertRequestDto } from './product-attribute-upsert-request.dto';
+import { ProductIngredientBulkUpsertItemDto } from './product-ingredient-bulk-upsert-request.dto';
 import { Type } from 'class-transformer';
 
 export class CreateProductDto {
@@ -128,4 +129,13 @@ export class CreateProductDto {
   @ValidateNested()
   @Type(() => ProductAttributeUpsertRequestDto)
   attributes?: ProductAttributeUpsertRequestDto;
+
+  @ApiPropertyOptional({
+    type: [ProductIngredientBulkUpsertItemDto],
+    description: 'Product ingredients (optional)',
+  })
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => ProductIngredientBulkUpsertItemDto)
+  ingredients?: ProductIngredientBulkUpsertItemDto[];
 }

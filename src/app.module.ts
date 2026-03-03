@@ -33,6 +33,7 @@ import { ZoneModule } from './models/zones/zone.module';
 import { TableSessionModule } from './models/table-sessions/table-session.module';
 import { UserTrackingModule } from './user-tracking';
 import { RedisModule } from './providers/redis';
+import { IngredientModule } from './models/ingredients';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { RedisModule } from './providers/redis';
     UserTrackingModule,
     RedisModule,
     RedisConfigModule,
+    IngredientModule,
   ],
   providers: [
     // {

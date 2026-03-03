@@ -61,7 +61,7 @@ export class FloorController {
     private readonly createFloorService: CreateFloorService,
     private readonly updateFloorService: UpdateFloorService,
     private readonly deleteFloorService: DeleteFloorService,
-  ) { }
+  ) {}
 
   @Get()
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -114,7 +114,9 @@ export class FloorController {
     type: FloorDetailedResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Floor not found' })
-  async getFloorById(@Param('id') id: string): Promise<FloorDetailedResponseDto> {
+  async getFloorById(
+    @Param('id') id: string,
+  ): Promise<FloorDetailedResponseDto> {
     try {
       const floor = await this.getFloorsService.getFloorById(id);
       return plainToInstance(FloorDetailedResponseDto, floor, {

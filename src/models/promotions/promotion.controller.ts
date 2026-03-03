@@ -30,7 +30,10 @@ import {
 } from './dto';
 import { Promotion, PromotionCategory, PromotionProduct } from './types';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { DuplicateEntryException, RelatedRecordNotFoundException } from '../../common/exceptions';
+import {
+  DuplicateEntryException,
+  RelatedRecordNotFoundException,
+} from '../../common/exceptions';
 import { plainToInstance } from 'class-transformer';
 import { UpdatePromotionService } from './update-promotion/update-promotion.service';
 import { PromotionNotFoundException } from './exceptions';
@@ -38,7 +41,10 @@ import { GetPromotionsService } from './get-promotions/get-promotions.service';
 import { DeletePromotionService } from './delete-promotion/delete-promotion.service';
 import { ValidatePromotionService } from './validate-promotion/validate-promotion.service';
 import { PromotionUnusableException } from './exceptions/PromotionUnusableException';
-import { CategoriesNotFoundException, CategoryNotFoundException } from '../categories/exceptions';
+import {
+  CategoriesNotFoundException,
+  CategoryNotFoundException,
+} from '../categories/exceptions';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -51,7 +57,10 @@ import {
 import { PromotionProductPreviewResponseDto } from './dto/promotion-product-response.dto';
 import { Request } from 'express';
 import { JwtPayload } from '../../authentication/interfaces';
-import { ProductNotFoundException, ProductsNotFoundException } from '../products/exceptions';
+import {
+  ProductNotFoundException,
+  ProductsNotFoundException,
+} from '../products/exceptions';
 import { createPageResponseSchema } from '../../common/dto';
 import { BulkDeletePromotionCategoryDto } from './dto/promotion-category-delete-request.dto';
 import { BulkCreatePromotionCategoryDto } from './dto/promotion-category-create.dto';
@@ -70,7 +79,7 @@ export class PromotionController {
     private readonly updatePromotionService: UpdatePromotionService,
     private readonly deletePromotionService: DeletePromotionService,
     private readonly validatePromotionService: ValidatePromotionService,
-  ) { }
+  ) {}
 
   @Get('categories')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
@@ -118,21 +127,17 @@ export class PromotionController {
     description: 'List of categories of the promotion',
     type: [PromotionCategoryPreviewResponseDto],
   })
-  async getPromotionCategoriesById(
-    @Param('id') promotionId: string,
-  ) {
+  async getPromotionCategoriesById(@Param('id') promotionId: string) {
     try {
       const result =
-        await this.getPromotionsService.getPromotionCategoriesByPromotionId(promotionId);
+        await this.getPromotionsService.getPromotionCategoriesByPromotionId(
+          promotionId,
+        );
 
-      return plainToInstance(
-        PromotionCategoryPreviewResponseDto,
-        result,
-        {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        },
-      );
+      return plainToInstance(PromotionCategoryPreviewResponseDto, result, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
     } catch (e) {
       if (e instanceof PromotionNotFoundException) {
         throw new NotFoundException({ message: e.message });
@@ -169,14 +174,10 @@ export class PromotionController {
           dto.categoryIds,
         );
 
-      return plainToInstance(
-        PromotionCategoryPreviewResponseDto,
-        result,
-        {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        },
-      );
+      return plainToInstance(PromotionCategoryPreviewResponseDto, result, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
     } catch (e) {
       if (
         e instanceof PromotionNotFoundException ||
@@ -232,7 +233,10 @@ export class PromotionController {
       if (e instanceof PromotionNotFoundException) {
         throw new BadRequestException({ message: e.message });
       } else if (e instanceof CategoriesNotFoundException) {
-        throw new NotFoundException({ message: e.message, meta: (e as any).meta });
+        throw new NotFoundException({
+          message: e.message,
+          meta: (e as any).meta,
+        });
       } else if (e instanceof RelatedRecordNotFoundException) {
         throw new NotFoundException({ message: e.message });
       }
@@ -318,21 +322,17 @@ export class PromotionController {
     description: 'List of products of the promotion',
     type: [PromotionProductPreviewResponseDto],
   })
-  async getPromotionProductsById(
-    @Param('id') promotionId: string,
-  ) {
+  async getPromotionProductsById(@Param('id') promotionId: string) {
     try {
       const result =
-        await this.getPromotionsService.getPromotionProductsByPromotionId(promotionId);
+        await this.getPromotionsService.getPromotionProductsByPromotionId(
+          promotionId,
+        );
 
-      return plainToInstance(
-        PromotionProductPreviewResponseDto,
-        result,
-        {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        },
-      );
+      return plainToInstance(PromotionProductPreviewResponseDto, result, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
     } catch (e) {
       if (e instanceof PromotionNotFoundException) {
         throw new NotFoundException({ message: e.message });
@@ -369,14 +369,10 @@ export class PromotionController {
           dto.productIds,
         );
 
-      return plainToInstance(
-        PromotionProductPreviewResponseDto,
-        result,
-        {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        },
-      );
+      return plainToInstance(PromotionProductPreviewResponseDto, result, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
     } catch (e) {
       if (
         e instanceof PromotionNotFoundException ||
@@ -432,7 +428,10 @@ export class PromotionController {
       if (e instanceof PromotionNotFoundException) {
         throw new BadRequestException({ message: e.message });
       } else if (e instanceof ProductsNotFoundException) {
-        throw new NotFoundException({ message: e.message, meta: (e as any).meta });
+        throw new NotFoundException({
+          message: e.message,
+          meta: (e as any).meta,
+        });
       } else if (e instanceof RelatedRecordNotFoundException) {
         throw new NotFoundException({ message: e.message });
       }
@@ -449,7 +448,7 @@ export class PromotionController {
   // @Roles(Role.ADMIN, Role.MANAGER)
   // @ApiOperation({
   //   summary: 'Get promotion product by ID',
-  //   description: `Fetches details for a specific promotion-product relationship by its ID. 
+  //   description: `Fetches details for a specific promotion-product relationship by its ID.
   //   Only accessible by ADMIN and MANAGER roles. Returns 400 if not found.`,
   // })
   // @ApiParam({ name: 'id', type: String })
@@ -487,8 +486,8 @@ export class PromotionController {
   // @Roles(Role.ADMIN, Role.MANAGER)
   // @ApiOperation({
   //   summary: 'Delete a promotion product',
-  //   description: `Deletes a promotion-product relationship by its ID. 
-  //   Only accessible by ADMIN and MANAGER roles. 
+  //   description: `Deletes a promotion-product relationship by its ID.
+  //   Only accessible by ADMIN and MANAGER roles.
   //   Returns a success message. Throws 400 if not found.`,
   // })
   // @ApiParam({ name: 'id', type: String })
@@ -568,12 +567,9 @@ export class PromotionController {
           role,
         );
 
-      return plainToInstance(
-        PromotionPreviewResponseDto,
-        promotions,
-        { excludeExtraneousValues: true },
-      );
-
+      return plainToInstance(PromotionPreviewResponseDto, promotions, {
+        excludeExtraneousValues: true,
+      });
     } catch (e) {
       if (e instanceof ProductNotFoundException) {
         throw new NotFoundException(e.message);

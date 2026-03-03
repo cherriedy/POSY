@@ -65,7 +65,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
     return prismaCategory ? CategoryMapper.toDomain(prismaCategory) : null;
   }
-  
+
   /**
    * Finds multiple categories by their unique identifiers.
    * @param ids - An array of unique identifiers of the categories to find.

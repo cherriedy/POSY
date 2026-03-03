@@ -16,7 +16,10 @@ import { FloorRepository } from 'src/models/floors/repositories';
 import { ZoneRepository } from 'src/models/zones/repositories';
 import { FloorsNotFoundException } from 'src/models/floors/exceptions';
 import { ZonesNotFoundException } from 'src/models/zones/exceptions';
-import { DuplicateEntryException, RelatedRecordNotFoundException } from 'src/common/exceptions';
+import {
+  DuplicateEntryException,
+  RelatedRecordNotFoundException,
+} from 'src/common/exceptions';
 
 @Injectable()
 export class CreatePromotionService {
@@ -28,7 +31,7 @@ export class CreatePromotionService {
     private readonly productRepository: ProductRepository,
     private readonly floorRepository: FloorRepository,
     private readonly zoneRepository: ZoneRepository,
-  ) { }
+  ) {}
 
   /**
    * Creates a new promotion. If the promotion is not quantity-based, clears the minQuantity field.
@@ -85,16 +88,15 @@ export class CreatePromotionService {
         { applicability: promotion.applicability },
       );
     }
-    
+
     const duplicateCategoryIds = categoryIds.filter(
       (id, index, arr) => arr.indexOf(id) !== index,
     );
 
     if (duplicateCategoryIds.length > 0) {
-      throw new DuplicateEntryException(
-        'Duplicate categoryIds in request.',
-        { duplicateCategoryIds: [...new Set(duplicateCategoryIds)] },
-      );
+      throw new DuplicateEntryException('Duplicate categoryIds in request.', {
+        duplicateCategoryIds: [...new Set(duplicateCategoryIds)],
+      });
     }
 
     // Check categories
@@ -106,7 +108,7 @@ export class CreatePromotionService {
     if (categories.length !== uniqueCategoryIds.length) {
       throw new CategoriesNotFoundException({
         missingIds: uniqueCategoryIds.filter(
-          id => !categories.some(c => c.id === id),
+          (id) => !categories.some((c) => c.id === id),
         ),
       });
     }
@@ -121,7 +123,7 @@ export class CreatePromotionService {
       throw new DuplicateEntryException(
         'Some categories already attached to this promotion.',
         {
-          duplicatedCategoryIds: existing.map(e => e.categoryId),
+          duplicatedCategoryIds: existing.map((e) => e.categoryId),
         },
       );
     }
@@ -137,7 +139,7 @@ export class CreatePromotionService {
 
   async bulkCreatePromotionProducts(
     promotionId: string,
-    productIds: string[]
+    productIds: string[],
   ): Promise<PromotionProduct[]> {
     // Check promotion
     const promotion = await this.promotionRepository.findById(promotionId);
@@ -153,9 +155,7 @@ export class CreatePromotionService {
     //   );
     // }
 
-    if (
-      promotion.applicability !== PromotionApplicability.SPECIFIC_ITEMS
-    ) {
+    if (promotion.applicability !== PromotionApplicability.SPECIFIC_ITEMS) {
       throw new PromotionUnusableException(
         promotionId,
         'Promotion applicability does not allow adding products.',
@@ -168,21 +168,19 @@ export class CreatePromotionService {
     );
 
     if (duplicateProductIds.length > 0) {
-      throw new DuplicateEntryException(
-        'Duplicate productIds in request.',
-        { duplicateProductIds: [...new Set(duplicateProductIds)] },
-      );
+      throw new DuplicateEntryException('Duplicate productIds in request.', {
+        duplicateProductIds: [...new Set(duplicateProductIds)],
+      });
     }
 
     // Check products
     const uniqueProductIds = [...new Set(productIds)];
 
-    const products =
-      await this.productRepository.findByIds(uniqueProductIds);
+    const products = await this.productRepository.findByIds(uniqueProductIds);
     if (products.length !== uniqueProductIds.length) {
       throw new ProductsNotFoundException({
         missingIds: uniqueProductIds.filter(
-          id => !products.some(p => p.id === id),
+          (id) => !products.some((p) => p.id === id),
         ),
       });
     }
@@ -197,7 +195,7 @@ export class CreatePromotionService {
       throw new DuplicateEntryException(
         'Some products already attached to this promotion.',
         {
-          duplicatedProductIds: existing.map(e => e.productId),
+          duplicatedProductIds: existing.map((e) => e.productId),
         },
       );
     }
@@ -211,5 +209,4 @@ export class CreatePromotionService {
 
     return this.promotionProductRepository.bulkCreate(entities);
   }
-
 }

@@ -1,4 +1,4 @@
-import { Product } from '../../../models/products/types';
+import { Product } from '../../../models/products';
 
 /**
  * MeiliSearch document type for Product indexing.
