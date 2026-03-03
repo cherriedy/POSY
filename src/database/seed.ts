@@ -4,8 +4,8 @@ import { PrismaClient } from '@prisma/client';
 import {
   seedAdmin,
   seedCategories,
-  seedCuisines,
   seedFloors,
+  seedZones,
   seedIngredients,
   seedProducts,
   seedPromotions,
