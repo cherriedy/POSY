@@ -1,5 +1,5 @@
 import { TableSession } from '../../models/table-sessions/types';
-import { Product } from '../../models/products/types';
+import { Product } from '../../models/products';
 
 export class SessionProductInteraction {
   constructor(

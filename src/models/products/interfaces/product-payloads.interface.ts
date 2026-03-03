@@ -15,6 +15,7 @@ export interface ProductCreatePayload {
   stockQuantity?: number;
   isAvailable?: boolean;
   attributes?: ProductAttributesCreatePayload;
+  ingredients?: ProductIngredientCreatePayload[];
 }
 
 /**
@@ -29,4 +30,29 @@ export interface ProductAttributesCreatePayload {
   spiceLevel?: number | null;
   isSeasonal?: boolean;
   season?: string | null;
+}
+
+/**
+ * Payload for adding a single ingredient to a product.
+ */
+export interface ProductIngredientCreatePayload {
+  ingredientId: string;
+  quantity: number;
+}
+
+/**
+ * A single item in a bulk ingredient upsert payload.
+ */
+export interface ProductIngredientBulkUpsertItemPayload {
+  ingredientId: string;
+  quantity: number;
+}
+
+/**
+ * Shared payload for bulk-adding or bulk-replacing all ingredients of a product.
+ * This is the contract between the controller and the service layer.
+ */
+export interface ProductIngredientBulkUpsertPayload {
+  productId: string;
+  ingredients: ProductIngredientBulkUpsertItemPayload[];
 }

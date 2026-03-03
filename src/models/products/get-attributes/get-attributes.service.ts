@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ProductAttributeRepository } from '../repositories';
-import { ProductAttribute } from '../types';
+import { ProductAttribute } from '../entities';
 
 @Injectable()
 export class GetAttributesService {

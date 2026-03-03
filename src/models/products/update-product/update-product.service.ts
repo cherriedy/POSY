@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ProductRepository } from '../repositories';
-import { Product } from '../types';
+import { Product } from '../entities';
 import { getSlug } from '../../../common/utilities/string.util';
 
 @Injectable()

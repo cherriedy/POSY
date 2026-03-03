@@ -33,10 +33,10 @@ import {
   ForeignKeyViolationException,
 } from '../../common/exceptions';
 import { plainToInstance } from 'class-transformer';
-import { CreateProductService } from './create-product/create-product.service';
-import { UpdateProductService } from './update-product/update-product.service';
-import { GetProductsService } from './get-products/get-products.service';
-import { DeleteProductService } from './delete-product/delete-product.service';
+import { CreateProductService } from './create-product';
+import { UpdateProductService } from './update-product';
+import { GetProductsService } from './get-products';
+import { DeleteProductService } from './delete-product';
 import { createPageResponseSchema } from '../../common/dto';
 import {
   ApiBearerAuth,
@@ -47,12 +47,25 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { ProductNotFoundException } from './exceptions';
+import {
+  ProductIngredientNotFoundException,
+  ProductNotFoundException,
+} from './exceptions';
 import { JwtPayload } from '../../authentication/interfaces';
-import { GetAttributesService } from './get-attributes/get-attributes.service';
-import { UpsertAttributesService } from './upsert-attributes/upsert-attributes.service';
-import { CreateProductMapper } from './create-product/create-product.mapper';
-import { Product } from './types';
+import { GetAttributesService } from './get-attributes';
+import { UpsertAttributesService } from './upsert-attributes';
+import { CreateProductMapper } from './create-product';
+import { Product } from './entities';
+import { GetProductIngredientsService } from './get-product-ingredients';
+import {
+  UpsertProductIngredientsService,
+  UpsertProductIngredientsMapper,
+} from './upsert-product-ingredients';
+import { RemoveProductIngredientService } from './remove-product-ingredient';
+import {
+  ProductIngredientResponseDto,
+  ProductIngredientBulkUpsertRequestDto,
+} from './dto';
 
 @ApiTags('Product')
 @ApiBearerAuth()
@@ -68,6 +81,9 @@ export class ProductController {
     private readonly deleteProductService: DeleteProductService,
     private readonly getProductAttributesService: GetAttributesService,
     private readonly upsertProductAttributesService: UpsertAttributesService,
+    private readonly getProductIngredientsService: GetProductIngredientsService,
+    private readonly upsertProductIngredientsService: UpsertProductIngredientsService,
+    private readonly removeProductIngredientService: RemoveProductIngredientService,
   ) {}
 
   @Get()
@@ -116,25 +132,20 @@ export class ProductController {
     summary: 'Get available products',
     description: 'Returns available and non-deleted products',
   })
-  async getAvailableProducts(): Promise<
-    ProductPreviewResponseDto[]
-  > {
+  async getAvailableProducts(): Promise<ProductPreviewResponseDto[]> {
     try {
-      const productPage =
-        await this.getProductsService.getAll({
-          filter: {
-            isAvailable: true,
-            isDeleted: false,
-          },
-          page: 1,
-          pageSize: 1000,
-        });
+      const productPage = await this.getProductsService.getAll({
+        filter: {
+          isAvailable: true,
+          isDeleted: false,
+        },
+        page: 1,
+        pageSize: 1000,
+      });
 
-      return plainToInstance(
-        ProductPreviewResponseDto,
-        productPage.items,
-        { excludeExtraneousValues: true },
-      );
+      return plainToInstance(ProductPreviewResponseDto, productPage.items, {
+        excludeExtraneousValues: true,
+      });
     } catch (e) {
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -361,6 +372,119 @@ export class ProductController {
         e instanceof DuplicateEntryException ||
         e instanceof ForeignKeyViolationException
       ) {
+        throw new BadRequestException(e.message);
+      }
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
+
+  @Get(':id/ingredients')
+  @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @Roles(Role.MANAGER, Role.ADMIN)
+  @ApiOperation({
+    summary: 'Get product ingredients',
+    description: 'Fetches all ingredients for a specific product by its ID.',
+  })
+  @ApiParam({ name: 'id', type: String, description: 'Product ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Product ingredients retrieved',
+    type: [ProductIngredientResponseDto],
+  })
+  async getProductIngredients(
+    @Param('id') productId: string,
+  ): Promise<ProductIngredientResponseDto[]> {
+    try {
+      const ingredients =
+        await this.getProductIngredientsService.getByProductId(productId);
+
+      return plainToInstance(ProductIngredientResponseDto, ingredients, {
+        excludeExtraneousValues: true,
+      });
+    } catch (e) {
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
+
+  @Put(':id/ingredients')
+  @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @Roles(Role.MANAGER, Role.ADMIN)
+  @ApiOperation({
+    summary: 'Upsert product ingredients',
+    description:
+      'Bulk-upserts ingredients for a product. ' +
+      'Existing ingredient associations are updated with the new quantity; ' +
+      'new ones are inserted. All operations are performed atomically.',
+  })
+  @ApiParam({ name: 'id', type: String, description: 'Product ID' })
+  @ApiBody({ type: ProductIngredientBulkUpsertRequestDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Product ingredients upserted successfully',
+    type: [ProductIngredientResponseDto],
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input or product not found',
+  })
+  async upsertProductIngredients(
+    @Param('id') productId: string,
+    @Body() dto: ProductIngredientBulkUpsertRequestDto,
+  ): Promise<ProductIngredientResponseDto[]> {
+    try {
+      const payload = UpsertProductIngredientsMapper.toPayload(productId, dto);
+      const result = await this.upsertProductIngredientsService.upsert(payload);
+      return plainToInstance(ProductIngredientResponseDto, result, {
+        excludeExtraneousValues: true,
+      });
+    } catch (e) {
+      if (
+        e instanceof DuplicateEntryException ||
+        e instanceof ForeignKeyViolationException
+      ) {
+        throw new BadRequestException(e.message);
+      }
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
+
+  @Delete(':productId/ingredients/:ingredientId')
+  @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @Roles(Role.MANAGER, Role.ADMIN)
+  @ApiOperation({
+    summary: 'Remove ingredient from product',
+    description:
+      'Removes an ingredient from a product by productId and ingredientId.',
+  })
+  @ApiParam({ name: 'productId', type: String, description: 'Product ID' })
+  @ApiParam({
+    name: 'ingredientId',
+    type: String,
+    description: 'Ingredient ID',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Product ingredient removed successfully',
+  })
+  @ApiResponse({ status: 400, description: 'Product ingredient not found' })
+  async removeProductIngredient(
+    @Param('productId') productId: string,
+    @Param('ingredientId') ingredientId: string,
+  ) {
+    try {
+      await this.removeProductIngredientService.remove(productId, ingredientId);
+      return { message: 'Product ingredient removed successfully.' };
+    } catch (e) {
+      if (e instanceof ProductIngredientNotFoundException) {
         throw new BadRequestException(e.message);
       }
       this.logger.error(e);
