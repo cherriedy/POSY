@@ -5,6 +5,7 @@ import {
   seedAdmin,
   seedCategories,
   seedFloors,
+  seedIngredients,
   seedProducts,
   seedPromotions,
   seedStaff,
@@ -31,6 +32,7 @@ async function main() {
   await seedZones(prisma);
   await seedTables(prisma);
   await seedTaxes(prisma);
+  await seedIngredients(prisma);
 }
 
 main()

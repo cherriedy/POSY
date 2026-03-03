@@ -67,12 +67,14 @@ export async function seedZones(prisma: PrismaClient) {
       where: { name: zone.name },
     });
     if (!exists) {
-      await prisma.zone.create({ data: {
-        ...zone,
-        floor: {
-          connect: { id: groundFloor.id }
+      await prisma.zone.create({
+        data: {
+          ...zone,
+          floor: {
+            connect: { id: groundFloor.id },
+          },
         },
-      }, });
+      });
     }
   }
 }
