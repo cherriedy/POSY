@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -55,7 +56,7 @@ import { createPageResponseSchema } from '../../common/dto';
 
 @ApiTags('User')
 @ApiBearerAuth()
-@Controller('user')
+@Controller('users')
 export class UserController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: import('winston').Logger;
@@ -86,10 +87,20 @@ export class UserController {
   async getUserById(
     @Param('id') userId: string,
   ): Promise<UserDetailedResponseDto> {
-    const user = await this.getUsersService.getUserById(userId);
-    return plainToInstance(UserDetailedResponseDto, user, {
-      excludeExtraneousValues: true,
-    });
+    try {
+      const user = await this.getUsersService.getUserById(userId);
+      return plainToInstance(UserDetailedResponseDto, user, {
+        excludeExtraneousValues: true,
+      });
+    } catch (e) {
+      if (e instanceof UserNotFoundException) {
+        throw new NotFoundException(e.message);
+      }
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
   }
 
   @Get()

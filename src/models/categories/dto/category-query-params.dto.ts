@@ -28,6 +28,16 @@ export class CategoryQueryParamsDto {
   @Transform(({ value }) => value === 'true' || value === true)
   isActive?: boolean;
 
+  @ApiPropertyOptional({
+    type: Boolean,
+    description: 'Is deleted',
+    example: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
+  isDeleted?: boolean;
+
   @ApiPropertyOptional({ type: Number, description: 'Page number', example: 1 })
   @IsOptional()
   @IsNumber()
@@ -51,7 +61,7 @@ export class CategoryQueryParamsDto {
   orderBy?: string;
 
   toQueryParams(): CategoryQueryParams {
-    const { page, pageSize, query, isActive, orderBy } = this;
+    const { page, pageSize, query, isActive, isDeleted, orderBy } = this;
 
     // Parse orderBy string into CategoryOrderBy array
     let parsedOrderBy: CategoryOrderBy | undefined;
@@ -72,6 +82,7 @@ export class CategoryQueryParamsDto {
       filter: {
         query,
         isActive,
+        isDeleted
       },
     };
   }

@@ -23,7 +23,7 @@ export class FloorRepositoryImpl implements FloorRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   /**
    * Creates a new floor in the database.
@@ -80,10 +80,32 @@ export class FloorRepositoryImpl implements FloorRepository {
   async findById(id: string): Promise<Floor | null> {
     const prismaFloor = await this.prismaService.floor.findUnique({
       where: { id },
-      include: { tables: true },
+      include: {
+        tables: true,
+        zones: true
+      },
     });
 
     return prismaFloor ? FloorMapper.toDomain(prismaFloor) : null;
+  }
+
+  /**
+   * Finds multiple floors by their unique identifiers.
+   * @param ids - An array of unique identifiers of the floors to find.
+   * @returns A promise that resolves to an array of found floors.
+   */
+  async findByIds(ids: string[]): Promise<Floor[]> {
+    return this.prismaService.floor
+      .findMany({
+        where: {
+          id: { in: ids },
+        },
+        include: {
+          tables: true,
+          zones: true
+        },
+      })
+      .then((items) => items.map(FloorMapper.toDomain));
   }
 
   /**

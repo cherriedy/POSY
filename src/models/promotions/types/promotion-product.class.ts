@@ -1,9 +1,9 @@
 import { Promotion } from './promotion.class';
-import { Product } from '../../products/types';
+import { Product } from 'src/models/products/types';
 
 export class PromotionProduct {
   constructor(
-    public readonly id: string,
+    public readonly id: string | null,
     public readonly promotionId: string,
     public readonly productId: string,
     public readonly promotion?: Promotion,

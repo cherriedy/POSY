@@ -65,6 +65,22 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
     return prismaCategory ? CategoryMapper.toDomain(prismaCategory) : null;
   }
+  
+  /**
+   * Finds multiple categories by their unique identifiers.
+   * @param ids - An array of unique identifiers of the categories to find.
+   * @returns A promise that resolves to an array of found categories.
+   */
+  async findByIds(ids: string[]): Promise<Category[]> {
+    return this.prismaService.category
+      .findMany({
+        where: {
+          id: { in: ids },
+          is_deleted: false,
+        },
+      })
+      .then((items) => items.map(CategoryMapper.toDomain));
+  }
 
   /**
    * Updates an existing category by its unique identifier.
@@ -201,6 +217,9 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
     if (filters.isActive !== undefined) {
       where.is_active = filters.isActive;
+    }
+    if (filters.isDeleted !== undefined) {
+      where.is_deleted = filters.isDeleted;
     }
 
     return where;

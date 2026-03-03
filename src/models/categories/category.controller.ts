@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -50,7 +51,7 @@ import { createPageResponseSchema } from '../../common/dto';
 
 @ApiTags('Category')
 @ApiBearerAuth()
-@Controller('category')
+@Controller('categories')
 export class CategoryController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: import('winston').Logger;
@@ -60,7 +61,41 @@ export class CategoryController {
     private readonly createCategoryService: CreateCategoryService,
     private readonly updateCategoryService: UpdateCategoryService,
     private readonly deleteCategoryService: DeleteCategoryService,
-  ) {}
+  ) { }
+
+  @Get('available')
+  @Roles(Role.MANAGER, Role.ADMIN)
+  @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @ApiOperation({
+    summary: 'Get available categories',
+    description: 'Returns active and non-deleted categories',
+  })
+  async getAvailableCategories(): Promise<
+    CategoryPreviewResponseDto[]
+  > {
+    try {
+      const categoryPage =
+        await this.getCategoriesService.getAll({
+          filter: {
+            isActive: true,
+            isDeleted: false,
+          },
+          page: 1,
+          pageSize: 1000,
+        });
+
+      return plainToInstance(
+        CategoryPreviewResponseDto,
+        categoryPage.items,
+        { excludeExtraneousValues: true },
+      );
+    } catch (e) {
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
 
   @Get(':id')
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -76,15 +111,24 @@ export class CategoryController {
     description: 'Category details',
     type: CategoryDetailedResponseDto,
   })
-  @ApiResponse({ status: 400, description: 'Category not found' })
+  @ApiResponse({ status: 404, description: 'Category not found' })
   async getCategoryById(
     @Param('id') id: string,
   ): Promise<CategoryDetailedResponseDto> {
-    const category = await this.getCategoriesService.getCategoryById(id);
-
-    return plainToInstance(CategoryDetailedResponseDto, category, {
-      excludeExtraneousValues: true,
-    });
+    try {
+      const category = await this.getCategoriesService.getCategoryById(id);
+      return plainToInstance(CategoryDetailedResponseDto, category, {
+        excludeExtraneousValues: true,
+      });
+    } catch (e) {
+      if (e instanceof CategoryNotFoundException) {
+        throw new NotFoundException(e.message);
+      }
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
   }
 
   @Get()
@@ -127,7 +171,7 @@ export class CategoryController {
     }
   }
 
-  @Post('')
+  @Post()
   @Roles(Role.ADMIN, Role.MANAGER)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @ApiOperation({

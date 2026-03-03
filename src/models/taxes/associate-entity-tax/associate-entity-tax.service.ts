@@ -114,7 +114,7 @@ export class AssociateEntityTaxService {
         } else if (e instanceof DuplicateEntityTaxAssociationException) {
           errorMessage = `Association already exists for ${entity.entityType} with ID ${entity.entityId}`;
         } else if (e instanceof Error) {
-          errorMessage = e.message;
+          
         }
 
         failures.push({

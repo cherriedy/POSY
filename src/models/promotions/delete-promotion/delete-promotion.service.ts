@@ -4,6 +4,12 @@ import {
   PromotionProductRepository,
   PromotionRepository,
 } from '../repositories';
+import { PromotionNotFoundException } from '../exceptions';
+import { CategoryRepository } from 'src/models/categories/repositories';
+import { CategoriesNotFoundException } from 'src/models/categories/exceptions';
+import { RelatedRecordNotFoundException } from 'src/common/exceptions';
+import { ProductsNotFoundException } from 'src/models/products/exceptions';
+import { ProductRepository } from 'src/models/products/repositories';
 
 @Injectable()
 export class DeletePromotionService {
@@ -11,7 +17,9 @@ export class DeletePromotionService {
     private readonly promotionRepository: PromotionRepository,
     private readonly promotionCategoryRepository: PromotionCategoryRepository,
     private readonly promotionProductRepository: PromotionProductRepository,
-  ) {}
+    private readonly categoryRepository: CategoryRepository,
+    private readonly productRepository: ProductRepository,
+  ) { }
 
   /**
    * Deletes a promotion by its ID.
@@ -28,16 +36,118 @@ export class DeletePromotionService {
     await this.promotionRepository.delete(id);
   }
 
-  /**
-   * Deletes a promotion category by its ID.
-   *
-   * Directly deletes the promotion category with the specified ID.
-   *
-   * @param {string} id - The unique identifier of the promotion category to delete.
-   * @returns {Promise<void>} Resolves when the operation is complete.
-   */
-  async deletePromotionCategory(id: string): Promise<void> {
-    await this.promotionCategoryRepository.delete(id);
+  async deletePromotionCategoriesByCategoryIds(
+    promotionId: string,
+    categoryIds: string[],
+  ): Promise<void> {
+    // Validate promotion
+    const promotion = await this.promotionRepository.findById(promotionId);
+
+    if (!promotion || promotion.isDeleted) {
+      throw new PromotionNotFoundException({ id: promotionId });
+    }
+
+    // Validate categories
+    const uniqueCategoryIds = [...new Set(categoryIds)];
+
+    const categories =
+      await this.categoryRepository.findByIds(uniqueCategoryIds);
+
+    if (categories.length !== uniqueCategoryIds.length) {
+      throw new CategoriesNotFoundException({
+        missingIds: uniqueCategoryIds.filter(
+          id => !categories.some(c => c.id === id),
+        ),
+      });
+    }
+
+    // Validate that the categories are linked to the promotion
+    const existing =
+      await this.promotionCategoryRepository.findExistingByCategory(
+        promotionId,
+        uniqueCategoryIds,
+      );
+
+    if (!existing.length) {
+      throw new RelatedRecordNotFoundException(
+        'None of the provided categories belong to this promotion.',
+      );
+    }
+
+    if (existing.length !== uniqueCategoryIds.length) {
+      const existingIds = existing.map(e => e.categoryId);
+
+      const notLinked = uniqueCategoryIds.filter(
+        id => !existingIds.includes(id),
+      );
+
+      throw new RelatedRecordNotFoundException(
+        'Some categories are not attached to this promotion.',
+        notLinked,
+      );
+    }
+
+    await this.promotionCategoryRepository.deleteByCategoryIds(
+      promotionId,
+      categoryIds,
+    );
+  }
+
+  async deletePromotionProductsByProductIds(
+    promotionId: string,
+    productIds: string[],
+  ): Promise<void> {
+    // Validate promotion
+    const promotion = await this.promotionRepository.findById(promotionId);
+
+    if (!promotion || promotion.isDeleted) {
+      throw new PromotionNotFoundException({ id: promotionId });
+    }
+
+    // Validate product
+    const uniqueProductIds = [...new Set(productIds)];
+
+    const products =
+      await this.productRepository.findByIds(uniqueProductIds);
+
+    if (products.length !== uniqueProductIds.length) {
+      throw new ProductsNotFoundException({
+        missingIds: uniqueProductIds.filter(
+          id => !products.some(c => c.id === id),
+        ),
+      });
+    }
+
+    // Validate that the products are linked to the promotion
+    const existing =
+      await this.promotionProductRepository.findExistingByProduct(
+        promotionId,
+        uniqueProductIds,
+      );
+
+    if (!existing.length) {
+      throw new RelatedRecordNotFoundException(
+        'None of the provided categories belong to this promotion.',
+      );
+    }
+
+    if (existing.length !== uniqueProductIds.length) {
+      const existingIds = existing.map(e => e.productId);
+
+      const notLinked = uniqueProductIds.filter(
+        id => !existingIds.includes(id),
+      );
+
+      throw new RelatedRecordNotFoundException(
+        'Some products are not attached to this promotion.',
+        notLinked,
+      );
+    }
+
+    await this.promotionProductRepository.deleteByProductIds(
+      promotionId,
+      productIds,
+    );
   }
 
   /**
@@ -49,7 +159,7 @@ export class DeletePromotionService {
    * @param {string} id - The unique identifier of the promotion product to delete.
    * @returns {Promise<void>} Resolves when the deletion operation is complete.
    */
-  async deletePromotionProduct(id: string): Promise<void> {
-    await this.promotionProductRepository.delete(id);
-  }
+  // async deletePromotionProduct(id: string): Promise<void> {
+  //   await this.promotionProductRepository.delete(id);
+  // }
 }

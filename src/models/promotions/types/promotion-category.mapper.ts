@@ -12,17 +12,14 @@ export class PromotionCategoryMapper {
       prisma.id,
       prisma.promotion_id,
       prisma.category_id,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       (prisma as any).promotion
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
-          PromotionMapper.toDomain((prisma as any).promotion)
+        ? PromotionMapper.toDomain((prisma as any).promotion)
         : undefined,
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (prisma as any).category
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
-          CategoryMapper.toDomain((prisma as any).category)
-        : undefined,
+        ? CategoryMapper.toDomain((prisma as any).category)
+        : undefined
     );
   }
 
@@ -30,7 +27,7 @@ export class PromotionCategoryMapper {
     return <PrismaPromotionCategory>{
       ...(domain.id ? { id: domain.id } : {}),
       promotion_id: domain.promotionId,
-      category_id: domain.categoryId,
+      category_id: domain.categoryId
     };
   }
 }

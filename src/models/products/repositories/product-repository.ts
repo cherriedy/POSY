@@ -108,6 +108,22 @@ export class ProductRepositoryImpl implements ProductRepository {
   }
 
   /**
+   * Finds multiple products by their unique identifiers.
+   * @param ids - An array of unique identifiers of the products to find.
+   * @returns A promise that resolves to an array of found products.
+   */
+  async findByIds(ids: string[]): Promise<Product[]> {
+    return this.prismaService.product
+      .findMany({
+        where: {
+          id: { in: ids },
+          is_deleted: false,
+        },
+      })
+      .then((items) => items.map(ProductMapper.toDomain));
+  }
+
+  /**
    * Retrieves a paginated list of products based on query parameters.
    *
    * @param {ProductQueryParams} params - The query parameters for pagination, filtering, and sorting.

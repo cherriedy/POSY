@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -50,7 +51,7 @@ import { createPageResponseSchema } from '../../common/dto';
 
 @ApiTags('Zone')
 @ApiBearerAuth()
-@Controller('zone')
+@Controller('zones')
 export class ZoneController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: import('winston').Logger;
@@ -60,29 +61,7 @@ export class ZoneController {
     private readonly createZoneService: CreateZoneService,
     private readonly updateZoneService: UpdateZoneService,
     private readonly deleteZoneService: DeleteZoneService,
-  ) {}
-
-  @Get(':id')
-  @Roles(Role.MANAGER, Role.ADMIN)
-  @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @ApiOperation({
-    summary: 'Get zone by ID',
-    description: `Fetches detailed information for a specific zone by its unique ID. Accessible
-     by MANAGER and ADMIN roles.`,
-  })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({
-    status: 200,
-    description: 'Zone details',
-    type: ZoneDetailedResponseDto,
-  })
-  @ApiResponse({ status: 400, description: 'Zone not found' })
-  async getZoneById(@Param('id') id: string): Promise<ZoneDetailedResponseDto> {
-    const zone = await this.getZonesService.getZoneById(id);
-    return plainToInstance(ZoneDetailedResponseDto, zone, {
-      excludeExtraneousValues: true,
-    });
-  }
+  ) { }
 
   @Get()
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -120,7 +99,39 @@ export class ZoneController {
     }
   }
 
-  @Post('')
+  @Get(':id')
+  @Roles(Role.MANAGER, Role.ADMIN)
+  @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @ApiOperation({
+    summary: 'Get zone by ID',
+    description: `Fetches detailed information for a specific zone by its unique ID. Accessible
+     by MANAGER and ADMIN roles.`,
+  })
+  @ApiParam({ name: 'id', type: String })
+  @ApiResponse({
+    status: 200,
+    description: 'Zone details',
+    type: ZoneDetailedResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Zone not found' })
+  async getZoneById(@Param('id') id: string): Promise<ZoneDetailedResponseDto> {
+    try {
+      const zone = await this.getZonesService.getZoneById(id);
+      return plainToInstance(ZoneDetailedResponseDto, zone, {
+        excludeExtraneousValues: true,
+      });
+    } catch (e) {
+      if (e instanceof ZoneNotFoundException) {
+        throw new NotFoundException(e.message);
+      }
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
+
+  @Post()
   @Roles(Role.ADMIN, Role.MANAGER)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @ApiOperation({
@@ -139,15 +150,25 @@ export class ZoneController {
   })
   async createZone(@Body() dto: ZoneCreateRequestDto) {
     try {
-      const zone = await this.createZoneService.createZone(dto as Zone);
-      return plainToInstance(ZonePreviewResponseDto, zone, {
+      const zone = new Zone(
+        null,
+        dto.name,
+        dto.description ?? null,
+        dto.isActive ?? true,
+        dto.floorId,
+        null,
+        null
+      );
+
+      const created = await this.createZoneService.createZone(zone);
+      return plainToInstance(ZonePreviewResponseDto, created, {
         excludeExtraneousValues: true,
       });
     } catch (e) {
       if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
       } else if (e instanceof RelatedRecordNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -186,7 +207,9 @@ export class ZoneController {
       });
     } catch (e) {
       if (e instanceof ZoneNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
+      } else if (e instanceof RelatedRecordNotFoundException) {
+        throw new NotFoundException(e.message);
       } else if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
       }

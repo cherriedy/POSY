@@ -17,6 +17,8 @@ export abstract class CategoryRepository implements BaseRepository<Category> {
    */
   abstract findById(id: string): Promise<Category | null>;
 
+  abstract findByIds(ids: string[]): Promise<Category[]>;
+
   /**
    * Deletes a category by its unique identifier.
    * @param id - The unique identifier of the category to delete.

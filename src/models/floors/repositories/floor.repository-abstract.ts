@@ -18,6 +18,13 @@ export abstract class FloorRepository implements BaseRepository<Floor> {
   abstract findById(id: string): Promise<Floor | null>;
 
   /**
+   * Finds multiple floors by their unique identifiers.
+   * @param ids - An array of unique identifiers of the floors to find.
+   * @returns A promise that resolves to an array of found floors.
+   */
+  abstract findByIds(ids: string[]): Promise<Floor[]>;
+
+  /**
    * Deletes a floor by its unique identifier.
    * @param id - The unique identifier of the floor to delete.
    * @returns A promise that resolves when the floor is deleted.

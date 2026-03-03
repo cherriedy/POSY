@@ -2,13 +2,25 @@ import { BaseRepository } from '../../../common/interfaces';
 import { Promotion, PromotionCategory } from '../types';
 
 export abstract class PromotionCategoryRepository implements BaseRepository<PromotionCategory> {
-  abstract create(entity: PromotionCategory): Promise<PromotionCategory>;
+  abstract bulkCreate(
+    entities: PromotionCategory[],
+  ): Promise<PromotionCategory[]>;
 
-  abstract findById(id: string): Promise<PromotionCategory | null>;
+  abstract findByPromotionId(
+    promotionId: string,
+  ): Promise<PromotionCategory[]>;
 
   abstract getAll(): Promise<PromotionCategory[]>;
 
-  abstract delete(id: string): Promise<void>;
+  abstract deleteByCategoryIds(
+    promotionId: string,
+    categoryIds: string[],
+  ): Promise<number>;
+
+  abstract findExistingByCategory(
+    promotionId: string,
+    categoryIds: string[],
+  ): Promise<PromotionCategory[]>;
 
   abstract getPromotionsByCategoryId(
     categoryId: string,

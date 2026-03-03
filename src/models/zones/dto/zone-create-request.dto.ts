@@ -1,4 +1,4 @@
-import { IsBoolean } from 'class-validator';
+import { IsBoolean, IsUUID } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsValidZoneDescription, IsValidZoneName } from '../decorators';
 
@@ -24,4 +24,11 @@ export class ZoneCreateRequestDto {
   })
   @IsBoolean()
   isActive?: boolean = true;
+
+  @ApiProperty({
+    description: 'Unique identifier of the floor this zone belongs to',
+    example: 'floor-uuid',
+  })
+  @IsUUID()
+  floorId: string;
 }
