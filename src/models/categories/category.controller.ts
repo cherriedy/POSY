@@ -49,7 +49,7 @@ import {
 } from '@nestjs/swagger';
 import { createPageResponseSchema } from '../../common/dto';
 
-@ApiTags('Category')
+@ApiTags('Categories')
 @ApiBearerAuth()
 @Controller('categories')
 export class CategoryController {

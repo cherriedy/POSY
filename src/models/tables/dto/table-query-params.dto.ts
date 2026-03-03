@@ -44,15 +44,6 @@ export class TableQueryParamsDto {
 
   @ApiPropertyOptional({
     type: String,
-    description: 'Filter by floor ID',
-    example: 'f1a2b3d4-5678-90ab-cdef-1234567890ab',
-  })
-  @IsOptional()
-  @IsUUID()
-  floorId?: string;
-
-  @ApiPropertyOptional({
-    type: String,
     description: 'Filter by zone ID',
     example: 'z1a2b3d4-5678-90ab-cdef-1234567890ab',
   })
@@ -100,7 +91,6 @@ export class TableQueryParamsDto {
       query,
       isActive,
       status,
-      floorId,
       zoneId,
       orderBy,
     } = this;
@@ -125,7 +115,6 @@ export class TableQueryParamsDto {
         query,
         isActive,
         status,
-        floorId,
         zoneId,
       },
     };

@@ -54,7 +54,7 @@ import { UpsertAttributesService } from './upsert-attributes/upsert-attributes.s
 import { CreateProductMapper } from './create-product/create-product.mapper';
 import { Product } from './types';
 
-@ApiTags('Product')
+@ApiTags('Products')
 @ApiBearerAuth()
 @Controller('products')
 export class ProductController {

@@ -6,3 +6,4 @@ export * from './taxes.seed';
 export * from './zones.seed';
 export * from './floors.seed';
 export * from './tables.seed';
+export * from './cuisines.seed';
