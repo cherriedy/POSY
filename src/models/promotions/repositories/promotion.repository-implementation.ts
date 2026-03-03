@@ -16,7 +16,7 @@ const { page: defaultPage, pageSize: defaultPageSize } =
 
 @Injectable()
 export class PromotionRepositoryImpl implements PromotionRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   /**
    * Creates a new promotion in the database.
@@ -71,24 +71,24 @@ export class PromotionRepositoryImpl implements PromotionRepository {
    * @returns The promotion domain object if found, otherwise null.
    */
   async findByCode(code: string): Promise<Promotion | null> {
-    return await this.prismaService.promotion
-      .findUnique({
-        where: { code },
-      })
-      ?.then(PromotionMapper.toDomain);
-  }
+    const record = await this.prismaService.promotion.findUnique({
+      where: { code },
+    });
 
+    return record ? PromotionMapper.toDomain(record) : null;
+  }
+  
   /**
-   * Finds a promotion by its unique ID.
+   * Finds a promotion by its unique identifier.
    * @param id - The unique ID of the promotion.
    * @returns The promotion domain object if found, otherwise null.
    */
   async findById(id: string): Promise<Promotion | null> {
-    return await this.prismaService.promotion
-      .findUnique({
-        where: { id },
-      })
-      ?.then(PromotionMapper.toDomain);
+    const record = await this.prismaService.promotion.findUnique({
+      where: { id },
+    });
+
+    return record ? PromotionMapper.toDomain(record) : null;
   }
 
   /**
@@ -108,6 +108,8 @@ export class PromotionRepositoryImpl implements PromotionRepository {
       }),
       this.prismaService.promotion.count({ where }),
     ]);
+
+    console.log(JSON.stringify(where, null, 2));
     return {
       items: items.map(PromotionMapper.toDomain),
       page,
@@ -172,34 +174,59 @@ export class PromotionRepositoryImpl implements PromotionRepository {
 
     const where: Prisma.PromotionWhereInput = {};
 
+    /* ------------------------------ DATE FILTER ------------------------------ */
+
     if (filters.startDate) {
       where.start_at = { gte: filters.startDate };
     }
+
     if (filters.endDate) {
       where.end_at = { lte: filters.endDate };
     }
-    if (filters.isDeleted) {
+
+    /* ------------------------------ BOOLEAN FILTER ------------------------------ */
+
+    if (filters.isDeleted !== undefined) {
       where.is_deleted = filters.isDeleted;
     }
-    if (filters.applicability) {
+
+    if (filters.isStackable !== undefined) {
+      where.is_stackable = filters.isStackable;
+    }
+
+    /* ------------------------------ ENUM FILTER ------------------------------ */
+
+    if (filters.applicability?.length) {
       where.applicability = { in: filters.applicability };
     }
-    if (filters.status) {
+
+    if (filters.status?.length) {
       where.status = { in: filters.status };
     }
-    if (filters.discountType) {
+
+    if (filters.discountType?.length) {
       where.discount_type = { in: filters.discountType };
     }
-    if (filters.priorityMin || filters.priorityMax) {
+
+    /* ------------------------------ RANGE FILTER ------------------------------ */
+
+    if (
+      filters.priorityMin !== undefined ||
+      filters.priorityMax !== undefined
+    ) {
       where.priority = {};
-      if (filters.priorityMin) {
+
+      if (filters.priorityMin !== undefined) {
         where.priority.gte = filters.priorityMin;
       }
-      if (filters.priorityMax) {
+
+      if (filters.priorityMax !== undefined) {
         where.priority.lte = filters.priorityMax;
       }
     }
-    // Blind search support
+
+    /* ------------------------------ SEARCH FILTER ------------------------------ */
+
     if (filters.query) {
       where.OR = [
         { code: { contains: filters.query, mode: 'insensitive' } },
@@ -207,6 +234,7 @@ export class PromotionRepositoryImpl implements PromotionRepository {
         { description: { contains: filters.query, mode: 'insensitive' } },
       ];
     }
+
     return where;
   }
 

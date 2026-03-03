@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -47,10 +48,11 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { createPageResponseSchema } from '../../common/dto';
+import { tr } from '@faker-js/faker/.';
 
 @ApiTags('Floor')
 @ApiBearerAuth()
-@Controller('floor')
+@Controller('floors')
 export class FloorController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: import('winston').Logger;
@@ -60,31 +62,7 @@ export class FloorController {
     private readonly createFloorService: CreateFloorService,
     private readonly updateFloorService: UpdateFloorService,
     private readonly deleteFloorService: DeleteFloorService,
-  ) {}
-
-  @Get(':id')
-  @Roles(Role.MANAGER, Role.ADMIN)
-  @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @ApiOperation({
-    summary: 'Get floor by ID',
-    description: `Fetches detailed information for a specific floor by its unique ID. Accessible
-     by MANAGER and ADMIN roles.`,
-  })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({
-    status: 200,
-    description: 'Floor details',
-    type: FloorDetailedResponseDto,
-  })
-  @ApiResponse({ status: 400, description: 'Floor not found' })
-  async getFloorById(
-    @Param('id') id: string,
-  ): Promise<FloorDetailedResponseDto> {
-    const floor = await this.getFloorsService.getFloorById(id);
-    return plainToInstance(FloorDetailedResponseDto, floor, {
-      excludeExtraneousValues: true,
-    });
-  }
+  ) { }
 
   @Get()
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -122,7 +100,39 @@ export class FloorController {
     }
   }
 
-  @Post('')
+  @Get(':id')
+  @Roles(Role.MANAGER, Role.ADMIN)
+  @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @ApiOperation({
+    summary: 'Get floor by ID',
+    description: `Fetches detailed information for a specific floor by its unique ID. Accessible
+     by MANAGER and ADMIN roles.`,
+  })
+  @ApiParam({ name: 'id', type: String })
+  @ApiResponse({
+    status: 200,
+    description: 'Floor details',
+    type: FloorDetailedResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Floor not found' })
+  async getFloorById(@Param('id') id: string): Promise<FloorDetailedResponseDto> {
+    try {
+      const floor = await this.getFloorsService.getFloorById(id);
+      return plainToInstance(FloorDetailedResponseDto, floor, {
+        excludeExtraneousValues: true,
+      });
+    } catch (e) {
+      if (e instanceof FloorNotFoundException) {
+        throw new NotFoundException(e.message);
+      }
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
+
+  @Post()
   @Roles(Role.ADMIN, Role.MANAGER)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @ApiOperation({
@@ -149,7 +159,7 @@ export class FloorController {
       if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
       } else if (e instanceof RelatedRecordNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(

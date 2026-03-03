@@ -1,3 +1,4 @@
+import { Zone } from 'src/models/zones/types';
 import { Table } from '../../tables/types';
 
 export class Floor {
@@ -9,5 +10,6 @@ export class Floor {
     public createdAt: Date | null,
     public updatedAt: Date | null,
     public tables: Table[] | null,
+    public zones: Zone[] | null
   ) {}
 }

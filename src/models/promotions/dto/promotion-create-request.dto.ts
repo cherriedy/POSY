@@ -21,18 +21,11 @@ import {
 import { IsAfter } from '../../../common/decorators';
 import { promotionConfig } from '../promotion.config';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 const minQuantityConstraint = promotionConfig.minQuantity.constraint;
 
 export class CreatePromotionDto {
-  @ApiPropertyOptional({
-    type: String,
-    description: 'Promotion ID (optional, usually auto-generated)',
-  })
-  @IsOptional()
-  @IsString()
-  id?: string;
-
   @ApiProperty({
     type: String,
     description: 'Promotion code',
@@ -92,11 +85,13 @@ export class CreatePromotionDto {
   minQuantity?: number;
 
   @ApiProperty({ type: Date, description: 'Promotion start date' })
+  @Type(() => Date)
   @IsDate()
   @IsNotEmpty()
   startAt: Date;
 
   @ApiProperty({ type: Date, description: 'Promotion end date' })
+  @Type(() => Date)
   @IsDate()
   @IsNotEmpty()
   @IsAfter('startAt')

@@ -9,36 +9,75 @@ import { PromotionStatus } from '@prisma/client';
 
 @Injectable()
 export class PromotionProductRepositoryImpl implements PromotionProductRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
-  /**
-   * Creates a new PromotionProduct entity in the database.
-   * Converts the domain entity to Prisma format, attempts to persist it, and maps the result back to domain.
-   * Throws DuplicateEntryException if a unique constraint violation occurs.
-   *
-   * @param {PromotionProduct} entity - The PromotionProduct domain entity to create.
-   * @returns {Promise<PromotionProduct>} The created PromotionProduct domain entity.
-   * @throws {DuplicateEntryException} If a PromotionProduct with the given data already exists.
-   * @throws {PrismaClientKnownRequestError} For other Prisma client errors.
-   */
-  async create(entity: PromotionProduct): Promise<PromotionProduct> {
-    try {
-      const prisma = PromotionProductMapper.toPrisma(entity);
-      return await this.prismaService.promotionProduct
-        .create({
-          data: prisma,
-        })
-        .then(PromotionProductMapper.toDomain);
-    } catch (e) {
-      if (e instanceof PrismaClientKnownRequestError) {
-        if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
-            'PromotionProduct with given data already exists.',
-          );
-        }
-      }
-      throw e;
-    }
+  async bulkCreate(
+    entities: PromotionProduct[],
+  ): Promise<PromotionProduct[]> {
+    const prismaData = entities.map((e) =>
+      PromotionProductMapper.toPrisma(e),
+    );
+
+    await this.prismaService.promotionProduct.createMany({
+      data: prismaData,
+    });
+
+    const created = await this.prismaService.promotionProduct.findMany({
+      where: {
+        OR: prismaData.map((d) => ({
+          promotion_id: d.promotion_id,
+          product_id: d.product_id
+        })),
+      },
+      include: {
+        product: true
+      },
+    });
+
+    return created.map(PromotionProductMapper.toDomain);
+  }
+
+  async findByPromotionId(
+    promotionId: string,
+  ): Promise<PromotionProduct[]> {
+    return this.prismaService.promotionProduct
+      .findMany({
+        where: {
+          promotion_id: promotionId,
+        },
+        include: {
+          product: true,
+        },
+      })
+      .then((items) =>
+        items.map(PromotionProductMapper.toDomain),
+      );
+  }
+
+  async findExistingByProduct(
+    promotionId: string,
+    productIds: string[],
+  ) {
+    return this.prismaService.promotionProduct.findMany({
+      where: {
+        promotion_id: promotionId,
+        product_id: { in: productIds },
+      },
+    }).then((items) => items.map(PromotionProductMapper.toDomain));
+  }
+
+  async deleteByProductIds(
+    promotionId: string,
+    productIds: string[],
+  ): Promise<number> {
+    const result = await this.prismaService.promotionProduct.deleteMany({
+      where: {
+        promotion_id: promotionId,
+        product_id: { in: productIds },
+      },
+    });
+
+    return result.count;
   }
 
   /**
@@ -50,20 +89,20 @@ export class PromotionProductRepositoryImpl implements PromotionProductRepositor
    * @throws {PromotionProductNotFoundException} If the PromotionProduct does not exist.
    * @throws {PrismaClientKnownRequestError} For other Prisma client errors.
    */
-  async delete(id: string): Promise<void> {
-    try {
-      await this.prismaService.promotionProduct.delete({
-        where: { id },
-      });
-    } catch (e) {
-      if (e instanceof PrismaClientKnownRequestError) {
-        if (e.code === 'P2025') {
-          throw new PromotionProductNotFoundException(id);
-        }
-      }
-      throw e;
-    }
-  }
+  // async delete(id: string): Promise<void> {
+  //   try {
+  //     await this.prismaService.promotionProduct.delete({
+  //       where: { id },
+  //     });
+  //   } catch (e) {
+  //     if (e instanceof PrismaClientKnownRequestError) {
+  //       if (e.code === 'P2025') {
+  //         throw new PromotionProductNotFoundException(id);
+  //       }
+  //     }
+  //     throw e;
+  //   }
+  // }
 
   /**
    * Finds a PromotionProduct entity by its unique identifier.
@@ -72,13 +111,13 @@ export class PromotionProductRepositoryImpl implements PromotionProductRepositor
    * @param {string} id - The unique identifier of the PromotionProduct to find.
    * @returns {Promise<PromotionProduct | null>} The found PromotionProduct domain entity or null.
    */
-  async findById(id: string): Promise<PromotionProduct | null> {
-    return await this.prismaService.promotionProduct
-      .findUnique({
-        where: { id },
-      })
-      ?.then(PromotionProductMapper.toDomain);
-  }
+  // async findById(id: string): Promise<PromotionProduct | null> {
+  //   return await this.prismaService.promotionProduct
+  //     .findUnique({
+  //       where: { id },
+  //     })
+  //     ?.then(PromotionProductMapper.toDomain);
+  // }
 
   /**
    * Retrieves all PromotionProduct entities from the database.
@@ -88,7 +127,12 @@ export class PromotionProductRepositoryImpl implements PromotionProductRepositor
    */
   async getAll(): Promise<PromotionProduct[]> {
     return await this.prismaService.promotionProduct
-      .findMany({})
+      .findMany({
+        include: {
+          promotion: true,
+          product: true
+        },
+      })
       .then((results) => results.map(PromotionProductMapper.toDomain));
   }
 
@@ -115,12 +159,12 @@ export class PromotionProductRepositoryImpl implements PromotionProductRepositor
     const whereClause = includeAll
       ? { product_id: productId }
       : {
-          product_id: productId,
-          promotion: {
-            status: PromotionStatus.ACTIVE,
-            is_deleted: false,
-          },
-        };
+        product_id: productId,
+        promotion: {
+          status: PromotionStatus.ACTIVE,
+          is_deleted: false,
+        },
+      };
 
     return await this.prismaService.promotionProduct
       .findMany({

@@ -538,6 +538,7 @@ model Floor {
 
   // Relations
   tables Table[]
+  zones  Zone[]
 
   @@unique([name])
   @@index([order])
@@ -549,11 +550,13 @@ model Zone {
   name        String   @db.VarChar(50)
   description String?  @db.Text
   is_active   Boolean  @default(true)
+  floor_id    String   @db.Uuid
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now()) @updatedAt
 
   // Relations
   tables Table[]
+  floor  Floor   @relation(fields: [floor_id], references: [id], onDelete: Cascade)
 
   @@unique([name])
   @@map("zones")

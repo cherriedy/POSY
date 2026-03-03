@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   PromotionCategoryRepository,
   PromotionProductRepository,
@@ -15,6 +15,8 @@ import { Promotion, PromotionCategory, PromotionProduct } from '../types';
 import { ProductRepository } from '../../products/repositories';
 import { ProductNotFoundException } from '../../products/exceptions';
 import { Page } from '../../../common/interfaces';
+import { CategoryRepository } from 'src/models/categories/repositories';
+import { CategoryNotFoundException } from 'src/models/categories/exceptions';
 
 @Injectable()
 export class GetPromotionsService {
@@ -23,7 +25,8 @@ export class GetPromotionsService {
     private readonly promotionCategoryRepository: PromotionCategoryRepository,
     private readonly promotionProductRepository: PromotionProductRepository,
     private readonly productRepository: ProductRepository,
-  ) {}
+    private readonly categoryRepository: CategoryRepository,
+  ) { }
 
   /**
    * Retrieves a paginated list of promotions based on the provided query parameters.
@@ -69,18 +72,22 @@ export class GetPromotionsService {
   }
 
   /**
-   * Retrieves a promotion category by its unique identifier.
-   * Throws PromotionCategoryNotFoundException if the category does not exist.
-   * @param {string} id - The unique identifier of the promotion category.
-   * @returns {Promise<PromotionCategory>} A promise that resolves to the promotion category object.
-   * @throws {PromotionCategoryNotFoundException} If the category is not found.
+   * Retrieves all promotion categories associated with a given promotion ID.
+   * Throws PromotionNotFoundException if the promotion does not exist or is deleted.
+   * @param {string} promotionId - The unique identifier of the promotion.
+   * @returns {Promise<PromotionCategory[]>} A promise that resolves to an array of promotion categories.
+   * @throws {PromotionNotFoundException} If the promotion is not found or is deleted.
    */
-  async getPromotionCategoryById(
-    id: string,
-  ): Promise<PromotionCategory | null> {
-    const result = await this.promotionCategoryRepository.findById(id);
-    if (!result) throw new PromotionCategoryNotFoundException(id);
-    return result;
+  async getPromotionCategoriesByPromotionId(
+    promotionId: string,
+  ): Promise<PromotionCategory[]> {
+    const promotion = await this.promotionRepository.findById(promotionId);
+
+    if (!promotion || promotion.isDeleted) {
+      throw new PromotionNotFoundException({ id: promotionId });
+    }
+
+    return this.promotionCategoryRepository.findByPromotionId(promotionId);
   }
 
   /**
@@ -92,17 +99,36 @@ export class GetPromotionsService {
   }
 
   /**
+   * Retrieves all promotion products associated with a given promotion ID.
+   * Throws PromotionNotFoundException if the promotion does not exist or is deleted.
+   * @param {string} promotionId - The unique identifier of the promotion.
+   * @returns {Promise<PromotionProduct[]>} A promise that resolves to an array of promotion products.
+   * @throws {PromotionNotFoundException} If the promotion is not found or is deleted.
+   */
+  async getPromotionProductsByPromotionId(
+    promotionId: string,
+  ): Promise<PromotionProduct[]> {
+    const promotion = await this.promotionRepository.findById(promotionId);
+
+    if (!promotion || promotion.isDeleted) {
+      throw new PromotionNotFoundException({ id: promotionId });
+    }
+
+    return this.promotionProductRepository.findByPromotionId(promotionId);
+  }
+
+  /**
    * Retrieves a promotion product by its unique identifier.
    * Throws PromotionProductNotFoundException if the product does not exist.
    * @param {string} id - The unique identifier of the promotion product.
    * @returns {Promise<PromotionProduct>} A promise that resolves to the promotion product object.
    * @throws {PromotionProductNotFoundException} If the product is not found.
    */
-  async getPromotionProductById(id: string): Promise<PromotionProduct | null> {
-    const result = await this.promotionProductRepository.findById(id);
-    if (!result) throw new PromotionProductNotFoundException(id);
-    return result;
-  }
+  // async getPromotionProductById(id: string): Promise<PromotionProduct | null> {
+  //   const result = await this.promotionProductRepository.findById(id);
+  //   if (!result) throw new PromotionProductNotFoundException(id);
+  //   return result;
+  // }
 
   /**
    * Retrieves all promotions associated with a given product ID.
@@ -117,7 +143,13 @@ export class GetPromotionsService {
     productId: string,
     role: string,
   ): Promise<Promotion[]> {
-    const includeAll = Role[role] === Role.ADMIN || Role[role] === Role.MANAGER;
+    const product = await this.productRepository.findById(productId);
+
+    if (!product || product.isDeleted) {
+      throw new ProductNotFoundException(productId);
+    }
+
+    const includeAll = role === Role.ADMIN || role === Role.MANAGER;
     return await this.promotionProductRepository.getPromotionsByProductId(
       productId,
       includeAll,
@@ -137,6 +169,12 @@ export class GetPromotionsService {
     categoryId: string,
     role: string,
   ): Promise<Promotion[]> {
+    const category = await this.categoryRepository.findById(categoryId);
+
+    if (!category || category.isDeleted) {
+      throw new CategoryNotFoundException(categoryId);
+    }
+
     const includeAll = Role[role] === Role.ADMIN || Role[role] === Role.MANAGER;
     return await this.promotionCategoryRepository.getPromotionsByCategoryId(
       categoryId,
