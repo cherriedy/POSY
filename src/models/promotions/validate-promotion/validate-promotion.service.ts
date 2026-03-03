@@ -16,8 +16,8 @@ export class ValidatePromotionService {
   ) {}
 
   /**
-   * Validates a promotion for a specific product (not entire order).
-   * This validates if a promotion can be applied to a single product at purchase time.
+   * Validates a promotion for a specific product. This validates if a promotion
+   * can be applied to a single product at purchase time.
    *
    * Validation steps:
    * 1. Check if promotion exists and is not deleted
@@ -95,19 +95,22 @@ export class ValidatePromotionService {
       };
     }
 
-    // Check usage limit
-    if (
-      promotion.usageLimit !== null &&
-      promotion.usageCount >= promotion.usageLimit
-    ) {
-      return {
-        isValid: false,
-        reason: 'Promotion usage limit has been reached',
-        metadata: {
-          usageCount: promotion.usageCount,
-          usageLimit: promotion.usageLimit,
-        },
-      };
+    // Check usage limit by counting redemptions from promotion_redemptions tables
+    if (promotion.usageLimit !== null) {
+      const usageCount = await this.promotionRepository.getUsageCount(
+        dto.promotionId,
+      );
+
+      if (usageCount >= promotion.usageLimit) {
+        return {
+          isValid: false,
+          reason: 'Promotion usage limit has been reached',
+          metadata: {
+            usageCount,
+            usageLimit: promotion.usageLimit,
+          },
+        };
+      }
     }
 
     // Check applicability-specific conditions for the specific product
@@ -252,8 +255,6 @@ export class ValidatePromotionService {
     promotionId: string,
     categoryId: string,
   ): Promise<boolean> {
-    // This is a workaround - ideally we'd inject PrismaService
-    // For now, we'll use the repository method indirectly
     try {
       const promotions =
         await this.promotionCategoryRepository.getPromotionsByCategoryId(
@@ -274,8 +275,6 @@ export class ValidatePromotionService {
     promotionId: string,
     productId: string,
   ): Promise<boolean> {
-    // This is a workaround - ideally we'd inject PrismaService
-    // For now, we'll use the repository method indirectly
     try {
       const promotions =
         await this.promotionProductRepository.getPromotionsByProductId(

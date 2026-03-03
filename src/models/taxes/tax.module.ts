@@ -4,6 +4,8 @@ import {
   TaxRepositoryImpl,
   EntityTaxConfigRepository,
   EntityTaxConfigRepositoryImpl,
+  OrderTaxRepository,
+  OrderTaxRepositoryImpl,
 } from './repositories';
 import { TaxController } from './tax.controller';
 import { GetTaxesModule } from './get-taxes/get-taxes.module';
@@ -26,6 +28,10 @@ import { RemoveEntityTaxAssociationModule } from './remove-entity-tax-associatio
       provide: EntityTaxConfigRepository,
       useClass: EntityTaxConfigRepositoryImpl,
     },
+    {
+      provide: OrderTaxRepository,
+      useClass: OrderTaxRepositoryImpl,
+    },
   ],
   imports: [
     GetTaxesModule,
@@ -45,6 +51,7 @@ import { RemoveEntityTaxAssociationModule } from './remove-entity-tax-associatio
     UpdateTaxModule,
     DeleteTaxModule,
     EntityTaxConfigRepository,
+    OrderTaxRepository,
     AssociateEntityTaxModule,
     GetEntityTaxAssociationsModule,
     UpdateEntityTaxAssociationModule,

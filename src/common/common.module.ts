@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
+import { UnitOfWorkModule } from './unit-of-works';
 
-@Module({})
+@Global()
+@Module({
+  imports: [UnitOfWorkModule],
+  exports: [UnitOfWorkModule],
+})
 export class CommonModule {}

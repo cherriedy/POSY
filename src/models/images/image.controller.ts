@@ -49,7 +49,7 @@ export class ImageController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: import('winston').Logger;
 
-  constructor(private readonly imageService: ImageService) { }
+  constructor(private readonly imageService: ImageService) {}
 
   // ======== GET IMAGES BY ENTITY =========
   @Get('entity')
@@ -99,8 +99,6 @@ export class ImageController {
     return await this.imageService.getImagesByEntity(entityType, entityId);
   }
 
-
-
   // ======== GET IMAGE BY ID =========
   @Roles(Role.ADMIN)
   @Get(':id')
@@ -137,7 +135,6 @@ export class ImageController {
   async getImage(@Param('id') id: string) {
     return await this.imageService.getImageById(id);
   }
-
 
   // ======== GET IMAGE BY SESSION ID =========
   @Roles(Role.ADMIN)
@@ -176,8 +173,6 @@ export class ImageController {
   async getImagesBySession(@Param('sessionId') sessionId: string) {
     return await this.imageService.getImagesBySession(sessionId);
   }
-
-
 
   // ======== UPLOAD IMAGES =========
   @Roles(Role.ADMIN)
@@ -270,7 +265,6 @@ export class ImageController {
     }
   }
 
-
   // ======== CONFIRM SESSION =========
   @Roles(Role.ADMIN)
   @Post('session/:sessionId/confirm')
@@ -310,7 +304,6 @@ export class ImageController {
     };
   }
 
-
   // ======== CANCEL SESSION =========
   @Roles(Role.ADMIN)
   @Post('session/:sessionId/cancel')
@@ -331,7 +324,6 @@ export class ImageController {
       deleted: count,
     };
   }
-
 
   // ======== DELETE IMAGES BY IDS =========
   @Roles(Role.ADMIN)

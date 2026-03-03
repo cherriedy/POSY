@@ -26,4 +26,12 @@ export class TableFloorResponseDto {
   })
   @Expose()
   order: number;
+
+  @ApiProperty({
+    type: Boolean,
+    description: 'Indicates if the floor is active',
+    example: true,
+  })
+  @Expose()
+  isActive: boolean;
 }

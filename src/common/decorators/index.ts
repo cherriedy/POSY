@@ -6,3 +6,4 @@ export * from './match.decorator';
 export * from './prevent-manager-admin-access.decorator';
 export * from './is-valid-slug.decorator';
 export * from './is-after.decorator';
+export * from './required-when.decorator';

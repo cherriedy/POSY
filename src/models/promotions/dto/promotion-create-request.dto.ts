@@ -107,11 +107,6 @@ export class CreatePromotionDto {
   @IsNumber()
   usageLimit?: number;
 
-  @ApiPropertyOptional({ type: Number, description: 'Usage count' })
-  @IsOptional()
-  @IsNumber()
-  usageCount?: number;
-
   @ApiPropertyOptional({ type: Number, description: 'Version' })
   @IsOptional()
   @IsNumber()

@@ -12,4 +12,8 @@ export class JwtConfigService {
   get refreshSecret(): string {
     return this.configService.get<string>('jwt.refreshSecret')!;
   }
+
+  get tableSession(): string {
+    return this.configService.get<string>('jwt.tableSession')!;
+  }
 }

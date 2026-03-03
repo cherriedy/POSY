@@ -11,6 +11,7 @@ import Joi from '@hapi/joi';
       validationSchema: Joi.object({
         JWT_SECRET: Joi.string().min(1).required(),
         JWT_REFRESH_SECRET: Joi.string().min(1).required(),
+        JWT_TABLE_SESSION_SECRET: Joi.string().min(1).required(),
       }),
     }),
   ],

@@ -10,6 +10,7 @@ import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 import { paginationConfig } from '../../../common/config';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { Page } from '../../../common/interfaces';
+import { TaxType } from '../enums';
 
 const { page: defaultPage, pageSize: defaultPageSize } =
   paginationConfig.default;
@@ -83,6 +84,19 @@ export class TaxRepositoryImpl implements TaxRepository {
         where: { id },
       })
       ?.then(TaxConfigMapper.toDomain);
+  }
+
+  /**
+   * Finds tax configurations by their types.
+   * @param type - An array of tax types to filter by.
+   * @returns An array of tax configuration domain objects matching the specified types.
+   */
+  async findByType(type: TaxType[]): Promise<TaxConfig[]> {
+    return await this.prismaService.taxConfig
+      .findMany({
+        where: { type: { in: type } },
+      })
+      .then((taxes) => taxes.map(TaxConfigMapper.toDomain));
   }
 
   /**

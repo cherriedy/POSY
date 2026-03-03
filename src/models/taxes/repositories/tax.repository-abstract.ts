@@ -1,6 +1,7 @@
 import { BaseRepository, Page } from '../../../common/interfaces';
 import { TaxConfig } from '../types';
 import { TaxQueryParams } from '../interfaces';
+import { TaxType } from '../enums';
 
 export abstract class TaxRepository extends BaseRepository<TaxConfig> {
   /**
@@ -9,6 +10,13 @@ export abstract class TaxRepository extends BaseRepository<TaxConfig> {
    * @returns The tax configuration or null if not found
    */
   abstract findById(id: string): Promise<TaxConfig | null>;
+
+  /**
+   * Find tax configurations by their types
+   * @param type - Array of tax types to filter by
+   * @returns Array of tax configurations matching the specified types
+   */
+  abstract findByType(type: TaxType[]): Promise<TaxConfig[]>;
 
   /**
    * Create a new tax configuration

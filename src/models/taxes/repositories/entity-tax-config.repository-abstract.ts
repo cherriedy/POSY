@@ -45,7 +45,7 @@ export abstract class EntityTaxConfigRepository extends BaseRepository<EntityTax
    * @param ids - Array of association IDs (UUIDs) to delete.
    * @returns Number of deleted associations.
    * @throws May throw on database errors.
-   * @note This is used by services for individual deletions in best-effort mode.
+   * @note This is used by common for individual deletions in best-effort mode.
    */
   abstract bulkDelete(ids: string[]): Promise<number>;
 

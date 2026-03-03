@@ -24,8 +24,9 @@ import {
   ProductPreviewResponseDto,
   ProductQueryParamsDto,
   UpdateProductDto,
+  ProductAttributeUpsertRequestDto,
+  ProductAttributeResponseDto,
 } from './dto';
-import { Product } from './types';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import {
   DuplicateEntryException,
@@ -48,6 +49,10 @@ import {
 } from '@nestjs/swagger';
 import { ProductNotFoundException } from './exceptions';
 import { JwtPayload } from '../../authentication/interfaces';
+import { GetAttributesService } from './get-attributes/get-attributes.service';
+import { UpsertAttributesService } from './upsert-attributes/upsert-attributes.service';
+import { CreateProductMapper } from './create-product/create-product.mapper';
+import { Product } from './types';
 
 @ApiTags('Product')
 @ApiBearerAuth()
@@ -61,7 +66,9 @@ export class ProductController {
     private readonly createProductService: CreateProductService,
     private readonly updateProductService: UpdateProductService,
     private readonly deleteProductService: DeleteProductService,
-  ) { }
+    private readonly getProductAttributesService: GetAttributesService,
+    private readonly upsertProductAttributesService: UpsertAttributesService,
+  ) {}
 
   @Get('')
   @UseGuards(AuthGuard('jwt'))
@@ -147,7 +154,8 @@ export class ProductController {
   @Roles(Role.ADMIN)
   @ApiOperation({
     summary: 'Create a new product',
-    description: `Creates a new product with the provided details. Only accessible by
+    description: `Creates a new product with the provided details. Optionally create product attributes 
+    along with the product by providing an 'attributes' field in the request body. Only accessible by
     ADMIN role. Returns the created product preview. Throws 400 for duplicate entries.`,
   })
   @ApiBody({ type: CreateProductDto })
@@ -159,9 +167,8 @@ export class ProductController {
   @ApiResponse({ status: 400, description: 'Duplicate entry' })
   async create(@Body() dto: CreateProductDto) {
     try {
-      const product = await this.createProductService.create(
-        dto as unknown as Product,
-      );
+      const payload = CreateProductMapper.toPayload(dto);
+      const product = await this.createProductService.create(payload);
       return plainToInstance(ProductPreviewResponseDto, product, {
         excludeExtraneousValues: true,
       });
@@ -240,6 +247,86 @@ export class ProductController {
       return { message: 'Product deleted successfully.' };
     } catch (e) {
       if (e instanceof ProductNotFoundException) {
+        throw new BadRequestException(e.message);
+      }
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
+
+  @Get(':id/attributes')
+  @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @Roles(Role.MANAGER, Role.ADMIN)
+  @ApiOperation({
+    summary: 'Get product attributes',
+    description: 'Fetches product attributes for a specific product by its ID.',
+  })
+  @ApiParam({ name: 'id', type: String, description: 'Product ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Product attributes retrieved',
+    type: ProductAttributeResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Product attributes not found' })
+  async getProductAttributes(
+    @Param('id') id: string,
+  ): Promise<ProductAttributeResponseDto | null> {
+    try {
+      const attributes =
+        await this.getProductAttributesService.getByProductId(id);
+      if (!attributes) {
+        return null;
+      }
+      return plainToInstance(ProductAttributeResponseDto, attributes, {
+        excludeExtraneousValues: true,
+      });
+    } catch (e) {
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
+
+  @Put(':id/attributes')
+  @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @Roles(Role.MANAGER, Role.ADMIN)
+  @ApiOperation({
+    summary: 'Create or update product attributes',
+    description:
+      'Creates new product attributes or updates existing ones for a product.',
+  })
+  @ApiParam({ name: 'id', type: String, description: 'Product ID' })
+  @ApiBody({ type: ProductAttributeUpsertRequestDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Product attributes created/updated successfully',
+    type: ProductAttributeResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input or product not found',
+  })
+  async upsertProductAttributes(
+    @Param('id') productId: string,
+    @Body() dto: ProductAttributeUpsertRequestDto,
+  ): Promise<ProductAttributeResponseDto> {
+    try {
+      const attributes = await this.upsertProductAttributesService.upsert(
+        productId,
+        dto,
+      );
+
+      return plainToInstance(ProductAttributeResponseDto, attributes, {
+        excludeExtraneousValues: true,
+      });
+    } catch (e) {
+      if (
+        e instanceof DuplicateEntryException ||
+        e instanceof ForeignKeyViolationException
+      ) {
         throw new BadRequestException(e.message);
       }
       this.logger.error(e);

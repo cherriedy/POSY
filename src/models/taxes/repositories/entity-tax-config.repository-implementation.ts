@@ -10,7 +10,7 @@ import {
 
 /**
  * Repository implementation for entity-tax associations.
- * Supports individual CRUD operations used by best-effort bulk processing in services.
+ * Supports individual CRUD operations used by best-effort bulk processing in common.
  */
 @Injectable()
 export class EntityTaxConfigRepositoryImpl implements EntityTaxConfigRepository {

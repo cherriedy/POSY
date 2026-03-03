@@ -8,7 +8,7 @@ import { ImageNotFoundException } from '../exceptions';
 
 @Injectable()
 export class ImageRepositoryImpl implements ImageRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   /**
    * Creates a new image in the database.

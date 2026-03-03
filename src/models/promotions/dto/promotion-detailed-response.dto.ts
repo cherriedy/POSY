@@ -44,10 +44,6 @@ export class PromotionDetailedResponseDto extends PromotionPreviewResponseDto {
   @Expose()
   usageLimit: number | null;
 
-  @ApiProperty({ type: Number, description: 'Usage count' })
-  @Expose()
-  usageCount: number;
-
   @ApiProperty({ type: Number, description: 'Version' })
   @Expose()
   version: number;

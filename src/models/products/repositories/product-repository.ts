@@ -1,4 +1,4 @@
-import { ProductRepository } from './product.repository-abstract';
+import { ProductRepository } from './product-repository.abstract';
 import { Injectable } from '@nestjs/common';
 import { Product, ProductMapper } from '../types';
 import { Page } from '../../../common/interfaces';
@@ -27,7 +27,7 @@ export class ProductRepositoryImpl implements ProductRepository {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly meilisearchProductService: MeilisearchProductService,
-  ) { }
+  ) {}
 
   /**
    * Creates a new product in the database.
@@ -221,7 +221,6 @@ export class ProductRepositoryImpl implements ProductRepository {
     ]);
     console.log(JSON.stringify(where, null, 2));
 
-
     return {
       items: items.map((p) => ProductMapper.toDomain(p)),
       page,
@@ -306,16 +305,13 @@ export class ProductRepositoryImpl implements ProductRepository {
     if (!filters) return {};
 
     const where: Prisma.ProductWhereInput = {};
-    
 
     if (filters.priceMin !== undefined || filters.priceMax !== undefined) {
       where.price = {};
 
-      if (filters.priceMin !== undefined)
-        where.price.gte = filters.priceMin;
+      if (filters.priceMin !== undefined) where.price.gte = filters.priceMin;
 
-      if (filters.priceMax !== undefined)
-        where.price.lte = filters.priceMax;
+      if (filters.priceMax !== undefined) where.price.lte = filters.priceMax;
     }
 
     if (filters.categoryId?.length) {
@@ -362,5 +358,4 @@ export class ProductRepositoryImpl implements ProductRepository {
 
     return where;
   }
-
 }

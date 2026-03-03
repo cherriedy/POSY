@@ -66,10 +66,10 @@ export abstract class ImageRepository implements BaseRepository<Image> {
   abstract findUnconfirmedBySession(sessionId: string): Promise<Image[]>;
 
   /**
- * Deletes multiple images by their unique identifiers.
- * @param ids - An array of unique identifiers of the images to delete.
- * @returns A promise that resolves when all images are deleted.
- */
+   * Deletes multiple images by their unique identifiers.
+   * @param ids - An array of unique identifiers of the images to delete.
+   * @returns A promise that resolves when all images are deleted.
+   */
   abstract deleteMany(ids: string[]): Promise<void>;
 
   /**

@@ -22,15 +22,15 @@ export async function seedTables(prisma: PrismaClient) {
   const getZone = (name: string) => zones.find((z) => z.name === name);
 
   const tables = [
-    // Ground Floor - Main Hall
+    // Ground Floor - Main Hall (row 1, columns 1-3; row 2, columns 1-3)
     {
       name: 'T-101',
       capacity: 4,
       floor_id: getFloor('Ground Floor')?.id,
       zone_id: getZone('Main Hall')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 100,
-      pos_y: 100,
+      pos_x: 1,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -39,8 +39,8 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Ground Floor')?.id,
       zone_id: getZone('Main Hall')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 200,
-      pos_y: 100,
+      pos_x: 2,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -49,8 +49,8 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Ground Floor')?.id,
       zone_id: getZone('Main Hall')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 300,
-      pos_y: 100,
+      pos_x: 3,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -59,8 +59,8 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Ground Floor')?.id,
       zone_id: getZone('Main Hall')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 100,
-      pos_y: 200,
+      pos_x: 1,
+      pos_y: 2,
       is_active: true,
     },
     {
@@ -69,20 +69,30 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Ground Floor')?.id,
       zone_id: getZone('Main Hall')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 200,
-      pos_y: 200,
+      pos_x: 2,
+      pos_y: 2,
+      is_active: true,
+    },
+    {
+      name: 'T-106',
+      capacity: 4,
+      floor_id: getFloor('Ground Floor')?.id,
+      zone_id: getZone('Main Hall')?.id,
+      status: TableStatus.OCCUPIED,
+      pos_x: 3,
+      pos_y: 2,
       is_active: true,
     },
 
-    // Ground Floor - Window Seats
+    // Ground Floor - Window Seats (row 1, columns 1-3)
     {
       name: 'W-101',
       capacity: 2,
       floor_id: getFloor('Ground Floor')?.id,
       zone_id: getZone('Window Seats')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 50,
-      pos_y: 50,
+      pos_x: 1,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -91,8 +101,8 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Ground Floor')?.id,
       zone_id: getZone('Window Seats')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 50,
-      pos_y: 150,
+      pos_x: 2,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -101,20 +111,20 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Ground Floor')?.id,
       zone_id: getZone('Window Seats')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 50,
-      pos_y: 250,
+      pos_x: 3,
+      pos_y: 1,
       is_active: true,
     },
 
-    // Ground Floor - Bar Area
+    // Ground Floor - Bar Area (row 1, columns 1-3)
     {
       name: 'BAR-01',
       capacity: 1,
       floor_id: getFloor('Ground Floor')?.id,
       zone_id: getZone('Bar Area')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 400,
-      pos_y: 50,
+      pos_x: 1,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -123,8 +133,8 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Ground Floor')?.id,
       zone_id: getZone('Bar Area')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 450,
-      pos_y: 50,
+      pos_x: 2,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -133,20 +143,20 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Ground Floor')?.id,
       zone_id: getZone('Bar Area')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 400,
-      pos_y: 100,
+      pos_x: 3,
+      pos_y: 1,
       is_active: true,
     },
 
-    // Ground Floor - Quick Service (no zone)
+    // Ground Floor - Quick Service (row 1, columns 1-2)
     {
       name: 'QS-01',
       capacity: 2,
       floor_id: getFloor('Ground Floor')?.id,
       zone_id: null,
       status: TableStatus.AVAILABLE,
-      pos_x: 500,
-      pos_y: 50,
+      pos_x: 1,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -155,20 +165,20 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Ground Floor')?.id,
       zone_id: null,
       status: TableStatus.AVAILABLE,
-      pos_x: 550,
-      pos_y: 50,
+      pos_x: 2,
+      pos_y: 1,
       is_active: true,
     },
 
-    // First Floor - VIP Room
+    // First Floor - VIP Room (row 1, columns 1-3)
     {
       name: 'VIP-01',
       capacity: 8,
       floor_id: getFloor('First Floor')?.id,
       zone_id: getZone('VIP Room')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 100,
-      pos_y: 100,
+      pos_x: 1,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -177,32 +187,42 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('First Floor')?.id,
       zone_id: getZone('VIP Room')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 200,
-      pos_y: 100,
+      pos_x: 2,
+      pos_y: 1,
+      is_active: true,
+    },
+    {
+      name: 'VIP-03',
+      capacity: 6,
+      floor_id: getFloor('First Floor')?.id,
+      zone_id: getZone('VIP Room')?.id,
+      status: TableStatus.RESERVED,
+      pos_x: 3,
+      pos_y: 1,
       is_active: true,
     },
 
-    // First Floor - Private Room 1
+    // First Floor - Private Room 1 (row 1, column 1)
     {
       name: 'PR1-01',
       capacity: 10,
       floor_id: getFloor('First Floor')?.id,
       zone_id: getZone('Private Room 1')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 100,
-      pos_y: 200,
+      pos_x: 1,
+      pos_y: 1,
       is_active: true,
     },
 
-    // First Floor - Private Room 2
+    // First Floor - Private Room 2 (row 1, columns 1-2)
     {
       name: 'PR2-01',
       capacity: 12,
       floor_id: getFloor('First Floor')?.id,
       zone_id: getZone('Private Room 2')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 100,
-      pos_y: 300,
+      pos_x: 1,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -211,20 +231,20 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('First Floor')?.id,
       zone_id: getZone('Private Room 2')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 200,
-      pos_y: 300,
+      pos_x: 2,
+      pos_y: 1,
       is_active: true,
     },
 
-    // First Floor - Family Section
+    // First Floor - Family Section (row 1, columns 1-3)
     {
       name: 'FAM-01',
       capacity: 6,
       floor_id: getFloor('First Floor')?.id,
       zone_id: getZone('Family Section')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 300,
-      pos_y: 100,
+      pos_x: 1,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -233,8 +253,8 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('First Floor')?.id,
       zone_id: getZone('Family Section')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 400,
-      pos_y: 100,
+      pos_x: 2,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -243,20 +263,20 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('First Floor')?.id,
       zone_id: getZone('Family Section')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 300,
-      pos_y: 200,
+      pos_x: 3,
+      pos_y: 1,
       is_active: true,
     },
 
-    // Second Floor - Garden View
+    // Second Floor - Garden View (row 1, columns 1-4)
     {
       name: 'GV-01',
       capacity: 4,
       floor_id: getFloor('Second Floor')?.id,
       zone_id: getZone('Garden View')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 100,
-      pos_y: 100,
+      pos_x: 1,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -265,8 +285,8 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Second Floor')?.id,
       zone_id: getZone('Garden View')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 200,
-      pos_y: 100,
+      pos_x: 2,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -275,8 +295,8 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Second Floor')?.id,
       zone_id: getZone('Garden View')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 300,
-      pos_y: 100,
+      pos_x: 3,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -285,20 +305,20 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Second Floor')?.id,
       zone_id: getZone('Garden View')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 100,
-      pos_y: 200,
+      pos_x: 4,
+      pos_y: 1,
       is_active: true,
     },
 
-    // Rooftop - Outdoor Terrace
+    // Rooftop - Outdoor Terrace (row 1, columns 1-3; row 2, columns 1-2)
     {
       name: 'OT-01',
       capacity: 4,
       floor_id: getFloor('Rooftop')?.id,
       zone_id: getZone('Outdoor Terrace')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 100,
-      pos_y: 100,
+      pos_x: 1,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -307,8 +327,8 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Rooftop')?.id,
       zone_id: getZone('Outdoor Terrace')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 200,
-      pos_y: 100,
+      pos_x: 2,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -317,8 +337,8 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Rooftop')?.id,
       zone_id: getZone('Outdoor Terrace')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 300,
-      pos_y: 100,
+      pos_x: 3,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -327,8 +347,8 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Rooftop')?.id,
       zone_id: getZone('Outdoor Terrace')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 100,
-      pos_y: 200,
+      pos_x: 1,
+      pos_y: 2,
       is_active: true,
     },
     {
@@ -337,8 +357,8 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Rooftop')?.id,
       zone_id: getZone('Outdoor Terrace')?.id,
       status: TableStatus.AVAILABLE,
-      pos_x: 200,
-      pos_y: 200,
+      pos_x: 2,
+      pos_y: 2,
       is_active: true,
     },
 
@@ -371,8 +391,8 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Ground Floor')?.id,
       zone_id: null,
       status: TableStatus.AVAILABLE,
-      pos_x: 600,
-      pos_y: 100,
+      pos_x: 1,
+      pos_y: 1,
       is_active: true,
     },
     {
@@ -381,30 +401,8 @@ export async function seedTables(prisma: PrismaClient) {
       floor_id: getFloor('Ground Floor')?.id,
       zone_id: null,
       status: TableStatus.AVAILABLE,
-      pos_x: 600,
-      pos_y: 200,
-      is_active: true,
-    },
-
-    // Some occupied tables for variety
-    {
-      name: 'T-106',
-      capacity: 4,
-      floor_id: getFloor('Ground Floor')?.id,
-      zone_id: getZone('Main Hall')?.id,
-      status: TableStatus.OCCUPIED,
-      pos_x: 300,
-      pos_y: 200,
-      is_active: true,
-    },
-    {
-      name: 'VIP-03',
-      capacity: 6,
-      floor_id: getFloor('First Floor')?.id,
-      zone_id: getZone('VIP Room')?.id,
-      status: TableStatus.RESERVED,
-      pos_x: 300,
-      pos_y: 100,
+      pos_x: 2,
+      pos_y: 1,
       is_active: true,
     },
   ];

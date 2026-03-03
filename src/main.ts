@@ -32,7 +32,7 @@ async function bootstrap() {
   //------------------------- Swagger Setup -------------------------//
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Internal API')
-    .setDescription('API documentation for internal services')
+    .setDescription('API documentation for internal common')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

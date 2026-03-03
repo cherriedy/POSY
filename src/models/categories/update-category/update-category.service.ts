@@ -11,7 +11,7 @@ export class UpdateCategoryService {
    * Updates an existing category by its unique identifier.
    *
    * This method delegates the update logic to the CategoryRepository, which handles
-   * the actual persistence of the updated category entity. It returns the updated category object.
+   * the actual entities of the updated category entity. It returns the updated category object.
    *
    * @param id - The unique identifier of the category to update.
    * @param updateDate - Partial data to update the category with. Only provided fields will be updated.

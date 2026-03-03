@@ -94,15 +94,15 @@ model UserGroup {
 
 // --------------------- Start of Category model ---------------------
 model Category {
-  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name         String
-  slug         String    @unique
-  description  String?
-  is_active Boolean   @default(true)
-  is_deleted   Boolean   @default(false)
-  deleted_at   DateTime?
-  created_at   DateTime  @default(now())
-  updated_at   DateTime  @default(now()) @updatedAt
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  slug        String    @unique
+  description String?
+  is_active   Boolean   @default(true)
+  is_deleted  Boolean   @default(false)
+  deleted_at  DateTime?
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @default(now()) @updatedAt
 
   // Relations
   products            Product[]
@@ -491,10 +491,6 @@ model PromotionProduct {
   // Relations
   promotion Promotion @relation(fields: [promotion_id], references: [id], onDelete: Cascade)
   product   Product   @relation(fields: [product_id], references: [id], onDelete: Cascade)
-  floor     Floor?    @relation(fields: [floorId], references: [id])
-  floorId   String?   @db.Uuid
-  zone      Zone?     @relation(fields: [zoneId], references: [id])
-  zoneId    String?   @db.Uuid
 
   @@unique([promotion_id, product_id])
   @@index([promotion_id])
@@ -541,8 +537,7 @@ model Floor {
   updated_at DateTime @default(now()) @updatedAt
 
   // Relations
-  tables            Table[]
-  promotionProducts PromotionProduct[]
+  tables Table[]
 
   @@unique([name])
   @@index([order])
@@ -558,8 +553,7 @@ model Zone {
   updated_at  DateTime @default(now()) @updatedAt
 
   // Relations
-  tables            Table[]
-  promotionProducts PromotionProduct[]
+  tables Table[]
 
   @@unique([name])
   @@map("zones")
@@ -593,17 +587,19 @@ model Table {
 }
 
 model TableSession {
-  id         String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  table_id   String @db.Uuid
-  created_by String @db.Uuid
+  id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  table_id   String  @db.Uuid
+  created_by String? @db.Uuid
 
-  session_token String             @db.VarChar(255)
-  status        TableSessionStatus @default(ACTIVE)
-  start_at      DateTime           @default(now()) // When the customer entered
-  end_at        DateTime? // When the customer left
+  session_token      String             @db.VarChar(512)
+  device_fingerprint String             @db.VarChar(1024)
+  status             TableSessionStatus @default(ACTIVE)
+  start_at           DateTime           @default(now()) // When the customer entered
+  end_at             DateTime? // When the customer left
+  expires_at         DateTime // When the session token expires
 
   // Relations
-  user                       User                        @relation(fields: [created_by], references: [id], onDelete: Restrict)
+  user                       User?                       @relation(fields: [created_by], references: [id], onDelete: Restrict)
   table                      Table                       @relation(fields: [table_id], references: [id], onDelete: Restrict)
   orders                     Order[]
   sessionBehaviorLogs        SessionBehaviorLog[]
@@ -619,6 +615,7 @@ model TableSession {
   @@index([created_by])
   @@index([status])
   @@index([start_at, end_at])
+  @@index([expires_at])
   @@map("table_sessions")
 }
 
@@ -907,14 +904,18 @@ enum DietaryTag {
 }
 
 model Cuisine {
-  id                  String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name                String             @db.VarChar(100)
-  region              String?            @db.VarChar(100) // e.g., "Southeast Asia", "Mediterranean"
-  created_at          DateTime           @default(now())
-  updated_at          DateTime           @default(now()) @updatedAt
-  productAttributes   ProductAttribute[]
-  sessionPreference   SessionPreference? @relation(fields: [sessionPreferenceId], references: [id])
-  sessionPreferenceId String?            @db.Uuid
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  name       String    @db.VarChar(100)
+  region     String?   @db.VarChar(100) // e.g., "Southeast Asia", "Mediterranean"
+  created_at DateTime  @default(now())
+  is_deleted Boolean   @default(false)
+  updated_at DateTime  @default(now()) @updatedAt
+  deleted_at DateTime?
+
+  // Relations
+  product_attributes ProductAttribute[]
+  sessionPreferences SessionPreference[]
 
   @@unique([name])
   @@map("cuisines")
@@ -953,7 +954,7 @@ model SessionPreference {
   session_id String @db.Uuid
 
   // Preference scores (0-1) - learned in the current session
-  favorite_cuisine_types Cuisine[] // Top cuisine types in session
+  favoriteCuisines       Cuisine[] // Top cuisine types in session
   favorite_meal_sessions MealSession[] // Top meal types in session
   favorite_taste_profile Taste[] // Preferred tastes
   dietary_restrictions   DietaryTag[] // Dietary needs (if detected)

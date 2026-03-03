@@ -6,6 +6,10 @@ export abstract class BaseRepository<T extends object = any> {
 
   abstract bulkCreate?(entities: T[]): Promise<T[]>;
 
+  abstract upsert?(entity: T): Promise<T>;
+
+  abstract bulkUpsert?(entities: T[]): Promise<T[]>;
+
   abstract findById?(id: string): Promise<T | null>;
 
   abstract delete?(id: string): Promise<void>;

@@ -101,7 +101,6 @@ export class ProductQueryParamsDto {
     if (value === 'false' || value === false) return false;
     return undefined;
   })
-
   isAvailable?: boolean;
 
   @ApiPropertyOptional({ type: Boolean, description: 'Is deleted' })
@@ -115,7 +114,6 @@ export class ProductQueryParamsDto {
 
     return undefined;
   })
-
   isDeleted?: boolean;
 
   @ApiPropertyOptional({ type: Number, description: 'Page number' })
