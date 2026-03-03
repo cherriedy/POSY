@@ -5,7 +5,7 @@ import { Page } from '../../../common/interfaces';
 
 /**
  * Base abstract class for MeiliSearch service implementations.
- * Provides common functionality that can be extended for specific entity types.
+ * Provides common functionality that can be extended for specific entity entities.
  *
  * @template T - The document type to be indexed (must be a record/object type)
  */

@@ -4,9 +4,8 @@ import { MeiliSearchProduct } from './types';
 import { MeilisearchService } from './meilisearch.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import type { Logger } from 'winston';
-import { Product } from '../../models/products/types';
+import { Product, ProductQueryFilter } from '../../models/products';
 import { MeilisearchProductMapper } from './mappers';
-import { ProductQueryFilter } from '../../models/products/interfaces';
 
 @Injectable()
 export class MeilisearchProductService extends MeilisearchEngineTemplate<MeiliSearchProduct> {

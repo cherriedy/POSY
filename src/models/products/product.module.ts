@@ -5,14 +5,19 @@ import {
   ProductRepositoryImpl,
   ProductAttributeRepository,
   ProductAttributeRepositoryImpl,
+  ProductIngredientRepository,
+  ProductIngredientRepositoryImpl,
 } from './repositories';
-import { CreateProductModule } from './create-product/create-product.module';
-import { UpdateProductModule } from './update-product/update-product.module';
-import { GetProductsModule } from './get-products/get-products.module';
-import { DeleteProductModule } from './delete-product/delete-product.module';
-import { GetAttributesModule } from './get-attributes/get-attributes.module';
-import { UpsertAttributesModule } from './upsert-attributes/upsert-attributes.module';
+import { CreateProductModule } from './create-product';
+import { UpdateProductModule } from './update-product';
+import { GetProductsModule } from './get-products';
+import { DeleteProductModule } from './delete-product';
+import { GetAttributesModule } from './get-attributes';
+import { UpsertAttributesModule } from './upsert-attributes';
 import { MeilisearchModule } from '../../providers/meilisearch/meilisearch.module';
+import { GetProductIngredientsModule } from './get-product-ingredients';
+import { RemoveProductIngredientModule } from './remove-product-ingredient';
+import { UpsertProductIngredientsModule } from './upsert-product-ingredients';
 
 @Global()
 @Module({
@@ -25,8 +30,16 @@ import { MeilisearchModule } from '../../providers/meilisearch/meilisearch.modul
       provide: ProductAttributeRepository,
       useClass: ProductAttributeRepositoryImpl,
     },
+    {
+      provide: ProductIngredientRepository,
+      useClass: ProductIngredientRepositoryImpl,
+    },
   ],
-  exports: [ProductRepository, ProductAttributeRepository],
+  exports: [
+    ProductRepository,
+    ProductAttributeRepository,
+    ProductIngredientRepository,
+  ],
   imports: [
     CreateProductModule,
     UpdateProductModule,
@@ -35,6 +48,9 @@ import { MeilisearchModule } from '../../providers/meilisearch/meilisearch.modul
     GetAttributesModule,
     UpsertAttributesModule,
     MeilisearchModule,
+    GetProductIngredientsModule,
+    RemoveProductIngredientModule,
+    UpsertProductIngredientsModule,
   ],
   controllers: [ProductController],
 })

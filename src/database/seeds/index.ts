@@ -1,4 +1,5 @@
 export * from './accounts.seed';
+export * from './cuisines.seed';
 export * from './products.seed';
 export * from './categories.seed';
 export * from './promotions.seed';

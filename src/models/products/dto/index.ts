@@ -7,3 +7,5 @@ export * from './product-category-response.dto';
 export * from './product-attribute-upsert-request.dto';
 export * from './product-attribute-response.dto';
 export * from './product-attribute-cuisine-response.dto';
+export * from './product-ingredient-bulk-upsert-request.dto';
+export * from './product-ingredient-response.dto';

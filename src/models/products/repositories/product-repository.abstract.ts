@@ -3,7 +3,7 @@ import {
   Page,
   PaginationParams,
 } from '../../../common/interfaces';
-import { Product } from '../types';
+import { Product } from '../entities';
 
 export abstract class ProductRepository implements BaseRepository<Product> {
   abstract create(entity: Product): Promise<Product>;

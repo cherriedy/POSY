@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { ProductAttributeRepository } from './product-attribute-repository.abstract';
-import { ProductAttribute, ProductAttributeMapper } from '../types';
+import { ProductAttribute, ProductAttributeMapper } from '../entities';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import {
   DuplicateEntryException,
