@@ -133,7 +133,11 @@ describe('IngredientController', () => {
 
       expect(getService.getAll).toHaveBeenCalledWith(
         expect.objectContaining({
-          filter: { vendorId: 'vendor-id-1', unitId: 'unit-id-1', name: 'Tomato' },
+          filter: {
+            vendorId: 'vendor-id-1',
+            unitId: 'unit-id-1',
+            name: 'Tomato',
+          },
         }),
       );
     });
@@ -160,9 +164,9 @@ describe('IngredientController', () => {
     it('should throw InternalServerErrorException on unexpected error', async () => {
       getService.getAll.mockRejectedValue(new Error('DB error'));
 
-      await expect(controller.getAll(new IngredientQueryParamsDto())).rejects.toThrow(
-        InternalServerErrorException,
-      );
+      await expect(
+        controller.getAll(new IngredientQueryParamsDto()),
+      ).rejects.toThrow(InternalServerErrorException);
       expect(mockLogger.error).toHaveBeenCalled();
     });
   });

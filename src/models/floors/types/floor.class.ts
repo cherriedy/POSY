@@ -10,6 +10,6 @@ export class Floor {
     public createdAt: Date | null,
     public updatedAt: Date | null,
     public tables: Table[] | null,
-    public zones: Zone[] | null
+    public zones: Zone[] | null,
   ) {}
 }

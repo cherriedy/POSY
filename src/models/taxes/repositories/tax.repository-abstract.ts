@@ -12,9 +12,9 @@ export abstract class TaxRepository extends BaseRepository<TaxConfig> {
   abstract findById(id: string): Promise<TaxConfig | null>;
 
   /**
-   * Find tax configurations by their types
-   * @param type - Array of tax types to filter by
-   * @returns Array of tax configurations matching the specified types
+   * Find tax configurations by their entities
+   * @param type - Array of tax entities to filter by
+   * @returns Array of tax configurations matching the specified entities
    */
   abstract findByType(type: TaxType[]): Promise<TaxConfig[]>;
 

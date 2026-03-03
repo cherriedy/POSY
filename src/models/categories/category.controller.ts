@@ -61,7 +61,7 @@ export class CategoryController {
     private readonly createCategoryService: CreateCategoryService,
     private readonly updateCategoryService: UpdateCategoryService,
     private readonly deleteCategoryService: DeleteCategoryService,
-  ) { }
+  ) {}
 
   @Get('available')
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -70,25 +70,20 @@ export class CategoryController {
     summary: 'Get available categories',
     description: 'Returns active and non-deleted categories',
   })
-  async getAvailableCategories(): Promise<
-    CategoryPreviewResponseDto[]
-  > {
+  async getAvailableCategories(): Promise<CategoryPreviewResponseDto[]> {
     try {
-      const categoryPage =
-        await this.getCategoriesService.getAll({
-          filter: {
-            isActive: true,
-            isDeleted: false,
-          },
-          page: 1,
-          pageSize: 1000,
-        });
+      const categoryPage = await this.getCategoriesService.getAll({
+        filter: {
+          isActive: true,
+          isDeleted: false,
+        },
+        page: 1,
+        pageSize: 1000,
+      });
 
-      return plainToInstance(
-        CategoryPreviewResponseDto,
-        categoryPage.items,
-        { excludeExtraneousValues: true },
-      );
+      return plainToInstance(CategoryPreviewResponseDto, categoryPage.items, {
+        excludeExtraneousValues: true,
+      });
     } catch (e) {
       this.logger.error(e);
       throw new InternalServerErrorException(
