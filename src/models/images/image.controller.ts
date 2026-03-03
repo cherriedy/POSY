@@ -191,7 +191,7 @@ export class ImageController {
           type: 'string',
           format: 'binary',
           description:
-            'Image file to upload (max 5MB, allowed types: jpeg, jpg, png, gif, webp)',
+            'Image file to upload (max 5MB, allowed entities: jpeg, jpg, png, gif, webp)',
         },
         sessionId: {
           type: 'string',

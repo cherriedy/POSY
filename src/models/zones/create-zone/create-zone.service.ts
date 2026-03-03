@@ -6,9 +6,10 @@ import { RelatedRecordNotFoundException } from 'src/common/exceptions';
 
 @Injectable()
 export class CreateZoneService {
-  constructor(private readonly zoneRepository: ZoneRepository,
+  constructor(
+    private readonly zoneRepository: ZoneRepository,
     private readonly floorRepository: FloorRepository,
-  ) { }
+  ) {}
   /**
    * Creates a new zone using the provided zone data.
    *
@@ -24,7 +25,9 @@ export class CreateZoneService {
     const floor = await this.floorRepository.findById(zone.floorId);
 
     if (!floor) {
-      throw new RelatedRecordNotFoundException(`Floor with id ${zone.floorId} not found`);
+      throw new RelatedRecordNotFoundException(
+        `Floor with id ${zone.floorId} not found`,
+      );
     }
     return await this.zoneRepository.create(zone);
   }

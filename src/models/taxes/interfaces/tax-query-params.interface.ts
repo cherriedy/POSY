@@ -27,8 +27,8 @@ export type TaxOrderBy = Array<SortField<TaxSortField>>;
  * Represents the filter options available for querying taxes.
  *
  * @property {string} [query] - Search query string to match tax names or descriptions.
- * @property {TaxType[]} [type] - List of tax types to filter (e.g., VAT, SERVICE).
- * @property {TaxRateType[]} [rateType] - List of rate types to filter (e.g., PERCENTAGE, FIXED).
+ * @property {TaxType[]} [type] - List of tax entities to filter (e.g., VAT, SERVICE).
+ * @property {TaxRateType[]} [rateType] - List of rate entities to filter (e.g., PERCENTAGE, FIXED).
  * @property {boolean} [isActive] - Whether to filter only active taxes.
  * @property {boolean} [isIncluded] - Whether to filter taxes included in price.
  * @property {boolean} [applyAfterVAT] - Whether to filter taxes applied after VAT.

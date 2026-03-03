@@ -26,7 +26,7 @@ export class GetPromotionsService {
     private readonly promotionProductRepository: PromotionProductRepository,
     private readonly productRepository: ProductRepository,
     private readonly categoryRepository: CategoryRepository,
-  ) { }
+  ) {}
 
   /**
    * Retrieves a paginated list of promotions based on the provided query parameters.

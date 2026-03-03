@@ -23,7 +23,7 @@ export class FloorRepositoryImpl implements FloorRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   /**
    * Creates a new floor in the database.
@@ -82,7 +82,7 @@ export class FloorRepositoryImpl implements FloorRepository {
       where: { id },
       include: {
         tables: true,
-        zones: true
+        zones: true,
       },
     });
 
@@ -102,7 +102,7 @@ export class FloorRepositoryImpl implements FloorRepository {
         },
         include: {
           tables: true,
-          zones: true
+          zones: true,
         },
       })
       .then((items) => items.map(FloorMapper.toDomain));

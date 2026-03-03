@@ -20,7 +20,7 @@ export class FloorMapper {
             TableMapper.toDomain(table),
           )
         : null,
-      
+
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (prismaFloor as any).zones
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call

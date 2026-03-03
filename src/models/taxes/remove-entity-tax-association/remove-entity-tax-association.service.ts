@@ -58,7 +58,6 @@ export class RemoveEntityTaxAssociationService {
         if (e instanceof TaxAssociationNotFoundException) {
           errorMessage = `Association with ID ${id} not found`;
         } else if (e instanceof Error) {
-          
         }
         failures.push({ id, error: errorMessage });
       }
