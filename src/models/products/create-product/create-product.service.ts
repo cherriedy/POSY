@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { ProductRepository, ProductAttributeRepository } from '../repositories';
-import { Product, ProductAttribute } from '../types';
+import {
+  ProductRepository,
+  ProductAttributeRepository,
+  ProductIngredientRepository,
+} from '../repositories';
+import { Product, ProductAttribute, ProductIngredient } from '../entities';
 import { getSlug } from '../../../common/utilities/string.util';
 import { ProductCreatePayload } from '../interfaces';
 import {
@@ -16,12 +20,14 @@ export class CreateProductService {
   constructor(
     private readonly productRepository: ProductRepository,
     private readonly productAttributeRepository: ProductAttributeRepository,
+    private readonly productIngredientRepository: ProductIngredientRepository,
   ) {}
 
   /**
    * Creates a new product in the repository.
    * If slug is not provided, it will be auto-generated from the product name.
    * Optionally creates product attributes if provided in the payload.
+   * Optionally creates product ingredients if provided in the payload.
    *
    * @param {ProductCreatePayload} payload - The product data payload to be created.
    * @returns {Promise<Product>} The created product entity as stored in the repository.
@@ -71,6 +77,25 @@ export class CreateProductService {
       );
 
       await this.productAttributeRepository.create(attributesEntity);
+    }
+
+    // Create ingredients if provided
+    if (payload.ingredients && payload.ingredients.length > 0) {
+      const ingredientEntities = payload.ingredients.map(
+        (ingredient) =>
+          new ProductIngredient(
+            null,
+            createdProduct.id!,
+            ingredient.ingredientId,
+            ingredient.quantity,
+            null,
+            null,
+          ),
+      );
+      await this.productIngredientRepository.bulkUpsert(
+        createdProduct.id!,
+        ingredientEntities,
+      );
     }
 
     return createdProduct;

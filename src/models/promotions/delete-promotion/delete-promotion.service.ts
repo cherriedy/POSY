@@ -19,7 +19,7 @@ export class DeletePromotionService {
     private readonly promotionProductRepository: PromotionProductRepository,
     private readonly categoryRepository: CategoryRepository,
     private readonly productRepository: ProductRepository,
-  ) { }
+  ) {}
 
   /**
    * Deletes a promotion by its ID.
@@ -56,7 +56,7 @@ export class DeletePromotionService {
     if (categories.length !== uniqueCategoryIds.length) {
       throw new CategoriesNotFoundException({
         missingIds: uniqueCategoryIds.filter(
-          id => !categories.some(c => c.id === id),
+          (id) => !categories.some((c) => c.id === id),
         ),
       });
     }
@@ -75,10 +75,10 @@ export class DeletePromotionService {
     }
 
     if (existing.length !== uniqueCategoryIds.length) {
-      const existingIds = existing.map(e => e.categoryId);
+      const existingIds = existing.map((e) => e.categoryId);
 
       const notLinked = uniqueCategoryIds.filter(
-        id => !existingIds.includes(id),
+        (id) => !existingIds.includes(id),
       );
 
       throw new RelatedRecordNotFoundException(
@@ -107,13 +107,12 @@ export class DeletePromotionService {
     // Validate product
     const uniqueProductIds = [...new Set(productIds)];
 
-    const products =
-      await this.productRepository.findByIds(uniqueProductIds);
+    const products = await this.productRepository.findByIds(uniqueProductIds);
 
     if (products.length !== uniqueProductIds.length) {
       throw new ProductsNotFoundException({
         missingIds: uniqueProductIds.filter(
-          id => !products.some(c => c.id === id),
+          (id) => !products.some((c) => c.id === id),
         ),
       });
     }
@@ -132,10 +131,10 @@ export class DeletePromotionService {
     }
 
     if (existing.length !== uniqueProductIds.length) {
-      const existingIds = existing.map(e => e.productId);
+      const existingIds = existing.map((e) => e.productId);
 
       const notLinked = uniqueProductIds.filter(
-        id => !existingIds.includes(id),
+        (id) => !existingIds.includes(id),
       );
 
       throw new RelatedRecordNotFoundException(

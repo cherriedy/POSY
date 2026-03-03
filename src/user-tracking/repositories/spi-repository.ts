@@ -5,10 +5,14 @@ import { PrismaService } from '../../providers/prisma/prisma.service';
 export class SessionProductInteractionRepositoryImpl implements SessionProductInteractionRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async bulkUpsert(entities: SessionProductInteraction[]): Promise<void> {
-    if (entities.length === 0) return Promise.resolve();
+  async bulkUpsert<U = void>(
+    entities: SessionProductInteraction[],
+  ): Promise<U> {
+    if (entities.length === 0) {
+      return undefined as U;
+    }
 
-    await this.prismaService.$transaction(
+    const result = await this.prismaService.$transaction(
       entities.map((entity) => {
         return this.prismaService.sessionProductInteraction.upsert({
           where: {
@@ -36,5 +40,7 @@ export class SessionProductInteractionRepositoryImpl implements SessionProductIn
         });
       }),
     );
+
+    return result as U;
   }
 }

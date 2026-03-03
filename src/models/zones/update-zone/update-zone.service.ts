@@ -10,7 +10,7 @@ export class UpdateZoneService {
   constructor(
     private readonly zoneRepository: ZoneRepository,
     private readonly floorRepository: FloorRepository,
-  ) { }
+  ) {}
   async updateZone(id: string, zone: Partial<Zone>): Promise<Zone> {
     const existingZone = await this.zoneRepository.findById(id);
 

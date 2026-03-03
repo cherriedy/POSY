@@ -61,7 +61,7 @@ export class ZoneController {
     private readonly createZoneService: CreateZoneService,
     private readonly updateZoneService: UpdateZoneService,
     private readonly deleteZoneService: DeleteZoneService,
-  ) { }
+  ) {}
 
   @Get()
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -157,7 +157,7 @@ export class ZoneController {
         dto.isActive ?? true,
         dto.floorId,
         null,
-        null
+        null,
       );
 
       const created = await this.createZoneService.createZone(zone);

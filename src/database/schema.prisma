@@ -953,8 +953,8 @@ model SessionPreference {
   session_id String @db.Uuid
 
   // Preference scores (0-1) - learned in the current session
-  favoriteCuisines       Cuisine[] // Top cuisine types in session
-  favorite_meal_sessions MealSession[] // Top meal types in session
+  favoriteCuisines       Cuisine[] // Top cuisine entities in session
+  favorite_meal_sessions MealSession[] // Top meal entities in session
   favorite_taste_profile Taste[] // Preferred tastes
   dietary_restrictions   DietaryTag[] // Dietary needs (if detected)
   avg_spice_preference   Decimal?      @db.Decimal(3, 2) // Avg spice level (0-5)

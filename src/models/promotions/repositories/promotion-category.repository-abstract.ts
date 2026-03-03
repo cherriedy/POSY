@@ -6,9 +6,7 @@ export abstract class PromotionCategoryRepository implements BaseRepository<Prom
     entities: PromotionCategory[],
   ): Promise<PromotionCategory[]>;
 
-  abstract findByPromotionId(
-    promotionId: string,
-  ): Promise<PromotionCategory[]>;
+  abstract findByPromotionId(promotionId: string): Promise<PromotionCategory[]>;
 
   abstract getAll(): Promise<PromotionCategory[]>;
 

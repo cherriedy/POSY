@@ -82,7 +82,7 @@ export class CategoryQueryParamsDto {
       filter: {
         query,
         isActive,
-        isDeleted
+        isDeleted,
       },
     };
   }

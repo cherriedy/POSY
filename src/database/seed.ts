@@ -4,8 +4,9 @@ import { PrismaClient } from '@prisma/client';
 import {
   seedAdmin,
   seedCategories,
+  seedCuisines,
   seedFloors,
-  seedZones,
+  seedIngredients,
   seedProducts,
   seedPromotions,
   seedStaff,
@@ -26,7 +27,9 @@ async function main() {
   await seedAdmin(prisma);
   await seedStaff(prisma);
   await seedCategories(prisma);
+  await seedCuisines(prisma);
   await seedPromotions(prisma);
+  await seedIngredients(prisma);
   await seedProducts(prisma);
   await seedFloors(prisma);
   await seedZones(prisma);

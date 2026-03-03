@@ -4,7 +4,7 @@ import {
 } from '@prisma/client';
 import { SessionProductInteraction as DomainSessionProductInteraction } from './session-product-interaction';
 import { MissingRequireFieldsException } from '../../common/exceptions';
-import { ProductMapper } from '../../models/products/types';
+import { ProductMapper } from '../../models/products';
 import { TableSessionMapper } from '../../models/table-sessions/types';
 
 export class SessionProductInteractionMapper {

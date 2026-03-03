@@ -1,4 +1,4 @@
-import { Product } from '../../../models/products/types';
+import { Product } from '../../../models/products';
 import { MeiliSearchProduct } from '../types';
 
 /**
