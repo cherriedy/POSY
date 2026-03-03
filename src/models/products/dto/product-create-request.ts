@@ -7,9 +7,12 @@ import {
   IsEnum,
   Min,
   IsNotEmpty,
+  ValidateNested,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ProductDiscountType } from '../enums';
+import { ProductAttributeUpsertRequestDto } from './product-attribute-upsert-request.dto';
+import { Type } from 'class-transformer';
 
 export class CreateProductDto {
   @ApiPropertyOptional({
@@ -116,4 +119,13 @@ export class CreateProductDto {
   @IsOptional()
   @IsBoolean()
   isAvailable?: boolean;
+
+  @ApiPropertyOptional({
+    type: ProductAttributeUpsertRequestDto,
+    description: 'Product attributes (optional)',
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => ProductAttributeUpsertRequestDto)
+  attributes?: ProductAttributeUpsertRequestDto;
 }

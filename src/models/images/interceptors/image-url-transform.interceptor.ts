@@ -27,7 +27,7 @@ export class ImageUrlTransformInterceptor implements NestInterceptor {
   /**
    * @param appConfigService - Injected service to access the application's base URL
    */
-  constructor(private readonly appConfigService: AppConfigService) { }
+  constructor(private readonly appConfigService: AppConfigService) {}
 
   /**
    * Intercepts the response stream and transforms any Image objects or arrays of Images

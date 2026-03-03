@@ -55,4 +55,11 @@ export abstract class PromotionRepository implements BaseRepository<Promotion> {
    * @returns {Promise<number>} The number of promotions updated.
    */
   abstract updateExpiredPromotions(date: Date): Promise<number>;
+
+  /**
+   * Gets the usage count of a promotion by counting its redemptions.
+   * @param {string} promotionId - The unique ID of the promotion.
+   * @returns {Promise<number>} The number of times the promotion has been redeemed.
+   */
+  abstract getUsageCount(promotionId: string): Promise<number>;
 }

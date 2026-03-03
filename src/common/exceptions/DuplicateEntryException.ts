@@ -5,5 +5,10 @@ export class DuplicateEntryException extends Error {
     super(message);
     this.details = details;
     this.name = 'DuplicateEntryException';
+
+    // Maintains proper stack trace for where our error was thrown
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, DuplicateEntryException);
+    }
   }
 }

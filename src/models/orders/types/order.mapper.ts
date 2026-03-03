@@ -1,6 +1,11 @@
 import { Order as DomainOrder } from './order.class';
 import { Prisma, Order as PrismaOrder } from '@prisma/client';
 import { OrderStatus as DomainOrderStatus } from '../enums';
+import { UserMapper } from '../../users/types/user.mapper';
+import { TableMapper } from '../../tables/types';
+import { TableSessionMapper } from '../../table-sessions/types';
+import { OrderItemMapper } from './order-item.mapper';
+import { PaymentMapper } from '../../payments/types';
 
 export class OrderMapper {
   static toDomain(this: void, prisma: PrismaOrder): DomainOrder {
@@ -19,6 +24,32 @@ export class OrderMapper {
         : 0,
       prisma.created_at,
       prisma.updated_at,
+      // Relations
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      (prisma as any).user
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
+          UserMapper.toDomain((prisma as any).user)
+        : null,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      (prisma as any).table
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
+          TableMapper.toDomain((prisma as any).table)
+        : null,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      (prisma as any).session
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
+          TableSessionMapper.toDomain((prisma as any).session)
+        : null,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
+      (prisma as any).orderItems
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+          (prisma as any).orderItems.map(OrderItemMapper.toDomain)
+        : null,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
+      (prisma as any).payments
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+          (prisma as any).payments.map(PaymentMapper.toDomain)
+        : null,
     );
   }
 

@@ -2,7 +2,7 @@ import { NotFoundException } from '@nestjs/common';
 
 /**
  * Exception thrown when a user with a specified ID is not found. This exception
- * can be used in user-related services and repositories to indicate that a
+ * can be used in user-related common and repositories to indicate that a
  * requested user does not exist in the database.
  */
 export class UserNotFoundException extends NotFoundException {

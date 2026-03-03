@@ -1,12 +1,12 @@
 version: '3.9'
 services:
   postgres:
-    image: postgres:16
-    # environment:
-      # POSTGRES_USER: pos
-      # POSTGRES_PASSWORD: 12345
-      # POSTGRES_DB: posdb
-    # image: postgres:17
+    #    image: postgres:16
+    #    environment:
+    #      POSTGRES_USER: pos
+    #      POSTGRES_PASSWORD: 12345
+    #      POSTGRES_DB: posdb
+    image: postgres:17
     env_file:
       - .env
 
@@ -34,5 +34,16 @@ services:
     environment:
       MEILI_NO_ANALYTICS: "true"
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+
 volumes:
   pgdata:
+  redisdata:

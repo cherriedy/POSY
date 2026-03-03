@@ -19,7 +19,6 @@ export class Promotion {
     public startAt: Date,
     public endAt: Date,
     public usageLimit: number | null,
-    public usageCount: number = 0,
     public version: number = 1,
     public status: PromotionStatus,
     public isStackable: boolean = false,

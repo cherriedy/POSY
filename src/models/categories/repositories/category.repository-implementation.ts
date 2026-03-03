@@ -2,10 +2,7 @@ import { CategoryRepository } from './category.repository-abstract';
 import { Category, CategoryMapper } from '../types';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../../common/exceptions';
+import { DuplicateEntryException } from '../../../common/exceptions';
 import { paginationConfig } from '../../../common/config';
 import { Page } from '../../../common/interfaces';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
@@ -23,7 +20,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   /**
    * Creates a new category in the database.

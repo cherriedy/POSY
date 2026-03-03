@@ -45,7 +45,7 @@ export class ImageService {
     entityId?: string,
   ): Promise<Image[]> {
     return Promise.all(
-      files.map(file =>
+      files.map((file) =>
         this.imageRepository.create(
           ImageMapper.fileToDomain(file, sessionId, entityType, entityId),
         ),
@@ -66,11 +66,7 @@ export class ImageService {
     entityType?: string,
     entityId?: string,
   ): Promise<number> {
-    return this.imageRepository.confirmSession(
-      sessionId,
-      entityType,
-      entityId,
-    );
+    return this.imageRepository.confirmSession(sessionId, entityType, entityId);
   }
 
   /**
@@ -80,11 +76,12 @@ export class ImageService {
    * @param sessionId - The session identifier whose images should be deleted.
    */
   async cancelSession(sessionId: string): Promise<number> {
-    const images = await this.imageRepository.findUnconfirmedBySession(sessionId);
+    const images =
+      await this.imageRepository.findUnconfirmedBySession(sessionId);
 
     // delete files
     for (const image of images) {
-      await fs.unlink(image.path).catch(() => { });
+      await fs.unlink(image.path).catch(() => {});
     }
 
     // delete DB
@@ -109,11 +106,7 @@ export class ImageService {
     await this.imageRepository.deleteMany(ids);
 
     // delete files (parallel, ignore errors)
-    await Promise.all(
-      images.map(img =>
-        fs.unlink(img.path).catch(() => { }),
-      ),
-    );
+    await Promise.all(images.map((img) => fs.unlink(img.path).catch(() => {})));
   }
 
   /**
@@ -167,17 +160,13 @@ export class ImageService {
     const images = await this.imageRepository.findOrphanedImages(twoDaysAgo);
     if (!images.length) return 0;
 
-    const ids = images.map(i => i.id!);
+    const ids = images.map((i) => i.id!);
 
     // delete DB in bulk
     await this.imageRepository.deleteMany(ids);
 
     // delete files in parallel
-    await Promise.all(
-      images.map(img =>
-        fs.unlink(img.path).catch(() => { }),
-      ),
-    );
+    await Promise.all(images.map((img) => fs.unlink(img.path).catch(() => {})));
     this.logger.debug(`Cleaned up ${images.length} orphaned images.`);
     return images.length;
   }

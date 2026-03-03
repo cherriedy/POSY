@@ -9,7 +9,7 @@ export class CreateFloorService {
    * Creates a new floor using the provided floor data.
    *
    * This method delegates the creation logic to the FloorRepository, which handles
-   * the actual persistence of the floor entity. It returns the created floor object.
+   * the actual entities of the floor entity. It returns the created floor object.
    *
    * @param floor - The floor entity to be created. Should contain all required fields for creation.
    * @returns A promise that resolves to the created Floor object.

@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { PrismaClient, ProductDiscountType } from '@prisma/client';
 import { MeiliSearch } from 'meilisearch';
-import { ProductDiscountType as DomainProductDiscountType } from '../../models/products/enums/discount-type.enum';
+import { ProductDiscountType as DomainProductDiscountType } from '../../models/products/enums/product.enum';
 
 if (!process.env.MEILI_HOST) {
   throw new Error('Meilisearch host is missing in environment variables.');

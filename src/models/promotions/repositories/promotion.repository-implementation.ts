@@ -232,4 +232,16 @@ export class PromotionRepositoryImpl implements PromotionRepository {
       })
       .then((result) => result.count);
   }
+
+  /**
+   * Gets the usage count of a promotion by counting its redemptions in the promotion_redemptions tables.
+   *
+   * @param promotionId - The ID of the promotion to count redemptions for.
+   * @returns The number of times the promotion has been redeemed.
+   */
+  async getUsageCount(promotionId: string): Promise<number> {
+    return this.prismaService.promotionRedemption.count({
+      where: { promotion_id: promotionId },
+    });
+  }
 }

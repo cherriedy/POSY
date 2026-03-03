@@ -4,3 +4,6 @@ export * from './product-query-params.dto';
 export * from './product-create-request';
 export * from './product-update-request';
 export * from './product-category-response.dto';
+export * from './product-attribute-upsert-request.dto';
+export * from './product-attribute-response.dto';
+export * from './product-attribute-cuisine-response.dto';

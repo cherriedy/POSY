@@ -9,7 +9,7 @@ export class CreateZoneService {
    * Creates a new zone using the provided zone data.
    *
    * This method delegates the creation logic to the ZoneRepository, which handles
-   * the actual persistence of the zone entity. It returns the created zone object.
+   * the actual entities of the zone entity. It returns the created zone object.
    *
    * @param zone - The zone entity to be created. Should contain all required fields for creation.
    * @returns A promise that resolves to the created Zone object.

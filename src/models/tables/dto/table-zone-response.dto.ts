@@ -18,4 +18,12 @@ export class TableZoneResponseDto {
   })
   @Expose()
   name: string;
+
+  @ApiProperty({
+    type: Boolean,
+    description: 'Indicates if the zone is active',
+    example: true,
+  })
+  @Expose()
+  isActive: boolean;
 }

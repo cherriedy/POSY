@@ -94,7 +94,7 @@ export class PromotionProductRepositoryImpl implements PromotionProductRepositor
 
   /**
    * Retrieves all promotions associated with a given product ID.
-   * Queries the `promotionProduct` table for records matching the specified product ID,
+   * Queries the `promotionProduct` tables for records matching the specified product ID,
    * including the related `promotion` entity. Maps the results to domain `Promotion` entities,
    * filtering out any items where the promotion is not present.
    *

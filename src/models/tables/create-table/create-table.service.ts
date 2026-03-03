@@ -9,7 +9,7 @@ export class CreateTableService {
    * Creates a new table using the provided table data.
    *
    * This method delegates the creation logic to the TableRepository, which handles
-   * the actual persistence of the table entity. It returns the created table object.
+   * the actual entities of the table entity. It returns the created table object.
    *
    * @param table - The table entity to be created. Should contain all required fields for creation.
    * @returns A promise that resolves to the created Table object.

@@ -10,7 +10,7 @@ export class CreateCategoryService {
    * Creates a new category using the provided category data.
    *
    * This method delegates the creation logic to the CategoryRepository, which handles
-   * the actual persistence of the category entity. It returns the created category object.
+   * the actual entities of the category entity. It returns the created category object.
    *
    * @param category - The category entity to be created. Should contain all required fields for creation.
    * @returns A promise that resolves to the created Category object.
