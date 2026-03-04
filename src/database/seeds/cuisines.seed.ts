@@ -38,5 +38,4 @@ export async function seedCuisines(prisma: PrismaClient): Promise<void> {
       },
     });
   }
-  console.log(`Seeded ${CUISINES.length} cuisines`);
 }

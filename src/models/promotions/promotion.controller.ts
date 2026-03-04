@@ -36,11 +36,7 @@ import {
 } from '../../common/exceptions';
 import { plainToInstance } from 'class-transformer';
 import { UpdatePromotionService } from './update-promotion/update-promotion.service';
-import {
-  PromotionCategoryNotFoundException,
-  PromotionNotFoundException,
-  PromotionProductNotFoundException,
-} from './exceptions';
+import { PromotionNotFoundException } from './exceptions';
 import { GetPromotionsService } from './get-promotions/get-promotions.service';
 import { DeletePromotionService } from './delete-promotion/delete-promotion.service';
 import { ValidatePromotionService } from './validate-promotion/validate-promotion.service';
@@ -68,12 +64,9 @@ import {
 import { createPageResponseSchema } from '../../common/dto';
 import { BulkDeletePromotionCategoryDto } from './dto/promotion-category-delete-request.dto';
 import { BulkCreatePromotionCategoryDto } from './dto/promotion-category-create.dto';
-import { ZonesNotFoundException } from '../zones/exceptions';
-import { el } from '@faker-js/faker/.';
-import { FloorsNotFoundException } from '../floors/exceptions';
 import { BulkCreatePromotionProductDto } from './dto/promotion-product-create.dto';
 
-@ApiTags('Promotion')
+@ApiTags('Promotions')
 @ApiBearerAuth()
 @Controller('promotions')
 export class PromotionController {

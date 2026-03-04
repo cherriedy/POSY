@@ -81,8 +81,7 @@ export class FloorRepositoryImpl implements FloorRepository {
     const prismaFloor = await this.prismaService.floor.findUnique({
       where: { id },
       include: {
-        tables: true,
-        zones: true,
+        zones: true
       },
     });
 
@@ -101,8 +100,7 @@ export class FloorRepositoryImpl implements FloorRepository {
           id: { in: ids },
         },
         include: {
-          tables: true,
-          zones: true,
+          zones: true
         },
       })
       .then((items) => items.map(FloorMapper.toDomain));
@@ -143,7 +141,7 @@ export class FloorRepositoryImpl implements FloorRepository {
         .update({
           where: { id },
           data: dataSnakeCase,
-          include: { tables: true },
+          include: { zones: true },
         })
         ?.then(FloorMapper.toDomain);
     } catch (e) {
@@ -183,7 +181,7 @@ export class FloorRepositoryImpl implements FloorRepository {
         orderBy,
         skip: (page - 1) * pageSize,
         take: pageSize,
-        include: { tables: true },
+        include: { zones: true },
       }),
       this.prismaService.floor.count({ where }),
     ]);

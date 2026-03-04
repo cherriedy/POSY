@@ -44,10 +44,10 @@ import {
   ForeignKeyViolationException,
 } from '../../common/exceptions';
 
-@ApiTags('Cuisine')
+@ApiTags('Cuisines')
 @ApiBearerAuth()
 @ApiExtraModels(CuisineResponseDto)
-@Controller('cuisine')
+@Controller('cuisines')
 export class CuisineController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: import('winston').Logger;

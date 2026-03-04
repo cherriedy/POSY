@@ -67,7 +67,7 @@ import {
   ProductIngredientBulkUpsertRequestDto,
 } from './dto';
 
-@ApiTags('Product')
+@ApiTags('Products')
 @ApiBearerAuth()
 @Controller('products')
 export class ProductController {

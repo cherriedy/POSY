@@ -31,7 +31,6 @@ export interface TableQueryFilter {
   query?: string;
   isActive?: boolean;
   status?: TableStatus;
-  floorId?: string;
   zoneId?: string;
 }
 

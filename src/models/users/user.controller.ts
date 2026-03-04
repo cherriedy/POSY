@@ -54,7 +54,7 @@ import {
 } from '@nestjs/swagger';
 import { createPageResponseSchema } from '../../common/dto';
 
-@ApiTags('User')
+@ApiTags('Users')
 @ApiBearerAuth()
 @Controller('users')
 export class UserController {

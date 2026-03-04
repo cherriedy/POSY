@@ -2,14 +2,12 @@ import { Table as PrismaTable } from '@prisma/client';
 import { Table as DomainTable } from './table.class';
 import { MissingRequireFieldsException } from '../../../common/exceptions';
 import { TableStatus } from '../enums';
-import { FloorMapper } from '../../floors/types';
 import { ZoneMapper } from '../../zones/types';
 
 export class TableMapper {
   static toDomain(this: void, prismaTable: PrismaTable): DomainTable {
     return new DomainTable(
       prismaTable.id,
-      prismaTable.floor_id,
       prismaTable.zone_id,
       prismaTable.name,
       prismaTable.capacity,
@@ -19,11 +17,6 @@ export class TableMapper {
       prismaTable.is_active,
       prismaTable.created_at,
       prismaTable.updated_at,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      (prismaTable as any).floor
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
-          FloorMapper.toDomain((prismaTable as any).floor)
-        : null,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (prismaTable as any).zone
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
@@ -43,7 +36,6 @@ export class TableMapper {
 
     return {
       name: domainTable.name,
-      floor_id: domainTable.floorId ?? null,
       zone_id: domainTable.zoneId ?? null,
       capacity: domainTable.capacity,
       status: domainTable.status,

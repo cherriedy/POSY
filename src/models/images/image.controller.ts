@@ -40,7 +40,7 @@ import { ImageUrlTransformInterceptor } from './interceptors';
 import { UploadImageDto } from './dto';
 import { DeleteImagesDto } from './dto/delete-images.dto';
 
-@ApiTags('Image')
+@ApiTags('Images')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'), RoleGuard)
 @UseInterceptors(ImageUrlTransformInterceptor)
