@@ -13,6 +13,8 @@ export class UpdateVendorPayloadMapper {
       paymentTerm: dto.paymentTerm ?? null,
       note: dto.note ?? null,
       status: dto.status ?? null,
+      suspendedReason: dto.suspendedReason ?? null,
+      suspendedUntil: dto.suspendedUntil ?? null
     };
   }
 }

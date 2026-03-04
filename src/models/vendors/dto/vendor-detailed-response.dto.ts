@@ -1,36 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { VendorStatus } from '../enums';
+import { VendorPreviewResponseDto } from './vendor-preview-response.dto';
 
 @Exclude()
-export class VendorDetailedResponseDto {
-  @ApiProperty({ type: String, description: 'Vendor ID' })
-  @Expose()
-  id: string;
-
-  @ApiProperty({ type: String, description: 'Vendor name' })
-  @Expose()
-  name: string;
-
-  @ApiProperty({
-    type: String,
-    description: 'Contact person name',
-    nullable: true,
-  })
-  @Expose()
-  contactName: string | null;
-
-  @ApiProperty({ type: String, description: 'Contact email', nullable: true })
-  @Expose()
-  email: string | null;
-
-  @ApiProperty({
-    type: String,
-    description: 'Contact phone number',
-    nullable: true,
-  })
-  @Expose()
-  phone: string | null;
+export class VendorDetailedResponseDto extends VendorPreviewResponseDto {
 
   @ApiProperty({
     type: String,
@@ -40,7 +13,11 @@ export class VendorDetailedResponseDto {
   @Expose()
   address: string | null;
 
-  @ApiProperty({ type: String, description: 'Tax code', nullable: true })
+  @ApiProperty({
+    type: String,
+    description: 'Tax code',
+    nullable: true,
+  })
   @Expose()
   taxCode: string | null;
 
@@ -48,6 +25,7 @@ export class VendorDetailedResponseDto {
     type: Number,
     description: 'Payment term in days',
     nullable: true,
+    example: 30,
   })
   @Expose()
   paymentTerm: number | null;
@@ -60,15 +38,29 @@ export class VendorDetailedResponseDto {
   @Expose()
   note: string | null;
 
-  @ApiProperty({ enum: VendorStatus, description: 'Vendor status' })
+  @ApiProperty({
+    type: String,
+    description: 'Reason for suspension',
+    nullable: true,
+  })
   @Expose()
-  status: VendorStatus;
+  suspendedReason: string | null;
 
-  @ApiProperty({ type: Date, description: 'Created at' })
+  @ApiProperty({
+    type: String,
+    format: 'date-time',
+    description: 'Suspended start date',
+    nullable: true,
+  })
   @Expose()
-  createdAt: Date;
+  suspendedAt: string | null;
 
-  @ApiProperty({ type: Date, description: 'Updated at' })
+  @ApiProperty({
+    type: Date,
+    format: 'date-time',
+    description: 'Suspended until date',
+    nullable: true,
+  })
   @Expose()
-  updatedAt: Date;
+  suspendedUntil: Date | null;
 }

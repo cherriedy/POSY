@@ -30,7 +30,7 @@ export class CuisineResponseDto {
 
   @ApiProperty({
     type: Boolean,
-    description: 'Is cuisine active',
+    description: 'Is cuisine deleted',
     example: true,
   })
   @Expose()

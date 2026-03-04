@@ -24,7 +24,7 @@ export class VendorRepositoryImpl implements VendorRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   /**
    * Creates a new vendor in the database.
@@ -101,13 +101,24 @@ export class VendorRepositoryImpl implements VendorRepository {
    * @throws {DuplicateEntryException} If the new name conflicts with an existing vendor.
    */
   async update(id: string, entity: Partial<Vendor>): Promise<Vendor> {
-    const existing = await this.findById(id);
-    if (!existing) {
-      throw new VendorNotFoundException(id);
-    }
-
     try {
-      const dataSnakeCase = Object.entries(entity).reduce(
+      const updateData: any = { ...entity };
+      if (entity.status) {
+        if (entity.status === 'SUSPENDED') {
+          updateData.suspendedAt = new Date();
+
+          if (!entity.suspendedReason) {
+            throw new Error('Suspended reason is required');
+          }
+        }
+        if (entity.status !== 'SUSPENDED') {
+          updateData.suspendedAt = null;
+          updateData.suspendedUntil = null;
+          updateData.suspendedReason = null;
+        }
+      }
+
+      const dataSnakeCase = Object.entries(updateData).reduce(
         (acc, [key, value]) => {
           const snakeCase = camelCaseToSnakeCase(key);
           acc[snakeCase] = value;
@@ -141,10 +152,6 @@ export class VendorRepositoryImpl implements VendorRepository {
    * @throws {VendorNotFoundException} If the vendor with the specified ID does not exist.
    */
   async delete(id: string): Promise<void> {
-    const existing = await this.findById(id);
-    if (!existing) {
-      throw new VendorNotFoundException(id);
-    }
     await this.prisma.vendor.update({
       where: { id },
       data: { is_deleted: true, deleted_at: new Date() },

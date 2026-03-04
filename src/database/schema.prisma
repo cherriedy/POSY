@@ -209,6 +209,7 @@ model Vendor {
   // Relations
   ingredients Ingredient[]
 
+  @@unique([name])
   @@index([status])
   @@index([is_deleted])
   @@map("vendors")
@@ -337,6 +338,7 @@ model SeasonalPattern {
   created_at   DateTime  @default(now())
   updated_at   DateTime  @default(now()) @updatedAt
 
+  @@unique([name])
   @@index([pattern_type])
   @@index([start_date, end_date])
   @@index([day_of_week])
@@ -537,7 +539,7 @@ model Floor {
   updated_at DateTime @default(now()) @updatedAt
 
   // Relations
-  zones  Zone[]
+  zones Zone[]
 
   @@unique([name])
   @@index([order])
@@ -578,7 +580,7 @@ model Table {
   sessions TableSession[]
   zone     Zone?          @relation(fields: [zone_id], references: [id], onDelete: SetNull)
 
-  @@unique([name, zone_id])
+  @@unique([name])
   @@index([name])
   @@index([status])
   @@index([zone_id])
