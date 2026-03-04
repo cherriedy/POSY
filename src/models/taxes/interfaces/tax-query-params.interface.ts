@@ -1,4 +1,4 @@
-import { PaginationParams, SortField } from '../../../common/interfaces';
+import { PaginationParams, OrderBy } from '../../../common/interfaces';
 import { TaxType, TaxRateType } from '../enums';
 
 export type TaxSortField =
@@ -21,7 +21,7 @@ export type TaxSortField =
  *     { field: 'name', direction: 'desc' }
  *   ]
  */
-export type TaxOrderBy = Array<SortField<TaxSortField>>;
+export type TaxOrderBy = Array<OrderBy<TaxSortField>>;
 
 /**
  * Represents the filter options available for querying taxes.

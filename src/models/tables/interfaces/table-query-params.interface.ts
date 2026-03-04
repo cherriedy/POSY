@@ -1,5 +1,5 @@
 import { PaginationParams } from '../../../common/interfaces';
-import { SortField } from '../../../common/interfaces';
+import { OrderBy } from '../../../common/interfaces';
 import { TableStatus } from '../enums';
 
 export type TableSortField =
@@ -16,7 +16,7 @@ export type TableSortField =
  * @property {T} field - The field to sort by (e.g., 'name', 'capacity', 'status', 'createdAt', 'updatedAt').
  * @property {'asc' | 'desc'} direction - The direction of sorting: ascending ('asc') or descending ('desc').
  */
-export type TableOrderBy = Array<SortField<TableSortField>>;
+export type TableOrderBy = Array<OrderBy<TableSortField>>;
 
 /**
  * Represents the filter options available for querying tables.

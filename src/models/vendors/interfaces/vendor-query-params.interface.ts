@@ -1,4 +1,4 @@
-import { PaginationParams, SortField } from '../../../common/interfaces';
+import { PaginationParams, OrderBy } from '../../../common/interfaces';
 import { VendorStatus } from '../enums';
 
 export type VendorSortField =
@@ -18,7 +18,7 @@ export type VendorSortField =
  * @property {T} field - The field to sort by (e.g., 'name', 'createdAt').
  * @property {'asc' | 'desc'} direction - The direction of sorting: ascending ('asc') or descending ('desc').
  */
-export type VendorOrderBy = Array<SortField<VendorSortField>>;
+export type VendorOrderBy = Array<OrderBy<VendorSortField>>;
 
 /**
  * Represents the filter options available for querying vendors.
