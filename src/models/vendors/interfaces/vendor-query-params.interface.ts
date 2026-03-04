@@ -3,11 +3,11 @@ import { VendorStatus } from '../enums';
 
 export type VendorSortField =
   | 'name'
-  | 'contact_name'
+  | 'contactName'
   | 'address'
   | 'status'
-  | 'suspended_at'
-  | 'deleted_at'
+  | 'suspendedAt'
+  | 'deletedAt'
   | 'createdAt'
   | 'updatedAt';
 
