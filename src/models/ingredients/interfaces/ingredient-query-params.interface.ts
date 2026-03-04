@@ -1,4 +1,4 @@
-import { PaginationParams, SortField } from '../../../common/interfaces';
+import { PaginationParams, OrderBy } from '../../../common/interfaces';
 
 export type IngredientSortField =
   | 'name'
@@ -22,7 +22,7 @@ export type IngredientSortField =
  *     { field: 'createdAt', direction: 'desc' }
  *   ]
  */
-export type IngredientOrderBy = Array<SortField<IngredientSortField>>;
+export type IngredientOrderBy = Array<OrderBy<IngredientSortField>>;
 
 /**
  * Represents the filter options available for querying ingredients.

@@ -8,7 +8,7 @@ export type SortDirection = 'asc' | 'desc';
  * @property {T} field - The name of the field to sort by.
  * @property {SortDirection} direction - The direction of the sort, either 'asc' for ascending or 'desc' for descending.
  */
-export interface SortField<T extends string> {
+export interface OrderBy<T extends string> {
   field: T;
   direction: SortDirection;
 }

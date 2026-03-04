@@ -1,5 +1,5 @@
 import { PaginationParams } from '../../../common/interfaces';
-import { SortField } from '../../../common/interfaces';
+import { OrderBy } from '../../../common/interfaces';
 export type ImageSortField = 'fileName' | 'createdAt' | 'updatedAt';
 /**
  * Represents the sorting option for image queries.
@@ -8,7 +8,7 @@ export type ImageSortField = 'fileName' | 'createdAt' | 'updatedAt';
  * @property {T} field - The field to sort by (e.g., 'fileName', 'createdAt', 'updatedAt').
  * @property {'asc' | 'desc'} direction - The direction of sorting: ascending ('asc') or descending ('desc').
  */
-export type ImageOrderBy = Array<SortField<ImageSortField>>;
+export type ImageOrderBy = Array<OrderBy<ImageSortField>>;
 /**
  * Represents the filter options available for querying images.
  *

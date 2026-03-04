@@ -5,14 +5,13 @@ import { CreateIngredientModule } from './create-ingredient';
 import { UpdateIngredientModule } from './update-ingredient';
 import { GetIngredientsModule } from './get-ingredients';
 import { DeleteIngredientModule } from './delete-ingredient';
+import { UnitModule } from '../units';
+import { VendorModule } from '../vendors';
 
 @Global()
 @Module({
   providers: [
-    {
-      provide: IngredientRepository,
-      useClass: IngredientRepositoryImpl,
-    },
+    { provide: IngredientRepository, useClass: IngredientRepositoryImpl },
   ],
   exports: [IngredientRepository],
   imports: [
@@ -20,6 +19,8 @@ import { DeleteIngredientModule } from './delete-ingredient';
     UpdateIngredientModule,
     GetIngredientsModule,
     DeleteIngredientModule,
+    UnitModule,
+    VendorModule,
   ],
   controllers: [IngredientController],
 })
