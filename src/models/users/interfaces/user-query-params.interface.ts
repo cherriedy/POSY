@@ -1,5 +1,5 @@
 import { PaginationParams } from '../../../common/interfaces';
-import { SortField } from '../../../common/interfaces';
+import { OrderBy } from '../../../common/interfaces';
 
 export type UserSortField =
   | 'fullName'
@@ -16,7 +16,7 @@ export type UserSortField =
  * @property {T} field - The field to sort by (e.g., 'fullName', 'email', 'username', 'role', 'createdAt', 'updatedAt').
  * @property {'asc' | 'desc'} direction - The direction of sorting: ascending ('asc') or descending ('desc').
  */
-export type UserOrderBy = Array<SortField<UserSortField>>;
+export type UserOrderBy = Array<OrderBy<UserSortField>>;
 
 /**
  * Represents the filter options available for querying users.

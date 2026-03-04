@@ -1,4 +1,4 @@
-import { PaginationParams, SortField } from 'src/common/interfaces';
+import { PaginationParams, OrderBy } from 'src/common/interfaces';
 
 /**
  * Represents the allowed fields by which cuisines can be sorted.
@@ -22,7 +22,7 @@ export type CuisineSortField = 'name' | 'region' | 'createdAt' | 'updatedAt';
  *     { field: 'createdAt', direction: 'desc' }
  *   ]
  */
-export type CuisineOrderBy = Array<SortField<CuisineSortField>>;
+export type CuisineOrderBy = Array<OrderBy<CuisineSortField>>;
 
 /**
  * Represents the filter options available for querying cuisines.
