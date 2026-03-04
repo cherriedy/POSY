@@ -2,7 +2,7 @@ import { Unit } from './unit.class';
 import { Unit as PrismaUnit } from '@prisma/client';
 
 export class UnitMapper {
-  static toDomain(prisma: PrismaUnit): Unit {
+  static toDomain(this: void, prisma: PrismaUnit): Unit {
     return new Unit(
       prisma.id,
       prisma.name,
@@ -14,7 +14,7 @@ export class UnitMapper {
 
   static toPrisma(domain: Unit): Partial<PrismaUnit> {
     return {
-      id: domain.id ?? undefined,
+      id: domain.id,
       name: domain.name,
       abbreviation: domain.abbreviation,
     };
