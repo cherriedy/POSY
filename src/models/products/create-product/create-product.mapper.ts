@@ -1,5 +1,9 @@
 import { CreateProductDto } from '../dto';
-import { ProductCreatePayload } from '../interfaces';
+import {
+  ProductAttributesUpsertPayload,
+  ProductCreatePayload,
+  ProductIngredientBulkUpsertItemPayload,
+} from '../interfaces';
 
 /**
  * Transformer to convert CreateProductDto to CreateProductPayload.
@@ -26,7 +30,8 @@ export class CreateProductMapper {
       stockQuantity: dto.stockQuantity,
       isAvailable: dto.isAvailable,
       attributes: dto.attributes
-        ? {
+        ? ({
+            productId: undefined,
             cuisineId: dto.attributes.cuisineId,
             mealSession: dto.attributes.mealSession,
             tasteProfile: dto.attributes.tasteProfile,
@@ -35,13 +40,16 @@ export class CreateProductMapper {
             spiceLevel: dto.attributes.spiceLevel,
             isSeasonal: dto.attributes.isSeasonal,
             season: dto.attributes.season,
-          }
+          } as ProductAttributesUpsertPayload)
         : undefined,
       ingredients: dto.ingredients
-        ? dto.ingredients.map((ing) => ({
-            ingredientId: ing.ingredientId,
-            quantity: ing.quantity,
-          }))
+        ? dto.ingredients.map(
+            (ing) =>
+              ({
+                ingredientId: ing.ingredientId,
+                quantity: ing.quantity,
+              }) as ProductIngredientBulkUpsertItemPayload,
+          )
         : undefined,
     };
   }

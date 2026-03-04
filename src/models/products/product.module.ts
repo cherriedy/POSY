@@ -17,7 +17,7 @@ import { UpsertAttributesModule } from './upsert-attributes';
 import { MeilisearchModule } from '../../providers/meilisearch/meilisearch.module';
 import { GetProductIngredientsModule } from './get-product-ingredients';
 import { RemoveProductIngredientModule } from './remove-product-ingredient';
-import { UpsertProductIngredientsModule } from './upsert-product-ingredients';
+import { UpsertIngredientsModule } from './upsert-ingredients';
 
 @Global()
 @Module({
@@ -50,7 +50,7 @@ import { UpsertProductIngredientsModule } from './upsert-product-ingredients';
     MeilisearchModule,
     GetProductIngredientsModule,
     RemoveProductIngredientModule,
-    UpsertProductIngredientsModule,
+    UpsertIngredientsModule,
   ],
   controllers: [ProductController],
 })

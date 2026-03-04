@@ -1,3 +1,5 @@
+import { DietaryTag, MealSession, Season, Taste } from '../enums';
+
 /**
  * Payload for creating a product with optional attributes.
  * This is the contract between the controller and service layer.
@@ -14,30 +16,23 @@ export interface ProductCreatePayload {
   imageUrl?: string;
   stockQuantity?: number;
   isAvailable?: boolean;
-  attributes?: ProductAttributesCreatePayload;
-  ingredients?: ProductIngredientCreatePayload[];
+  attributes?: ProductAttributesUpsertPayload;
+  ingredients?: ProductIngredientBulkUpsertItemPayload[];
 }
 
 /**
- * Payload for creating product attributes.
+ * Payload for upserting product attributes.
  */
-export interface ProductAttributesCreatePayload {
-  cuisineId?: string | null;
-  mealSession?: string | null;
-  tasteProfile?: string[];
-  dietaryTags?: string[];
-  preparationTime?: number | null;
-  spiceLevel?: number | null;
+export interface ProductAttributesUpsertPayload {
+  productId?: string;
+  cuisineId: string | null;
+  mealSession: MealSession | null;
+  tasteProfile?: Taste[];
+  dietaryTags?: DietaryTag[];
+  preparationTime: number | null;
+  spiceLevel: number | null;
   isSeasonal?: boolean;
-  season?: string | null;
-}
-
-/**
- * Payload for adding a single ingredient to a product.
- */
-export interface ProductIngredientCreatePayload {
-  ingredientId: string;
-  quantity: number;
+  season: Season | null;
 }
 
 /**

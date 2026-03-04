@@ -60,10 +60,10 @@ export class CreateProductService {
 
     // Create attributes if provided
     if (payload.attributes) {
-      const attributesEntity = new ProductAttribute(
-        null,
-        payload.attributes.cuisineId ?? null,
+      const attributes = new ProductAttribute(
+        undefined,
         createdProduct.id!,
+        payload.attributes.cuisineId ?? null,
         (payload.attributes.mealSession as MealSession) ?? null,
         (payload.attributes.tasteProfile as Taste[]) ?? [],
         (payload.attributes.dietaryTags as DietaryTag[]) ?? [],
@@ -71,12 +71,8 @@ export class CreateProductService {
         payload.attributes.spiceLevel ?? null,
         payload.attributes.isSeasonal ?? false,
         (payload.attributes.season as Season) ?? null,
-        null,
-        null,
-        null,
       );
-
-      await this.productAttributeRepository.create(attributesEntity);
+      await this.productAttributeRepository.upsert(attributes);
     }
 
     // Create ingredients if provided

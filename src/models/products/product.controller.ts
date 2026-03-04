@@ -53,14 +53,17 @@ import {
 } from './exceptions';
 import { JwtPayload } from '../../authentication/interfaces';
 import { GetAttributesService } from './get-attributes';
-import { UpsertAttributesService } from './upsert-attributes';
+import {
+  UpsertAttributesMapper,
+  UpsertAttributesService,
+} from './upsert-attributes';
 import { CreateProductMapper } from './create-product';
 import { Product } from './entities';
 import { GetProductIngredientsService } from './get-product-ingredients';
 import {
-  UpsertProductIngredientsService,
+  UpsertIngredientsService,
   UpsertProductIngredientsMapper,
-} from './upsert-product-ingredients';
+} from './upsert-ingredients';
 import { RemoveProductIngredientService } from './remove-product-ingredient';
 import {
   ProductIngredientResponseDto,
@@ -82,7 +85,7 @@ export class ProductController {
     private readonly getProductAttributesService: GetAttributesService,
     private readonly upsertProductAttributesService: UpsertAttributesService,
     private readonly getProductIngredientsService: GetProductIngredientsService,
-    private readonly upsertProductIngredientsService: UpsertProductIngredientsService,
+    private readonly upsertProductIngredientsService: UpsertIngredientsService,
     private readonly removeProductIngredientService: RemoveProductIngredientService,
   ) {}
 
@@ -359,12 +362,9 @@ export class ProductController {
     @Body() dto: ProductAttributeUpsertRequestDto,
   ): Promise<ProductAttributeResponseDto> {
     try {
-      const attributes = await this.upsertProductAttributesService.upsert(
-        productId,
-        dto,
-      );
-
-      return plainToInstance(ProductAttributeResponseDto, attributes, {
+      const payload = UpsertAttributesMapper.toPayload(productId, dto);
+      const attrs = await this.upsertProductAttributesService.upsert(payload);
+      return plainToInstance(ProductAttributeResponseDto, attrs, {
         excludeExtraneousValues: true,
       });
     } catch (e) {

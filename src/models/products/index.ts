@@ -14,4 +14,4 @@ export * from './remove-product-ingredient';
 export * from './repositories';
 export * from './update-product';
 export * from './upsert-attributes';
-export * from './upsert-product-ingredients';
+export * from './upsert-ingredients';
