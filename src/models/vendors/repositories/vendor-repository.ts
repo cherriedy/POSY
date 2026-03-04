@@ -226,20 +226,8 @@ export class VendorRepositoryImpl implements VendorRepository {
     if (!pairs || pairs.length === 0) {
       return { created_at: 'desc' };
     }
-
-    const mapping: Record<string, string> = {
-      name: 'name',
-      contact_name: 'contact_name',
-      address: 'address',
-      status: 'status',
-      suspended_at: 'suspended_at',
-      deleted_at: 'deleted_at',
-      createdAt: 'created_at',
-      updatedAt: 'updated_at',
-    };
-
     return pairs.map((pair) => {
-      const snakeField = mapping[pair.field] || pair.field;
+      const snakeField = camelCaseToSnakeCase(pair.field);
       return { [snakeField]: pair.direction };
     });
   }

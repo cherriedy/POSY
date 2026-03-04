@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ProductAttributeRepository } from '../repositories';
 import { ProductAttribute } from '../entities';
-import { ProductAttributeUpsertRequestDto } from '../dto';
+import { ProductAttributesUpsertPayload } from '../interfaces';
 
 @Injectable()
 export class UpsertAttributesService {
@@ -14,47 +14,39 @@ export class UpsertAttributesService {
    * If attributes already exist for the product, they will be updated.
    * Otherwise, new attributes will be created.
    *
-   * @param productId - The unique identifier of the product
-   * @param dto - The product attribute data to create or update
+   * @param payload The payload containing the product attributes to upsert
    * @returns The created or updated product attributes
    */
   async upsert(
-    productId: string,
-    dto: ProductAttributeUpsertRequestDto,
+    payload: ProductAttributesUpsertPayload,
   ): Promise<ProductAttribute> {
-    // Check if attributes already exist
-    const existing =
-      await this.productAttributeRepository.findByProductId(productId);
+    const updatePayload: Partial<ProductAttribute> = {};
 
-    if (existing) {
-      // Update existing attributes
-      return await this.productAttributeRepository.update(productId, {
-        cuisineId: dto.cuisineId,
-        mealSession: dto.mealSession,
-        tasteProfile: dto.tasteProfile ?? [],
-        dietaryTags: dto.dietaryTags ?? [],
-        preparationTime: dto.preparationTime,
-        spiceLevel: dto.spiceLevel,
-        isSeasonal: dto.isSeasonal ?? false,
-        season: dto.season,
-      });
-    } else {
-      // Create new attributes
-      const newAttributes = new ProductAttribute(
-        null,
-        dto.cuisineId ?? null,
-        productId,
-        dto.mealSession ?? null,
-        dto.tasteProfile ?? [],
-        dto.dietaryTags ?? [],
-        dto.preparationTime ?? null,
-        dto.spiceLevel ?? null,
-        dto.isSeasonal ?? false,
-        dto.season ?? null,
-        null,
-        null,
-      );
-      return await this.productAttributeRepository.create(newAttributes);
+    if (payload.cuisineId) {
+      updatePayload.cuisineId = payload.cuisineId;
     }
+    if (payload.mealSession) {
+      updatePayload.mealSession = payload.mealSession;
+    }
+    if (payload.preparationTime) {
+      updatePayload.preparationTime = payload.preparationTime;
+    }
+    if (payload.spiceLevel) {
+      updatePayload.spiceLevel = payload.spiceLevel;
+    }
+    if (payload.isSeasonal) {
+      updatePayload.isSeasonal = payload.isSeasonal;
+    }
+    if (payload.season) {
+      updatePayload.season = payload.season;
+    }
+    if (payload.tasteProfile) {
+      updatePayload.tasteProfile = payload.tasteProfile;
+    }
+    if (payload.dietaryTags) {
+      updatePayload.dietaryTags = payload.dietaryTags;
+    }
+
+    return await this.productAttributeRepository.upsert(updatePayload);
   }
 }
