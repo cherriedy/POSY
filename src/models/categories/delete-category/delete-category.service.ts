@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CategoryRepository } from '../repositories';
+import { CategoryNotFoundException } from '../exceptions';
 
 @Injectable()
 export class DeleteCategoryService {
-  constructor(private readonly categoryRepository: CategoryRepository) {}
+  constructor(private readonly categoryRepository: CategoryRepository) { }
 
   /**
    * Deletes a category by its unique identifier.
@@ -17,6 +18,10 @@ export class DeleteCategoryService {
    * @throws ForeignKeyViolationException if the category is referenced by another record (from repository layer).
    */
   async deleteCategoryById(id: string) {
+    const category = await this.categoryRepository.findById(id);
+    if (!category) {
+      throw new CategoryNotFoundException(id);
+    }
     await this.categoryRepository.delete(id);
   }
 }

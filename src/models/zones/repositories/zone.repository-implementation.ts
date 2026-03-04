@@ -76,7 +76,7 @@ export class ZoneRepositoryImpl implements ZoneRepository {
   async findById(id: string): Promise<Zone | null> {
     const prismaZone = await this.prismaService.zone.findUnique({
       where: { id },
-      include: { tables: true },
+      include: { tables: true, floor: true },
     });
 
     return prismaZone ? ZoneMapper.toDomain(prismaZone) : null;
@@ -129,7 +129,7 @@ export class ZoneRepositoryImpl implements ZoneRepository {
         .update({
           where: { id },
           data: dataSnakeCase,
-          include: { tables: true },
+          include: { tables: true, floor: true },
         })
         ?.then(ZoneMapper.toDomain);
     } catch (e) {
@@ -169,7 +169,7 @@ export class ZoneRepositoryImpl implements ZoneRepository {
         orderBy,
         skip: (page - 1) * pageSize,
         take: pageSize,
-        include: { tables: true },
+        include: { tables: true, floor: true },
       }),
       this.prismaService.zone.count({ where }),
     ]);

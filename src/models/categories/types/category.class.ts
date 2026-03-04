@@ -1,5 +1,3 @@
-import { getSlug } from '../../../common/utilities/string.util';
-
 export class Category {
   constructor(
     public id: string | null,
@@ -11,5 +9,5 @@ export class Category {
     public deletedAt: Date | null,
     public createdAt: Date | null,
     public updatedAt: Date | null,
-  ) {}
+  ) { }
 }

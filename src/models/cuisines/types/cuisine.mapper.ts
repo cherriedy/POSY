@@ -27,8 +27,8 @@ export class CuisineMapper {
   static toPrisma(
     domain: Cuisine,
   ): Omit<PrismaCuisine, 'id' | 'created_at' | 'updated_at'> {
-    if (!domain.name || !domain.region) {
-      throw new MissingRequireFieldsException(['name', 'region']);
+    if (!domain.name) {
+      throw new MissingRequireFieldsException(['name']);
     }
 
     return {
