@@ -2,6 +2,7 @@ import { Zone as PrismaZone } from '@prisma/client';
 import { Zone as DomainZone } from './zone.class';
 import { MissingRequireFieldsException } from '../../../common/exceptions';
 import { TableMapper } from '../../tables/types';
+import { FloorMapper } from 'src/models/floors/types';
 
 export class ZoneMapper {
   static toDomain(this: void, prismaZone: PrismaZone): DomainZone {
@@ -16,16 +17,16 @@ export class ZoneMapper {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (prismaZone as any).tables
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-          (prismaZone as any).tables.map((table: any) =>
-            TableMapper.toDomain(table),
-          )
+        (prismaZone as any).tables.map((table: any) =>
+          TableMapper.toDomain(table),
+        )
         : null,
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (prismaZone as any).floor
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-          (prismaZone as any).floor
-        : null,
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
+        FloorMapper.toDomain((prismaZone as any).floor)
+        : undefined,
     );
   }
 

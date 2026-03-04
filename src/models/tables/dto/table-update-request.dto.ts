@@ -22,15 +22,6 @@ export class TableUpdateRequestDto {
   capacity?: number;
 
   @ApiPropertyOptional({
-    description: 'Floor ID where the table is located',
-    example: 'f1a2b3d4-5678-90ab-cdef-1234567890ab',
-    nullable: true,
-  })
-  @IsOptional()
-  @IsUUID()
-  floorId?: string | null;
-
-  @ApiPropertyOptional({
     description: 'Zone ID where the table is located',
     example: 'z1a2b3d4-5678-90ab-cdef-1234567890ab',
     nullable: true,

@@ -79,7 +79,7 @@ export class PromotionController {
     private readonly updatePromotionService: UpdatePromotionService,
     private readonly deletePromotionService: DeletePromotionService,
     private readonly validatePromotionService: ValidatePromotionService,
-  ) {}
+  ) { }
 
   @Get('categories')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
@@ -181,14 +181,7 @@ export class PromotionController {
     } catch (e) {
       if (
         e instanceof PromotionNotFoundException ||
-        e instanceof CategoriesNotFoundException
-      ) {
-        const response: any = { message: e.message };
-        if ((e as any).meta) {
-          response.meta = (e as any).meta;
-        }
-        throw new NotFoundException(response);
-      } else if (
+        e instanceof CategoriesNotFoundException ||
         e instanceof DuplicateEntryException ||
         e instanceof PromotionUnusableException
       ) {
@@ -233,12 +226,12 @@ export class PromotionController {
       if (e instanceof PromotionNotFoundException) {
         throw new BadRequestException({ message: e.message });
       } else if (e instanceof CategoriesNotFoundException) {
-        throw new NotFoundException({
+        throw new BadRequestException({
           message: e.message,
           meta: (e as any).meta,
         });
       } else if (e instanceof RelatedRecordNotFoundException) {
-        throw new NotFoundException({ message: e.message });
+        throw new BadRequestException({ message: e.message });
       }
 
       this.logger.error(e);
@@ -374,16 +367,11 @@ export class PromotionController {
         enableImplicitConversion: true,
       });
     } catch (e) {
-      if (
-        e instanceof PromotionNotFoundException ||
-        e instanceof ProductsNotFoundException
-      ) {
+      if (e instanceof PromotionNotFoundException) {
         const response: any = { message: e.message };
-        if ((e as any).meta) {
-          response.meta = (e as any).meta;
-        }
         throw new NotFoundException(response);
       } else if (
+        e instanceof ProductsNotFoundException ||
         e instanceof DuplicateEntryException ||
         e instanceof PromotionUnusableException
       ) {
@@ -426,14 +414,14 @@ export class PromotionController {
       return { message: 'Bulk delete success' };
     } catch (e) {
       if (e instanceof PromotionNotFoundException) {
-        throw new BadRequestException({ message: e.message });
+        throw new NotFoundException({ message: e.message });
       } else if (e instanceof ProductsNotFoundException) {
-        throw new NotFoundException({
+        throw new BadRequestException({
           message: e.message,
           meta: (e as any).meta,
         });
       } else if (e instanceof RelatedRecordNotFoundException) {
-        throw new NotFoundException({ message: e.message });
+        throw new BadRequestException({ message: e.message });
       }
 
       this.logger.error(e);
@@ -572,7 +560,7 @@ export class PromotionController {
       });
     } catch (e) {
       if (e instanceof ProductNotFoundException) {
-        throw new NotFoundException(e.message);
+        throw new BadRequestException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -612,7 +600,7 @@ export class PromotionController {
       });
     } catch (e) {
       if (e instanceof CategoryNotFoundException) {
-        throw new NotFoundException(e.message);
+        throw new BadRequestException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(

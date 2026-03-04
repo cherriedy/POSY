@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CuisineRepository } from '../repositories';
+import { CuisineNotFoundException } from '../exceptions';
 
 /**
  * Service responsible for soft-deleting cuisines.
@@ -20,6 +21,8 @@ export class DeleteCuisineService {
    * to the current timestamp instead of removing the record permanently.
    */
   async delete(id: string): Promise<void> {
+    const cuisine = await this.cuisineRepository.findById(id);
+    if (!cuisine) throw new CuisineNotFoundException(id);
     await this.cuisineRepository.delete(id);
   }
 }

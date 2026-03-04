@@ -23,7 +23,7 @@ export class TableRepositoryImpl implements TableRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   /**
    * Creates a new table in the database.
@@ -37,7 +37,13 @@ export class TableRepositoryImpl implements TableRepository {
       return await this.prismaService.table
         .create({
           data: prismaTable,
-          include: { zone: true },
+          include: {
+            zone: {
+              include: {
+                floor: true,
+              },
+            },
+          },
         })
         .then(TableMapper.toDomain);
     } catch (e) {
@@ -94,12 +100,9 @@ export class TableRepositoryImpl implements TableRepository {
    * @param id - The unique identifier of the table to update.
    * @param entity - Partial data to update the table with.
    * @returns A promise that resolves to the updated table.
-   * @throws TableNotFoundException if the table does not exist.
    * @throws DuplicateEntryException if a table with a unique field already exists.
    */
   async update(id: string, entity: Partial<Table>): Promise<Table> {
-    const table = await this.findById(id);
-    if (!table) throw new TableNotFoundException(id);
 
     const dataSnakeCase = Object.entries(entity).reduce(
       (acc, [key, value]) => {
@@ -110,36 +113,26 @@ export class TableRepositoryImpl implements TableRepository {
       {} as Record<string, any>,
     );
 
-    // Check for duplicate name within same zone
-    if (dataSnakeCase.name && typeof dataSnakeCase.name === 'string') {
-      const zoneId = dataSnakeCase.zone_id ?? table.zoneId;
-      if (zoneId) {
-        const existing = await this.prismaService.table.findFirst({
-          where: {
-            name: dataSnakeCase.name,
-            zone_id: zoneId,
-          },
-        });
-        if (existing && existing.id !== id) {
-          throw new DuplicateEntryException(
-            'Table name already exists on this zone.',
-          );
-        }
-      }
-    }
-
     try {
       return await this.prismaService.table
         .update({
           where: { id },
           data: dataSnakeCase,
-          include: { zone: true },
+          include: {
+            zone: {
+              include: {
+                floor: true,
+              },
+            },
+          },
         })
         ?.then(TableMapper.toDomain);
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(e.message);
+          throw new DuplicateEntryException(
+            'Table name already exists in this zone.',
+          );
         }
       }
       throw e;
@@ -173,7 +166,13 @@ export class TableRepositoryImpl implements TableRepository {
         orderBy,
         skip: (page - 1) * pageSize,
         take: pageSize,
-        include: { zone: true },
+        include: {
+          zone: {
+            include: {
+              floor: true,
+            },
+          },
+        },
       }),
       this.prismaService.table.count({ where }),
     ]);
