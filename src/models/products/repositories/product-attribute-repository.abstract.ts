@@ -5,20 +5,14 @@ import { ProductAttribute } from '../entities';
  */
 export abstract class ProductAttributeRepository {
   /**
-   * Creates product attributes for a product.
-   */
-  abstract create(entity: ProductAttribute): Promise<ProductAttribute>;
-
-  /**
    * Finds product attributes by product ID.
    */
   abstract findByProductId(productId: string): Promise<ProductAttribute | null>;
 
   /**
-   * Updates product attributes.
+   * Creates or updates product attributes for a specific product.
+   * If attributes already exist for the product, they will be updated.
+   * Otherwise, new attributes will be created.
    */
-  abstract update(
-    productId: string,
-    entity: Partial<ProductAttribute>,
-  ): Promise<ProductAttribute>;
+  abstract upsert(entity: Partial<ProductAttribute>): Promise<ProductAttribute>;
 }

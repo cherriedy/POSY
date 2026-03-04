@@ -22,9 +22,9 @@ import { Cuisine } from '../../cuisines/types';
  */
 export class ProductAttribute {
   constructor(
-    public id: string | null = null,
-    public cuisineId: string | null = null,
+    public id: string | undefined,
     public productId: string,
+    public cuisineId: string | null = null,
     public mealSession: MealSession | null = null,
     public tasteProfile: Taste[] = [],
     public dietaryTags: DietaryTag[] = [],

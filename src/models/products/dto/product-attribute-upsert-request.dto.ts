@@ -23,7 +23,7 @@ export class ProductAttributeUpsertRequestDto {
   })
   @IsOptional()
   @IsString()
-  cuisineId?: string | null;
+  cuisineId: string | null;
 
   @ApiPropertyOptional({
     description: 'Meal session when product is typically consumed',
@@ -33,29 +33,31 @@ export class ProductAttributeUpsertRequestDto {
   })
   @IsOptional()
   @IsEnum(MealSession)
-  mealSession?: MealSession | null;
+  mealSession: MealSession | null;
 
   @ApiPropertyOptional({
     description: 'Taste profile tags',
     enum: Taste,
     isArray: true,
     example: [Taste.SPICY, Taste.SALTY],
+    nullable: true,
   })
   @IsOptional()
   @IsArray()
   @IsEnum(Taste, { each: true })
-  tasteProfile?: Taste[];
+  tasteProfile: Taste[] | null;
 
   @ApiPropertyOptional({
     description: 'Dietary restriction tags',
     enum: DietaryTag,
     isArray: true,
     example: [DietaryTag.HALAL, DietaryTag.GLUTEN_FREE],
+    nullable: true,
   })
   @IsOptional()
   @IsArray()
   @IsEnum(DietaryTag, { each: true })
-  dietaryTags?: DietaryTag[];
+  dietaryTags: DietaryTag[] | null;
 
   @ApiPropertyOptional({
     description: 'Preparation time in minutes',
@@ -68,7 +70,7 @@ export class ProductAttributeUpsertRequestDto {
   @IsInt()
   @Min(1)
   @Max(999)
-  preparationTime?: number | null;
+  preparationTime: number | null;
 
   @ApiPropertyOptional({
     description: 'Spice level (0-5 scale)',
@@ -81,16 +83,17 @@ export class ProductAttributeUpsertRequestDto {
   @IsInt()
   @Min(0)
   @Max(5)
-  spiceLevel?: number | null;
+  spiceLevel: number | null;
 
   @ApiPropertyOptional({
     description: 'Whether the product is seasonal',
     example: false,
     default: false,
+    nullable: true,
   })
   @IsOptional()
   @IsBoolean()
-  isSeasonal?: boolean;
+  isSeasonal: boolean | null;
 
   @ApiPropertyOptional({
     description: 'Season when available (if seasonal)',
@@ -103,5 +106,5 @@ export class ProductAttributeUpsertRequestDto {
   @RequiredWhen('isSeasonal', {
     message: 'Season must be provided when product is seasonal',
   })
-  season?: Season | null;
+  season: Season | null;
 }

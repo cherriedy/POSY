@@ -13,8 +13,8 @@ export class ProductAttributeMapper {
   static toDomain(prisma: PrismaProductAttribute): ProductAttribute {
     return new ProductAttribute(
       prisma.id,
-      prisma.cuisine_id,
       prisma.product_id,
+      prisma.cuisine_id,
       prisma.meal_session as MealSession | null,
       (prisma.taste_profile as Taste[]) ?? [],
       (prisma.dietary_tags as DietaryTag[]) ?? [],

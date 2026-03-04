@@ -16,10 +16,13 @@ import { CreateProductService } from './create-product';
 import { UpdateProductService } from './update-product';
 import { DeleteProductService } from './delete-product';
 import { GetAttributesService } from './get-attributes';
-import { UpsertAttributesService } from './upsert-attributes';
+import {
+  UpsertAttributesMapper,
+  UpsertAttributesService,
+} from './upsert-attributes';
 import { GetProductIngredientsService } from './get-product-ingredients';
-import { UpsertProductIngredientsService } from './upsert-product-ingredients';
-import { UpsertProductIngredientsMapper } from './upsert-product-ingredients';
+import { UpsertIngredientsService } from './upsert-ingredients';
+import { UpsertProductIngredientsMapper } from './upsert-ingredients';
 import { RemoveProductIngredientService } from './remove-product-ingredient';
 import { CreateProductMapper } from './create-product';
 
@@ -97,7 +100,7 @@ describe('ProductController', () => {
           useValue: mockGetProductIngredientsService,
         },
         {
-          provide: UpsertProductIngredientsService,
+          provide: UpsertIngredientsService,
           useValue: mockUpsertProductIngredientsService,
         },
         {
@@ -423,8 +426,7 @@ describe('ProductController', () => {
       const result = await controller.upsertProductAttributes(productId, dto);
 
       expect(mockUpsertAttributesService.upsert).toHaveBeenCalledWith(
-        productId,
-        dto,
+        UpsertAttributesMapper.toPayload(productId, dto),
       );
       expect(result).toBeDefined();
     });
