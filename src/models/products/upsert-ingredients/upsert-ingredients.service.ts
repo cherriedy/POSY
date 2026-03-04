@@ -4,7 +4,7 @@ import { ProductIngredient } from '../entities';
 import { ProductIngredientBulkUpsertPayload } from '../interfaces';
 
 @Injectable()
-export class UpsertProductIngredientsService {
+export class UpsertIngredientsService {
   constructor(
     private readonly productIngredientRepository: ProductIngredientRepository,
   ) {}

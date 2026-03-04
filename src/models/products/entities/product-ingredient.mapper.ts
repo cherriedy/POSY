@@ -33,9 +33,8 @@ export class ProductIngredientMapper {
 
   static toPrisma(
     domain: ProductIngredient,
-  ): Prisma.ProductIngredientUncheckedCreateInput {
+  ): Omit<PrismaProductIngredient, 'id' | 'created_at' | 'updated_at'> {
     return {
-      id: domain.id ?? undefined,
       product_id: domain.productId,
       ingredient_id: domain.ingredientId,
       quantity: new Prisma.Decimal(domain.quantity),
