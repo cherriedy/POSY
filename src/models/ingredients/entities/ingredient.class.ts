@@ -1,5 +1,5 @@
-import { Vendor } from './vendor.class';
-import { Unit } from './unit.class';
+import { Unit } from '../../units';
+import { Vendor } from '../../vendors';
 
 export class Ingredient {
   constructor(

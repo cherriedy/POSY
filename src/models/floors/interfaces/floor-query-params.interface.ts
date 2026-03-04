@@ -1,5 +1,5 @@
 import { PaginationParams } from '../../../common/interfaces';
-import { SortField } from '../../../common/interfaces';
+import { OrderBy } from '../../../common/interfaces';
 
 export type FloorSortField = 'name' | 'order' | 'createdAt' | 'updatedAt';
 
@@ -10,7 +10,7 @@ export type FloorSortField = 'name' | 'order' | 'createdAt' | 'updatedAt';
  * @property {T} field - The field to sort by (e.g., 'name', 'order', 'createdAt', 'updatedAt').
  * @property {'asc' | 'desc'} direction - The direction of sorting: ascending ('asc') or descending ('desc').
  */
-export type FloorOrderBy = Array<SortField<FloorSortField>>;
+export type FloorOrderBy = Array<OrderBy<FloorSortField>>;
 
 /**
  * Represents the filter options available for querying floors.
