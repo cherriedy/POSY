@@ -48,6 +48,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { createPageResponseSchema } from '../../common/dto';
+import { ZoneNotFoundException } from '../zones/exceptions';
 
 @ApiTags('Tables')
 @ApiBearerAuth()
@@ -160,7 +161,7 @@ export class TableController {
       if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
       } else if (e instanceof RelatedRecordNotFoundException) {
-        throw new NotFoundException(e.message);
+        throw new BadRequestException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -203,6 +204,8 @@ export class TableController {
     } catch (e) {
       if (e instanceof TableNotFoundException) {
         throw new NotFoundException(e.message);
+      } else if (e instanceof ZoneNotFoundException) {
+        throw new BadRequestException(e.message);
       } else if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
       }

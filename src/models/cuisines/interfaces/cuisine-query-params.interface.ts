@@ -30,7 +30,7 @@ export type CuisineOrderBy = Array<SortField<CuisineSortField>>;
  * @property {string} [q] - Search query string to match cuisine names or other attributes.
  */
 export interface CuisineQueryFilter {
-  q: string | null;
+  query: string | null;
   isDeleted: boolean | null;
 }
 

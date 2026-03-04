@@ -17,7 +17,7 @@ export class CuisineUpdateRequestDto {
   @IsOptional()
   @IsString()
   @MaxLength(100)
-  name: string | null = null;
+  name?: string | null = null;
 
   @ApiPropertyOptional({
     description: 'Geographic or cultural region',
@@ -29,5 +29,5 @@ export class CuisineUpdateRequestDto {
   @IsOptional()
   @IsString()
   @MaxLength(100)
-  region: string | null = null;
+  region?: string | null = null;
 }

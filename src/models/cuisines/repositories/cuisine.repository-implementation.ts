@@ -134,10 +134,10 @@ export class CuisineRepositoryImpl implements CuisineRepository {
     if (!params) return { is_deleted: false };
 
     const where: Prisma.CuisineWhereInput = {};
-    if (params.filter?.q) {
+    if (params.filter?.query) {
       where.OR = [
-        { name: { contains: params.filter.q, mode: 'insensitive' } },
-        { region: { contains: params.filter.q, mode: 'insensitive' } },
+        { name: { contains: params.filter.query, mode: 'insensitive' } },
+        { region: { contains: params.filter.query, mode: 'insensitive' } },
       ];
     }
     if (params.filter?.isDeleted) {

@@ -239,7 +239,7 @@ export class CategoryController {
       });
     } catch (e) {
       if (e instanceof CategoryNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       } else if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
       }
@@ -272,7 +272,7 @@ export class CategoryController {
       };
     } catch (e) {
       if (e instanceof CategoryNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -302,7 +302,7 @@ export class CategoryController {
       return { message: 'Category has been successfully deleted.' };
     } catch (e) {
       if (e instanceof CategoryNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       } else if (e instanceof ForeignKeyViolationException) {
         throw new BadRequestException(e.message);
       }

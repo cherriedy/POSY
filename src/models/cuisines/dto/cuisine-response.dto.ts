@@ -29,6 +29,14 @@ export class CuisineResponseDto {
   region: string | null;
 
   @ApiProperty({
+    type: Boolean,
+    description: 'Is cuisine active',
+    example: true,
+  })
+  @Expose()
+  isDeleted: boolean;
+
+  @ApiProperty({
     description: 'Creation timestamp',
     example: '2024-01-01T00:00:00.000Z',
   })
