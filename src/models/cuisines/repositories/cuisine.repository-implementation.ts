@@ -19,7 +19,7 @@ export class CuisineRepositoryImpl implements CuisineRepository {
   private readonly defaultPage = paginationConfig.default.page;
   private readonly defaultPageSize = paginationConfig.default.pageSize;
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async create(entity: Cuisine): Promise<Cuisine> {
     try {
@@ -119,12 +119,30 @@ export class CuisineRepositoryImpl implements CuisineRepository {
   private buildOrderByClause(
     orderBy: CuisineOrderBy | null,
   ): Prisma.CuisineOrderByWithRelationInput {
-    if (!orderBy || orderBy.length === 0) return { name: 'asc' };
+
+    if (!orderBy || orderBy.length === 0) {
+      return { name: 'asc' };
+    }
+
+    const mapping: Record<string, string> = {
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+      name: 'name',
+      region: 'region',
+    };
 
     const orderByClause: Prisma.CuisineOrderByWithRelationInput = {};
+
     for (const { field, direction } of orderBy) {
-      orderByClause[field] = direction;
+      const prismaField = mapping[field];
+
+      if (!prismaField) {
+        throw new Error(`Invalid sort field: ${field}`);
+      }
+
+      orderByClause[prismaField] = direction;
     }
+
     return orderByClause;
   }
 
