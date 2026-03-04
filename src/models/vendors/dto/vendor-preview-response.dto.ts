@@ -36,6 +36,14 @@ export class VendorPreviewResponseDto {
   @Expose()
   status: VendorStatus;
 
+  @ApiProperty({
+    type: Boolean,
+    description: 'Is vendor deleted',
+    example: true,
+  })
+  @Expose()
+  isDeleted: boolean;
+
   @ApiProperty({ type: Date, description: 'Created at' })
   @Expose()
   createdAt: Date;

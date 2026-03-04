@@ -1,11 +1,13 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
   Inject,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -26,7 +28,7 @@ import { plainToInstance } from 'class-transformer';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 import { Roles } from '../../common/decorators';
 import { Role } from '../../common/enums';
-import { DuplicateEntryException } from '../../common/exceptions';
+import { DuplicateEntryException, ForeignKeyViolationException } from '../../common/exceptions';
 import {
   UnitCreateRequestDto,
   UnitQueryParamsDto,
@@ -102,7 +104,7 @@ export class UnitController {
       });
     } catch (e) {
       if (e instanceof UnitNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -168,11 +170,10 @@ export class UnitController {
         excludeExtraneousValues: true,
       });
     } catch (e) {
-      if (
-        e instanceof DuplicateEntryException ||
-        e instanceof UnitNotFoundException
-      ) {
+      if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
+      } else if (e instanceof UnitNotFoundException){
+        throw new NotFoundException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -187,7 +188,7 @@ export class UnitController {
   @ApiOperation({ summary: 'Delete a unit' })
   @ApiParam({ name: 'id', type: String })
   @ApiResponse({ status: 200, description: 'Unit deleted successfully.' })
-  @ApiResponse({ status: 400, description: 'Unit not found.' })
+  @ApiResponse({ status: 404, description: 'Unit not found.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
   async delete(@Param('id') id: string): Promise<{ message: string }> {
     try {
@@ -195,7 +196,9 @@ export class UnitController {
       return { message: 'Unit deleted successfully.' };
     } catch (e) {
       if (e instanceof UnitNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
+      } else if (e instanceof ForeignKeyViolationException){
+        throw new ConflictException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(

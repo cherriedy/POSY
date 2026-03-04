@@ -6,14 +6,14 @@ import { VendorStatus } from '../enums';
  */
 export interface VendorCreatePayload {
   name: string;
-  contactName: string | null;
-  email: string | null;
-  phone: string | null;
-  address: string | null;
-  taxCode: string | null;
-  paymentTerm: number | null;
-  note: string | null;
-  status: VendorStatus | null;
+  contactName?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  taxCode?: string | null;
+  paymentTerm?: number | null;
+  note?: string | null;
+  status?: VendorStatus | null;
 }
 
 /**
@@ -21,13 +21,15 @@ export interface VendorCreatePayload {
  * This is the contract between the controller and service layer.
  */
 export interface VendorUpdatePayload {
-  name?: string;
-  contactName: string | null;
-  email: string | null;
-  phone: string | null;
-  address: string | null;
-  taxCode: string | null;
-  paymentTerm: number | null;
-  note: string | null;
-  status: VendorStatus | null;
+  name?: string | null;
+  contactName?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  taxCode?: string | null;
+  paymentTerm?: number | null;
+  note?: string | null;
+  status?: VendorStatus | null;
+  suspendedReason?: string | null;
+  suspendedUntil?: Date | null;
 }

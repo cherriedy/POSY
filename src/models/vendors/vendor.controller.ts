@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -127,7 +128,7 @@ export class VendorController {
       });
     } catch (e) {
       if (e instanceof VendorNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -203,7 +204,7 @@ export class VendorController {
         throw new BadRequestException(e.message);
       }
       if (e instanceof VendorNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -226,7 +227,7 @@ export class VendorController {
       return { message: 'Vendor deleted successfully.' };
     } catch (e) {
       if (e instanceof VendorNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(

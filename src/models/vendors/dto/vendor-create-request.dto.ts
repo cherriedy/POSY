@@ -32,7 +32,7 @@ export class VendorCreateRequestDto {
   @IsOptional()
   @IsString()
   @MaxLength(100)
-  contactName: string | null = null;
+  contactName?: string | null;
 
   @ApiPropertyOptional({
     type: String,
@@ -43,7 +43,7 @@ export class VendorCreateRequestDto {
   @IsOptional()
   @IsEmail()
   @MaxLength(255)
-  email: string | null = null;
+  email?: string | null;
 
   @ApiPropertyOptional({
     type: String,
@@ -54,7 +54,7 @@ export class VendorCreateRequestDto {
   @IsOptional()
   @IsString()
   @MaxLength(10)
-  phone: string | null = null;
+  phone?: string | null;
 
   @ApiPropertyOptional({
     type: String,
@@ -64,7 +64,7 @@ export class VendorCreateRequestDto {
   })
   @IsOptional()
   @IsString()
-  address: string | null = null;
+  address?: string | null;
 
   @ApiPropertyOptional({
     type: String,
@@ -75,7 +75,7 @@ export class VendorCreateRequestDto {
   @IsOptional()
   @IsString()
   @MaxLength(50)
-  taxCode: string | null = null;
+  taxCode?: string | null;
 
   @ApiPropertyOptional({
     type: Number,
@@ -87,7 +87,7 @@ export class VendorCreateRequestDto {
   @IsOptional()
   @IsNumber()
   @Min(0)
-  paymentTerm: number | null = null;
+  paymentTerm?: number | null;
 
   @ApiPropertyOptional({
     type: String,
@@ -97,7 +97,7 @@ export class VendorCreateRequestDto {
   })
   @IsOptional()
   @IsString()
-  note: string | null = null;
+  note?: string | null;
 
   @ApiPropertyOptional({
     enum: VendorStatus,
@@ -106,5 +106,5 @@ export class VendorCreateRequestDto {
   })
   @IsOptional()
   @IsEnum(VendorStatus)
-  status: VendorStatus = VendorStatus.ACTIVE;
+  status?: VendorStatus = VendorStatus.ACTIVE;
 }

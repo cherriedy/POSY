@@ -3,7 +3,7 @@ import { UnitRepository } from './unit-repository.abstract';
 import { Unit, UnitMapper } from '../entities';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions';
+import { DuplicateEntryException, ForeignKeyViolationException } from '../../../common/exceptions';
 import { UnitNotFoundException } from '../exceptions';
 import { Page } from '../../../common/interfaces';
 import { paginationConfig } from '../../../common/config';
@@ -16,7 +16,7 @@ export class UnitRepositoryImpl implements UnitRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   /**
    * Creates a new unit in the database.
@@ -62,11 +62,6 @@ export class UnitRepositoryImpl implements UnitRepository {
    * @throws {DuplicateEntryException} If the new name or abbreviation conflicts with an existing unit.
    */
   async update(id: string, entity: Partial<Unit>): Promise<Unit> {
-    const existing = await this.findById(id);
-    if (!existing) {
-      throw new UnitNotFoundException(id);
-    }
-
     try {
       const record = await this.prisma.unit.update({
         where: { id },
@@ -94,11 +89,20 @@ export class UnitRepositoryImpl implements UnitRepository {
    * @throws {UnitNotFoundException} If no unit with the given ID exists.
    */
   async delete(id: string): Promise<void> {
-    const existing = await this.findById(id);
-    if (!existing) {
-      throw new UnitNotFoundException(id);
+    try {
+      await this.prisma.unit.delete({
+        where: { id },
+      });
+    } catch (e) {
+      if (
+        e instanceof PrismaClientKnownRequestError &&
+        e.code === 'P2003'
+      ) {
+        throw new ForeignKeyViolationException();
+      }
+
+      throw e;
     }
-    await this.prisma.unit.delete({ where: { id } });
   }
 
   /**
