@@ -235,7 +235,7 @@ export class UserController {
       return this.updateUserService.updateUser(id, dto);
     } catch (e) {
       if (e instanceof UserNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       } else if (e instanceof DuplicateEntryException) {
         throw new BadRequestException({
           message: e.message,
@@ -272,7 +272,7 @@ export class UserController {
       return { message: 'User active status has been successfully toggled.' };
     } catch (e) {
       if (e instanceof UserNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       } else if (e instanceof BadRequestException) {
         throw e;
       }
@@ -307,7 +307,7 @@ export class UserController {
       return { message: 'User password has been successfully updated.' };
     } catch (e) {
       if (e instanceof UserNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       } else if (e instanceof BadRequestException) {
         throw e;
       }
@@ -336,7 +336,7 @@ export class UserController {
       return { message: 'User has been successfully deleted.' };
     } catch (e) {
       if (e instanceof UserNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       } else if (e instanceof BadRequestException) {
         throw e;
       }

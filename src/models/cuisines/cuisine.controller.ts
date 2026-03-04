@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -57,7 +58,7 @@ export class CuisineController {
     private readonly createCuisineService: CreateCuisineService,
     private readonly updateCuisineService: UpdateCuisineService,
     private readonly deleteCuisineService: DeleteCuisineService,
-  ) {}
+  ) { }
 
   @Get(':id')
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -82,7 +83,7 @@ export class CuisineController {
       });
     } catch (e) {
       if (e instanceof CuisineNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -182,10 +183,9 @@ export class CuisineController {
         excludeExtraneousValues: true,
       });
     } catch (e) {
-      if (
-        e instanceof CuisineNotFoundException ||
-        e instanceof DuplicateEntryException
-      ) {
+      if (e instanceof CuisineNotFoundException) {
+        throw new NotFoundException(e.message);
+      } else if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
       }
       this.logger.error(e);
@@ -214,10 +214,9 @@ export class CuisineController {
       await this.deleteCuisineService.delete(id);
       return { message: 'Cuisine deleted successfully' };
     } catch (e) {
-      if (
-        e instanceof CuisineNotFoundException ||
-        e instanceof ForeignKeyViolationException
-      ) {
+      if (e instanceof CuisineNotFoundException) {
+        throw new NotFoundException(e.message);
+      } else if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
       }
       this.logger.error(e);

@@ -5,7 +5,7 @@ import { CategoryNotFoundException } from '../exceptions';
 
 @Injectable()
 export class UpdateCategoryService {
-  constructor(private readonly categoryRepository: CategoryRepository) {}
+  constructor(private readonly categoryRepository: CategoryRepository) { }
 
   /**
    * Updates an existing category by its unique identifier.
@@ -19,6 +19,10 @@ export class UpdateCategoryService {
    * @throws CategoryNotFoundException if the category does not exist (from repository layer).
    */
   async updateCategoryById(id: string, updateDate: Partial<Category>) {
+    const category = await this.categoryRepository.findById(id);
+    if (!category) {
+      throw new CategoryNotFoundException(id);
+    }
     return await this.categoryRepository.update(id, updateDate);
   }
 

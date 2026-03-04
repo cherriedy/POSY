@@ -1,6 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose } from 'class-transformer';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Exclude, Expose, Type } from 'class-transformer';
 import { TableStatus } from '../enums';
+import { ZonePreviewResponseDto } from 'src/models/zones/dto';
 
 @Exclude()
 export class TablePreviewResponseDto {
@@ -36,6 +37,15 @@ export class TablePreviewResponseDto {
   })
   @Expose()
   status: TableStatus;
+
+  @ApiPropertyOptional({
+    type: () => ZonePreviewResponseDto,
+    description: 'Zone information',
+    nullable: true,
+  })
+  @Expose()
+  @Type(() => ZonePreviewResponseDto)
+  zone?: ZonePreviewResponseDto | null;
 
   @ApiProperty({
     type: Boolean,

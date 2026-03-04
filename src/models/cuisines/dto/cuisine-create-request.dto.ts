@@ -24,5 +24,5 @@ export class CuisineCreateRequestDto {
   @IsOptional()
   @IsString()
   @MaxLength(100)
-  region: string | null;
+  region?: string | null;
 }

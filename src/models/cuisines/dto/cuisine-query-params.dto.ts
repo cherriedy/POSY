@@ -1,11 +1,12 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import {
   CuisineOrderBy,
   CuisineQueryParams,
   CuisineSortField,
 } from '../interfaces';
 import { SortDirection } from '../../../common/interfaces';
+import { Transform } from 'class-transformer';
 
 /**
  * Query parameters for filtering cuisines.
@@ -21,7 +22,7 @@ export class CuisineQueryParamsDto {
   })
   @IsOptional()
   @IsString()
-  q: string | null = null;
+  query: string | null = null;
 
   @ApiPropertyOptional({
     description: 'Whether to include deleted cuisines',
@@ -30,6 +31,8 @@ export class CuisineQueryParamsDto {
     default: false,
   })
   @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
   isDeleted: boolean | null = false;
 
   @ApiPropertyOptional({
@@ -39,6 +42,8 @@ export class CuisineQueryParamsDto {
     default: null,
   })
   @IsOptional()
+  @IsNumber()
+  @Transform(({ value }) => parseInt(value as string))
   page: number | null = null;
 
   @ApiPropertyOptional({
@@ -48,6 +53,8 @@ export class CuisineQueryParamsDto {
     default: null,
   })
   @IsOptional()
+  @IsNumber()
+  @Transform(({ value }) => parseInt(value as string))
   pageSize: number | null = null;
 
   @ApiPropertyOptional({
@@ -72,7 +79,7 @@ export class CuisineQueryParamsDto {
   orderBy: string | null = null;
 
   toQueryParams(): CuisineQueryParams {
-    const { page, pageSize, q, isDeleted, orderBy } = this;
+    const { page, pageSize, query, isDeleted, orderBy } = this;
 
     let parsedOrderBy: CuisineOrderBy | null = null;
     if (orderBy) {
@@ -89,7 +96,7 @@ export class CuisineQueryParamsDto {
       page: page ?? undefined,
       pageSize: pageSize ?? undefined,
       orderBy: parsedOrderBy,
-      filter: { q, isDeleted },
+      filter: { query, isDeleted },
     };
   }
 }

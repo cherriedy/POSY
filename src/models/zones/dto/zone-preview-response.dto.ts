@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
+import { FloorPreviewResponseDto } from 'src/models/floors/dto';
 
 @Exclude()
 export class ZonePreviewResponseDto {
@@ -26,6 +27,15 @@ export class ZonePreviewResponseDto {
   })
   @Expose()
   isActive: boolean;
+
+  @ApiProperty({
+    type: () => FloorPreviewResponseDto,
+    description: 'Floor information',
+    nullable: true,
+  })
+  @Expose()
+  @Type(() => FloorPreviewResponseDto)
+  floor: FloorPreviewResponseDto;
 
   @ApiProperty({
     type: Date,
