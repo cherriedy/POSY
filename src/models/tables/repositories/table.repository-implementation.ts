@@ -37,7 +37,7 @@ export class TableRepositoryImpl implements TableRepository {
       return await this.prismaService.table
         .create({
           data: prismaTable,
-          include: { floor: true, zone: true },
+          include: { zone: true },
         })
         .then(TableMapper.toDomain);
     } catch (e) {
@@ -83,7 +83,7 @@ export class TableRepositoryImpl implements TableRepository {
   async findById(id: string): Promise<Table | null> {
     const prismaTable = await this.prismaService.table.findUnique({
       where: { id },
-      include: { floor: true, zone: true },
+      include: { zone: true },
     });
 
     return prismaTable ? TableMapper.toDomain(prismaTable) : null;
@@ -110,19 +110,19 @@ export class TableRepositoryImpl implements TableRepository {
       {} as Record<string, any>,
     );
 
-    // Check for duplicate name within same floor
+    // Check for duplicate name within same zone
     if (dataSnakeCase.name && typeof dataSnakeCase.name === 'string') {
-      const floorId = dataSnakeCase.floor_id ?? table.floorId;
-      if (floorId) {
+      const zoneId = dataSnakeCase.zone_id ?? table.zoneId;
+      if (zoneId) {
         const existing = await this.prismaService.table.findFirst({
           where: {
             name: dataSnakeCase.name,
-            floor_id: floorId,
+            zone_id: zoneId,
           },
         });
         if (existing && existing.id !== id) {
           throw new DuplicateEntryException(
-            'Table name already exists on this floor.',
+            'Table name already exists on this zone.',
           );
         }
       }
@@ -133,7 +133,7 @@ export class TableRepositoryImpl implements TableRepository {
         .update({
           where: { id },
           data: dataSnakeCase,
-          include: { floor: true, zone: true },
+          include: { zone: true },
         })
         ?.then(TableMapper.toDomain);
     } catch (e) {
@@ -173,7 +173,7 @@ export class TableRepositoryImpl implements TableRepository {
         orderBy,
         skip: (page - 1) * pageSize,
         take: pageSize,
-        include: { floor: true, zone: true },
+        include: { zone: true },
       }),
       this.prismaService.table.count({ where }),
     ]);
@@ -240,10 +240,6 @@ export class TableRepositoryImpl implements TableRepository {
 
     if (filters.status) {
       where.status = filters.status;
-    }
-
-    if (filters.floorId) {
-      where.floor_id = filters.floorId;
     }
 
     if (filters.zoneId) {

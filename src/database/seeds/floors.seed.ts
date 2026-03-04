@@ -37,6 +37,4 @@ export async function seedFloors(prisma: PrismaClient) {
       await prisma.floor.create({ data: floor });
     }
   }
-
-  console.log('Floors seeded successfully');
 }
