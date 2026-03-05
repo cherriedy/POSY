@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -88,7 +89,7 @@ export class ProductController {
     private readonly getProductIngredientsService: GetProductIngredientsService,
     private readonly upsertProductIngredientsService: UpsertIngredientsService,
     private readonly removeProductIngredientService: RemoveProductIngredientService,
-  ) {}
+  ) { }
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
@@ -189,7 +190,7 @@ export class ProductController {
       });
     } catch (e) {
       if (e instanceof ProductNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -198,7 +199,7 @@ export class ProductController {
     }
   }
 
-  @Post('')
+  @Post()
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.ADMIN)
   @ApiOperation({
@@ -268,7 +269,7 @@ export class ProductController {
       });
     } catch (e) {
       if (e instanceof ProductNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       } else if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
       }
@@ -296,7 +297,7 @@ export class ProductController {
       return { message: 'Product deleted successfully.' };
     } catch (e) {
       if (e instanceof ProductNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -332,6 +333,9 @@ export class ProductController {
         excludeExtraneousValues: true,
       });
     } catch (e) {
+      if (e instanceof ProductNotFoundException) {
+        throw new NotFoundException(e.message);
+      }
       this.logger.error(e);
       throw new InternalServerErrorException(
         'An error occurred while processing your request.',
@@ -369,7 +373,9 @@ export class ProductController {
         excludeExtraneousValues: true,
       });
     } catch (e) {
-      if (
+      if (e instanceof ProductNotFoundException) {
+        throw new NotFoundException(e.message);
+      } else if (
         e instanceof DuplicateEntryException ||
         e instanceof ForeignKeyViolationException
       ) {
@@ -406,6 +412,9 @@ export class ProductController {
         excludeExtraneousValues: true,
       });
     } catch (e) {
+      if (e instanceof ProductNotFoundException) {
+        throw new NotFoundException(e.message);
+      }
       this.logger.error(e);
       throw new InternalServerErrorException(
         'An error occurred while processing your request.',
@@ -445,11 +454,8 @@ export class ProductController {
         excludeExtraneousValues: true,
       });
     } catch (e) {
-      if (
-        e instanceof DuplicateEntryException ||
-        e instanceof ForeignKeyViolationException
-      ) {
-        throw new BadRequestException(e.message);
+      if (e instanceof ProductNotFoundException) {
+        throw new NotFoundException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(

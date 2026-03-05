@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { ProductAttributeRepository } from '../repositories';
+import { ProductAttributeRepository, ProductRepository } from '../repositories';
 import { ProductAttribute } from '../entities';
+import { ProductNotFoundException } from '../exceptions';
 
 @Injectable()
 export class GetAttributesService {
   constructor(
     private readonly productAttributeRepository: ProductAttributeRepository,
+    private readonly productRepository: ProductRepository,
   ) {}
 
   /**
@@ -14,7 +16,9 @@ export class GetAttributesService {
    * @param productId - The unique identifier of the product
    * @returns The product attributes if found, null otherwise
    */
-  async getByProductId(productId: string): Promise<ProductAttribute | null> {
-    return await this.productAttributeRepository.findByProductId(productId);
+  async getByProductId(id: string): Promise<ProductAttribute | null> {
+    const product = await this.productRepository.findById(id);
+    if (!product) throw new ProductNotFoundException(id);
+    return await this.productAttributeRepository.findByProductId(id);
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ProductRepository } from '../repositories';
+import { ProductNotFoundException } from '../exceptions';
 
 @Injectable()
 export class DeleteProductService {
@@ -14,6 +15,8 @@ export class DeleteProductService {
    * @throws {Error} If the deletion fails due to the product not being found or repository/database errors.
    */
   async delete(id: string): Promise<void> {
+    const product = await this.productRepository.findById(id);
+    if (!product) throw new ProductNotFoundException(id);
     await this.productRepository.delete(id);
   }
 }

@@ -2,35 +2,55 @@ import { PromotionProductRepository } from './promotion-product.repository-abstr
 import { Promotion, PromotionProduct, PromotionProductMapper } from '../types';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions';
-import { PromotionProductNotFoundException } from '../exceptions';
 import { PromotionStatus } from '@prisma/client';
 
 @Injectable()
 export class PromotionProductRepositoryImpl implements PromotionProductRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
-  async bulkCreate(entities: PromotionProduct[]): Promise<PromotionProduct[]> {
-    const prismaData = entities.map((e) => PromotionProductMapper.toPrisma(e));
+  async replaceByProductIds(
+    promotionId: string,
+    productIds: string[],
+  ): Promise<PromotionProduct[]> {
 
-    await this.prismaService.promotionProduct.createMany({
-      data: prismaData,
+    return this.prismaService.$transaction(async (tx) => {
+
+      const existing = await tx.promotionProduct.findMany({
+        where: { promotion_id: promotionId },
+      });
+
+      const existingIds = existing.map((e) => e.product_id);
+
+      const toCreate = productIds.filter((id) => !existingIds.includes(id));
+      const toDelete = existingIds.filter((id) => !productIds.includes(id));
+
+      if (toDelete.length > 0) {
+        await tx.promotionProduct.deleteMany({
+          where: {
+            promotion_id: promotionId,
+            product_id: { in: toDelete },
+          },
+        });
+      }
+
+      if (toCreate.length > 0) {
+        await tx.promotionProduct.createMany({
+          data: toCreate.map((productId) => ({
+            promotion_id: promotionId,
+            product_id: productId,
+          })),
+        });
+      }
+
+      const result = await tx.promotionProduct.findMany({
+        where: { promotion_id: promotionId },
+        include: {
+          product: true,
+        },
+      });
+
+      return result.map(PromotionProductMapper.toDomain);
     });
-
-    const created = await this.prismaService.promotionProduct.findMany({
-      where: {
-        OR: prismaData.map((d) => ({
-          promotion_id: d.promotion_id,
-          product_id: d.product_id,
-        })),
-      },
-      include: {
-        product: true,
-      },
-    });
-
-    return created.map(PromotionProductMapper.toDomain);
   }
 
   async findByPromotionId(promotionId: string): Promise<PromotionProduct[]> {
@@ -44,31 +64,6 @@ export class PromotionProductRepositoryImpl implements PromotionProductRepositor
         },
       })
       .then((items) => items.map(PromotionProductMapper.toDomain));
-  }
-
-  async findExistingByProduct(promotionId: string, productIds: string[]) {
-    return this.prismaService.promotionProduct
-      .findMany({
-        where: {
-          promotion_id: promotionId,
-          product_id: { in: productIds },
-        },
-      })
-      .then((items) => items.map(PromotionProductMapper.toDomain));
-  }
-
-  async deleteByProductIds(
-    promotionId: string,
-    productIds: string[],
-  ): Promise<number> {
-    const result = await this.prismaService.promotionProduct.deleteMany({
-      where: {
-        promotion_id: promotionId,
-        product_id: { in: productIds },
-      },
-    });
-
-    return result.count;
   }
 
   /**
@@ -150,12 +145,12 @@ export class PromotionProductRepositoryImpl implements PromotionProductRepositor
     const whereClause = includeAll
       ? { product_id: productId }
       : {
-          product_id: productId,
-          promotion: {
-            status: PromotionStatus.ACTIVE,
-            is_deleted: false,
-          },
-        };
+        product_id: productId,
+        promotion: {
+          status: PromotionStatus.ACTIVE,
+          is_deleted: false,
+        },
+      };
 
     return await this.prismaService.promotionProduct
       .findMany({
