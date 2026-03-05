@@ -8,21 +8,12 @@ export abstract class PromotionProductRepository implements BaseRepository<Promo
 
   // abstract findById(id: string): Promise<PromotionProduct | null>;
 
-  abstract bulkCreate(
-    entities: PromotionProduct[],
+  abstract replaceByProductIds(
+    promotionId: string,
+    productIds: string[],
   ): Promise<PromotionProduct[]>;
 
   abstract findByPromotionId(promotionId: string): Promise<PromotionProduct[]>;
-
-  abstract findExistingByProduct(
-    promotionId: string,
-    productIds: string[],
-  ): Promise<PromotionProduct[]>;
-
-  abstract deleteByProductIds(
-    promotionId: string,
-    productIds: string[],
-  ): Promise<number>;
 
   abstract getAll(params?: PaginationParams): Promise<PromotionProduct[]>;
 

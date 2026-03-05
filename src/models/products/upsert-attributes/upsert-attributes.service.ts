@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { ProductAttributeRepository } from '../repositories';
+import { ProductAttributeRepository, ProductRepository } from '../repositories';
 import { ProductAttribute } from '../entities';
 import { ProductAttributesUpsertPayload } from '../interfaces';
+import { ProductNotFoundException } from '../exceptions';
 
 @Injectable()
 export class UpsertAttributesService {
   constructor(
     private readonly productAttributeRepository: ProductAttributeRepository,
-  ) {}
+    private readonly productRepository: ProductRepository,
+  ) { }
 
   /**
    * Creates or updates product attributes for a specific product.
@@ -21,6 +23,10 @@ export class UpsertAttributesService {
     payload: ProductAttributesUpsertPayload,
   ): Promise<ProductAttribute> {
     const updatePayload: Partial<ProductAttribute> = {};
+    if (payload.productId) {
+      const product = await this.productRepository.findById(payload.productId);
+      if (!product) throw new ProductNotFoundException(payload.productId);
+    }
 
     if (payload.cuisineId) {
       updatePayload.cuisineId = payload.cuisineId;

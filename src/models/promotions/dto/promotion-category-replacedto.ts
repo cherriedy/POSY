@@ -1,7 +1,7 @@
-import { IsArray, IsString, ArrayNotEmpty } from 'class-validator';
+import { IsArray, ArrayNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class BulkCreatePromotionCategoryDto {
+export class BulkReplacePromotionCategoryDto {
   @ApiProperty({
     type: [String],
     example: ['uuid-1', 'uuid-2'],

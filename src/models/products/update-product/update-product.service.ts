@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { ProductRepository } from '../repositories';
 import { Product } from '../entities';
 import { getSlug } from '../../../common/utilities/string.util';
+import { ProductNotFoundException } from '../exceptions';
 
 @Injectable()
 export class UpdateProductService {
-  constructor(private readonly productRepository: ProductRepository) {}
+  constructor(private readonly productRepository: ProductRepository) { }
 
   /**
    * Updates an existing product in the repository.
@@ -18,6 +19,9 @@ export class UpdateProductService {
    * @throws {Error} If the update fails due to validation, the product not being found, or repository/database errors.
    */
   async update(id: string, product: Partial<Product>): Promise<Product> {
+    const existing = await this.productRepository.findById(id);
+    if (!existing) throw new ProductNotFoundException(id);
+
     // Auto-generate slug from name if name is being updated but slug is not provided
     if (product.name && !product.slug) {
       product.slug = getSlug(product.name);

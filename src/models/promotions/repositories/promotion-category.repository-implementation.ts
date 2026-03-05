@@ -10,29 +10,50 @@ import { PromotionStatus } from '@prisma/client';
 
 @Injectable()
 export class PromotionCategoryRepositoryImpl implements PromotionCategoryRepository {
-  constructor(private readonly prismaService: PrismaService) {}
-  async bulkCreate(
-    entities: PromotionCategory[],
+  constructor(private readonly prismaService: PrismaService) { }
+  async replaceByCategoryIds(
+    promotionId: string,
+    categoryIds: string[],
   ): Promise<PromotionCategory[]> {
-    const prismaData = entities.map((e) => PromotionCategoryMapper.toPrisma(e));
 
-    await this.prismaService.promotionCategory.createMany({
-      data: prismaData,
+    return this.prismaService.$transaction(async (tx) => {
+
+      const existing = await tx.promotionCategory.findMany({
+        where: { promotion_id: promotionId },
+      });
+
+      const existingIds = existing.map((e) => e.category_id);
+
+      const toCreate = categoryIds.filter((id) => !existingIds.includes(id));
+      const toDelete = existingIds.filter((id) => !categoryIds.includes(id));
+
+      if (toDelete.length > 0) {
+        await tx.promotionCategory.deleteMany({
+          where: {
+            promotion_id: promotionId,
+            category_id: { in: toDelete },
+          },
+        });
+      }
+
+      if (toCreate.length > 0) {
+        await tx.promotionCategory.createMany({
+          data: toCreate.map((categoryId) => ({
+            promotion_id: promotionId,
+            category_id: categoryId,
+          })),
+        });
+      }
+
+      const result = await tx.promotionCategory.findMany({
+        where: { promotion_id: promotionId },
+        include: {
+          category: true,
+        },
+      });
+
+      return result.map(PromotionCategoryMapper.toDomain);
     });
-
-    const created = await this.prismaService.promotionCategory.findMany({
-      where: {
-        OR: prismaData.map((d) => ({
-          promotion_id: d.promotion_id,
-          category_id: d.category_id,
-        })),
-      },
-      include: {
-        category: true,
-      },
-    });
-
-    return created.map(PromotionCategoryMapper.toDomain);
   }
 
   async findByPromotionId(promotionId: string): Promise<PromotionCategory[]> {
@@ -43,17 +64,6 @@ export class PromotionCategoryRepositoryImpl implements PromotionCategoryReposit
         },
         include: {
           category: true,
-        },
-      })
-      .then((items) => items.map(PromotionCategoryMapper.toDomain));
-  }
-
-  async findExistingByCategory(promotionId: string, categoryIds: string[]) {
-    return this.prismaService.promotionCategory
-      .findMany({
-        where: {
-          promotion_id: promotionId,
-          category_id: { in: categoryIds },
         },
       })
       .then((items) => items.map(PromotionCategoryMapper.toDomain));
@@ -111,12 +121,12 @@ export class PromotionCategoryRepositoryImpl implements PromotionCategoryReposit
     const whereClause = includeAll
       ? { category_id: categoryId }
       : {
-          category_id: categoryId,
-          promotion: {
-            status: PromotionStatus.ACTIVE,
-            is_deleted: false,
-          },
-        };
+        category_id: categoryId,
+        promotion: {
+          status: PromotionStatus.ACTIVE,
+          is_deleted: false,
+        },
+      };
 
     const items = await this.prismaService.promotionCategory.findMany({
       where: whereClause,

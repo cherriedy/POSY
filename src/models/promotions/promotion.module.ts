@@ -14,6 +14,8 @@ import { GetPromotionsModule } from './get-promotions/get-promotions.module';
 import { DeletePromotionModule } from './delete-promotion/delete-promotion.module';
 import { ValidatePromotionModule } from './validate-promotion/validate-promotion.module';
 import { CategoryModule } from '../categories/category.module';
+import { ReplacePromotionCategoriesModule } from './replace-categories/replace-categories.module';
+import { ReplacePromotionProductModule } from './replace-products/replace-products.module';
 
 @Global()
 @Module({
@@ -34,6 +36,8 @@ import { CategoryModule } from '../categories/category.module';
   imports: [
     CreatePromotionModule,
     UpdatePromotionModule,
+    ReplacePromotionCategoriesModule,
+    ReplacePromotionProductModule,
     GetPromotionsModule,
     DeletePromotionModule,
     ValidatePromotionModule,

@@ -1,5 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { UnitResponseDto } from 'src/models/units';
 
 class IngredientPreview {
   @Expose()
@@ -11,8 +12,9 @@ class IngredientPreview {
   name: string;
 
   @Expose()
-  @ApiProperty()
-  unitCost: number;
+  @Type(() => UnitResponseDto)
+  @ApiProperty({ type: UnitResponseDto })
+  unit: UnitResponseDto;
 }
 
 export class ProductIngredientResponseDto {

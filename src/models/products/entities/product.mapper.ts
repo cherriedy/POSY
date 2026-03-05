@@ -29,29 +29,36 @@ export class ProductMapper {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (prisma as any).category
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
-          CategoryMapper.toDomain((prisma as any).category)
+        CategoryMapper.toDomain((prisma as any).category)
         : undefined,
     );
   }
 
-  static toPrisma(domain: DomainProduct): PrismaProduct {
-    return <PrismaProduct>{
-      ...(domain.id ? { id: domain.id } : {}),
-      category_id: domain.categoryId,
+  static toPrisma(domain: DomainProduct): Prisma.ProductCreateInput {
+    if (!domain.categoryId) {
+      throw new Error("categoryId is required");
+    }
+
+    return {
       sku: domain.sku,
       name: domain.name,
-      slug: domain.slug,
+      slug: domain.slug ?? "",
       description: domain.description,
       price: new Prisma.Decimal(domain.price),
       discount_type: domain.discountType,
-      discount_value: domain.discountValue,
+      discount_value:
+        domain.discountValue !== null
+          ? new Prisma.Decimal(domain.discountValue)
+          : null,
+
       image_url: domain.imageUrl,
       stock_quantity: domain.stockQuantity,
       is_available: domain.isAvailable,
       is_deleted: domain.isDeleted,
       deleted_at: domain.deletedAt,
-      created_at: domain.createdAt,
-      updated_at: domain.updatedAt,
+      category: {
+        connect: { id: domain.categoryId },
+      },
     };
   }
 }
