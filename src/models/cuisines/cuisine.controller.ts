@@ -8,6 +8,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -75,7 +76,7 @@ export class CuisineController {
     type: CuisineResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Cuisine not found' })
-  async getCuisineById(@Param('id') id: string): Promise<CuisineResponseDto> {
+  async getCuisineById(@Param('id', new ParseUUIDPipe()) id: string): Promise<CuisineResponseDto> {
     try {
       const cuisine = await this.getCuisinesService.getById(id);
       return plainToInstance(CuisineResponseDto, cuisine, {
@@ -174,7 +175,7 @@ export class CuisineController {
     description: 'Cuisine not found or duplicate name',
   })
   async updateCuisine(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: CuisineUpdateRequestDto,
   ): Promise<CuisineResponseDto> {
     try {
@@ -209,7 +210,7 @@ export class CuisineController {
     description: 'Cuisine deleted successfully',
   })
   @ApiResponse({ status: 400, description: 'Cuisine not found' })
-  async deleteCuisine(@Param('id') id: string): Promise<{ message: string }> {
+  async deleteCuisine(@Param('id', new ParseUUIDPipe()) id: string): Promise<{ message: string }> {
     try {
       await this.deleteCuisineService.delete(id);
       return { message: 'Cuisine deleted successfully' };

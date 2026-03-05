@@ -18,7 +18,7 @@ const { page: defaultPage, pageSize: defaultPageSize } =
 
 @Injectable()
 export class IngredientRepositoryImpl implements IngredientRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async create(entity: Ingredient): Promise<Ingredient> {
     try {
@@ -44,11 +44,20 @@ export class IngredientRepositoryImpl implements IngredientRepository {
   }
 
   async delete(id: string): Promise<void> {
-    const ingredient = await this.findById(id);
-    if (!ingredient) {
-      throw new IngredientNotFoundException(id);
+    try {
+      await this.prismaService.ingredient.delete({
+        where: { id },
+      });
+    } catch (e) {
+      if (
+        e instanceof PrismaClientKnownRequestError &&
+        e.code === 'P2003'
+      ) {
+        throw new ForeignKeyViolationException();
+      }
+
+      throw e;
     }
-    await this.prismaService.ingredient.delete({ where: { id } });
   }
 
   async findById(id: string): Promise<Ingredient | null> {
@@ -127,8 +136,8 @@ export class IngredientRepositoryImpl implements IngredientRepository {
 
     if (filter.vendorId) where.vendor_id = filter.vendorId;
     if (filter.unitId) where.unit_id = filter.unitId;
-    if (filter.name)
-      where.name = { contains: filter.name, mode: 'insensitive' };
+    if (filter.query)
+      where.name = { contains: filter.query, mode: 'insensitive' };
 
     return where;
   }

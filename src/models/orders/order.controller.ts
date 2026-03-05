@@ -6,6 +6,7 @@ import {
   Inject,
   InternalServerErrorException,
   Param,
+  ParseUUIDPipe,
   Post,
   Query,
   Req,
@@ -106,7 +107,7 @@ export class OrderController {
     type: OrderDetailedResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Order not found' })
-  async getById(@Param('id') id: string) {
+  async getById(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       const order = await this.getOrdersService.getById(id);
       return plainToInstance(OrderDetailedResponseDto, order, {

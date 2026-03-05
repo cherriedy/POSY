@@ -8,6 +8,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -115,7 +116,7 @@ export class FloorController {
   })
   @ApiResponse({ status: 404, description: 'Floor not found' })
   async getFloorById(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
   ): Promise<FloorDetailedResponseDto> {
     try {
       const floor = await this.getFloorsService.getFloorById(id);
@@ -189,7 +190,7 @@ export class FloorController {
     description: 'Floor not found or duplicate entry',
   })
   async updateFloor(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: FloorUpdateRequestDto,
   ) {
     try {
@@ -227,7 +228,7 @@ export class FloorController {
     status: 400,
     description: 'Floor not found or foreign key violation',
   })
-  async deleteFloor(@Param('id') id: string) {
+  async deleteFloor(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       await this.deleteFloorService.deleteFloor(id);
       return { message: 'Floor has been successfully deleted.' };

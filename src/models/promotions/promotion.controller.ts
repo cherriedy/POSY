@@ -127,7 +127,7 @@ export class PromotionController {
     description: 'List of categories of the promotion',
     type: [PromotionCategoryPreviewResponseDto],
   })
-  async getPromotionCategoriesById(@Param('id') promotionId: string) {
+  async getPromotionCategoriesById(@Param('id', new ParseUUIDPipe()) promotionId: string) {
     try {
       const result =
         await this.getPromotionsService.getPromotionCategoriesByPromotionId(
@@ -164,7 +164,7 @@ export class PromotionController {
     type: [PromotionCategoryPreviewResponseDto],
   })
   async bulkCreatePromotionCategories(
-    @Param('id') promotionId: string,
+    @Param('id', new ParseUUIDPipe()) promotionId: string,
     @Body() dto: BulkCreatePromotionCategoryDto,
   ) {
     try {
@@ -212,7 +212,7 @@ export class PromotionController {
     description: 'Bulk delete success',
   })
   async bulkDeletePromotionCategories(
-    @Param('id') promotionId: string,
+    @Param('id', new ParseUUIDPipe()) promotionId: string,
     @Body() dto: BulkDeletePromotionCategoryDto,
   ) {
     try {
@@ -315,7 +315,7 @@ export class PromotionController {
     description: 'List of products of the promotion',
     type: [PromotionProductPreviewResponseDto],
   })
-  async getPromotionProductsById(@Param('id') promotionId: string) {
+  async getPromotionProductsById(@Param('id', new ParseUUIDPipe()) promotionId: string) {
     try {
       const result =
         await this.getPromotionsService.getPromotionProductsByPromotionId(
@@ -352,7 +352,7 @@ export class PromotionController {
     type: [PromotionProductPreviewResponseDto],
   })
   async bulkCreatePromotionProducts(
-    @Param('id') promotionId: string,
+    @Param('id', new ParseUUIDPipe()) promotionId: string,
     @Body() dto: BulkCreatePromotionProductDto,
   ) {
     try {
@@ -402,7 +402,7 @@ export class PromotionController {
     description: 'Bulk delete success',
   })
   async bulkDeletePromotionProducts(
-    @Param('id') promotionId: string,
+    @Param('id', new ParseUUIDPipe()) promotionId: string,
     @Body() dto: BulkCreatePromotionProductDto,
   ) {
     try {
@@ -446,7 +446,7 @@ export class PromotionController {
   //   type: PromotionProductPreviewResponseDto,
   // })
   // @ApiResponse({ status: 400, description: 'Promotion product not found' })
-  // async getPromotionProductById(@Param('id') id: string) {
+  // async getPromotionProductById(@Param('id', new ParseUUIDPipe()) id: string) {
   //   try {
   //     const promotionProduct =
   //       await this.getPromotionsService.getPromotionProductById(id);
@@ -481,7 +481,7 @@ export class PromotionController {
   // @ApiParam({ name: 'id', type: String })
   // @ApiResponse({ status: 200, description: 'Promotion product deleted' })
   // @ApiResponse({ status: 400, description: 'Promotion product not found' })
-  // async deletePromotionProduct(@Param('id') id: string) {
+  // async deletePromotionProduct(@Param('id', new ParseUUIDPipe()) id: string) {
   //   try {
   //     await this.deletePromotionService.deletePromotionProduct(id);
   //     return { message: 'Promotion product deleted successfully.' };
@@ -659,7 +659,7 @@ export class PromotionController {
     type: PromotionDetailedResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Promotion not found' })
-  async getById(@Param('id') id: string) {
+  async getById(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       const promotion = await this.getPromotionsService.getById(id);
       return plainToInstance(PromotionDetailedResponseDto, promotion, {
@@ -732,7 +732,7 @@ export class PromotionController {
     status: 400,
     description: 'Promotion not found or duplicate entry',
   })
-  async update(@Param('id') id: string, @Body() dto: PromotionUpdateDto) {
+  async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: PromotionUpdateDto) {
     try {
       const promotion = await this.updatePromotionService.update(id, dto);
       return plainToInstance(PromotionPreviewResponseDto, promotion, {
@@ -763,7 +763,7 @@ export class PromotionController {
   @ApiParam({ name: 'id', type: String })
   @ApiResponse({ status: 200, description: 'Promotion deleted' })
   @ApiResponse({ status: 400, description: 'Promotion not found' })
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       await this.deletePromotionService.delete(id);
       return { message: 'Promotion deleted successfully.' };

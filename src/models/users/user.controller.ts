@@ -8,6 +8,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -85,7 +86,7 @@ export class UserController {
   })
   @ApiResponse({ status: 400, description: 'User not found' })
   async getUserById(
-    @Param('id') userId: string,
+    @Param('id', new ParseUUIDPipe()) userId: string,
   ): Promise<UserDetailedResponseDto> {
     try {
       const user = await this.getUsersService.getUserById(userId);
@@ -230,7 +231,7 @@ export class UserController {
     status: 400,
     description: 'User not found or duplicate entry',
   })
-  async updateUser(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+  async updateUser(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateUserDto) {
     try {
       return this.updateUserService.updateUser(id, dto);
     } catch (e) {
@@ -266,7 +267,7 @@ export class UserController {
     description: 'User active status toggled',
   })
   @ApiResponse({ status: 400, description: 'User not found' })
-  async toggleUserActive(@Param('id') id: string) {
+  async toggleUserActive(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       await this.updateUserService.toggleUserActive(id);
       return { message: 'User active status has been successfully toggled.' };
@@ -299,7 +300,7 @@ export class UserController {
   })
   @ApiResponse({ status: 400, description: 'User not found' })
   async updateUserPassword(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: UpdatePasswordDto,
   ) {
     try {
@@ -330,7 +331,7 @@ export class UserController {
   @ApiParam({ name: 'id', type: String })
   @ApiResponse({ status: 200, description: 'User deleted' })
   @ApiResponse({ status: 400, description: 'User not found' })
-  async deleteUser(@Param('id') id: string) {
+  async deleteUser(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       await this.deleteUserService.deleteUserById(id);
       return { message: 'User has been successfully deleted.' };
@@ -363,7 +364,7 @@ export class UserController {
     status: 400,
     description: 'User not found or account not locked',
   })
-  async unlockUser(@Param('id') id: string) {
+  async unlockUser(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       await this.updateUserService.unlockUser(id);
       return { message: 'User account has been successfully unlocked.' };

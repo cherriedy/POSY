@@ -8,6 +8,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -116,7 +117,7 @@ export class TableController {
   })
   @ApiResponse({ status: 400, description: 'Table not found' })
   async getTableById(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
   ): Promise<TableDetailedResponseDto> {
     try {
       const table = await this.getTablesService.getTableById(id);
@@ -190,7 +191,7 @@ export class TableController {
     description: 'Table not found or duplicate entry',
   })
   async updateTable(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: TableUpdateRequestDto,
   ) {
     try {
@@ -230,7 +231,7 @@ export class TableController {
     status: 400,
     description: 'Table not found or foreign key violation',
   })
-  async deleteTable(@Param('id') id: string) {
+  async deleteTable(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       await this.deleteTableService.deleteTable(id);
       return { message: 'Table has been successfully deleted.' };

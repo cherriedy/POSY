@@ -8,6 +8,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -120,7 +121,7 @@ export class VendorController {
   })
   @ApiResponse({ status: 400, description: 'Vendor not found.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
-  async getById(@Param('id') id: string): Promise<VendorDetailedResponseDto> {
+  async getById(@Param('id', new ParseUUIDPipe()) id: string): Promise<VendorDetailedResponseDto> {
     try {
       const vendor = await this.getVendorsService.getById(id);
       return plainToInstance(VendorDetailedResponseDto, vendor, {
@@ -190,7 +191,7 @@ export class VendorController {
   })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
   async update(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: VendorUpdateRequestDto,
   ): Promise<VendorDetailedResponseDto> {
     try {
@@ -221,7 +222,7 @@ export class VendorController {
   @ApiResponse({ status: 200, description: 'Vendor deleted successfully.' })
   @ApiResponse({ status: 400, description: 'Vendor not found.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
-  async delete(@Param('id') id: string): Promise<{ message: string }> {
+  async delete(@Param('id', new ParseUUIDPipe()) id: string): Promise<{ message: string }> {
     try {
       await this.deleteVendorService.delete(id);
       return { message: 'Vendor deleted successfully.' };

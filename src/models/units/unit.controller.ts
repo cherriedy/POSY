@@ -9,6 +9,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -96,7 +97,7 @@ export class UnitController {
   })
   @ApiResponse({ status: 400, description: 'Unit not found.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
-  async getById(@Param('id') id: string): Promise<UnitResponseDto> {
+  async getById(@Param('id', new ParseUUIDPipe()) id: string): Promise<UnitResponseDto> {
     try {
       const unit = await this.getUnitsService.getById(id);
       return plainToInstance(UnitResponseDto, unit, {
@@ -160,7 +161,7 @@ export class UnitController {
   })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
   async update(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: UnitCreateRequestDto,
   ): Promise<UnitResponseDto> {
     try {
@@ -190,7 +191,7 @@ export class UnitController {
   @ApiResponse({ status: 200, description: 'Unit deleted successfully.' })
   @ApiResponse({ status: 404, description: 'Unit not found.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
-  async delete(@Param('id') id: string): Promise<{ message: string }> {
+  async delete(@Param('id', new ParseUUIDPipe()) id: string): Promise<{ message: string }> {
     try {
       await this.deleteUnitService.delete(id);
       return { message: 'Unit deleted successfully.' };

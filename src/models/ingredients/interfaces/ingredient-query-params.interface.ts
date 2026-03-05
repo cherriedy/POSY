@@ -29,12 +29,12 @@ export type IngredientOrderBy = Array<OrderBy<IngredientSortField>>;
  *
  * @property {string} [vendorId] - Filter by vendor ID.
  * @property {string} [unitId] - Filter by unit ID.
- * @property {string} [name] - Search query string to match ingredient names.
+ * @property {string} [query] - Search query string to match ingredient names.
  */
 export interface IngredientQueryFilter {
   vendorId?: string | null;
   unitId?: string | null;
-  name?: string | null;
+  query?: string | null;
 }
 
 /**

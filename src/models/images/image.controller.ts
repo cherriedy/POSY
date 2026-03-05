@@ -7,6 +7,7 @@ import {
   Inject,
   InternalServerErrorException,
   Param,
+  ParseUUIDPipe,
   Post,
   Query,
   UploadedFiles,
@@ -132,7 +133,7 @@ export class ImageController {
     },
   })
   @ApiResponse({ status: 404, description: 'Image not found.' })
-  async getImage(@Param('id') id: string) {
+  async getImage(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.imageService.getImageById(id);
   }
 
