@@ -13,8 +13,11 @@ class VendorPreview {
   @Expose()
   @ApiProperty()
   status: string;
-}
 
+  @Expose()
+  @ApiProperty()
+  isDeleted: string;
+}
 class UnitPreview {
   @Expose()
   @ApiProperty()

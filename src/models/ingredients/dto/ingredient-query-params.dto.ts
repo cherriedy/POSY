@@ -49,12 +49,12 @@ export class IngredientQueryParamsDto {
 
   @ApiPropertyOptional({
     type: String,
-    description: 'Filter by ingredient name',
+    description: 'Search ingredient name',
     example: 'Tomato',
   })
   @IsOptional()
   @IsString()
-  name?: string;
+  query?: string;
 
   @ApiPropertyOptional({
     type: String,
@@ -67,7 +67,7 @@ export class IngredientQueryParamsDto {
   orderBy?: string;
 
   toQueryParams(): IngredientQueryParams {
-    const { page, pageSize, vendorId, unitId, name, orderBy } = this;
+    const { page, pageSize, vendorId, unitId, query, orderBy } = this;
 
     let parsedOrderBy: IngredientOrderBy | undefined;
     if (orderBy) {
@@ -85,9 +85,9 @@ export class IngredientQueryParamsDto {
       pageSize,
       orderBy: parsedOrderBy,
       filter: {
-        vendorId: vendorId ?? null,
-        unitId: unitId ?? null,
-        name: name ?? null,
+        vendorId,
+        unitId,
+        query
       },
     };
   }

@@ -7,6 +7,7 @@ import {
   Inject,
   InternalServerErrorException,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -172,7 +173,7 @@ export class ProductController {
     type: ProductDetailedResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Product not found' })
-  async getById(@Param('id') id: string, @Req() req: Request) {
+  async getById(@Param('id', new ParseUUIDPipe()) id: string, @Req() req: Request) {
     try {
       const userRole = (req.user as JwtPayload).role;
       const product = await this.getProductsService.getById(id);
@@ -256,7 +257,7 @@ export class ProductController {
     status: 400,
     description: 'Product not found or duplicate entry',
   })
-  async update(@Param('id') id: string, @Body() dto: UpdateProductDto) {
+  async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateProductDto) {
     try {
       const product = await this.updateProductService.update(
         id,
@@ -289,7 +290,7 @@ export class ProductController {
   @ApiParam({ name: 'id', type: String })
   @ApiResponse({ status: 200, description: 'Product deleted' })
   @ApiResponse({ status: 400, description: 'Product not found' })
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       await this.deleteProductService.delete(id);
       return { message: 'Product deleted successfully.' };
@@ -319,7 +320,7 @@ export class ProductController {
   })
   @ApiResponse({ status: 404, description: 'Product attributes not found' })
   async getProductAttributes(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
   ): Promise<ProductAttributeResponseDto | null> {
     try {
       const attributes =
@@ -358,7 +359,7 @@ export class ProductController {
     description: 'Invalid input or product not found',
   })
   async upsertProductAttributes(
-    @Param('id') productId: string,
+    @Param('id', new ParseUUIDPipe()) productId: string,
     @Body() dto: ProductAttributeUpsertRequestDto,
   ): Promise<ProductAttributeResponseDto> {
     try {
@@ -395,7 +396,7 @@ export class ProductController {
     type: [ProductIngredientResponseDto],
   })
   async getProductIngredients(
-    @Param('id') productId: string,
+    @Param('id', new ParseUUIDPipe()) productId: string,
   ): Promise<ProductIngredientResponseDto[]> {
     try {
       const ingredients =
@@ -434,7 +435,7 @@ export class ProductController {
     description: 'Invalid input or product not found',
   })
   async upsertProductIngredients(
-    @Param('id') productId: string,
+    @Param('id', new ParseUUIDPipe()) productId: string,
     @Body() dto: ProductIngredientBulkUpsertRequestDto,
   ): Promise<ProductIngredientResponseDto[]> {
     try {

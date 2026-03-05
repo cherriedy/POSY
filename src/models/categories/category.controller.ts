@@ -8,6 +8,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -108,7 +109,7 @@ export class CategoryController {
   })
   @ApiResponse({ status: 404, description: 'Category not found' })
   async getCategoryById(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
   ): Promise<CategoryDetailedResponseDto> {
     try {
       const category = await this.getCategoriesService.getCategoryById(id);
@@ -226,7 +227,7 @@ export class CategoryController {
     description: 'Category not found or duplicate entry',
   })
   async updateCategory(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: UpdateCategoryDto,
   ) {
     try {
@@ -264,7 +265,7 @@ export class CategoryController {
     description: 'Category active status toggled',
   })
   @ApiResponse({ status: 400, description: 'Category not found' })
-  async toggleCategoryActive(@Param('id') id: string) {
+  async toggleCategoryActive(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       await this.updateCategoryService.toggleCategoryActive(id);
       return {
@@ -296,7 +297,7 @@ export class CategoryController {
     status: 400,
     description: 'Category not found or foreign key violation',
   })
-  async deleteCategory(@Param('id') id: string) {
+  async deleteCategory(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       await this.deleteCategoryService.deleteCategoryById(id);
       return { message: 'Category has been successfully deleted.' };

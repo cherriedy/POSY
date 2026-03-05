@@ -8,6 +8,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -114,7 +115,7 @@ export class ZoneController {
     type: ZoneDetailedResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Zone not found' })
-  async getZoneById(@Param('id') id: string): Promise<ZoneDetailedResponseDto> {
+  async getZoneById(@Param('id', new ParseUUIDPipe()) id: string): Promise<ZoneDetailedResponseDto> {
     try {
       const zone = await this.getZonesService.getZoneById(id);
       return plainToInstance(ZoneDetailedResponseDto, zone, {
@@ -196,7 +197,7 @@ export class ZoneController {
     status: 400,
     description: 'Zone not found or duplicate entry',
   })
-  async updateZone(@Param('id') id: string, @Body() dto: ZoneUpdateRequestDto) {
+  async updateZone(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: ZoneUpdateRequestDto) {
     try {
       const zone = await this.updateZoneService.updateZone(
         id,
@@ -234,7 +235,7 @@ export class ZoneController {
     status: 400,
     description: 'Zone not found or foreign key violation',
   })
-  async deleteZone(@Param('id') id: string) {
+  async deleteZone(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       await this.deleteZoneService.deleteZone(id);
       return { message: 'Zone has been successfully deleted.' };

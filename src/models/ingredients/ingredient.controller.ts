@@ -12,6 +12,8 @@ import {
   InternalServerErrorException,
   NotFoundException,
   BadRequestException,
+  ConflictException,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
@@ -48,7 +50,7 @@ import {
   CreateIngredientService,
 } from './create-ingredient';
 
-@ApiTags('Ingredient')
+@ApiTags('Ingredients')
 @ApiBearerAuth()
 @Controller('ingredients')
 export class IngredientController {
@@ -60,7 +62,7 @@ export class IngredientController {
     private readonly updateIngredientService: UpdateIngredientService,
     private readonly getIngredientsService: GetIngredientsService,
     private readonly deleteIngredientService: DeleteIngredientService,
-  ) {}
+  ) { }
 
   @Get()
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -109,7 +111,7 @@ export class IngredientController {
     type: IngredientResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Ingredient not found' })
-  async getById(@Param('id') id: string) {
+  async getById(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       const ingredient = await this.getIngredientsService.getById(id);
       return plainToInstance(IngredientResponseDto, ingredient, {
@@ -117,7 +119,7 @@ export class IngredientController {
       });
     } catch (e) {
       if (e instanceof IngredientNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -148,10 +150,9 @@ export class IngredientController {
         excludeExtraneousValues: true,
       });
     } catch (e) {
-      if (
-        e instanceof DuplicateEntryException ||
-        e instanceof ForeignKeyViolationException
-      ) {
+      if (e instanceof ForeignKeyViolationException) {
+        throw new ConflictException(e.message);
+      } else if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
       }
       this.logger.error(e);
@@ -176,7 +177,7 @@ export class IngredientController {
   })
   @ApiResponse({ status: 404, description: 'Ingredient not found' })
   async update(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: IngredientUpdateRequestDto,
   ) {
     try {
@@ -188,9 +189,13 @@ export class IngredientController {
         excludeExtraneousValues: true,
       });
     } catch (e) {
-      if (e instanceof NotFoundException) throw e;
-      if (e instanceof DuplicateEntryException) throw e;
-      if (e instanceof ForeignKeyViolationException) throw e;
+      if (e instanceof IngredientNotFoundException) {
+        throw new NotFoundException(e.message);
+      } else if (e instanceof ForeignKeyViolationException) {
+        throw new ConflictException(e.message);
+      } else if (e instanceof DuplicateEntryException) {
+        throw new BadRequestException(e.message);
+      }
       this.logger.error(e);
       throw new InternalServerErrorException(
         'An error occurred while processing your request.',
@@ -208,12 +213,16 @@ export class IngredientController {
   @ApiParam({ name: 'id', description: 'Ingredient ID' })
   @ApiResponse({ status: 204, description: 'Ingredient deleted successfully' })
   @ApiResponse({ status: 404, description: 'Ingredient not found' })
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       await this.deleteIngredientService.delete(id);
       return { message: 'Ingredient deleted successfully' };
     } catch (e) {
-      if (e instanceof NotFoundException) throw e;
+      if (e instanceof IngredientNotFoundException) {
+        throw new NotFoundException(e.message);
+      } else if (e instanceof ForeignKeyViolationException) {
+        throw new ConflictException(e.message);
+      }
       this.logger.error(e);
       throw new InternalServerErrorException(
         'An error occurred while processing your request.',
