@@ -69,13 +69,13 @@ export class TaxQueryParamsDto {
 
   @ApiPropertyOptional({
     type: Boolean,
-    description: 'Include deleted taxes',
+    description: 'deleted taxes',
     default: false,
   })
   @IsOptional()
   @IsBoolean()
   @Type(() => Boolean)
-  includeDeleted?: boolean;
+  isDeleted?: boolean;
 
   @ApiPropertyOptional({
     type: String,
@@ -121,7 +121,7 @@ export class TaxQueryParamsDto {
         rateType: this.rateType ? [this.rateType] : undefined,
         isActive: this.isActive,
         isIncluded: this.isIncluded,
-        isDeleted: this.includeDeleted,
+        isDeleted: this.isDeleted,
       },
       orderBy: this.orderBy,
     };

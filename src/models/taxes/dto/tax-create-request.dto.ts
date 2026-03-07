@@ -33,15 +33,6 @@ export class CreateTaxDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({
-    type: String,
-    description: 'Tax display name',
-    example: 'VAT 10%',
-  })
-  @IsString()
-  @IsNotEmpty()
-  displayName: string;
-
   @ApiPropertyOptional({
     type: String,
     description: 'Tax description',
@@ -86,15 +77,6 @@ export class CreateTaxDto {
   @IsOptional()
   @IsBoolean()
   isIncluded?: boolean;
-
-  @ApiPropertyOptional({
-    type: Boolean,
-    description: 'Apply after VAT',
-    default: false,
-  })
-  @IsOptional()
-  @IsBoolean()
-  applyAfterVAT?: boolean;
 
   @ApiPropertyOptional({
     type: Number,

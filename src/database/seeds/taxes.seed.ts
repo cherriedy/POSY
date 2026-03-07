@@ -24,14 +24,12 @@ export async function seedTaxes(prisma: PrismaClient) {
   // 1. VAT (Value Added Tax) - 10%
   await upsertTaxByName({
     type: 'VAT',
-    name: 'VAT',
-    display_name: 'Value Added Tax',
+    name: 'VAT - Value Added Tax',
     description: 'Thuế giá trị gia tăng (VAT) 10% áp dụng tại Việt Nam',
     rate_type: 'PERCENTAGE',
     charge_rate: 0.1,
     is_active: true,
     is_included: false,
-    apply_after_vat: false,
     sort_order: 1,
   });
 
@@ -39,14 +37,12 @@ export async function seedTaxes(prisma: PrismaClient) {
   await upsertTaxByName({
     type: 'SERVICE_CHARGE',
     name: 'Service Charge',
-    display_name: 'Phí phục vụ',
     description:
       'Phí phục vụ 5% thường áp dụng tại nhà hàng, khách sạn ở Việt Nam',
     rate_type: 'PERCENTAGE',
     charge_rate: 0.05,
     is_active: true,
     is_included: false,
-    apply_after_vat: true,
     sort_order: 2,
   });
 
@@ -54,13 +50,11 @@ export async function seedTaxes(prisma: PrismaClient) {
   await upsertTaxByName({
     type: 'ENVIRONMENTAL',
     name: 'Environmental Tax',
-    display_name: 'Thuế môi trường',
     description: 'Thuế bảo vệ môi trường (áp dụng cho một số sản phẩm)',
     rate_type: 'FIXED_AMOUNT',
     charge_rate: 2000,
     is_active: false,
     is_included: false,
-    apply_after_vat: false,
     sort_order: 3,
   });
 

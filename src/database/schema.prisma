@@ -729,13 +729,11 @@ model TaxConfig {
   id              String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   type            TaxType
   name            String      @db.VarChar(100)
-  display_name    String      @db.VarChar(100)
   description     String?     @db.Text
   rate_type       TaxRateType
   charge_rate     Decimal     @db.Decimal(10, 4) // Support percentages like 0.1000 (10%)
   is_active       Boolean     @default(true)
   is_included     Boolean     @default(false)
-  apply_after_vat Boolean     @default(false)
   sort_order      Int         @default(0) @db.SmallInt
   is_deleted      Boolean     @default(false)
   deleted_at      DateTime?

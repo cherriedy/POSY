@@ -20,11 +20,6 @@ export class UpdateTaxDto {
   @IsString()
   name?: string;
 
-  @ApiPropertyOptional({ type: String, description: 'Tax display name' })
-  @IsOptional()
-  @IsString()
-  displayName?: string;
-
   @ApiPropertyOptional({ type: String, description: 'Tax description' })
   @IsOptional()
   @IsString()
@@ -53,11 +48,6 @@ export class UpdateTaxDto {
   @IsOptional()
   @IsBoolean()
   isIncluded?: boolean;
-
-  @ApiPropertyOptional({ type: Boolean, description: 'Apply after VAT' })
-  @IsOptional()
-  @IsBoolean()
-  applyAfterVAT?: boolean;
 
   @ApiPropertyOptional({
     type: Number,

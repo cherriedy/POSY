@@ -21,7 +21,7 @@ export class TaxRepositoryImpl implements TaxRepository {
    * Constructs a new TaxRepositoryImpl instance.
    * @param prismaService - The PrismaService instance for database operations.
    */
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   /**
    * Creates a new tax configuration in the database.
@@ -147,19 +147,12 @@ export class TaxRepositoryImpl implements TaxRepository {
       const taxWithoutId = { ...tax };
       delete taxWithoutId.id;
 
-      const dataSnakeCase = Object.entries(taxWithoutId).reduce(
-        (acc, [key, value]) => {
-          const snakeKey = camelCaseToSnakeCase(key);
-          acc[snakeKey] = value;
-          return acc;
-        },
-        {} as Record<string, any>,
-      );
+      const prismaTax = TaxConfigMapper.toPrismaUpdate(tax);
 
       return await this.prismaService.taxConfig
         .update({
           where: { id },
-          data: dataSnakeCase,
+          data: prismaTax
         })
         .then(TaxConfigMapper.toDomain);
     } catch (e) {
@@ -184,7 +177,7 @@ export class TaxRepositoryImpl implements TaxRepository {
   async getActiveTaxes(): Promise<TaxConfig[]> {
     return await this.prismaService.taxConfig
       .findMany({
-        where: { is_active: true },
+        where: { is_active: true, is_deleted: false },
         orderBy: { sort_order: 'asc' },
       })
       .then((taxes) => taxes.map(TaxConfigMapper.toDomain));
@@ -215,9 +208,6 @@ export class TaxRepositoryImpl implements TaxRepository {
     if (filters.isIncluded !== undefined) {
       where.is_included = filters.isIncluded;
     }
-    if (filters.applyAfterVAT !== undefined) {
-      where.apply_after_vat = filters.applyAfterVAT;
-    }
     if (filters.isDeleted !== undefined) {
       where.is_deleted = filters.isDeleted;
     }
@@ -225,7 +215,6 @@ export class TaxRepositoryImpl implements TaxRepository {
     if (filters.query) {
       where.OR = [
         { name: { contains: filters.query, mode: 'insensitive' } },
-        { display_name: { contains: filters.query, mode: 'insensitive' } },
         { description: { contains: filters.query, mode: 'insensitive' } },
       ];
     }
