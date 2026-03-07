@@ -3,9 +3,9 @@ import { ProductIngredient } from '../entities';
 export abstract class ProductIngredientRepository {
   abstract findByProductId(productId: string): Promise<ProductIngredient[]>;
 
-  abstract deleteByProductIdAndIngredientId(
+  abstract bulkDeleteByProductIdAndIngredientIds(
     productId: string,
-    ingredientId: string,
+    ingredientIds: string[],
   ): Promise<void>;
 
   abstract update(

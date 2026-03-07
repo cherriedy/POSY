@@ -6,7 +6,7 @@ import { ProductNotFoundException } from '../exceptions';
 
 @Injectable()
 export class UpdateProductService {
-  constructor(private readonly productRepository: ProductRepository) { }
+  constructor(private readonly productRepository: ProductRepository) {}
 
   /**
    * Updates an existing product in the repository.

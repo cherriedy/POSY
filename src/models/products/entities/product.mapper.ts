@@ -29,20 +29,20 @@ export class ProductMapper {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (prisma as any).category
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
-        CategoryMapper.toDomain((prisma as any).category)
+          CategoryMapper.toDomain((prisma as any).category)
         : undefined,
     );
   }
 
   static toPrisma(domain: DomainProduct): Prisma.ProductCreateInput {
     if (!domain.categoryId) {
-      throw new Error("categoryId is required");
+      throw new Error('categoryId is required');
     }
 
     return {
       sku: domain.sku,
       name: domain.name,
-      slug: domain.slug ?? "",
+      slug: domain.slug ?? '',
       description: domain.description,
       price: new Prisma.Decimal(domain.price),
       discount_type: domain.discountType,

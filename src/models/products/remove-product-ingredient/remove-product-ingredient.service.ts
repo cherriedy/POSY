@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ProductIngredientRepository } from '../repositories';
+import { ProductIngredientBulkRemovePayload } from '../interfaces';
 
 @Injectable()
 export class RemoveProductIngredientService {
@@ -7,10 +8,10 @@ export class RemoveProductIngredientService {
     private readonly productIngredientRepository: ProductIngredientRepository,
   ) {}
 
-  async remove(productId: string, ingredientId: string): Promise<void> {
-    await this.productIngredientRepository.deleteByProductIdAndIngredientId(
-      productId,
-      ingredientId,
+  async bulkRemove(payload: ProductIngredientBulkRemovePayload): Promise<void> {
+    await this.productIngredientRepository.bulkDeleteByProductIdAndIngredientIds(
+      payload.productId,
+      payload.ingredientIds,
     );
   }
 }

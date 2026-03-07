@@ -4,6 +4,7 @@ import {
   CanActivate,
   ExecutionContext,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
@@ -72,7 +73,10 @@ const mockGetAttributesService = { getByProductId: jest.fn() };
 const mockUpsertAttributesService = { upsert: jest.fn() };
 const mockGetProductIngredientsService = { getByProductId: jest.fn() };
 const mockUpsertProductIngredientsService = { upsert: jest.fn() };
-const mockRemoveProductIngredientService = { remove: jest.fn() };
+const mockRemoveProductIngredientService = {
+  remove: jest.fn(),
+  bulkRemove: jest.fn(),
+};
 
 // ─── Test suite ──────────────────────────────────────────────────────────────
 
@@ -204,7 +208,7 @@ describe('ProductController', () => {
       expect(result).toBeDefined();
     });
 
-    it('throws BadRequestException when non-admin accesses a deleted product', async () => {
+    it('throws NotFoundException when non-admin accesses a deleted product', async () => {
       mockGetProductsService.getById.mockResolvedValue({
         id: productId,
         isDeleted: true,
@@ -212,7 +216,7 @@ describe('ProductController', () => {
 
       await expect(
         controller.getById(productId, mockRequest(Role.MANAGER) as Request),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('allows admin to access deleted product', async () => {
@@ -227,14 +231,14 @@ describe('ProductController', () => {
       expect(result).toBeDefined();
     });
 
-    it('throws BadRequestException when product not found', async () => {
+    it('throws NotFoundException when product not found', async () => {
       mockGetProductsService.getById.mockRejectedValue(
         new ProductNotFoundException(productId),
       );
 
       await expect(
         controller.getById(productId, mockRequest(Role.ADMIN) as Request),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('throws InternalServerErrorException on unexpected error', async () => {
@@ -311,13 +315,13 @@ describe('ProductController', () => {
       expect(result).toBeDefined();
     });
 
-    it('throws BadRequestException when product not found', async () => {
+    it('throws NotFoundException when product not found', async () => {
       mockUpdateProductService.update.mockRejectedValue(
         new ProductNotFoundException(productId),
       );
 
       await expect(controller.update(productId, dto)).rejects.toThrow(
-        BadRequestException,
+        NotFoundException,
       );
     });
 
@@ -356,13 +360,13 @@ describe('ProductController', () => {
       expect(result).toEqual({ message: 'Product deleted successfully.' });
     });
 
-    it('throws BadRequestException when product not found', async () => {
+    it('throws NotFoundException when product not found', async () => {
       mockDeleteProductService.delete.mockRejectedValue(
         new ProductNotFoundException(productId),
       );
 
       await expect(controller.delete(productId)).rejects.toThrow(
-        BadRequestException,
+        NotFoundException,
       );
     });
 
@@ -557,48 +561,51 @@ describe('ProductController', () => {
     });
   });
 
-  // ── removeProductIngredient ─────────────────────────────────────────────────
+  // ── removeProductIngredients ────────────────────────────────────────────────
 
-  describe('removeProductIngredient', () => {
+  describe('removeProductIngredients', () => {
     const productId = 'product-uuid';
-    const ingredientId = 'ingredient-uuid';
+    const dto = {
+      ingredientIds: ['ingredient-uuid-1', 'ingredient-uuid-2'],
+    };
 
-    it('removes ingredient and returns success message', async () => {
-      mockRemoveProductIngredientService.remove.mockResolvedValue(undefined);
-
-      const result = await controller.removeProductIngredient(
-        productId,
-        ingredientId,
+    it('removes ingredients and returns success message', async () => {
+      mockRemoveProductIngredientService.bulkRemove.mockResolvedValue(
+        undefined,
       );
 
-      expect(mockRemoveProductIngredientService.remove).toHaveBeenCalledWith(
+      const result = await controller.removeProductIngredients(productId, dto);
+
+      expect(
+        mockRemoveProductIngredientService.bulkRemove,
+      ).toHaveBeenCalledWith({
         productId,
-        ingredientId,
-      );
+        ingredientIds: dto.ingredientIds,
+      });
       expect(result).toEqual({
-        message: 'Product ingredient removed successfully.',
+        message: 'Product ingredients removed successfully.',
       });
     });
 
-    it('throws BadRequestException when ingredient not found on product', async () => {
-      mockRemoveProductIngredientService.remove.mockRejectedValue(
+    it('throws NotFoundException when ingredients not found on product', async () => {
+      mockRemoveProductIngredientService.bulkRemove.mockRejectedValue(
         new ProductIngredientNotFoundException(
-          `Ingredient with ID ${ingredientId} is not associated with product ${productId}`,
+          `No ingredients found for product ${productId} with the provided ingredient IDs`,
         ),
       );
 
       await expect(
-        controller.removeProductIngredient(productId, ingredientId),
-      ).rejects.toThrow(BadRequestException);
+        controller.removeProductIngredients(productId, dto),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('throws InternalServerErrorException on unexpected error', async () => {
-      mockRemoveProductIngredientService.remove.mockRejectedValue(
+      mockRemoveProductIngredientService.bulkRemove.mockRejectedValue(
         new Error('unexpected'),
       );
 
       await expect(
-        controller.removeProductIngredient(productId, ingredientId),
+        controller.removeProductIngredients(productId, dto),
       ).rejects.toThrow(InternalServerErrorException);
     });
   });

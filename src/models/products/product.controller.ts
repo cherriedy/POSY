@@ -66,10 +66,14 @@ import {
   UpsertIngredientsService,
   UpsertProductIngredientsMapper,
 } from './upsert-ingredients';
-import { RemoveProductIngredientService } from './remove-product-ingredient';
+import {
+  RemoveProductIngredientMapper,
+  RemoveProductIngredientService,
+} from './remove-product-ingredient';
 import {
   ProductIngredientResponseDto,
   ProductIngredientBulkUpsertRequestDto,
+  ProductIngredientBulkDeleteRequestDto,
 } from './dto';
 
 @ApiTags('Products')
@@ -89,8 +93,11 @@ export class ProductController {
     private readonly getProductIngredientsService: GetProductIngredientsService,
     private readonly upsertProductIngredientsService: UpsertIngredientsService,
     private readonly removeProductIngredientService: RemoveProductIngredientService,
-  ) { }
+  ) {}
 
+  // ────────────────────────────────
+  // GET /products
+  // ────────────────────────────────
   @Get()
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
@@ -130,6 +137,9 @@ export class ProductController {
     }
   }
 
+  // ────────────────────────────────
+  // GET /products/available
+  // ────────────────────────────────
   @Get('available')
   @Roles(Role.MANAGER, Role.ADMIN)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
@@ -159,6 +169,9 @@ export class ProductController {
     }
   }
 
+  // ────────────────────────────────
+  // GET /products/:id
+  // ────────────────────────────────
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
@@ -174,7 +187,10 @@ export class ProductController {
     type: ProductDetailedResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Product not found' })
-  async getById(@Param('id', new ParseUUIDPipe()) id: string, @Req() req: Request) {
+  async getById(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Req() req: Request,
+  ) {
     try {
       const userRole = (req.user as JwtPayload).role;
       const product = await this.getProductsService.getById(id);
@@ -199,6 +215,9 @@ export class ProductController {
     }
   }
 
+  // ────────────────────────────────
+  // POST /products
+  // ────────────────────────────────
   @Post()
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.ADMIN)
@@ -239,6 +258,9 @@ export class ProductController {
     }
   }
 
+  // ────────────────────────────────
+  // PUT /products/:id
+  // ────────────────────────────────
   @Put(':id')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.ADMIN)
@@ -258,7 +280,10 @@ export class ProductController {
     status: 400,
     description: 'Product not found or duplicate entry',
   })
-  async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateProductDto) {
+  async update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: UpdateProductDto,
+  ) {
     try {
       const product = await this.updateProductService.update(
         id,
@@ -280,6 +305,9 @@ export class ProductController {
     }
   }
 
+  // ────────────────────────────────
+  // DELETE /products/:id
+  // ────────────────────────────────
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.ADMIN)
@@ -306,6 +334,9 @@ export class ProductController {
     }
   }
 
+  // ────────────────────────────────
+  // GET /products/:id/attributes
+  // ────────────────────────────────
   @Get(':id/attributes')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -343,6 +374,9 @@ export class ProductController {
     }
   }
 
+  // ────────────────────────────────
+  // PUT /products/:id/attributes
+  // ────────────────────────────────
   @Put(':id/attributes')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -388,6 +422,9 @@ export class ProductController {
     }
   }
 
+  // ────────────────────────────────
+  // GET /products/:id/ingredients
+  // ────────────────────────────────
   @Get(':id/ingredients')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -422,6 +459,9 @@ export class ProductController {
     }
   }
 
+  // ────────────────────────────────
+  // PUT /products/:id/ingredients
+  // ────────────────────────────────
   @Put(':id/ingredients')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -456,6 +496,11 @@ export class ProductController {
     } catch (e) {
       if (e instanceof ProductNotFoundException) {
         throw new NotFoundException(e.message);
+      } else if (
+        e instanceof DuplicateEntryException ||
+        e instanceof ForeignKeyViolationException
+      ) {
+        throw new BadRequestException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -464,35 +509,36 @@ export class ProductController {
     }
   }
 
-  @Delete(':productId/ingredients/:ingredientId')
+  // ────────────────────────────────
+  // DELETE /products/:id/ingredients
+  // ────────────────────────────────
+  @Delete(':id/ingredients')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.MANAGER, Role.ADMIN)
   @ApiOperation({
-    summary: 'Remove ingredient from product',
+    summary: 'Remove ingredients from product',
     description:
-      'Removes an ingredient from a product by productId and ingredientId.',
+      'Bulk-removes ingredients from a product. Provide an array of ingredient IDs to remove. ',
   })
-  @ApiParam({ name: 'productId', type: String, description: 'Product ID' })
-  @ApiParam({
-    name: 'ingredientId',
-    type: String,
-    description: 'Ingredient ID',
-  })
+  @ApiParam({ name: 'id', type: String, description: 'Product ID' })
+  @ApiBody({ type: ProductIngredientBulkDeleteRequestDto })
   @ApiResponse({
     status: 200,
-    description: 'Product ingredient removed successfully',
+    description: 'Product ingredients removed successfully',
   })
-  @ApiResponse({ status: 400, description: 'Product ingredient not found' })
-  async removeProductIngredient(
-    @Param('productId') productId: string,
-    @Param('ingredientId') ingredientId: string,
+  @ApiResponse({ status: 404, description: 'Product ingredients not found' })
+  async removeProductIngredients(
+    @Param('id', new ParseUUIDPipe()) productId: string,
+    @Body() dto: ProductIngredientBulkDeleteRequestDto,
   ) {
     try {
-      await this.removeProductIngredientService.remove(productId, ingredientId);
-      return { message: 'Product ingredient removed successfully.' };
+      await this.removeProductIngredientService.bulkRemove(
+        RemoveProductIngredientMapper.toPayload(productId, dto),
+      );
+      return { message: 'Product ingredients removed successfully.' };
     } catch (e) {
       if (e instanceof ProductIngredientNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
