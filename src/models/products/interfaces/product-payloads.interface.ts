@@ -51,3 +51,11 @@ export interface ProductIngredientBulkUpsertPayload {
   productId: string;
   ingredients: ProductIngredientBulkUpsertItemPayload[];
 }
+
+/**
+ * Payload for bulk-removing ingredients from a product.
+ */
+export interface ProductIngredientBulkRemovePayload {
+  productId: string;
+  ingredientIds: string[];
+}
