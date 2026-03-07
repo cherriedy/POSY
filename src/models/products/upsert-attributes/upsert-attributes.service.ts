@@ -22,35 +22,18 @@ export class UpsertAttributesService {
   async upsert(
     payload: ProductAttributesUpsertPayload,
   ): Promise<ProductAttribute> {
-    const updatePayload: Partial<ProductAttribute> = {};
+
+    const updatePayload: Partial<ProductAttribute> = {
+      ...payload,
+      tasteProfile: payload.tasteProfile ?? undefined,
+      dietaryTags: payload.dietaryTags ?? undefined,
+    };
+
     if (payload.productId) {
       const product = await this.productRepository.findById(payload.productId);
       if (!product) throw new ProductNotFoundException(payload.productId);
-    }
 
-    if (payload.cuisineId) {
-      updatePayload.cuisineId = payload.cuisineId;
-    }
-    if (payload.mealSession) {
-      updatePayload.mealSession = payload.mealSession;
-    }
-    if (payload.preparationTime) {
-      updatePayload.preparationTime = payload.preparationTime;
-    }
-    if (payload.spiceLevel) {
-      updatePayload.spiceLevel = payload.spiceLevel;
-    }
-    if (payload.isSeasonal) {
-      updatePayload.isSeasonal = payload.isSeasonal;
-    }
-    if (payload.season) {
-      updatePayload.season = payload.season;
-    }
-    if (payload.tasteProfile) {
-      updatePayload.tasteProfile = payload.tasteProfile;
-    }
-    if (payload.dietaryTags) {
-      updatePayload.dietaryTags = payload.dietaryTags;
+      updatePayload.productId = payload.productId;
     }
 
     return await this.productAttributeRepository.upsert(updatePayload);
