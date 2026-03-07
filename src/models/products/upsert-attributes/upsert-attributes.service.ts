@@ -9,7 +9,7 @@ export class UpsertAttributesService {
   constructor(
     private readonly productAttributeRepository: ProductAttributeRepository,
     private readonly productRepository: ProductRepository,
-  ) { }
+  ) {}
 
   /**
    * Creates or updates product attributes for a specific product.
