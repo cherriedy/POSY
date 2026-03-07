@@ -6,7 +6,7 @@ import { UnitNotFoundException } from '../exceptions';
 
 @Injectable()
 export class UpdateUnitService {
-  constructor(private readonly unitRepository: UnitRepository) { }
+  constructor(private readonly unitRepository: UnitRepository) {}
 
   async update(id: string, payload: UnitUpdatePayload): Promise<Unit> {
     const unit = await this.unitRepository.findById(id);

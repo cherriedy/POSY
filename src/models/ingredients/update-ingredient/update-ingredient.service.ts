@@ -5,7 +5,7 @@ import { IngredientNotFoundException } from '../exceptions';
 
 @Injectable()
 export class UpdateIngredientService {
-  constructor(private readonly ingredientRepository: IngredientRepository) { }
+  constructor(private readonly ingredientRepository: IngredientRepository) {}
 
   async update(id: string, payload: Partial<Ingredient>): Promise<Ingredient> {
     const result = await this.ingredientRepository.findById(id);

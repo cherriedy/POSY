@@ -6,7 +6,7 @@ import { VendorNotFoundException } from '../exceptions';
 
 @Injectable()
 export class UpdateVendorService {
-  constructor(private readonly vendorRepository: VendorRepository) { }
+  constructor(private readonly vendorRepository: VendorRepository) {}
 
   async update(id: string, payload: VendorUpdatePayload): Promise<Vendor> {
     const vendor = await this.vendorRepository.findById(id);

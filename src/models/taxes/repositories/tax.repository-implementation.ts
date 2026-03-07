@@ -21,7 +21,7 @@ export class TaxRepositoryImpl implements TaxRepository {
    * Constructs a new TaxRepositoryImpl instance.
    * @param prismaService - The PrismaService instance for database operations.
    */
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   /**
    * Creates a new tax configuration in the database.
@@ -152,7 +152,7 @@ export class TaxRepositoryImpl implements TaxRepository {
       return await this.prismaService.taxConfig
         .update({
           where: { id },
-          data: prismaTax
+          data: prismaTax,
         })
         .then(TaxConfigMapper.toDomain);
     } catch (e) {

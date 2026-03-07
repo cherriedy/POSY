@@ -14,7 +14,7 @@ export class UpdateVendorPayloadMapper {
       note: dto.note ?? null,
       status: dto.status ?? null,
       suspendedReason: dto.suspendedReason ?? null,
-      suspendedUntil: dto.suspendedUntil ?? null
+      suspendedUntil: dto.suspendedUntil ?? null,
     };
   }
 }

@@ -3,7 +3,10 @@ import { UnitRepository } from './unit-repository.abstract';
 import { Unit, UnitMapper } from '../entities';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException, ForeignKeyViolationException } from '../../../common/exceptions';
+import {
+  DuplicateEntryException,
+  ForeignKeyViolationException,
+} from '../../../common/exceptions';
 import { UnitNotFoundException } from '../exceptions';
 import { Page } from '../../../common/interfaces';
 import { paginationConfig } from '../../../common/config';
@@ -16,7 +19,7 @@ export class UnitRepositoryImpl implements UnitRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   /**
    * Creates a new unit in the database.
@@ -94,10 +97,7 @@ export class UnitRepositoryImpl implements UnitRepository {
         where: { id },
       });
     } catch (e) {
-      if (
-        e instanceof PrismaClientKnownRequestError &&
-        e.code === 'P2003'
-      ) {
+      if (e instanceof PrismaClientKnownRequestError && e.code === 'P2003') {
         throw new ForeignKeyViolationException();
       }
 

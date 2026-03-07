@@ -12,7 +12,7 @@ export class FloorMapper {
       prismaFloor.is_active,
       prismaFloor.created_at,
       prismaFloor.updated_at,
-      
+
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (prismaFloor as any).zones
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call

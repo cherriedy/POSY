@@ -18,7 +18,7 @@ const { page: defaultPage, pageSize: defaultPageSize } =
 
 @Injectable()
 export class IngredientRepositoryImpl implements IngredientRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(entity: Ingredient): Promise<Ingredient> {
     try {
@@ -49,10 +49,7 @@ export class IngredientRepositoryImpl implements IngredientRepository {
         where: { id },
       });
     } catch (e) {
-      if (
-        e instanceof PrismaClientKnownRequestError &&
-        e.code === 'P2003'
-      ) {
+      if (e instanceof PrismaClientKnownRequestError && e.code === 'P2003') {
         throw new ForeignKeyViolationException();
       }
 

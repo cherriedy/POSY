@@ -4,7 +4,6 @@ import { VendorPreviewResponseDto } from './vendor-preview-response.dto';
 
 @Exclude()
 export class VendorDetailedResponseDto extends VendorPreviewResponseDto {
-
   @ApiProperty({
     type: String,
     description: 'Business address',

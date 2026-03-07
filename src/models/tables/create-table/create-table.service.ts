@@ -9,7 +9,7 @@ export class CreateTableService {
   constructor(
     private readonly tableRepository: TableRepository,
     private readonly zoneRepository: ZoneRepository,
-  ) { }
+  ) {}
   /**
    * Creates a new table using the provided table data.
    *
@@ -25,7 +25,9 @@ export class CreateTableService {
     if (table.zoneId) {
       const zone = await this.zoneRepository.findById(table.zoneId);
       if (!zone) {
-        throw new RelatedRecordNotFoundException(`Zone with id ${table.zoneId} not found`);
+        throw new RelatedRecordNotFoundException(
+          `Zone with id ${table.zoneId} not found`,
+        );
       }
     }
     return await this.tableRepository.create(table);
