@@ -11,7 +11,6 @@ export class TaxConfigMapper {
       prisma.id,
       prisma.type as DomainTaxType,
       prisma.name,
-      prisma.display_name,
       prisma.description ?? null,
       prisma.rate_type as DomainTaxRateType,
       prisma.charge_rate !== null && prisma.charge_rate !== undefined
@@ -19,7 +18,6 @@ export class TaxConfigMapper {
         : 0,
       prisma.is_active ?? true,
       prisma.is_included ?? false,
-      prisma.apply_after_vat ?? false,
       prisma.sort_order ?? 0,
       prisma.is_deleted ?? false,
       prisma.deleted_at ?? null,
@@ -36,7 +34,6 @@ export class TaxConfigMapper {
       ...(domain.id ? { id: domain.id } : {}),
       type: domain.type,
       name: domain.name,
-      display_name: domain.displayName,
       description: domain.description,
       rate_type: domain.rateType,
       charge_rate:
@@ -50,10 +47,6 @@ export class TaxConfigMapper {
       is_included:
         domain.isIncluded !== undefined && domain.isIncluded !== null
           ? domain.isIncluded
-          : false,
-      apply_after_vat:
-        domain.applyAfterVAT !== undefined && domain.applyAfterVAT !== null
-          ? domain.applyAfterVAT
           : false,
       sort_order:
         domain.sortOrder !== undefined && domain.sortOrder !== null
@@ -69,6 +62,21 @@ export class TaxConfigMapper {
           : undefined,
       created_at: domain.createdAt ?? undefined,
       updated_at: domain.updatedAt ?? undefined,
+    };
+  }
+
+  static toPrismaUpdate(domain: Partial<DomainTaxConfig>): Prisma.TaxConfigUpdateInput {
+    return {
+      type: domain.type,
+      name: domain.name,
+      description: domain.description,
+      rate_type: domain.rateType,
+      charge_rate: domain.chargeRate,
+      is_active: domain.isActive,
+      is_included: domain.isIncluded,
+      sort_order: domain.sortOrder,
+      is_deleted: domain.isDeleted,
+      deleted_at: domain.deletedAt,
     };
   }
 }

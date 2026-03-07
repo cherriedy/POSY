@@ -28,15 +28,11 @@ export class UpdateTaxService {
       existingTax.id,
       dto.type ?? existingTax.type,
       dto.name ?? existingTax.name,
-      dto.displayName ?? existingTax.displayName,
       dto.description !== undefined ? dto.description : existingTax.description,
       dto.rateType ?? existingTax.rateType,
       dto.chargeRate ?? existingTax.chargeRate,
       dto.isActive !== undefined ? dto.isActive : existingTax.isActive,
       dto.isIncluded !== undefined ? dto.isIncluded : existingTax.isIncluded,
-      dto.applyAfterVAT !== undefined
-        ? dto.applyAfterVAT
-        : existingTax.applyAfterVAT,
       dto.sortOrder ?? existingTax.sortOrder,
       existingTax.isDeleted,
       existingTax.deletedAt,

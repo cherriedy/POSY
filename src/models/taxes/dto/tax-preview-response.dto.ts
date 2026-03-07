@@ -16,10 +16,6 @@ export class TaxPreviewResponseDto {
   @Expose()
   name: string;
 
-  @ApiProperty({ type: String, description: 'Tax display name' })
-  @Expose()
-  displayName: string;
-
   @ApiProperty({ enum: TaxRateType, description: 'Rate type' })
   @Expose()
   rateType: TaxRateType;
@@ -35,10 +31,6 @@ export class TaxPreviewResponseDto {
   @ApiProperty({ type: Boolean, description: 'Is included in price' })
   @Expose()
   isIncluded: boolean;
-
-  @ApiProperty({ type: Boolean, description: 'Apply after VAT' })
-  @Expose()
-  applyAfterVAT: boolean;
 
   @ApiProperty({ type: Number, description: 'Sort order' })
   @Expose()

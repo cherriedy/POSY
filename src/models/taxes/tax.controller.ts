@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   ParseEnumPipe,
   ParseUUIDPipe,
@@ -58,9 +59,9 @@ import {
 } from '../../common/dto';
 import { EntityType } from './enums';
 
-@ApiTags('Tax')
+@ApiTags('Taxes')
 @ApiBearerAuth()
-@Controller('tax')
+@Controller('taxes')
 export class TaxController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: import('winston').Logger;
@@ -76,7 +77,7 @@ export class TaxController {
     private readonly removeEntityTaxAssociationService: RemoveEntityTaxAssociationService,
   ) {}
 
-  @Get('')
+  @Get()
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
   @ApiOperation({
@@ -155,7 +156,7 @@ export class TaxController {
       });
     } catch (e) {
       if (e instanceof TaxNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       } else if (e instanceof BadRequestException) {
         throw e;
       }
@@ -166,7 +167,7 @@ export class TaxController {
     }
   }
 
-  @Post('')
+  @Post()
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
   @ApiOperation({
@@ -233,7 +234,7 @@ export class TaxController {
       });
     } catch (e) {
       if (e instanceof TaxNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       } else if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
       } else if (e instanceof BadRequestException) {
@@ -263,7 +264,7 @@ export class TaxController {
       return { message: 'Tax deleted successfully.' };
     } catch (e) {
       if (e instanceof TaxNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       } else if (e instanceof BadRequestException) {
         throw e;
       }
@@ -276,7 +277,7 @@ export class TaxController {
 
   // ==================== Entity-Tax Association Endpoints ====================
 
-  @Post(':taxId/entity')
+  @Post(':id/entities')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
   @ApiOperation({
@@ -286,7 +287,7 @@ export class TaxController {
     Validates that the tax exists and the combinations are valid. Uses transactions for atomicity.`,
   })
   @ApiParam({
-    name: 'taxId',
+    name: 'id',
     type: String,
     description: 'Tax configuration ID',
   })
@@ -301,7 +302,7 @@ export class TaxController {
     description: 'Tax not found, duplicate association, or invalid combination',
   })
   async associateEntityTax(
-    @Param('taxId', new ParseUUIDPipe()) taxId: string,
+    @Param('id', new ParseUUIDPipe()) taxId: string,
     @Body() dto: TaxAssociationCreateRequestDto,
   ) {
     try {
@@ -327,7 +328,7 @@ export class TaxController {
       };
     } catch (e) {
       if (e instanceof TaxNotFoundException) {
-        throw new BadRequestException(e.message);
+        throw new NotFoundException(e.message);
       } else if (e instanceof BadRequestException) {
         throw e;
       }
@@ -338,7 +339,7 @@ export class TaxController {
     }
   }
 
-  @Get(':taxId/entities')
+  @Get(':id/entities')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
   @ApiOperation({
@@ -347,7 +348,7 @@ export class TaxController {
     Only accessible by ADMIN and MANAGER roles.`,
   })
   @ApiParam({
-    name: 'taxId',
+    name: 'id',
     type: String,
     description: 'Tax configuration ID',
   })
@@ -356,7 +357,7 @@ export class TaxController {
     description: 'List of entity associations',
     type: [TaxAssociationDetailedResponseDto],
   })
-  async getEntitiesForTax(@Param('taxId', new ParseUUIDPipe()) taxId: string) {
+  async getEntitiesForTax(@Param('id', new ParseUUIDPipe()) taxId: string) {
     try {
       const associations =
         await this.getEntityTaxAssociationsService.getByTaxId(taxId);
