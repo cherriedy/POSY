@@ -25,14 +25,14 @@ export interface ProductCreatePayload {
  */
 export interface ProductAttributesUpsertPayload {
   productId?: string;
-  cuisineId: string | null;
-  mealSession: MealSession | null;
+  cuisineId?: string | null;
+  mealSession?: MealSession | null;
   tasteProfile?: Taste[];
   dietaryTags?: DietaryTag[];
-  preparationTime: number | null;
-  spiceLevel: number | null;
+  preparationTime?: number | null;
+  spiceLevel?: number | null;
   isSeasonal?: boolean;
-  season: Season | null;
+  season?: Season | null;
 }
 
 /**
