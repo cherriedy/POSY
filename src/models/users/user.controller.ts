@@ -231,7 +231,10 @@ export class UserController {
     status: 400,
     description: 'User not found or duplicate entry',
   })
-  async updateUser(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateUserDto) {
+  async updateUser(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: UpdateUserDto,
+  ) {
     try {
       return this.updateUserService.updateUser(id, dto);
     } catch (e) {

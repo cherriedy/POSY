@@ -10,14 +10,12 @@ import { PromotionStatus } from '@prisma/client';
 
 @Injectable()
 export class PromotionCategoryRepositoryImpl implements PromotionCategoryRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
   async replaceByCategoryIds(
     promotionId: string,
     categoryIds: string[],
   ): Promise<PromotionCategory[]> {
-
     return this.prismaService.$transaction(async (tx) => {
-
       const existing = await tx.promotionCategory.findMany({
         where: { promotion_id: promotionId },
       });
@@ -121,12 +119,12 @@ export class PromotionCategoryRepositoryImpl implements PromotionCategoryReposit
     const whereClause = includeAll
       ? { category_id: categoryId }
       : {
-        category_id: categoryId,
-        promotion: {
-          status: PromotionStatus.ACTIVE,
-          is_deleted: false,
-        },
-      };
+          category_id: categoryId,
+          promotion: {
+            status: PromotionStatus.ACTIVE,
+            is_deleted: false,
+          },
+        };
 
     const items = await this.prismaService.promotionCategory.findMany({
       where: whereClause,

@@ -13,9 +13,7 @@ import { ZoneRepository } from 'src/models/zones/repositories';
 
 @Injectable()
 export class CreatePromotionService {
-  constructor(
-    private readonly promotionRepository: PromotionRepository,
-  ) {}
+  constructor(private readonly promotionRepository: PromotionRepository) {}
 
   /**
    * Creates a new promotion. If the promotion is not quantity-based, clears the minQuantity field.

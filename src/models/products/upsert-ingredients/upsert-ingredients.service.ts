@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ProductIngredientRepository, ProductRepository } from '../repositories';
+import {
+  ProductIngredientRepository,
+  ProductRepository,
+} from '../repositories';
 import { ProductIngredient } from '../entities';
 import { ProductIngredientBulkUpsertPayload } from '../interfaces';
 import { ProductNotFoundException } from '../exceptions';
@@ -14,7 +17,6 @@ export class UpsertIngredientsService {
   async upsert(
     payload: ProductIngredientBulkUpsertPayload,
   ): Promise<ProductIngredient[]> {
-
     const product = await this.productRepository.findById(payload.productId);
     if (!product) throw new ProductNotFoundException(payload.productId);
 

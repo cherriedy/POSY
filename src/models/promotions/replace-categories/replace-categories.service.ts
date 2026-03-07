@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PromotionCategoryRepository, PromotionRepository } from '../repositories';
+import {
+  PromotionCategoryRepository,
+  PromotionRepository,
+} from '../repositories';
 import { Promotion, PromotionCategory } from '../types';
 import { PromotionApplicability } from '../enums';
 import { PromotionNotFoundException } from '../exceptions';
@@ -13,14 +16,13 @@ export class ReplacePromotionCategoriesService {
   constructor(
     private readonly promotionRepository: PromotionRepository,
     private readonly categoryRepository: CategoryRepository,
-    private readonly promotionCategoryRepository: PromotionCategoryRepository
-  ) { }
+    private readonly promotionCategoryRepository: PromotionCategoryRepository,
+  ) {}
 
   async replacePromotionCategories(
     promotionId: string,
     categoryIds: string[],
   ): Promise<PromotionCategory[]> {
-
     const promotion = await this.promotionRepository.findById(promotionId);
 
     if (!promotion || promotion.isDeleted) {

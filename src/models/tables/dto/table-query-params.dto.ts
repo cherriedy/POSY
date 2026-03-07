@@ -85,15 +85,7 @@ export class TableQueryParamsDto {
   orderBy?: string;
 
   toQueryParams(): TableQueryParams {
-    const {
-      page,
-      pageSize,
-      query,
-      isActive,
-      status,
-      zoneId,
-      orderBy,
-    } = this;
+    const { page, pageSize, query, isActive, status, zoneId, orderBy } = this;
 
     // Parse orderBy string into TableOrderBy array
     let parsedOrderBy: TableOrderBy | undefined;

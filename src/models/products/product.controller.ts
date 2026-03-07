@@ -89,7 +89,7 @@ export class ProductController {
     private readonly getProductIngredientsService: GetProductIngredientsService,
     private readonly upsertProductIngredientsService: UpsertIngredientsService,
     private readonly removeProductIngredientService: RemoveProductIngredientService,
-  ) { }
+  ) {}
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
@@ -174,7 +174,10 @@ export class ProductController {
     type: ProductDetailedResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Product not found' })
-  async getById(@Param('id', new ParseUUIDPipe()) id: string, @Req() req: Request) {
+  async getById(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Req() req: Request,
+  ) {
     try {
       const userRole = (req.user as JwtPayload).role;
       const product = await this.getProductsService.getById(id);
@@ -258,7 +261,10 @@ export class ProductController {
     status: 400,
     description: 'Product not found or duplicate entry',
   })
-  async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateProductDto) {
+  async update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: UpdateProductDto,
+  ) {
     try {
       const product = await this.updateProductService.update(
         id,

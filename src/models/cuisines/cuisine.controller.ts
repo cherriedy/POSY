@@ -59,7 +59,7 @@ export class CuisineController {
     private readonly createCuisineService: CreateCuisineService,
     private readonly updateCuisineService: UpdateCuisineService,
     private readonly deleteCuisineService: DeleteCuisineService,
-  ) { }
+  ) {}
 
   @Get(':id')
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -76,7 +76,9 @@ export class CuisineController {
     type: CuisineResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Cuisine not found' })
-  async getCuisineById(@Param('id', new ParseUUIDPipe()) id: string): Promise<CuisineResponseDto> {
+  async getCuisineById(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<CuisineResponseDto> {
     try {
       const cuisine = await this.getCuisinesService.getById(id);
       return plainToInstance(CuisineResponseDto, cuisine, {
@@ -210,7 +212,9 @@ export class CuisineController {
     description: 'Cuisine deleted successfully',
   })
   @ApiResponse({ status: 400, description: 'Cuisine not found' })
-  async deleteCuisine(@Param('id', new ParseUUIDPipe()) id: string): Promise<{ message: string }> {
+  async deleteCuisine(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<{ message: string }> {
     try {
       await this.deleteCuisineService.delete(id);
       return { message: 'Cuisine deleted successfully' };

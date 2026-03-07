@@ -23,7 +23,7 @@ export class TableRepositoryImpl implements TableRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   /**
    * Creates a new table in the database.
@@ -103,7 +103,6 @@ export class TableRepositoryImpl implements TableRepository {
    * @throws DuplicateEntryException if a table with a unique field already exists.
    */
   async update(id: string, entity: Partial<Table>): Promise<Table> {
-
     const dataSnakeCase = Object.entries(entity).reduce(
       (acc, [key, value]) => {
         const snakeKey = camelCaseToSnakeCase(key);

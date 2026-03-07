@@ -65,7 +65,9 @@ export class TaxConfigMapper {
     };
   }
 
-  static toPrismaUpdate(domain: Partial<DomainTaxConfig>): Prisma.TaxConfigUpdateInput {
+  static toPrismaUpdate(
+    domain: Partial<DomainTaxConfig>,
+  ): Prisma.TaxConfigUpdateInput {
     return {
       type: domain.type,
       name: domain.name,

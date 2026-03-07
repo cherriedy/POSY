@@ -9,5 +9,5 @@ export class Category {
     public deletedAt: Date | null,
     public createdAt: Date | null,
     public updatedAt: Date | null,
-  ) { }
+  ) {}
 }

@@ -9,7 +9,7 @@ export class UpsertAttributesService {
   constructor(
     private readonly productAttributeRepository: ProductAttributeRepository,
     private readonly productRepository: ProductRepository,
-  ) { }
+  ) {}
 
   /**
    * Creates or updates product attributes for a specific product.
@@ -22,7 +22,6 @@ export class UpsertAttributesService {
   async upsert(
     payload: ProductAttributesUpsertPayload,
   ): Promise<ProductAttribute> {
-
     const updatePayload: Partial<ProductAttribute> = {
       ...payload,
       tasteProfile: payload.tasteProfile ?? undefined,
