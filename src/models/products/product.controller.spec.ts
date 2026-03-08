@@ -27,10 +27,7 @@ import { UpsertProductIngredientsMapper } from './upsert-ingredients';
 import { RemoveProductIngredientService } from './remove-product-ingredient';
 import { CreateProductMapper } from './create-product';
 
-import {
-  ProductNotFoundException,
-  ProductIngredientNotFoundException,
-} from './exceptions';
+import { ProductNotFoundException } from './exceptions';
 import {
   DuplicateEntryException,
   ForeignKeyViolationException,
@@ -74,8 +71,7 @@ const mockUpsertAttributesService = { upsert: jest.fn() };
 const mockGetProductIngredientsService = { getByProductId: jest.fn() };
 const mockUpsertProductIngredientsService = { upsert: jest.fn() };
 const mockRemoveProductIngredientService = {
-  remove: jest.fn(),
-  bulkRemove: jest.fn(),
+  bulkDelete: jest.fn(),
 };
 
 // ─── Test suite ──────────────────────────────────────────────────────────────
@@ -569,43 +565,61 @@ describe('ProductController', () => {
       ingredientIds: ['ingredient-uuid-1', 'ingredient-uuid-2'],
     };
 
-    it('removes ingredients and returns success message', async () => {
-      mockRemoveProductIngredientService.bulkRemove.mockResolvedValue(
-        undefined,
+    it('removes ingredients and returns formatted bulk delete response', async () => {
+      const serviceResult = [
+        { ingredientId: 'ingredient-uuid-1', status: 'SUCCEED' },
+        { ingredientId: 'ingredient-uuid-2', status: 'SUCCEED' },
+      ];
+      mockRemoveProductIngredientService.bulkDelete.mockResolvedValue(
+        serviceResult,
       );
 
-      const result = await controller.removeProductIngredients(productId, dto);
+      const result = await controller.DeleteProductIngredients(productId, dto);
 
       expect(
-        mockRemoveProductIngredientService.bulkRemove,
-      ).toHaveBeenCalledWith({
-        productId,
-        ingredientIds: dto.ingredientIds,
-      });
-      expect(result).toEqual({
-        message: 'Product ingredients removed successfully.',
+        mockRemoveProductIngredientService.bulkDelete,
+      ).toHaveBeenCalledWith({ productId, ingredientIds: dto.ingredientIds });
+      expect(result.total).toBe(2);
+      expect(result.succeeded).toBe(2);
+      expect(result.failed).toBe(0);
+      expect(result.items).toHaveLength(2);
+      expect(result.items[0]).toMatchObject({
+        id: 'ingredient-uuid-1',
+        status: 'SUCCEED',
       });
     });
 
-    it('throws NotFoundException when ingredients not found on product', async () => {
-      mockRemoveProductIngredientService.bulkRemove.mockRejectedValue(
-        new ProductIngredientNotFoundException(
-          `No ingredients found for product ${productId} with the provided ingredient IDs`,
-        ),
+    it('returns partial failure in formatted response when some ingredients not found', async () => {
+      const serviceResult = [
+        { ingredientId: 'ingredient-uuid-1', status: 'SUCCEED' },
+        {
+          ingredientId: 'ingredient-uuid-2',
+          status: 'FAILED',
+          error: `Ingredient with ID ingredient-uuid-2 is not associated with product ${productId}`,
+        },
+      ];
+      mockRemoveProductIngredientService.bulkDelete.mockResolvedValue(
+        serviceResult,
       );
 
-      await expect(
-        controller.removeProductIngredients(productId, dto),
-      ).rejects.toThrow(NotFoundException);
+      const result = await controller.DeleteProductIngredients(productId, dto);
+
+      expect(result.total).toBe(2);
+      expect(result.succeeded).toBe(1);
+      expect(result.failed).toBe(1);
+      expect(result.items[1]).toMatchObject({
+        id: 'ingredient-uuid-2',
+        status: 'FAILED',
+      });
     });
 
     it('throws InternalServerErrorException on unexpected error', async () => {
-      mockRemoveProductIngredientService.bulkRemove.mockRejectedValue(
+      mockRemoveProductIngredientService.bulkDelete.mockRejectedValue(
         new Error('unexpected'),
       );
 
       await expect(
-        controller.removeProductIngredients(productId, dto),
+        controller.DeleteProductIngredients(productId, dto),
       ).rejects.toThrow(InternalServerErrorException);
     });
   });

@@ -25,36 +25,28 @@ export class ProductIngredientRepositoryImpl implements ProductIngredientReposit
       .then((items) => items.map(ProductIngredientMapper.toDomain));
   }
 
-  async bulkDeleteByProductIdAndIngredientIds(
+  async deleteByProductIdAndIngredientId(
     productId: string,
-    ingredientIds: string[],
+    ingredientId: string,
   ): Promise<void> {
-    await this.prismaService.$transaction(async (tx) => {
-      // First, verify all ingredients exist for the product
-      const existingRecords = await tx.productIngredient.findMany({
-        where: {
-          product_id: productId,
-          ingredient_id: { in: ingredientIds },
-        },
-        select: { ingredient_id: true },
-      });
+    const existing = await this.prismaService.productIngredient.findFirst({
+      where: { product_id: productId, ingredient_id: ingredientId },
+      select: { ingredient_id: true },
+    });
 
-      // Check if all requested ingredients were found
-      if (existingRecords.length !== ingredientIds.length) {
-        const foundIds = existingRecords.map((r) => r.ingredient_id);
-        const missingIds = ingredientIds.filter((id) => !foundIds.includes(id));
-        throw new ProductIngredientNotFoundException(
-          `Ingredient(s) with ID(s) [${missingIds.join(', ')}] not associated with product ${productId}`,
-        );
-      }
+    if (!existing) {
+      throw new ProductIngredientNotFoundException(
+        `Ingredient with ID ${ingredientId} is not associated with product ${productId}`,
+      );
+    }
 
-      // Delete all ingredients atomically
-      await tx.productIngredient.deleteMany({
-        where: {
+    await this.prismaService.productIngredient.delete({
+      where: {
+        product_id_ingredient_id: {
           product_id: productId,
-          ingredient_id: { in: ingredientIds },
+          ingredient_id: ingredientId,
         },
-      });
+      },
     });
   }
 

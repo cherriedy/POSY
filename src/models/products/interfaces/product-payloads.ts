@@ -1,3 +1,4 @@
+import { BulkOperationStatus } from 'src/common/types';
 import { DietaryTag, MealSession, Season, Taste } from '../enums';
 
 /**
@@ -58,4 +59,13 @@ export interface ProductIngredientBulkUpsertPayload {
 export interface ProductIngredientBulkRemovePayload {
   productId: string;
   ingredientIds: string[];
+}
+
+/**
+ * Per-item result for a bulk ingredient removal operation.
+ */
+export interface ProductIngredientBulkDeleteResultItem {
+  ingredientId: string;
+  status: BulkOperationStatus;
+  error?: string;
 }
