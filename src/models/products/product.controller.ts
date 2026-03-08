@@ -39,7 +39,11 @@ import { CreateProductService } from './create-product';
 import { UpdateProductService } from './update-product';
 import { GetProductsService } from './get-products';
 import { DeleteProductService } from './delete-product';
-import { createPageResponseSchema } from '../../common/dto';
+import {
+  BulkOperationItemResponseDto,
+  createPageResponseSchema,
+  NewBulkOperationResponseDto,
+} from '../../common/dto';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -49,10 +53,7 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import {
-  ProductIngredientNotFoundException,
-  ProductNotFoundException,
-} from './exceptions';
+import { ProductNotFoundException } from './exceptions';
 import { JwtPayload } from '../../authentication/interfaces';
 import { GetAttributesService } from './get-attributes';
 import {
@@ -467,10 +468,8 @@ export class ProductController {
   @Roles(Role.MANAGER, Role.ADMIN)
   @ApiOperation({
     summary: 'Upsert product ingredients',
-    description:
-      'Bulk-upserts ingredients for a product. ' +
-      'Existing ingredient associations are updated with the new quantity; ' +
-      'new ones are inserted. All operations are performed atomically.',
+    description: `Bulk-upserts ingredients for a product. Existing ingredient associations
+     are updated with the new quantity; new ones are inserted. All operations are performed atomically.`,
   })
   @ApiParam({ name: 'id', type: String, description: 'Product ID' })
   @ApiBody({ type: ProductIngredientBulkUpsertRequestDto })
@@ -517,29 +516,48 @@ export class ProductController {
   @Roles(Role.MANAGER, Role.ADMIN)
   @ApiOperation({
     summary: 'Remove ingredients from product',
-    description:
-      'Bulk-removes ingredients from a product. Provide an array of ingredient IDs to remove. ',
+    description: `Bulk-removes ingredients from a product using the Per-Item Result pattern. 
+    Provide an array of ingredient IDs to remove. Each ingredient is processed independently 
+    within its own transaction.`,
   })
   @ApiParam({ name: 'id', type: String, description: 'Product ID' })
   @ApiBody({ type: ProductIngredientBulkDeleteRequestDto })
   @ApiResponse({
     status: 200,
-    description: 'Product ingredients removed successfully',
+    description: 'Per-item result with summary counts.',
+    type: NewBulkOperationResponseDto,
   })
-  @ApiResponse({ status: 404, description: 'Product ingredients not found' })
-  async removeProductIngredients(
+  async DeleteProductIngredients(
     @Param('id', new ParseUUIDPipe()) productId: string,
     @Body() dto: ProductIngredientBulkDeleteRequestDto,
-  ) {
+  ): Promise<NewBulkOperationResponseDto> {
     try {
-      await this.removeProductIngredientService.bulkRemove(
+      const results = await this.removeProductIngredientService.bulkDelete(
         RemoveProductIngredientMapper.toPayload(productId, dto),
       );
-      return { message: 'Product ingredients removed successfully.' };
+      const items = plainToInstance(
+        BulkOperationItemResponseDto,
+        results.map(
+          (r): BulkOperationItemResponseDto => ({
+            id: r.ingredientId,
+            status: r.status,
+            error: r.error ?? undefined,
+          }),
+        ),
+        { excludeExtraneousValues: true },
+      );
+
+      return plainToInstance(
+        NewBulkOperationResponseDto,
+        {
+          items,
+          total: items.length,
+          succeeded: items.filter((i) => i.status === 'SUCCEED').length,
+          failed: items.filter((i) => i.status === 'FAILED').length,
+        },
+        { excludeExtraneousValues: true },
+      );
     } catch (e) {
-      if (e instanceof ProductIngredientNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
       this.logger.error(e);
       throw new InternalServerErrorException(
         'An error occurred while processing your request.',
