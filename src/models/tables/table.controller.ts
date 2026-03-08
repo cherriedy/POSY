@@ -63,7 +63,7 @@ export class TableController {
     private readonly createTableService: CreateTableService,
     private readonly updateTableService: UpdateTableService,
     private readonly deleteTableService: DeleteTableService,
-  ) { }
+  ) {}
 
   @Get()
   @Roles(Role.MANAGER, Role.ADMIN)

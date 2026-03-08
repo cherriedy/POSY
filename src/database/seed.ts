@@ -12,7 +12,7 @@ import {
   seedStaff,
   seedTables,
   seedTaxes,
-  seedCuisines
+  seedCuisines,
 } from './seeds';
 
 const connectionString = process.env.DATABASE_URL;

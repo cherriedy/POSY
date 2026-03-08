@@ -1,7 +1,6 @@
 import { PrismaClient, TableStatus } from '@prisma/client';
 
 export async function seedTables(prisma: PrismaClient) {
-
   const zones = await prisma.zone.findMany({
     where: { is_active: true },
   });

@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PromotionProductRepository, PromotionRepository } from '../repositories';
+import {
+  PromotionProductRepository,
+  PromotionRepository,
+} from '../repositories';
 import { Promotion, PromotionProduct } from '../types';
 import { PromotionApplicability } from '../enums';
 import { PromotionNotFoundException } from '../exceptions';
@@ -13,23 +16,20 @@ export class ReplacePromotionProductService {
   constructor(
     private readonly promotionRepository: PromotionRepository,
     private readonly productRepository: ProductRepository,
-    private readonly promotionProductRepository: PromotionProductRepository
-  ) { }
+    private readonly promotionProductRepository: PromotionProductRepository,
+  ) {}
 
   async replacePromotionProducts(
     promotionId: string,
     productIds: string[],
   ): Promise<PromotionProduct[]> {
-
     const promotion = await this.promotionRepository.findById(promotionId);
 
     if (!promotion || promotion.isDeleted) {
       throw new PromotionNotFoundException({ id: promotionId });
     }
 
-    if (
-      promotion.applicability !== PromotionApplicability.SPECIFIC_ITEMS
-    ) {
+    if (promotion.applicability !== PromotionApplicability.SPECIFIC_ITEMS) {
       throw new PromotionUnusableException(
         promotionId,
         'Promotion applicability does not allow products.',
@@ -49,8 +49,7 @@ export class ReplacePromotionProductService {
 
     const uniqueProductIds = [...new Set(productIds)];
 
-    const products =
-      await this.productRepository.findByIds(uniqueProductIds);
+    const products = await this.productRepository.findByIds(uniqueProductIds);
 
     if (products.length !== uniqueProductIds.length) {
       throw new ProductsNotFoundException({

@@ -115,7 +115,9 @@ export class ZoneController {
     type: ZoneDetailedResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Zone not found' })
-  async getZoneById(@Param('id', new ParseUUIDPipe()) id: string): Promise<ZoneDetailedResponseDto> {
+  async getZoneById(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<ZoneDetailedResponseDto> {
     try {
       const zone = await this.getZonesService.getZoneById(id);
       return plainToInstance(ZoneDetailedResponseDto, zone, {
@@ -197,7 +199,10 @@ export class ZoneController {
     status: 400,
     description: 'Zone not found or duplicate entry',
   })
-  async updateZone(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: ZoneUpdateRequestDto) {
+  async updateZone(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: ZoneUpdateRequestDto,
+  ) {
     try {
       const zone = await this.updateZoneService.updateZone(
         id,

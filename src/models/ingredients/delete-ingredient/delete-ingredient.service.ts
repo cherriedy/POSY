@@ -4,7 +4,7 @@ import { IngredientNotFoundException } from '../exceptions';
 
 @Injectable()
 export class DeleteIngredientService {
-  constructor(private readonly ingredientRepository: IngredientRepository) { }
+  constructor(private readonly ingredientRepository: IngredientRepository) {}
 
   async delete(id: string): Promise<void> {
     const result = await this.ingredientRepository.findById(id);
