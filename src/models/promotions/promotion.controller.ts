@@ -82,7 +82,7 @@ export class PromotionController {
     private readonly replacePromotionProductsService: ReplacePromotionProductService,
     private readonly deletePromotionService: DeletePromotionService,
     private readonly validatePromotionService: ValidatePromotionService,
-  ) { }
+  ) {}
 
   @Get('categories')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
@@ -130,7 +130,9 @@ export class PromotionController {
     description: 'List of categories of the promotion',
     type: [PromotionCategoryPreviewResponseDto],
   })
-  async getPromotionCategoriesById(@Param('id', new ParseUUIDPipe()) promotionId: string) {
+  async getPromotionCategoriesById(
+    @Param('id', new ParseUUIDPipe()) promotionId: string,
+  ) {
     try {
       const result =
         await this.getPromotionsService.getPromotionCategoriesByPromotionId(
@@ -271,7 +273,9 @@ export class PromotionController {
     description: 'List of products of the promotion',
     type: [PromotionProductPreviewResponseDto],
   })
-  async getPromotionProductsById(@Param('id', new ParseUUIDPipe()) promotionId: string) {
+  async getPromotionProductsById(
+    @Param('id', new ParseUUIDPipe()) promotionId: string,
+  ) {
     try {
       const result =
         await this.getPromotionsService.getPromotionProductsByPromotionId(
@@ -647,7 +651,10 @@ export class PromotionController {
     status: 400,
     description: 'Promotion not found or duplicate entry',
   })
-  async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: PromotionUpdateDto) {
+  async update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: PromotionUpdateDto,
+  ) {
     try {
       const promotion = await this.updatePromotionService.update(id, dto);
       return plainToInstance(PromotionPreviewResponseDto, promotion, {

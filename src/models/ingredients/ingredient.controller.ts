@@ -62,7 +62,7 @@ export class IngredientController {
     private readonly updateIngredientService: UpdateIngredientService,
     private readonly getIngredientsService: GetIngredientsService,
     private readonly deleteIngredientService: DeleteIngredientService,
-  ) { }
+  ) {}
 
   @Get()
   @Roles(Role.MANAGER, Role.ADMIN)

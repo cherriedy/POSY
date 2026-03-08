@@ -87,7 +87,7 @@ export class IngredientQueryParamsDto {
       filter: {
         vendorId,
         unitId,
-        query
+        query,
       },
     };
   }

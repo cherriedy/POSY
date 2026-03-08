@@ -29,7 +29,10 @@ import { plainToInstance } from 'class-transformer';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 import { Roles } from '../../common/decorators';
 import { Role } from '../../common/enums';
-import { DuplicateEntryException, ForeignKeyViolationException } from '../../common/exceptions';
+import {
+  DuplicateEntryException,
+  ForeignKeyViolationException,
+} from '../../common/exceptions';
 import {
   UnitCreateRequestDto,
   UnitQueryParamsDto,
@@ -97,7 +100,9 @@ export class UnitController {
   })
   @ApiResponse({ status: 400, description: 'Unit not found.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
-  async getById(@Param('id', new ParseUUIDPipe()) id: string): Promise<UnitResponseDto> {
+  async getById(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<UnitResponseDto> {
     try {
       const unit = await this.getUnitsService.getById(id);
       return plainToInstance(UnitResponseDto, unit, {
@@ -173,7 +178,7 @@ export class UnitController {
     } catch (e) {
       if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
-      } else if (e instanceof UnitNotFoundException){
+      } else if (e instanceof UnitNotFoundException) {
         throw new NotFoundException(e.message);
       }
       this.logger.error(e);
@@ -191,14 +196,16 @@ export class UnitController {
   @ApiResponse({ status: 200, description: 'Unit deleted successfully.' })
   @ApiResponse({ status: 404, description: 'Unit not found.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
-  async delete(@Param('id', new ParseUUIDPipe()) id: string): Promise<{ message: string }> {
+  async delete(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<{ message: string }> {
     try {
       await this.deleteUnitService.delete(id);
       return { message: 'Unit deleted successfully.' };
     } catch (e) {
       if (e instanceof UnitNotFoundException) {
         throw new NotFoundException(e.message);
-      } else if (e instanceof ForeignKeyViolationException){
+      } else if (e instanceof ForeignKeyViolationException) {
         throw new ConflictException(e.message);
       }
       this.logger.error(e);

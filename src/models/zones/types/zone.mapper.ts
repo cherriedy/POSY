@@ -17,15 +17,15 @@ export class ZoneMapper {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (prismaZone as any).tables
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-        (prismaZone as any).tables.map((table: any) =>
-          TableMapper.toDomain(table),
-        )
+          (prismaZone as any).tables.map((table: any) =>
+            TableMapper.toDomain(table),
+          )
         : null,
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (prismaZone as any).floor
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
-        FloorMapper.toDomain((prismaZone as any).floor)
+          FloorMapper.toDomain((prismaZone as any).floor)
         : undefined,
     );
   }

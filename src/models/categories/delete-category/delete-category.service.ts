@@ -4,7 +4,7 @@ import { CategoryNotFoundException } from '../exceptions';
 
 @Injectable()
 export class DeleteCategoryService {
-  constructor(private readonly categoryRepository: CategoryRepository) { }
+  constructor(private readonly categoryRepository: CategoryRepository) {}
 
   /**
    * Deletes a category by its unique identifier.

@@ -81,7 +81,7 @@ export class FloorRepositoryImpl implements FloorRepository {
     const prismaFloor = await this.prismaService.floor.findUnique({
       where: { id },
       include: {
-        zones: true
+        zones: true,
       },
     });
 
@@ -100,7 +100,7 @@ export class FloorRepositoryImpl implements FloorRepository {
           id: { in: ids },
         },
         include: {
-          zones: true
+          zones: true,
         },
       })
       .then((items) => items.map(FloorMapper.toDomain));

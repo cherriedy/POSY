@@ -5,7 +5,7 @@ import { CategoryNotFoundException } from '../exceptions';
 
 @Injectable()
 export class UpdateCategoryService {
-  constructor(private readonly categoryRepository: CategoryRepository) { }
+  constructor(private readonly categoryRepository: CategoryRepository) {}
 
   /**
    * Updates an existing category by its unique identifier.

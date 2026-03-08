@@ -9,7 +9,7 @@ import { CuisineNotFoundException } from '../exceptions';
  */
 @Injectable()
 export class UpdateCuisineService {
-  constructor(private readonly cuisineRepository: CuisineRepository) { }
+  constructor(private readonly cuisineRepository: CuisineRepository) {}
 
   /**
    * Updates an existing cuisine with the provided data.

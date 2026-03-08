@@ -1,13 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import {
-  PromotionRepository,
-} from '../repositories';
+import { PromotionRepository } from '../repositories';
 
 @Injectable()
 export class DeletePromotionService {
-  constructor(
-    private readonly promotionRepository: PromotionRepository,
-  ) { }
+  constructor(private readonly promotionRepository: PromotionRepository) {}
 
   /**
    * Deletes a promotion by its ID.

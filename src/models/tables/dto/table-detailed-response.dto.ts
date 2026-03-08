@@ -4,7 +4,6 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 @Exclude()
 export class TableDetailedResponseDto extends TablePreviewResponseDto {
-
   @ApiPropertyOptional({
     type: Number,
     description: 'X coordinate for layout positioning',

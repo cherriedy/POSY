@@ -8,6 +8,6 @@ export class Floor {
     public isActive: boolean,
     public createdAt: Date | null,
     public updatedAt: Date | null,
-    public zones: Zone[] | null
+    public zones: Zone[] | null,
   ) {}
 }
