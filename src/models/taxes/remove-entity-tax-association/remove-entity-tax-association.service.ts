@@ -1,10 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { EntityTaxConfigRepository } from '../repositories';
 import { TaxAssociationNotFoundException } from '../exceptions';
-import { TaxBulkOperationFailure } from '../interfaces';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import {
+  TaxAssociationBulkDeleteResultItem,
+  TaxAssociationBulkRemovePayload,
+} from './remove-entity-tax-association.interface';
 
 @Injectable()
 export class RemoveEntityTaxAssociationService {
+  @Inject(WINSTON_MODULE_PROVIDER)
+  private readonly logger: import('winston').Logger;
+
   constructor(
     private readonly entityTaxConfigRepository: EntityTaxConfigRepository,
   ) {}
@@ -12,7 +19,7 @@ export class RemoveEntityTaxAssociationService {
   /**
    * Removes one or more entity-tax associations in a best-effort manner.
    *
-   * Each association ID in the input array is processed individually. If an association does not exist or cannot be deleted,
+   * Each association ID in the payload is processed individually. If an association does not exist or cannot be deleted,
    * the error is recorded and the method continues processing the remaining IDs. This allows partial success and provides
    * detailed feedback for each failure.
    *
@@ -20,49 +27,30 @@ export class RemoveEntityTaxAssociationService {
    * - Supports 1 to 100 association IDs per request.
    * - Each ID must correspond to an existing entity-tax association for successful removal.
    *
-   * @param {string[]} ids - Array of association IDs to remove (1-100). Each ID should uniquely identify an entity-tax association.
+   * @param {TaxAssociationBulkRemovePayload} payload - Contains taxId and array of association IDs to remove (1-100).
+   * @return {Promise<TaxAssociationBulkDeleteResultItem[]>} - Array of results for each association ID, indicating success or failure with error details if applicable.
    *
-   * @returns {Promise<{ successCount: number; failures: TaxBulkOperationFailure[] }>} An object containing:
-   *   - successCount: number — The number of associations successfully removed.
-   *   - failures: TaxBulkOperationFailure[] — Array of failure details for associations that could not be removed. Each failure includes the association ID and an error message.
    */
-  async bulkRemove(ids: string[]): Promise<{
-    successCount: number;
-    failures: Array<TaxBulkOperationFailure>;
-  }> {
-    let successCount = 0;
-    const failures: Array<TaxBulkOperationFailure> = [];
+  async bulkRemove(
+    payload: TaxAssociationBulkRemovePayload,
+  ): Promise<TaxAssociationBulkDeleteResultItem[]> {
+    const results: TaxAssociationBulkDeleteResultItem[] = [];
 
-    // Process each deletion individually (best-effort)
-    for (const id of ids) {
+    for (const associateId of payload.associationIds) {
       try {
-        // Check if association exists
-        const association = await this.entityTaxConfigRepository.findById(id);
-        if (!association) {
-          failures.push({ id, error: `Association with ID ${id} not found` });
-          continue;
-        }
-
-        // Delete using bulkDelete for a single ID
-        const result = await this.entityTaxConfigRepository.bulkDelete([id]);
-        if (result > 0) {
-          successCount++;
-        } else {
-          failures.push({
-            id,
-            error: `Failed to delete association with ID ${id}`,
-          });
-        }
+        await this.entityTaxConfigRepository.delete(associateId);
+        results.push({ id: associateId, status: 'SUCCEED' });
       } catch (e) {
-        let errorMessage = 'Unknown error occurred';
+        let error = 'Unknown error occurred';
         if (e instanceof TaxAssociationNotFoundException) {
-          errorMessage = `Association with ID ${id} not found`;
+          error = e.message;
         } else if (e instanceof Error) {
+          this.logger.error(e.message);
         }
-        failures.push({ id, error: errorMessage });
+        results.push({ id: associateId, status: 'FAILED', error });
       }
     }
 
-    return { successCount, failures };
+    return results;
   }
 }

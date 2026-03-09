@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { TaxType, TaxRateType } from '../enums';
+import { TaxRateType, TaxType } from '../enums';
 
 @Exclude()
 export class TaxPreviewResponseDto {
@@ -47,4 +47,14 @@ export class TaxPreviewResponseDto {
   @ApiProperty({ type: Date, description: 'Updated at' })
   @Expose()
   updatedAt: Date;
+}
+
+export class TaxDetailedResponseDto extends TaxPreviewResponseDto {
+  @ApiPropertyOptional({ type: String, description: 'Tax description' })
+  @Expose()
+  description: string | null;
+
+  @ApiPropertyOptional({ type: Date, description: 'Deleted at' })
+  @Expose()
+  deletedAt: Date | null;
 }

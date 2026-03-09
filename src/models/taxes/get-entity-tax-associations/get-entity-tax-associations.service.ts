@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { EntityTaxConfigRepository } from '../repositories';
-import { EntityTaxConfig } from '../types';
-import { TaxAssociationNotFoundException } from '../exceptions';
+import { EntityTaxConfig } from '../entities';
 
 @Injectable()
 export class GetEntityTaxAssociationsService {
@@ -34,20 +33,5 @@ export class GetEntityTaxAssociationsService {
       entityType,
       entityId,
     );
-  }
-
-  /**
-   * Get a specific entity-tax association by ID.
-   *
-   * @param id - Association ID
-   * @returns The entity-tax association
-   * @throws TaxAssociationNotFoundException if not found
-   */
-  async getById(id: string): Promise<EntityTaxConfig> {
-    const association = await this.entityTaxConfigRepository.findById(id);
-    if (!association) {
-      throw new TaxAssociationNotFoundException({ id });
-    }
-    return association;
   }
 }

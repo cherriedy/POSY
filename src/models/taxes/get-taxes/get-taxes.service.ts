@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TaxRepository } from '../repositories';
 import { TaxQueryParams } from '../interfaces';
 import { TaxNotFoundException } from '../exceptions';
-import { TaxConfig } from '../types';
+import { TaxConfig } from '../entities';
 import { Page } from '../../../common/interfaces';
 
 @Injectable()

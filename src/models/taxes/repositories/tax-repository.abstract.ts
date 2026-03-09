@@ -1,5 +1,5 @@
 import { BaseRepository, Page } from '../../../common/interfaces';
-import { TaxConfig } from '../types';
+import { TaxConfig } from '../entities';
 import { TaxQueryParams } from '../interfaces';
 import { TaxType } from '../enums';
 

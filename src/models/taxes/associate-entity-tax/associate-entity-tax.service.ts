@@ -1,23 +1,29 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { EntityTaxConfigRepository } from '../repositories';
 import { TaxRepository } from '../repositories';
-import { EntityTaxConfig } from '../types';
+import { EntityTaxConfig } from '../entities';
 import {
   TaxNotFoundException,
-  DuplicateEntityTaxAssociationException,
   InvalidTaxEntityCombinationException,
 } from '../exceptions';
 import { EntityType, TaxType } from '../enums';
 import { ZoneRepository } from '../../zones/repositories';
-import { ProductRepository } from '../../products/repositories';
+import { ProductRepository } from '../../products';
 import { CategoryRepository } from '../../categories/repositories';
 import { ZoneNotFoundException } from '../../zones/exceptions';
-import { ProductNotFoundException } from '../../products/exceptions';
+import { ProductNotFoundException } from '../../products';
 import { CategoryNotFoundException } from '../../categories/exceptions';
-import { TaxAssociationCreateItem } from '../interfaces';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import {
+  TaxAssociationBulkUpsertPayload,
+  TaxAssociationBulkUpsertResultItem,
+} from './associate-entity-tax.interface';
 
 @Injectable()
 export class AssociateEntityTaxService {
+  @Inject(WINSTON_MODULE_PROVIDER)
+  private readonly logger: import('winston').Logger;
+
   constructor(
     private readonly entityTaxConfigRepository: EntityTaxConfigRepository,
     private readonly taxRepository: TaxRepository,
@@ -27,104 +33,91 @@ export class AssociateEntityTaxService {
   ) {}
 
   /**
-   * Associates a tax configuration with one or more entities, after performing all necessary validations.
-   * Uses a best-effort approach: each entity is processed individually, and the result includes both successes and failures.
+   * Upserts associations between a tax configuration and one or more entities.
+   * Uses the Per-Item Result pattern: each entity is processed independently,
+   * and the result includes both successful and failed operations.
    *
-   * @param taxId - Unique identifier of the tax configuration to associate.
-   * @param entities - Array of entities to associate (1-100). Each entity includes type, id, isActive, and optional note.
-   * @returns Promise resolving to an object with arrays of successful associations and failed items.
+   * If an association already exists for a given entity it will be updated (isActive, note);
+   * otherwise a new association is created.
+   *
+   * @param payload - The bulk upsert payload containing the tax ID and an array of entities to associate.
+   * @returns Promise resolving to an array of per-item results with status SUCCEED or FAILED.
    *
    * @throws TaxNotFoundException If the specified tax does not exist (fails entire operation).
-   *
-   * @example
-   * const result = await associateEntityTaxService.associateBulk('tax-uuid', [
-   *   { entityType: EntityType.PRODUCT, entityId: 'prod-uuid', isActive: true },
-   *   { entityType: EntityType.ZONE, entityId: 'zone-uuid', note: 'Special case' }
-   * ]);
-   * // result.successes: [EntityTaxConfig, ...]
-   * // result.failures: [{ id, type, error }, ...]
    */
-  async associateBulk(
-    taxId: string,
-    entities: Array<TaxAssociationCreateItem>,
-  ): Promise<{
-    successes: EntityTaxConfig[];
-    failures: Array<{ id: string; type: string; error: string }>;
-  }> {
-    // Validate tax exists (if tax doesn't exist, fail the entire operation)
+  async bulkUpsert(
+    payload: TaxAssociationBulkUpsertPayload,
+  ): Promise<TaxAssociationBulkUpsertResultItem[]> {
+    const { taxId, items: entities } = payload;
     const tax = await this.taxRepository.findById(taxId);
-    if (!tax) {
-      throw new TaxNotFoundException({ id: taxId });
-    }
+    if (!tax) throw new TaxNotFoundException({ id: taxId });
 
-    const successes: EntityTaxConfig[] = [];
-    const failures: Array<{ id: string; type: string; error: string }> = [];
+    const results: TaxAssociationBulkUpsertResultItem[] = [];
 
-    // Process each entity individually (best-effort)
     for (const entity of entities) {
+      const { id: entityId, type: entityType } = entity.entityRef;
+
       try {
-        // Validate entity exists
-        await this.ensureEntityExists(entity.entityType, entity.entityId);
+        // Validate entity existence and tax-entity association rules
+        await this.ensureEntityExists(entityType, entityId);
+        this.assertTaxEntityAssociationAllowed(tax.type, entityType);
 
-        // Check for duplicate
-        const existing =
-          await this.entityTaxConfigRepository.bulkCheckDuplicates(taxId, [
-            { entityType: entity.entityType, entityId: entity.entityId },
-          ]);
-        if (existing.length > 0) {
-          failures.push({
-            id: entity.entityId,
-            type: entity.entityType,
-            error: `Association already exists for ${entity.entityType} with ID ${entity.entityId}`,
-          });
-          continue;
-        }
-
-        // Validate tax-entity combination
-        this.validateTaxEntityCombination(tax.type, entity.entityType);
-
-        // Create association with individual isActive and note values
-        const association = new EntityTaxConfig(
-          null,
+        // Check if association already exists
+        const association = await this.entityTaxConfigRepository.checkDuplicate(
           taxId,
-          entity.entityId,
-          entity.entityType,
-          entity.isActive ?? true, // Use entity-specific value or default to true
-          entity.note ?? null, // Use entity-specific value or null
-          null,
-          null,
-          null,
+          entity.entityRef,
         );
 
-        const created =
-          await this.entityTaxConfigRepository.create!(association);
-        successes.push(created);
+        let result: EntityTaxConfig;
+        if (association) {
+          // Update an existing association
+          const associationId = association.id!;
+          result = await this.entityTaxConfigRepository.update!(associationId, {
+            isActive: entity.isActive ?? association.isActive,
+            note: entity.note ?? association.note,
+          });
+        } else {
+          // Create a new association
+          const association = new EntityTaxConfig(
+            undefined,
+            taxId,
+            entityId,
+            entityType,
+            entity.isActive,
+            entity.note,
+          );
+          result = await this.entityTaxConfigRepository.create!(association);
+        }
+
+        results.push({
+          entityRef: entity.entityRef,
+          status: 'SUCCEED',
+          config: result,
+        });
       } catch (e) {
-        // Capture individual failures
         let errorMessage = 'Unknown error occurred';
 
         if (e instanceof ZoneNotFoundException) {
-          errorMessage = `Zone with ID ${entity.entityId} not found`;
+          errorMessage = `Zone with ID ${entity.entityRef?.id} not found`;
         } else if (e instanceof ProductNotFoundException) {
-          errorMessage = `Product with ID ${entity.entityId} not found`;
+          errorMessage = `Product with ID ${entity.entityRef?.id} not found`;
         } else if (e instanceof CategoryNotFoundException) {
-          errorMessage = `Category with ID ${entity.entityId} not found`;
+          errorMessage = `Category with ID ${entity.entityRef?.id} not found`;
         } else if (e instanceof InvalidTaxEntityCombinationException) {
-          errorMessage = `Invalid combination: ${tax.type} cannot be associated with ${entity.entityType}`;
-        } else if (e instanceof DuplicateEntityTaxAssociationException) {
-          errorMessage = `Association already exists for ${entity.entityType} with ID ${entity.entityId}`;
+          errorMessage = `Invalid combination: ${tax.type} cannot be associated with ${entity.entityRef?.type}`;
         } else if (e instanceof Error) {
+          this.logger.error(e.message);
         }
 
-        failures.push({
-          id: entity.entityId,
-          type: entity.entityType,
+        results.push({
+          entityRef: entity.entityRef,
+          status: 'FAILED',
           error: errorMessage,
         });
       }
     }
 
-    return { successes, failures };
+    return results;
   }
 
   /**
@@ -138,7 +131,7 @@ export class AssociateEntityTaxService {
    * @param entityType - The type of entity being associated.
    * @throws InvalidTaxEntityCombinationException If the tax-entity combination is not allowed by business rules.
    */
-  private validateTaxEntityCombination(
+  private assertTaxEntityAssociationAllowed(
     taxType: TaxType,
     entityType: EntityType,
   ): void {

@@ -1,5 +1,5 @@
-import { TaxRepository } from './tax.repository-abstract';
-import { TaxConfig, TaxConfigMapper } from '../types';
+import { TaxRepository } from './tax-repository.abstract';
+import { TaxConfig, TaxConfigMapper } from '../entities';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { DuplicateEntryException } from '../../../common/exceptions';
@@ -76,14 +76,13 @@ export class TaxRepositoryImpl implements TaxRepository {
    * Finds a tax configuration by its unique ID.
    *
    * @param id - The unique ID of the tax configuration.
-   * @returns The tax configuration domain object if found, otherwise null.
+   * @returns The tax configuration domain object if found, or null if not found.
    */
   async findById(id: string): Promise<TaxConfig | null> {
-    return await this.prismaService.taxConfig
-      .findUnique({
-        where: { id },
-      })
-      ?.then(TaxConfigMapper.toDomain);
+    const tax = await this.prismaService.taxConfig.findUnique({
+      where: { id },
+    });
+    return tax ? TaxConfigMapper.toDomain(tax) : null;
   }
 
   /**
@@ -92,11 +91,10 @@ export class TaxRepositoryImpl implements TaxRepository {
    * @returns An array of tax configuration domain objects matching the specified entities.
    */
   async findByType(type: TaxType[]): Promise<TaxConfig[]> {
-    return await this.prismaService.taxConfig
-      .findMany({
-        where: { type: { in: type } },
-      })
-      .then((taxes) => taxes.map(TaxConfigMapper.toDomain));
+    const taxes = await this.prismaService.taxConfig.findMany({
+      where: { type: { in: type } },
+    });
+    return taxes.map(TaxConfigMapper.toDomain);
   }
 
   /**

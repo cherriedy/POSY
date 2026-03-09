@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
-import { OrderTaxRepository } from './order-tax.repository-abstract';
-import { OrderTax, OrderTaxMapper } from '../types';
+import { OrderTaxRepository } from './order-tax-repository.abstract';
+import { OrderTax, OrderTaxMapper } from '../entities';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import {
   DuplicateEntryException,
