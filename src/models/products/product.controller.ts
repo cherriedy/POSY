@@ -28,6 +28,11 @@ import {
   UpdateProductDto,
   ProductAttributeUpsertRequestDto,
   ProductAttributeResponseDto,
+  ProductIngredientResponseDto,
+  ProductIngredientBulkDeleteRequestDto,
+  ProductIngredientBulkDeleteItemResponseDto,
+  ProductIngredientBulkDeleteResponseDto,
+  ProductIngredientBulkUpsertRequestDto,
 } from './dto';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import {
@@ -39,11 +44,7 @@ import { CreateProductService } from './create-product';
 import { UpdateProductService } from './update-product';
 import { GetProductsService } from './get-products';
 import { DeleteProductService } from './delete-product';
-import {
-  BulkOperationItemResponseDto,
-  createPageResponseSchema,
-  NewBulkOperationResponseDto,
-} from '../../common/dto';
+import { createPageResponseSchema } from '../../common/dto';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -71,11 +72,6 @@ import {
   RemoveProductIngredientMapper,
   RemoveProductIngredientService,
 } from './remove-product-ingredient';
-import {
-  ProductIngredientResponseDto,
-  ProductIngredientBulkUpsertRequestDto,
-  ProductIngredientBulkDeleteRequestDto,
-} from './dto';
 
 @ApiTags('Products')
 @ApiBearerAuth()
@@ -525,30 +521,28 @@ export class ProductController {
   @ApiResponse({
     status: 200,
     description: 'Per-item result with summary counts.',
-    type: NewBulkOperationResponseDto,
+    type: ProductIngredientBulkDeleteResponseDto,
   })
   async DeleteProductIngredients(
     @Param('id', new ParseUUIDPipe()) productId: string,
     @Body() dto: ProductIngredientBulkDeleteRequestDto,
-  ): Promise<NewBulkOperationResponseDto> {
+  ): Promise<ProductIngredientBulkDeleteResponseDto> {
     try {
       const results = await this.removeProductIngredientService.bulkDelete(
         RemoveProductIngredientMapper.toPayload(productId, dto),
       );
       const items = plainToInstance(
-        BulkOperationItemResponseDto,
-        results.map(
-          (r): BulkOperationItemResponseDto => ({
-            id: r.ingredientId,
-            status: r.status,
-            error: r.error ?? undefined,
-          }),
-        ),
+        ProductIngredientBulkDeleteItemResponseDto,
+        results.map((r) => ({
+          id: r.ingredientId,
+          status: r.status,
+          error: r.error,
+        })),
         { excludeExtraneousValues: true },
       );
 
       return plainToInstance(
-        NewBulkOperationResponseDto,
+        ProductIngredientBulkDeleteResponseDto,
         {
           items,
           total: items.length,
