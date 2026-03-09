@@ -27,6 +27,7 @@ async function bootstrap() {
   app.useStaticAssets(uploadDir, {
     prefix: '/uploads/',
     setHeaders: (res) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
       res.setHeader('Access-Control-Allow-Origin', '*');
     },
   });
@@ -59,7 +60,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
+      forbidNonWhitelisted: false,
       transform: true,
       // transformOptions: {
       //   enableImplicitConversion: true,

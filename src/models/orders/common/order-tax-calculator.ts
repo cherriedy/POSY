@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OrderTax, TaxConfig } from '../../taxes/types';
-import { EntityTaxConfig } from '../../taxes/types';
-import { TaxRateType } from '../../taxes/enums';
+import { OrderTax, TaxConfig, EntityTaxConfig, TaxRateType } from '../../taxes';
 import { OrderItem } from '../types';
 
 @Injectable()
