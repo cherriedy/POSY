@@ -1,6 +1,6 @@
 import { PricingSnapshotStatus } from '../enums';
 import { PricingSnapshotPromotion } from './pricing-snapshot-promotion.class';
-import { PricingSnapshotTax } from '../../taxes/types';
+import { PricingSnapshotTax } from '../../taxes';
 import { PromotionRedemption } from './promotion-redemption.class';
 import { Order } from '../../orders/types';
 

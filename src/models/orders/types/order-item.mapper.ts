@@ -2,8 +2,8 @@ import { OrderItem as DomainOrderItem } from './order-item.class';
 import { Prisma, OrderItem as PrismaOrderItem } from '@prisma/client';
 import { OrderItemStatus as DomainOrderItemStatus } from '../enums';
 import { OrderMapper } from './order.mapper';
-import { ProductMapper } from '../../products/entities';
-import { OrderTaxMapper } from '../../taxes/types';
+import { ProductMapper } from '../../products';
+import { OrderTaxMapper } from '../../taxes';
 
 export class OrderItemMapper {
   static toDomain(this: void, prisma: PrismaOrderItem): DomainOrderItem {

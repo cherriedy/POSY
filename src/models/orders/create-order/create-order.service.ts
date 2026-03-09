@@ -3,15 +3,15 @@ import {
   EntityTaxConfigRepository,
   OrderTaxRepository,
   TaxRepository,
-} from '../../taxes/repositories';
+  OrderTax,
+  EntityType,
+  TaxType,
+} from '../../taxes';
 import { OrderItemRepository, OrderRepository } from '../repositories';
 import { Order, OrderItem } from '../types';
 import { OrderItemStatus, OrderStatus } from '../enums';
-import { ProductRepository } from '../../products/repositories';
-import { OrderTax } from '../../taxes/types';
-import { EntityType, TaxType } from '../../taxes/enums';
+import { ProductRepository, ProductNotFoundException } from '../../products';
 import { TableRepository } from '../../tables/repositories';
-import { ProductNotFoundException } from '../../products/exceptions';
 import { TableNotFoundException } from '../../tables/exceptions';
 import { UnitOfWork } from '../../../common/unit-of-works';
 import { AtLeastOneItemRequiredException } from '../../../common/exceptions';

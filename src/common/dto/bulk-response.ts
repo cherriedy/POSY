@@ -1,20 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { BulkOperationItemResponseDto } from './bulk-operation-item-response.dto';
 
 /**
  * Represents the response for a bulk operation, containing an array of item responses, total count,
  * and counts of succeeded and failed operations.
  */
-export class NewBulkOperationResponseDto {
+export class BulkResponseDto<T extends object = any> {
   @Expose()
   @ApiProperty({
-    type: BulkOperationItemResponseDto,
+    type: Object,
     isArray: true,
     description: 'Array of operation results',
   })
-  @Type(() => BulkOperationItemResponseDto)
-  items: BulkOperationItemResponseDto[];
+  @Type(() => Object)
+  items: T[];
 
   @Expose()
   @ApiProperty({
