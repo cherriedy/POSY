@@ -1,4 +1,4 @@
-import { OrderTax } from '../types';
+import { OrderTax } from '../entities';
 
 export abstract class OrderTaxRepository {
   abstract create(entity: OrderTax): Promise<OrderTax>;

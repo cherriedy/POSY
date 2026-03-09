@@ -20,44 +20,52 @@ import { RoleGuard } from '../../authorization/guards/role.guard';
 import { Roles } from '../../common/decorators';
 import { Role } from '../../common/enums';
 import {
-  CreateTaxDto,
+  TaxCreateRequestDto,
   TaxDetailedResponseDto,
   TaxPreviewResponseDto,
   TaxQueryParamsDto,
-  UpdateTaxDto,
-  TaxAssociationCreateRequestDto,
-  TaxAssociationUpdateRequestDto,
-  TaxAssociationRemoveRequestDto,
-  TaxAssociationDetailedResponseDto,
-  TaxBulkOperationFailureDto,
+  TaxUpdateRequestDto,
+  TaxAssociationResponseDto,
+  TaxAssociationBulkUpsertItemResponseDto,
+  TaxAssociationBulkUpsertResponseDto,
+  TaxAssociationBulkRemoveItemResponseDto,
+  TaxAssociationBulkRemoveResponseDto,
 } from './dto';
-import { TaxConfig } from './types';
+import { TaxConfig } from './entities';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { DuplicateEntryException } from '../../common/exceptions';
 import { plainToInstance } from 'class-transformer';
-import { GetTaxesService } from './get-taxes/get-taxes.service';
-import { CreateTaxService } from './create-tax/create-tax.service';
-import { UpdateTaxService } from './update-tax/update-tax.service';
-import { DeleteTaxService } from './delete-tax/delete-tax.service';
-import { AssociateEntityTaxService } from './associate-entity-tax/associate-entity-tax.service';
-import { GetEntityTaxAssociationsService } from './get-entity-tax-associations/get-entity-tax-associations.service';
-import { UpdateEntityTaxAssociationService } from './update-entity-tax-association/update-entity-tax-association.service';
-import { RemoveEntityTaxAssociationService } from './remove-entity-tax-association/remove-entity-tax-association.service';
+import { GetTaxesService } from './get-taxes';
+import { CreateTaxService } from './create-tax';
+import { UpdateTaxService } from './update-tax';
+import { DeleteTaxService } from './delete-tax';
+import { AssociateEntityTaxService } from './associate-entity-tax';
+import { GetEntityTaxAssociationsService } from './get-entity-tax-associations';
+import {
+  RemoveEntityTaxAssociationService,
+  RemoveEntityTaxAssociationMapper,
+} from './remove-entity-tax-association';
 import { TaxNotFoundException } from './exceptions';
 import {
   ApiBearerAuth,
   ApiTags,
   ApiOperation,
-  ApiResponse,
   ApiParam,
   ApiBody,
   ApiQuery,
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiNotFoundResponse,
+  ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
-import {
-  BulkOperationResponseDto,
-  createPageResponseSchema,
-} from '../../common/dto';
+import { createPageResponseSchema } from '../../common/dto';
 import { EntityType } from './enums';
+import { AssociateEntityTaxMapper } from './associate-entity-tax';
+import {
+  TaxAssociationBulkUpsertRequestDto,
+  TaxAssociationDeleteRequestDto,
+} from './dto';
 
 @ApiTags('Taxes')
 @ApiBearerAuth()
@@ -73,24 +81,29 @@ export class TaxController {
     private readonly deleteTaxService: DeleteTaxService,
     private readonly associateEntityTaxService: AssociateEntityTaxService,
     private readonly getEntityTaxAssociationsService: GetEntityTaxAssociationsService,
-    private readonly updateEntityTaxAssociationService: UpdateEntityTaxAssociationService,
     private readonly removeEntityTaxAssociationService: RemoveEntityTaxAssociationService,
   ) {}
 
+  // ────────────────────────────────
+  // GET /taxes
+  // ────────────────────────────────
   @Get()
   @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @Roles(Role.ADMIN)
   @ApiOperation({
     summary: 'Get all taxes',
-    description: `Returns a paginated list of all tax configurations. Accessible only 
-    by ADMIN and MANAGER roles. Supports filtering by query parameters such as type, 
-    rate type, active status, etc.`,
+    description: `Returns a paginated list of all tax configurations. Accessible only by ADMIN.`,
   })
   @ApiQuery({ name: 'query', required: false, type: TaxQueryParamsDto })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Paginated list of taxes',
     schema: createPageResponseSchema(TaxPreviewResponseDto),
+  })
+  @ApiBadRequestResponse({
+    description: 'Validation failed, duplicate entry.',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Unexpected failure.',
   })
   async getAll(@Query() query: TaxQueryParamsDto) {
     try {
@@ -107,18 +120,23 @@ export class TaxController {
     }
   }
 
+  // ────────────────────────────────
+  // GET /taxes/active
+  // ────────────────────────────────
   @Get('active')
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
     summary: 'Get all active taxes',
-    description: `Returns a list of all active tax configurations. Accessible by all 
-    authenticated users. Used for calculating taxes on orders.`,
+    description: `Returns a list of all active tax configurations. Accessible by all authenticated users.`,
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'List of active taxes',
     type: [TaxPreviewResponseDto],
   })
+  @ApiBadRequestResponse({
+    description: 'Validation failed, duplicate entry.',
+  })
+  @ApiInternalServerErrorResponse({ description: 'Unexpected failure.' })
   async getAllActive() {
     try {
       const taxes = await this.getTaxesService.getAllActive();
@@ -133,21 +151,26 @@ export class TaxController {
     }
   }
 
+  // ────────────────────────────────
+  // GET /taxes/:id
+  // ────────────────────────────────
   @Get(':id')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @Roles(Role.ADMIN)
   @ApiOperation({
     summary: 'Get tax by ID',
-    description: `Fetches detailed information for a specific tax configuration by its unique ID.
-    Accessible only by ADMIN and MANAGER roles. Returns 400 if the tax is not found.`,
+    description: `Fetches detailed information for a specific tax configuration by its unique ID. Accessible only by ADMIN.`,
   })
   @ApiParam({ name: 'id', type: String })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Tax details',
     type: TaxDetailedResponseDto,
   })
-  @ApiResponse({ status: 400, description: 'Tax not found' })
+  @ApiBadRequestResponse({
+    description: 'Validation failed, duplicate entry.',
+  })
+  @ApiNotFoundResponse({ description: 'Resource does not exist.' })
+  @ApiInternalServerErrorResponse({ description: 'Unexpected failure.' })
   async getById(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       const tax = await this.getTaxesService.getById(id);
@@ -157,8 +180,6 @@ export class TaxController {
     } catch (e) {
       if (e instanceof TaxNotFoundException) {
         throw new NotFoundException(e.message);
-      } else if (e instanceof BadRequestException) {
-        throw e;
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -167,22 +188,26 @@ export class TaxController {
     }
   }
 
+  // ────────────────────────────────
+  // POST /taxes
+  // ────────────────────────────────
   @Post()
   @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @Roles(Role.ADMIN)
   @ApiOperation({
     summary: 'Create a new tax',
-    description: `Creates a new tax configuration with the provided details. Only accessible 
-    by ADMIN and MANAGER roles. Returns the created tax preview. Throws 400 for duplicate entries.`,
+    description: `Creates a new tax configuration with the provided details. Only accessible by ADMIN.`,
   })
-  @ApiBody({ type: CreateTaxDto })
-  @ApiResponse({
-    status: 201,
-    description: 'Tax created',
+  @ApiBody({ type: TaxCreateRequestDto })
+  @ApiCreatedResponse({
+    description: 'Tax created successfully',
     type: TaxPreviewResponseDto,
   })
-  @ApiResponse({ status: 400, description: 'Duplicate entry' })
-  async create(@Body() dto: CreateTaxDto) {
+  @ApiBadRequestResponse({
+    description: 'Validation failed, duplicate entry.',
+  })
+  @ApiInternalServerErrorResponse({ description: 'Unexpected failure.' })
+  async create(@Body() dto: TaxCreateRequestDto) {
     try {
       const tax = await this.createTaxService.create(
         dto as unknown as TaxConfig,
@@ -193,8 +218,6 @@ export class TaxController {
     } catch (e) {
       if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
-      } else if (e instanceof BadRequestException) {
-        throw e;
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -203,29 +226,27 @@ export class TaxController {
     }
   }
 
+  // ────────────────────────────────
+  // PUT /taxes/:id
+  // ────────────────────────────────
   @Put(':id')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @Roles(Role.ADMIN)
   @ApiOperation({
     summary: 'Update a tax',
-    description: `Updates an existing tax configuration by its ID. Only accessible 
-    by ADMIN and MANAGER roles. Returns the updated tax preview. Throws 400 for 
-    not found or duplicate entries.`,
+    description: `Updates an existing tax configuration by its ID. Only accessible by ADMIN.`,
   })
   @ApiParam({ name: 'id', type: String })
-  @ApiBody({ type: UpdateTaxDto })
-  @ApiResponse({
-    status: 200,
-    description: 'Tax updated',
-    type: TaxPreviewResponseDto,
+  @ApiBody({ type: TaxUpdateRequestDto })
+  @ApiOkResponse({ description: 'Tax updated successfully' })
+  @ApiBadRequestResponse({
+    description: 'Validation failed, duplicate entry.',
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Tax not found or duplicate entry',
-  })
+  @ApiNotFoundResponse({ description: 'Resource does not exist.' })
+  @ApiInternalServerErrorResponse({ description: 'Unexpected failure.' })
   async update(
     @Param('id', new ParseUUIDPipe()) id: string,
-    @Body() dto: UpdateTaxDto,
+    @Body() dto: TaxUpdateRequestDto,
   ) {
     try {
       const tax = await this.updateTaxService.update(id, dto);
@@ -237,8 +258,6 @@ export class TaxController {
         throw new NotFoundException(e.message);
       } else if (e instanceof DuplicateEntryException) {
         throw new BadRequestException(e.message);
-      } else if (e instanceof BadRequestException) {
-        throw e;
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -247,17 +266,21 @@ export class TaxController {
     }
   }
 
+  // ────────────────────────────────
+  // DELETE /taxes/:id
+  // ────────────────────────────────
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.ADMIN)
   @ApiOperation({
     summary: 'Delete a tax',
-    description: `Soft deletes a tax configuration by its ID. Only accessible by 
-    ADMIN. Returns a success message. Throws 400 if the tax is not found.`,
+    description: `Soft deletes a tax configuration by its ID. Only accessible by ADMIN.`,
   })
   @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'Tax deleted' })
-  @ApiResponse({ status: 400, description: 'Tax not found' })
+  @ApiOkResponse({ description: 'Tax deleted' })
+  @ApiBadRequestResponse({ description: 'Validation failed' })
+  @ApiNotFoundResponse({ description: 'Resource does not exist.' })
+  @ApiInternalServerErrorResponse({ description: 'Unexpected failure.' })
   async delete(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       await this.deleteTaxService.delete(id);
@@ -265,8 +288,6 @@ export class TaxController {
     } catch (e) {
       if (e instanceof TaxNotFoundException) {
         throw new NotFoundException(e.message);
-      } else if (e instanceof BadRequestException) {
-        throw e;
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -276,61 +297,75 @@ export class TaxController {
   }
 
   // ==================== Entity-Tax Association Endpoints ====================
-
+  // ────────────────────────────────
+  // POST /taxes/:id/entities
+  // ────────────────────────────────
   @Post(':id/entities')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @Roles(Role.ADMIN)
   @ApiOperation({
-    summary: 'Associate a tax with entities (supports bulk)',
-    description: `Creates associations between a tax configuration and one or more entities 
-    (Product, Category, or Zone). Supports 1-100 entities per request. Only accessible by ADMIN and MANAGER roles. 
-    Validates that the tax exists and the combinations are valid. Uses transactions for atomicity.`,
+    summary: 'Bulk upsert entity-tax associations',
+    description: `Creates or updates associations between a tax configuration and one or more entities. Only accessible by ADMIN.`,
   })
   @ApiParam({
     name: 'id',
     type: String,
     description: 'Tax configuration ID',
   })
-  @ApiBody({ type: TaxAssociationCreateRequestDto })
-  @ApiResponse({
-    status: 201,
-    description: 'Associations created successfully',
-    type: BulkOperationResponseDto<TaxBulkOperationFailureDto>,
+  @ApiBody({ type: TaxAssociationBulkUpsertRequestDto })
+  @ApiCreatedResponse({
+    description: 'Per-item result with counts',
+    type: TaxAssociationBulkUpsertResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Tax not found, duplicate association, or invalid combination',
-  })
-  async associateEntityTax(
+  @ApiBadRequestResponse({ description: 'Validation failed, duplicate entry.' })
+  @ApiNotFoundResponse({ description: 'Resource does not exist.' })
+  @ApiInternalServerErrorResponse({ description: 'Unexpected failure.' })
+  async upsertEntityTaxAssociations(
     @Param('id', new ParseUUIDPipe()) taxId: string,
-    @Body() dto: TaxAssociationCreateRequestDto,
-  ) {
+    @Body() dto: TaxAssociationBulkUpsertRequestDto,
+  ): Promise<TaxAssociationBulkUpsertResponseDto> {
     try {
-      const result = await this.associateEntityTaxService.associateBulk(
-        taxId,
-        dto.entities,
+      const results = await this.associateEntityTaxService.bulkUpsert(
+        AssociateEntityTaxMapper.toPayload(taxId, dto),
       );
 
-      const failures = plainToInstance(
-        TaxBulkOperationFailureDto,
-        result.failures,
+      const items = plainToInstance(
+        TaxAssociationBulkUpsertItemResponseDto,
+        results.map((r) => {
+          const association = plainToInstance(
+            TaxAssociationResponseDto,
+            r.config,
+            { excludeExtraneousValues: true },
+          );
+          if (r.entityRef && r.status === 'SUCCEED') {
+            ['entityId', 'entityType'].forEach((k) => delete association[k]);
+          }
+          return {
+            entityRef: {
+              id: r.entityRef.id,
+              type: r.entityRef.type,
+            },
+            status: r.status,
+            association,
+            error: r.error,
+          };
+        }),
+        { excludeExtraneousValues: true },
+      );
+
+      return plainToInstance(
+        TaxAssociationBulkUpsertResponseDto,
         {
-          excludeExtraneousValues: true,
-        },
+          items,
+          total: items.length,
+          succeeded: items.filter((i) => i.status === 'SUCCEED').length,
+          failed: items.filter((i) => i.status === 'FAILED').length,
+        } as TaxAssociationBulkUpsertRequestDto,
+        { excludeExtraneousValues: true },
       );
-
-      return {
-        successCount: result.successes.length,
-        failedCount: result.failures.length,
-        totalCount: dto.entities.length,
-        failures,
-        message: `Successfully created ${result.successes.length} association(s)${result.failures.length > 0 ? `, ${result.failures.length} failed` : ''}`,
-      };
     } catch (e) {
       if (e instanceof TaxNotFoundException) {
         throw new NotFoundException(e.message);
-      } else if (e instanceof BadRequestException) {
-        throw e;
       }
       this.logger.error(e);
       throw new InternalServerErrorException(
@@ -339,29 +374,35 @@ export class TaxController {
     }
   }
 
+  // ────────────────────────────────
+  // GET /taxes/:id/entities
+  // ────────────────────────────────
   @Get(':id/entities')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @Roles(Role.ADMIN)
   @ApiOperation({
     summary: 'Get all entities associated with a tax',
-    description: `Returns all entity associations for a specific tax configuration. 
-    Only accessible by ADMIN and MANAGER roles.`,
+    description: `Returns all entity associations for a specific tax configuration. Only accessible by ADMIN.`,
   })
   @ApiParam({
     name: 'id',
     type: String,
     description: 'Tax configuration ID',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'List of entity associations',
-    type: [TaxAssociationDetailedResponseDto],
+    type: [TaxAssociationResponseDto],
   })
+  @ApiBadRequestResponse({
+    description: 'Validation failed, duplicate entry.',
+  })
+  @ApiNotFoundResponse({ description: 'Resource does not exist.' })
+  @ApiInternalServerErrorResponse({ description: 'Unexpected failure.' })
   async getEntitiesForTax(@Param('id', new ParseUUIDPipe()) taxId: string) {
     try {
       const associations =
         await this.getEntityTaxAssociationsService.getByTaxId(taxId);
-      return plainToInstance(TaxAssociationDetailedResponseDto, associations, {
+      return plainToInstance(TaxAssociationResponseDto, associations, {
         excludeExtraneousValues: true,
       });
     } catch (e) {
@@ -372,28 +413,95 @@ export class TaxController {
     }
   }
 
-  @Get('entity/:entityType/:entityId')
+  // ────────────────────────────────
+  // DELETE /taxes/:id/entities
+  // ────────────────────────────────
+  @Delete(':id/entities')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @Roles(Role.ADMIN)
   @ApiOperation({
-    summary: 'Get all taxes associated with an entity',
-    description: `Returns all tax associations for a specific entity. Only accessible by ADMIN and MANAGER roles.`,
+    summary: 'Bulk remove entity-tax associations',
+    description: `Removes one or more entity-tax associations by their IDs in a best-effort manner. Only accessible by ADMIN.`,
   })
   @ApiParam({
-    name: 'entityType',
+    name: 'id',
+    type: String,
+    description:
+      'Tax configuration ID (used for context; associations are identified by their own IDs)',
+  })
+  @ApiBody({ type: TaxAssociationDeleteRequestDto })
+  @ApiOkResponse({
+    description: 'Per-item result with summary counts',
+    type: TaxAssociationBulkRemoveResponseDto,
+  })
+  @ApiBadRequestResponse({ description: 'Validation failed.' })
+  @ApiNotFoundResponse({ description: 'Resource does not exist.' })
+  @ApiInternalServerErrorResponse({ description: 'Unexpected failure.' })
+  async removeEntityTaxAssociations(
+    @Param('id', new ParseUUIDPipe()) taxId: string,
+    @Body() dto: TaxAssociationDeleteRequestDto,
+  ): Promise<TaxAssociationBulkRemoveResponseDto> {
+    try {
+      const results = await this.removeEntityTaxAssociationService.bulkRemove(
+        RemoveEntityTaxAssociationMapper.toPayload(taxId, dto),
+      );
+      const items = plainToInstance(
+        TaxAssociationBulkRemoveItemResponseDto,
+        results.map((r) => ({
+          id: r.id,
+          status: r.status,
+          error: r.error,
+        })),
+        { excludeExtraneousValues: true },
+      );
+
+      return plainToInstance(
+        TaxAssociationBulkRemoveResponseDto,
+        {
+          items,
+          total: dto.associationIds.length,
+          succeeded: items.filter((i) => i.status === 'SUCCEED').length,
+          failed: items.filter((i) => i.status === 'FAILED').length,
+        },
+        { excludeExtraneousValues: true },
+      );
+    } catch (e) {
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
+
+  // ────────────────────────────────
+  // GET /taxes/entities/:type/:id
+  // ────────────────────────────────
+  @Get('entities/:type/:id')
+  @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @Roles(Role.ADMIN)
+  @ApiOperation({
+    summary: 'Get all taxes associated with an entity',
+    description: `Returns all tax associations for a specific entity. Only accessible by ADMIN.`,
+  })
+  @ApiParam({
+    name: 'type',
     type: String,
     enum: EntityType,
     description: 'Entity type',
   })
-  @ApiParam({ name: 'entityId', type: String, description: 'Entity ID' })
-  @ApiResponse({
-    status: 200,
+  @ApiParam({ name: 'id', type: String, description: 'Entity ID' })
+  @ApiOkResponse({
     description: 'List of tax associations',
-    type: [TaxAssociationDetailedResponseDto],
+    type: [TaxAssociationResponseDto],
   })
+  @ApiBadRequestResponse({
+    description: 'Validation failed, duplicate entry.',
+  })
+  @ApiNotFoundResponse({ description: 'Resource does not exist.' })
+  @ApiInternalServerErrorResponse({ description: 'Unexpected failure.' })
   async getTaxesForEntity(
-    @Param('entityId', new ParseUUIDPipe()) entityId: string,
-    @Param('entityType', new ParseEnumPipe(EntityType)) entityType: EntityType,
+    @Param('id', new ParseUUIDPipe()) entityId: string,
+    @Param('type', new ParseEnumPipe(EntityType)) entityType: EntityType,
   ) {
     try {
       const associations =
@@ -401,110 +509,10 @@ export class TaxController {
           entityType,
           entityId,
         );
-      return plainToInstance(TaxAssociationDetailedResponseDto, associations, {
+      return plainToInstance(TaxAssociationResponseDto, associations, {
         excludeExtraneousValues: true,
       });
     } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
-  }
-
-  @Put('association')
-  @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
-  @ApiOperation({
-    summary: 'Update entity-tax associations (supports bulk)',
-    description: `Updates one or more entity-tax associations. Each association can 
-    have its own isActive and note values. Supports 1-100 associations per request. 
-    Only accessible by ADMIN and MANAGER roles.`,
-  })
-  @ApiBody({ type: TaxAssociationUpdateRequestDto })
-  @ApiResponse({
-    status: 200,
-    description: 'Associations updated successfully',
-    type: BulkOperationResponseDto,
-  })
-  @ApiResponse({ status: 400, description: 'Association(s) not found' })
-  async updateEntityTaxAssociation(
-    @Body() dto: TaxAssociationUpdateRequestDto,
-  ) {
-    try {
-      const result = await this.updateEntityTaxAssociationService.bulkUpdate(
-        dto.items,
-      );
-
-      const failures = plainToInstance(
-        TaxBulkOperationFailureDto,
-        result.failures,
-        {
-          excludeExtraneousValues: true,
-        },
-      );
-
-      return {
-        successCount: result.successCount,
-        failedCount: result.failures.length,
-        totalCount: dto.items.length,
-        failures,
-        message: `Successfully updated ${result.successCount} association(s)${result.failures.length > 0 ? `, ${result.failures.length} failed` : ''}`,
-      } as BulkOperationResponseDto;
-    } catch (e) {
-      if (e instanceof BadRequestException) {
-        throw e;
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
-  }
-
-  @Delete('association')
-  @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
-  @ApiOperation({
-    summary: 'Remove entity-tax associations (supports bulk)',
-    description: `Deletes one or more entity-tax associations by their IDs. 
-    Supports 1-100 associations per request. Only accessible by ADMIN and MANAGER roles.`,
-  })
-  @ApiBody({ type: TaxAssociationRemoveRequestDto })
-  @ApiResponse({
-    status: 200,
-    description: 'Associations removed successfully',
-    type: BulkOperationResponseDto,
-  })
-  @ApiResponse({ status: 400, description: 'Association(s) not found' })
-  async removeEntityTaxAssociation(
-    @Body() dto: TaxAssociationRemoveRequestDto,
-  ) {
-    try {
-      const result = await this.removeEntityTaxAssociationService.bulkRemove(
-        dto.associationIds,
-      );
-
-      const failures = plainToInstance(
-        TaxBulkOperationFailureDto,
-        result.failures,
-        {
-          excludeExtraneousValues: true,
-        },
-      );
-
-      return {
-        successCount: result.successCount,
-        failedCount: result.failures.length,
-        totalCount: dto.associationIds.length,
-        failures,
-        message: `Successfully removed ${result.successCount} association(s)
-        ${result.failures.length > 0 ? `, ${result.failures.length} failed` : ''}`,
-      };
-    } catch (e) {
-      if (e instanceof BadRequestException) {
-        throw e;
-      }
       this.logger.error(e);
       throw new InternalServerErrorException(
         'An error occurred while processing your request.',

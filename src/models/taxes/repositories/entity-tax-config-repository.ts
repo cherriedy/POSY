@@ -1,17 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
-import { EntityTaxConfigRepository } from './entity-tax-config.repository-abstract';
-import { EntityTaxConfig, EntityTaxConfigMapper } from '../types';
+import { EntityTaxConfigRepository } from './entity-tax-config-repository.abstract';
+import { EntityTaxConfig, EntityTaxConfigMapper } from '../entities';
 import { Prisma, TaxConfigEntityType } from '@prisma/client';
 import {
-  TaxAssociationNotFoundException,
   DuplicateEntityTaxAssociationException,
+  TaxAssociationNotFoundException,
 } from '../exceptions';
+import { TaxableEntityReference } from '../interfaces';
 
-/**
- * Repository implementation for entity-tax associations.
- * Supports individual CRUD operations used by best-effort bulk processing in common.
- */
 @Injectable()
 export class EntityTaxConfigRepositoryImpl implements EntityTaxConfigRepository {
   constructor(private readonly prismaService: PrismaService) {}
@@ -146,47 +143,47 @@ export class EntityTaxConfigRepositoryImpl implements EntityTaxConfigRepository 
   }
 
   /**
-   * Bulk deletes entity-tax associations by their IDs.
-   * Used for individual deletions in best-effort mode (typically called with single ID).
+   * Deletes a single entity-tax association by its ID.
    *
-   * @param ids - Array of association IDs (UUIDs) to delete.
-   * @returns Number of deleted associations.
+   * @param id - The association ID (UUID) to delete.
+   * @returns void
+   * @throws {TaxAssociationNotFoundException} If the association does not exist.
    * @throws {Prisma.PrismaClientKnownRequestError} On database errors.
-   * @note Does not throw if associations don't exist (returns count of actually deleted).
    */
-  async bulkDelete(ids: string[]): Promise<number> {
-    const result = await this.prismaService.entityTaxConfig.deleteMany({
-      where: { id: { in: ids } },
-    });
-
-    return result.count;
+  async delete(id: string): Promise<void> {
+    try {
+      await this.prismaService.entityTaxConfig.delete({
+        where: { id },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw new TaxAssociationNotFoundException({ id });
+        }
+      }
+      throw e;
+    }
   }
 
   /**
-   * Bulk checks for duplicate associations.
+   * Checks for an existing entity-tax association for a given tax and entity reference.
    *
-   * @param taxId - Tax configuration ID (UUID).
-   * @param entities - Array of entity specifications, each with:
-   *   - entityType: The type of entity
-   *   - entityId: The unique entity ID (UUID)
-   * @returns Array of existing associations matching the given tax and entities.
+   * @param taxId - The tax configuration ID (UUID) to check against.
+   * @param entityRef - The reference to the taxable entity to check for an existing association.
+   * @returns The existing association if found, otherwise null.
    * @throws {Prisma.PrismaClientKnownRequestError} On database errors.
    */
-  async bulkCheckDuplicates(
+  async checkDuplicate(
     taxId: string,
-    entities: Array<{ entityType: string; entityId: string }>,
-  ): Promise<EntityTaxConfig[]> {
-    const results = await this.prismaService.entityTaxConfig.findMany({
+    entityRef: TaxableEntityReference,
+  ): Promise<EntityTaxConfig | null> {
+    const existing = await this.prismaService.entityTaxConfig.findFirst({
       where: {
         tax_id: taxId,
-        OR: entities.map((entity) => ({
-          entity_type: entity.entityType as TaxConfigEntityType,
-          entity_id: entity.entityId,
-        })),
+        entity_type: entityRef.type as TaxConfigEntityType,
+        entity_id: entityRef.id,
       },
-      include: { tax: true },
     });
-
-    return results.map(EntityTaxConfigMapper.toDomain);
+    return existing ? EntityTaxConfigMapper.toDomain(existing) : null;
   }
 }

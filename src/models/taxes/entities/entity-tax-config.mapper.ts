@@ -22,7 +22,7 @@ export class EntityTaxConfigMapper {
       prisma.created_at,
       prisma.updated_at,
       // Relations
-      prisma.tax ? TaxConfigMapper.toDomain(prisma.tax) : null,
+      prisma.tax ? TaxConfigMapper.toDomain(prisma.tax) : undefined,
     );
   }
 

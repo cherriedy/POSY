@@ -8,14 +8,13 @@ import {
   OrderTaxRepositoryImpl,
 } from './repositories';
 import { TaxController } from './tax.controller';
-import { GetTaxesModule } from './get-taxes/get-taxes.module';
-import { CreateTaxModule } from './create-tax/create-tax.module';
-import { UpdateTaxModule } from './update-tax/update-tax.module';
-import { DeleteTaxModule } from './delete-tax/delete-tax.module';
-import { AssociateEntityTaxModule } from './associate-entity-tax/associate-entity-tax.module';
-import { GetEntityTaxAssociationsModule } from './get-entity-tax-associations/get-entity-tax-associations.module';
-import { UpdateEntityTaxAssociationModule } from './update-entity-tax-association/update-entity-tax-association.module';
-import { RemoveEntityTaxAssociationModule } from './remove-entity-tax-association/remove-entity-tax-association.module';
+import { GetTaxesModule } from './get-taxes';
+import { CreateTaxModule } from './create-tax';
+import { UpdateTaxModule } from './update-tax';
+import { DeleteTaxModule } from './delete-tax';
+import { AssociateEntityTaxModule } from './associate-entity-tax';
+import { GetEntityTaxAssociationsModule } from './get-entity-tax-associations';
+import { RemoveEntityTaxAssociationModule } from './remove-entity-tax-association';
 
 @Global()
 @Module({
@@ -40,7 +39,6 @@ import { RemoveEntityTaxAssociationModule } from './remove-entity-tax-associatio
     DeleteTaxModule,
     AssociateEntityTaxModule,
     GetEntityTaxAssociationsModule,
-    UpdateEntityTaxAssociationModule,
     RemoveEntityTaxAssociationModule,
   ],
   controllers: [TaxController],
@@ -54,7 +52,6 @@ import { RemoveEntityTaxAssociationModule } from './remove-entity-tax-associatio
     OrderTaxRepository,
     AssociateEntityTaxModule,
     GetEntityTaxAssociationsModule,
-    UpdateEntityTaxAssociationModule,
     RemoveEntityTaxAssociationModule,
   ],
 })

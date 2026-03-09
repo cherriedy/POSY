@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { TaxRepository } from '../repositories';
-import { TaxConfig } from '../types';
-import { UpdateTaxDto } from '../dto';
+import { TaxConfig } from '../entities';
+import { TaxUpdateRequestDto } from '../dto';
 import { TaxNotFoundException } from '../exceptions';
 
 @Injectable()
@@ -11,12 +11,12 @@ export class UpdateTaxService {
   /**
    * Updates an existing tax configuration.
    * @param {string} id - The ID of the tax to update.
-   * @param {UpdateTaxDto} dto - The update data.
+   * @param {TaxUpdateRequestDto} dto - The update data.
    * @returns {Promise<TaxConfig>} A promise that resolves to the updated tax.
    * @throws {TaxNotFoundException} If the tax does not exist.
    * @throws {DuplicateEntryException} If the update would create a duplicate.
    */
-  async update(id: string, dto: UpdateTaxDto): Promise<TaxConfig> {
+  async update(id: string, dto: TaxUpdateRequestDto): Promise<TaxConfig> {
     // Check if tax exists
     const existingTax = await this.taxRepository.findById(id);
     if (!existingTax) {

@@ -1,5 +1,6 @@
 import { BaseRepository } from '../../../common/interfaces';
-import { EntityTaxConfig } from '../types';
+import { EntityTaxConfig } from '../entities';
+import { TaxableEntityReference } from '../interfaces';
 
 /**
  * Abstract repository for managing entity-tax associations.
@@ -39,28 +40,28 @@ export abstract class EntityTaxConfigRepository extends BaseRepository<EntityTax
   ): Promise<EntityTaxConfig[]>;
 
   /**
-   * Delete entity-tax associations by their IDs.
-   * Used for best-effort bulk delete operations (called individually per ID).
+   * Delete a single entity-tax association by its ID.
    *
-   * @param ids - Array of association IDs (UUIDs) to delete.
-   * @returns Number of deleted associations.
+   * @param id - The association ID (UUID) to delete.
+   * @returns void
+   * @throws {TaxAssociationNotFoundException} If the association does not exist.
    * @throws May throw on database errors.
-   * @note This is used by common for individual deletions in best-effort mode.
    */
-  abstract bulkDelete(ids: string[]): Promise<number>;
+  abstract delete(id: string): Promise<void>;
 
   /**
-   * Bulk check for duplicate entity-tax associations.
+   * Check for an existing entity-tax association with the same tax ID and entity reference.
    *
-   * @param taxId - The tax configuration ID (UUID).
-   * @param entities - Array of entity specifications, each with:
-   *   - entityType: The type of entity
-   *   - entityId: The unique entity ID (UUID)
-   * @returns Array of existing associations matching the given tax and entities.
+   * Used to prevent duplicate associations when creating or updating records.
+   *
+   * @param taxId - The tax configuration ID (UUID) to check for.
+   * @param entityRef - The reference to the taxable entity to check for.
+   *
+   * @returns The existing association if found, otherwise null.
    * @throws May throw on database errors.
    */
-  abstract bulkCheckDuplicates(
+  abstract checkDuplicate(
     taxId: string,
-    entities: Array<{ entityType: string; entityId: string }>,
-  ): Promise<EntityTaxConfig[]>;
+    entityRef: TaxableEntityReference,
+  ): Promise<EntityTaxConfig | null>;
 }
