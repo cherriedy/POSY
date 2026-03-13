@@ -534,7 +534,7 @@ export class ProductController {
       const items = plainToInstance(
         ProductIngredientBulkDeleteItemResponseDto,
         results.map((r) => ({
-          id: r.ingredientId,
+          id: r.id,
           status: r.status,
           error: r.error,
         })),

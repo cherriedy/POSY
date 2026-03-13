@@ -8,7 +8,7 @@ export class RemoveProductIngredientMapper {
   ): ProductIngredientBulkRemovePayload {
     return {
       productId,
-      ingredientIds: dto.ingredientIds,
+      associationIds: dto.associationIds,
     };
   }
 }

@@ -159,10 +159,11 @@ export class TaxAssociationBulkUpsertResponseDto {
 export class TaxAssociationBulkRemoveItemResponseDto {
   @Expose()
   @ApiProperty({
-    type: TaxableEntityReferenceDto,
-    description: `Reference to the entity for which the tax association was attempted to be removed`,
+    type: String,
+    description: 'Association ID that was targeted for removal',
+    example: '123e4567-e89b-12d3-a456-426614174000',
   })
-  entity: TaxableEntityReferenceDto;
+  id: string;
 
   @Expose()
   @ApiProperty({

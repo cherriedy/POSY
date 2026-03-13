@@ -328,7 +328,7 @@ export class ImageController {
 
   // ======== DELETE IMAGES BY IDS =========
   @Roles(Role.ADMIN)
-  @Delete('delete')
+  @Delete()
   @ApiOperation({
     summary: 'Bulk delete images',
     description: 'Deletes multiple images by IDs.',
