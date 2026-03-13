@@ -36,10 +36,10 @@ export class RemoveEntityTaxAssociationService {
   ): Promise<TaxAssociationBulkDeleteResultItem[]> {
     const results: TaxAssociationBulkDeleteResultItem[] = [];
 
-    for (const associateId of payload.associationIds) {
+    for (const entity of payload.entities) {
       try {
-        await this.entityTaxConfigRepository.delete(associateId);
-        results.push({ id: associateId, status: 'SUCCEED' });
+        await this.entityTaxConfigRepository.delete(payload.taxId, entity);
+        results.push({ entity, status: 'SUCCEED' });
       } catch (e) {
         let error = 'Unknown error occurred';
         if (e instanceof TaxAssociationNotFoundException) {
@@ -47,7 +47,7 @@ export class RemoveEntityTaxAssociationService {
         } else if (e instanceof Error) {
           this.logger.error(e.message);
         }
-        results.push({ id: associateId, status: 'FAILED', error });
+        results.push({ entity, status: 'FAILED', error });
       }
     }
 

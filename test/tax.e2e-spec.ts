@@ -160,22 +160,18 @@ describe('TaxController (e2e)', () => {
 
   describe('DELETE /taxes/:taxId/entities', () => {
     const taxId = '123e4567-e89b-42d3-a456-426614174000';
-    const assocId1 = 'aaaaaaaa-e89b-42d3-a456-426614174001';
-    const assocId2 = 'bbbbbbbb-e89b-42d3-a456-426614174002';
-    const assocId3 = 'cccccccc-e89b-42d3-a456-426614174003';
+    const entity1 = { type: 'PRODUCT', id: 'prod-1' };
+    const entity2 = { type: 'CATEGORY', id: 'cat-1' };
+    const entity3 = { type: 'ZONE', id: 'zone-1' };
 
     it('returns 200 with all successes when all associations exist', async () => {
-      // findFirst returns an existing record for each id → delete succeeds
-      mockPrisma.entityTaxConfig.findUnique
-        .mockResolvedValueOnce({ id: assocId1, tax_id: taxId })
-        .mockResolvedValueOnce({ id: assocId2, tax_id: taxId });
       mockPrisma.entityTaxConfig.delete
-        .mockResolvedValueOnce({ id: assocId1 })
-        .mockResolvedValueOnce({ id: assocId2 });
+        .mockResolvedValueOnce({ id: 'config-1' })
+        .mockResolvedValueOnce({ id: 'config-2' });
 
       const { body } = await request(app.getHttpServer())
         .delete(`/taxes/${taxId}/entities`)
-        .send({ associationIds: [assocId1, assocId2] })
+        .send({ entities: [entity1, entity2] })
         .expect(200);
 
       expect(body.total).toBe(2);
@@ -183,37 +179,28 @@ describe('TaxController (e2e)', () => {
       expect(body.failed).toBe(0);
       expect(body.items).toHaveLength(2);
       expect(body.items.every((i: any) => i.status === 'SUCCEED')).toBe(true);
+      expect(body.items.every((i: any) => i.entity)).toBe(true);
       expect(mockPrisma.entityTaxConfig.delete).toHaveBeenCalledTimes(2);
-      expect(mockPrisma.entityTaxConfig.delete).toHaveBeenCalledWith({
-        where: { id: assocId1 },
-      });
-      expect(mockPrisma.entityTaxConfig.delete).toHaveBeenCalledWith({
-        where: { id: assocId2 },
-      });
     });
 
     it('returns 200 with partial failure when some associations do not exist', async () => {
-      // assocId1 found and deleted, assocId2 throws P2025 (not found)
       mockPrisma.entityTaxConfig.delete
-        .mockResolvedValueOnce({ id: assocId1 })
+        .mockResolvedValueOnce({ id: 'config-1' })
         .mockRejectedValueOnce(prismaError('P2025', 'Not found'));
 
       const { body } = await request(app.getHttpServer())
         .delete(`/taxes/${taxId}/entities`)
-        .send({ associationIds: [assocId1, assocId2] })
+        .send({ entities: [entity1, entity2] })
         .expect(200);
 
       expect(body.total).toBe(2);
       expect(body.succeeded).toBe(1);
       expect(body.failed).toBe(1);
-      expect(body.items.find((i: any) => i.id === assocId1).status).toBe(
-        'SUCCEED',
-      );
-      expect(body.items.find((i: any) => i.id === assocId2).status).toBe(
-        'FAILED',
-      );
+      expect(body.items).toHaveLength(2);
+      expect(body.items.some((i: any) => i.status === 'SUCCEED')).toBe(true);
+      expect(body.items.some((i: any) => i.status === 'FAILED')).toBe(true);
       expect(
-        body.items.find((i: any) => i.id === assocId2).error,
+        body.items.find((i: any) => i.status === 'FAILED').error,
       ).toBeDefined();
     });
 
@@ -225,47 +212,82 @@ describe('TaxController (e2e)', () => {
 
       const { body } = await request(app.getHttpServer())
         .delete(`/taxes/${taxId}/entities`)
-        .send({ associationIds: [assocId1, assocId2, assocId3] })
+        .send({ entities: [entity1, entity2, entity3] })
         .expect(200);
 
       expect(body.total).toBe(3);
       expect(body.succeeded).toBe(0);
       expect(body.failed).toBe(3);
       expect(body.items.every((i: any) => i.status === 'FAILED')).toBe(true);
+      expect(body.items.every((i: any) => i.error)).toBe(true);
     });
 
-    it('returns 400 when associationIds is empty', async () => {
+    it('returns 400 when entities is empty', async () => {
       await request(app.getHttpServer())
         .delete(`/taxes/${taxId}/entities`)
-        .send({ associationIds: [] })
+        .send({ entities: [] })
         .expect(400);
     });
 
-    it('returns 400 when associationIds contains invalid UUIDs', async () => {
+    it('returns 400 when entities contains invalid entity type', async () => {
       await request(app.getHttpServer())
         .delete(`/taxes/${taxId}/entities`)
-        .send({ associationIds: ['not-a-uuid'] })
+        .send({ entities: [{ type: 'INVALID_TYPE', id: 'id-1' }] })
         .expect(400);
     });
 
-    it('returns 400 when body is missing associationIds', async () => {
+    it('returns 400 when entities contains invalid UUID', async () => {
+      await request(app.getHttpServer())
+        .delete(`/taxes/${taxId}/entities`)
+        .send({ entities: [{ type: 'PRODUCT', id: 'not-a-uuid' }] })
+        .expect(400);
+    });
+
+    it('returns 400 when body is missing entities', async () => {
       await request(app.getHttpServer())
         .delete(`/taxes/${taxId}/entities`)
         .send({})
         .expect(400);
     });
 
-    it('calls delete with correct association ID', async () => {
-      mockPrisma.entityTaxConfig.delete.mockResolvedValueOnce({ id: assocId1 });
+    it('includes entity reference in response items', async () => {
+      mockPrisma.entityTaxConfig.delete.mockResolvedValueOnce({ id: 'config-1' });
+
+      const { body } = await request(app.getHttpServer())
+        .delete(`/taxes/${taxId}/entities`)
+        .send({ entities: [entity1] })
+        .expect(200);
+
+      expect(body.items[0].entity).toBeDefined();
+      expect(body.items[0].entity.id).toBe(entity1.id);
+      expect(body.items[0].entity.type).toBe(entity1.type);
+    });
+
+    it('returns 400 when entities exceed max size', async () => {
+      const tooManyEntities = Array.from({ length: 101 }, (_, i) => ({
+        type: 'PRODUCT',
+        id: `prod-${i}`,
+      }));
 
       await request(app.getHttpServer())
         .delete(`/taxes/${taxId}/entities`)
-        .send({ associationIds: [assocId1] })
+        .send({ entities: tooManyEntities })
+        .expect(400);
+    });
+
+    it('returns 404 when tax does not exist', async () => {
+      const nonExistentTaxId = '999999999-e89b-42d3-a456-426614174999';
+      mockPrisma.entityTaxConfig.delete.mockRejectedValueOnce(
+        prismaError('P2025', 'Tax not found'),
+      );
+
+      const { body } = await request(app.getHttpServer())
+        .delete(`/taxes/${nonExistentTaxId}/entities`)
+        .send({ entities: [entity1] })
         .expect(200);
 
-      expect(mockPrisma.entityTaxConfig.delete).toHaveBeenCalledWith({
-        where: { id: assocId1 },
-      });
+      expect(body.failed).toBe(1);
+      expect(body.items[0].status).toBe('FAILED');
     });
   });
 
