@@ -448,7 +448,7 @@ export class TaxController {
       const items = plainToInstance(
         TaxAssociationBulkRemoveItemResponseDto,
         results.map((r) => ({
-          id: r.id,
+          entity: r.entity,
           status: r.status,
           error: r.error,
         })),
@@ -459,7 +459,7 @@ export class TaxController {
         TaxAssociationBulkRemoveResponseDto,
         {
           items,
-          total: dto.associationIds.length,
+          total: dto.entities.length,
           succeeded: items.filter((i) => i.status === 'SUCCEED').length,
           failed: items.filter((i) => i.status === 'FAILED').length,
         },

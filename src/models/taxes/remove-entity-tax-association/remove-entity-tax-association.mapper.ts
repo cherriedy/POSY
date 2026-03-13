@@ -9,7 +9,7 @@ export class RemoveEntityTaxAssociationMapper {
    * Converts a delete request DTO and taxId into the service-layer payload.
    *
    * @param taxId - The tax configuration ID (for context/logging in the service).
-   * @param dto   - The incoming request DTO containing the association IDs to remove.
+   * @param dto   - The incoming request DTO containing entity type and IDs to remove.
    * @returns A TaxAssociationBulkRemovePayload ready to be processed by the service.
    */
   static toPayload(
@@ -18,7 +18,10 @@ export class RemoveEntityTaxAssociationMapper {
   ): TaxAssociationBulkRemovePayload {
     return {
       taxId,
-      associationIds: dto.associationIds,
+      entities: dto.entities.map((entity) => ({
+        type: entity.type,
+        id: entity.id,
+      })),
     } as TaxAssociationBulkRemovePayload;
   }
 }

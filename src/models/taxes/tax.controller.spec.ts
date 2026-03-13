@@ -546,7 +546,11 @@ describe('TaxController', () => {
   describe('removeEntityTaxAssociations', () => {
     const taxId = 'tax-uuid';
     const dto = {
-      associationIds: ['assoc-1', 'assoc-2', 'assoc-3'],
+      entities: [
+        { id: 'assoc-1', type: EntityType.PRODUCT },
+        { id: 'assoc-2', type: EntityType.CATEGORY },
+        { id: 'assoc-3', type: EntityType.ZONE },
+      ],
     };
 
     it('removes associations and returns formatted bulk response with all successes', async () => {
@@ -573,9 +577,21 @@ describe('TaxController', () => {
 
     it('returns partial failure in formatted response when some removals fail', async () => {
       const bulkResults = [
-        { id: 'assoc-1', status: 'SUCCEED', error: null },
-        { id: 'assoc-2', status: 'FAILED', error: 'Not found' },
-        { id: 'assoc-3', status: 'SUCCEED', error: null },
+        {
+          entity: { id: 'assoc-1', type: EntityType.PRODUCT },
+          status: 'SUCCEED',
+          error: null,
+        },
+        {
+          entity: { id: 'assoc-1', type: EntityType.PRODUCT },
+          status: 'SUCCEED',
+          error: null,
+        },
+        {
+          entity: { id: 'assoc-3', type: EntityType.ZONE },
+          status: 'SUCCEED',
+          error: null,
+        },
       ];
       mockRemoveEntityTaxAssociationService.bulkRemove.mockResolvedValue(
         bulkResults,
