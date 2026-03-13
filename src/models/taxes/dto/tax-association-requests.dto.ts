@@ -1,5 +1,6 @@
 import {
   IsArray,
+  IsUUID,
   ArrayMinSize,
   ArrayMaxSize,
   IsNotEmpty,
@@ -84,23 +85,16 @@ export class TaxAssociationBulkUpsertRequestDto {
  */
 export class TaxAssociationDeleteRequestDto {
   @ApiProperty({
-    type: [TaxableEntityReferenceDto],
-    description: `Array of entity references for which the tax associations should be removed (1-100 items per request)`,
+    type: [String],
+    description: 'Array of association IDs to remove (1-100 IDs per request)',
     example: [
-      {
-        entityType: 'ZONE',
-        entityId: '123e4567-e89b-12d3-a456-426614174000',
-      },
-      {
-        entityType: 'ZONE',
-        entityId: '223e4567-e89b-12d3-a456-426614174001',
-      },
+      '123e4567-e89b-12d3-a456-426614174000',
+      '223e4567-e89b-12d3-a456-426614174001',
     ],
   })
   @IsArray()
   @ArrayMinSize(1)
   @ArrayMaxSize(100)
-  @ValidateNested({ each: true })
-  @Type(() => TaxableEntityReferenceDto)
-  entities: TaxableEntityReferenceDto[];
+  @IsUUID('4', { each: true })
+  associationIds: string[];
 }

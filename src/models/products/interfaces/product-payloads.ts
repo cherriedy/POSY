@@ -58,14 +58,14 @@ export interface ProductIngredientBulkUpsertPayload {
  */
 export interface ProductIngredientBulkRemovePayload {
   productId: string;
-  ingredientIds: string[];
+  associationIds: string[];
 }
 
 /**
  * Per-item result for a bulk ingredient removal operation.
  */
 export interface ProductIngredientBulkDeleteResultItem {
-  ingredientId: string;
+  id: string;
   status: BulkOperationStatus;
   error?: string;
 }
