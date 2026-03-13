@@ -374,7 +374,7 @@ export class ProductController {
   // ────────────────────────────────
   // PUT /products/:id/attributes
   // ────────────────────────────────
-  @Put(':id/attributes')
+  @Post(':id/attributes')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.MANAGER, Role.ADMIN)
   @ApiOperation({
@@ -459,7 +459,7 @@ export class ProductController {
   // ────────────────────────────────
   // PUT /products/:id/ingredients
   // ────────────────────────────────
-  @Put(':id/ingredients')
+  @Post(':id/ingredients')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.MANAGER, Role.ADMIN)
   @ApiOperation({
