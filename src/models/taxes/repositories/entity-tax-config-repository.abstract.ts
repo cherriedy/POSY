@@ -43,14 +43,11 @@ export abstract class EntityTaxConfigRepository extends BaseRepository<EntityTax
    * Delete a single entity-tax association by its ID.
    *
    * @param id - The association ID (UUID) to delete.
-   * @param entityRef - Optional reference to the taxable entity.
+   * @returns void
    * @throws {TaxAssociationNotFoundException} If the association does not exist.
    * @throws May throw on database errors.
    */
-  abstract delete(
-    id: string,
-    entityRef?: TaxableEntityReference,
-  ): Promise<void>;
+  abstract delete(id: string): Promise<void>;
 
   /**
    * Check for an existing entity-tax association with the same tax ID and entity reference.

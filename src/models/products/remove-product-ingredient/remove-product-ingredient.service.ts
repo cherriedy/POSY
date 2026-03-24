@@ -26,16 +26,14 @@ export class RemoveProductIngredientService {
   async bulkDelete(
     payload: ProductIngredientBulkRemovePayload,
   ): Promise<ProductIngredientBulkDeleteResultItem[]> {
-    const { productId, ingredientIds } = payload;
     const results: ProductIngredientBulkDeleteResultItem[] = [];
 
-    for (const ingredientId of ingredientIds) {
+    for (const associateId of payload.associationIds) {
       try {
-        await this.productIngredientRepository.deleteByProductIdAndIngredientId(
-          productId,
-          ingredientId,
+        await this.productIngredientRepository.delete(
+          associateId
         );
-        results.push({ ingredientId, status: 'SUCCEED' });
+        results.push({ id: associateId, status: 'SUCCEED' });
       } catch (e) {
         let error = 'Unknown error occurred';
         if (e instanceof ProductIngredientNotFoundException) {
@@ -43,7 +41,7 @@ export class RemoveProductIngredientService {
         } else if (e instanceof Error) {
           this.logger.error(e.message);
         }
-        results.push({ ingredientId, status: 'FAILED', error });
+        results.push({ id: associateId, status: 'FAILED', error });
       }
     }
 

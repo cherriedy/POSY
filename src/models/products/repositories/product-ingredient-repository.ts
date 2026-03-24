@@ -8,10 +8,11 @@ import {
   ForeignKeyViolationException,
 } from '../../../common/exceptions';
 import { ProductIngredientNotFoundException } from '../exceptions';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProductIngredientRepositoryImpl implements ProductIngredientRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async findByProductId(productId: string): Promise<ProductIngredient[]> {
     return this.prismaService.productIngredient
@@ -25,29 +26,21 @@ export class ProductIngredientRepositoryImpl implements ProductIngredientReposit
       .then((items) => items.map(ProductIngredientMapper.toDomain));
   }
 
-  async deleteByProductIdAndIngredientId(
-    productId: string,
-    ingredientId: string,
-  ): Promise<void> {
-    const existing = await this.prismaService.productIngredient.findFirst({
-      where: { product_id: productId, ingredient_id: ingredientId },
-      select: { ingredient_id: true },
-    });
-
-    if (!existing) {
-      throw new ProductIngredientNotFoundException(
-        `Ingredient with ID ${ingredientId} is not associated with product ${productId}`,
-      );
+  async delete(id: string): Promise<void> {
+    try {
+      await this.prismaService.productIngredient.delete({
+        where: { id },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw new ProductIngredientNotFoundException(
+            `Ingredient with ID ${id} is not associated with product ${id}`,
+          );
+        }
+      }
+      throw e;
     }
-
-    await this.prismaService.productIngredient.delete({
-      where: {
-        product_id_ingredient_id: {
-          product_id: productId,
-          ingredient_id: ingredientId,
-        },
-      },
-    });
   }
 
   async update(
