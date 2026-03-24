@@ -1,11 +1,13 @@
 import { Global, Module } from '@nestjs/common';
 import { CategoryController } from './category.controller';
 import { PrismaModule } from 'src/providers/prisma/prisma.module';
-import { CreateCategoryModule } from './create-category/create-category.module';
-import { UpdateCategoryModule } from './update-category/update-category.module';
-import { DeleteCategoryModule } from './delete-category/delete-category.module';
-import { CategoryRepository, CategoryRepositoryImpl } from './repositories';
-import { GetCategoriesModule } from './get-categories/get-categories.module';
+import {
+  CreateCategoryModule,
+  UpdateCategoryModule,
+  DeleteCategoryModule,
+  GetCategoriesModule,
+} from './features';
+import { CategoryRepository, CategoryRepositoryImpl } from './shared';
 
 @Global()
 @Module({
