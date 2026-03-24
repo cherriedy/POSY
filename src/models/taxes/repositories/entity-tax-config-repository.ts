@@ -146,24 +146,14 @@ export class EntityTaxConfigRepositoryImpl implements EntityTaxConfigRepository 
    * Deletes a single entity-tax association by its ID.
    *
    * @param id - The association ID (UUID) to delete.
-   * @param entityRef - Optional reference to the taxable entity.
    * @returns void
    * @throws {TaxAssociationNotFoundException} If the association does not exist.
    * @throws {Prisma.PrismaClientKnownRequestError} On database errors.
    */
-  async delete(id: string, entityRef?: TaxableEntityReference): Promise<void> {
+  async delete(id: string): Promise<void> {
     try {
-      const whereClause: Prisma.EntityTaxConfigWhereUniqueInput = { id };
-
-      if (entityRef) {
-        Object.assign(whereClause, {
-          entity_id: entityRef.id,
-          entity_type: entityRef.type as TaxConfigEntityType,
-        });
-      }
-
       await this.prismaService.entityTaxConfig.delete({
-        where: whereClause,
+        where: { id },
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {

@@ -1,26 +1,25 @@
 import { BulkOperationStatus } from '../../../common/types';
-import { TaxableEntityReference } from '../interfaces';
 
 /**
- * Represents the payload for bulk removing tax associations from entities.
+ * Payload for bulk removing entity-tax associations by their unique IDs.
  *
- * @property {string} taxId - The unique identifier of the tax configuration from which associations are being removed.
- * @property {TaxableEntityReference[]} entities - An array of references to the entities for which the tax associations should be removed.
+ * @property {string} taxId - The identifier of the tax configuration (used for context/logging).
+ * @property {string[]} associationIds - Array of association IDs (1-100) to remove.
  */
 export interface TaxAssociationBulkRemovePayload {
   taxId: string;
-  entities: TaxableEntityReference[];
+  associationIds: string[];
 }
 
 /**
  * Represents a failure that occurred during a bulk tax operation.
  *
- * @property {TaxableEntityReference} entity - The reference to the taxable entity for which the operation failed.
+ * @property {string} id - The unique identifier of the item that failed during the bulk operation.
  * @property {EntityType} [type] - Optional. The type or category of the item that failed.
  * @property {string} error - A description of the error or reason for the failure.
  */
 export interface TaxAssociationBulkDeleteResultItem {
-  entity: TaxableEntityReference;
+  id: string;
   status: BulkOperationStatus;
   error?: string;
 }
