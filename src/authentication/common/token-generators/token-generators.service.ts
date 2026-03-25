@@ -9,6 +9,11 @@ import {
   InvalidRefreshTokenException,
   RefreshTokenHasExpiredException,
 } from '../../exceptions';
+import {
+  TableSessionConfig,
+  TableSessionPayload,
+  TableSessionRepository,
+} from '../../../models/table-sessions';
 
 @Injectable()
 export class TokenGeneratorsService {
@@ -16,15 +21,21 @@ export class TokenGeneratorsService {
   private readonly accessTokenExpiresIn: string;
   private readonly refreshTokenSecure: string;
   private readonly refreshTokenExpiresIn: string;
+  private readonly tableSessionTokenSecure: string;
+  private readonly tableSessionTokenExpiresIn: string;
 
   constructor(
-    private jwtService: JwtService,
-    private jwtConfigService: JwtConfigService,
+    private readonly jwtService: JwtService,
+    private readonly jwtConfigService: JwtConfigService,
+    private readonly tableSessionRepository: TableSessionRepository,
+    private readonly tableSessionConfig: TableSessionConfig,
   ) {
     this.accessTokenSecure = this.jwtConfigService.secret;
     this.accessTokenExpiresIn = `${authConfig.signIn.accessToken.expire}h`;
     this.refreshTokenSecure = this.jwtConfigService.refreshSecret;
     this.refreshTokenExpiresIn = `${authConfig.signIn.refreshToken.expire}d`;
+    this.tableSessionTokenSecure = this.tableSessionConfig.jwt.secret;
+    this.tableSessionTokenExpiresIn = `${this.tableSessionConfig.jwt.expiresIn}s`;
   }
 
   /**
@@ -112,6 +123,35 @@ export class TokenGeneratorsService {
     try {
       return await this.jwtService.verifyAsync(token, {
         secret: this.accessTokenSecure,
+      });
+    } catch (e) {
+      if (e instanceof JsonWebTokenError) {
+        throw new InvalidAccessTokenException();
+      } else if (e instanceof TokenExpiredError) {
+        throw new AccessTokenHasExpiredException();
+      }
+      throw e;
+    }
+  }
+
+  /**
+   * Verifies and decodes a JWT table session token, handling all error scenarios and mapping them to custom exceptions.
+   *
+   * This method checks the validity and integrity of the provided JWT table session token using the configured table session token secret.
+   * If the token is valid and not expired, it returns the decoded payload (claims). If the token is invalid, expired, or has been tampered with,
+   * it throws a custom exception: InvalidAccessTokenException for invalid tokens, and AccessTokenHasExpiredException for expired tokens.
+   * This is typically used to authenticate table sessions and authorize access to table-specific resources.
+   *
+   * @param {string} token - The JWT table session token to verify and decode.
+   * @return {Promise<TableSessionPayload>} The decoded payload of the table session token if verification is successful.
+   * @throws {InvalidAccessTokenException} If the token is invalid, malformed, or has been tampered with.
+   * @throws {AccessTokenHasExpiredException} If the token is expired.
+   * @throws {Error} For unexpected internal errors during token verification.
+   */
+  async verifyTableSessionToken(token: string): Promise<TableSessionPayload> {
+    try {
+      return await this.jwtService.verifyAsync(token, {
+        secret: this.tableSessionTokenSecure,
       });
     } catch (e) {
       if (e instanceof JsonWebTokenError) {
