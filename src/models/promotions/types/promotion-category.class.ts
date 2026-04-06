@@ -1,5 +1,5 @@
 import { Promotion } from './promotion.class';
-import { Category } from '../../categories/types';
+import { Category } from '../../categories/shared/entities';
 
 export class PromotionCategory {
   constructor(

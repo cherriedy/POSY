@@ -9,7 +9,7 @@ import { PromotionNotFoundException } from '../exceptions';
 import { PromotionUnusableException } from '../exceptions/PromotionUnusableException';
 import { DuplicateEntryException } from 'src/common/exceptions';
 import { ProductsNotFoundException } from 'src/models/products/exceptions';
-import { ProductRepository } from 'src/models/products/repositories';
+import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 
 @Injectable()
 export class ReplacePromotionProductService {

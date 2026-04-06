@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import {
-  ProductRepository,
-  ProductAttributeRepository,
-  ProductIngredientRepository,
-} from '../repositories';
+import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
+import { ProductAttributeRepository } from 'src/models/products/repositories/product-attribute-repository.abstract';
+import { ProductIngredientRepository } from 'src/models/products/repositories/product-ingredient-repository.abstract';
 import { Product, ProductAttribute, ProductIngredient } from '../entities';
 import { getSlug } from '../../../common/utilities/string.util';
 import { ProductCreatePayload } from '../interfaces';
@@ -14,6 +12,7 @@ import {
   Season,
   ProductDiscountType,
 } from '../enums';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class CreateProductService {
@@ -21,6 +20,7 @@ export class CreateProductService {
     private readonly productRepository: ProductRepository,
     private readonly productAttributeRepository: ProductAttributeRepository,
     private readonly productIngredientRepository: ProductIngredientRepository,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   /**
@@ -93,6 +93,9 @@ export class CreateProductService {
         ingredientEntities,
       );
     }
+
+    // Non-blocking event emission for product creation
+    this.eventEmitter.emit('product.created', { id: createdProduct.id! });
 
     return createdProduct;
   }

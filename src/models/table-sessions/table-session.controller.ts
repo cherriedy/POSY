@@ -5,59 +5,45 @@ import {
   Res,
   HttpCode,
   HttpStatus,
-  UseGuards,
   Req,
   BadRequestException,
   Inject,
+  Logger,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import {
   ApiTags,
   ApiOperation,
-  ApiResponse,
-  ApiCookieAuth,
-  ApiBearerAuth,
+  ApiOkResponse,
+  ApiNotFoundResponse,
 } from '@nestjs/swagger';
-import { StartSessionService } from './start-session/start-session.service';
-import { EndSessionService } from './end-session/end-session.service';
-import { StartSessionRequestDto, TableSessionResponseDto } from './dto';
-import { SessionGuard } from './guards';
+import { GuestSessionContextService } from './features';
+import { EndSessionService } from './features/end-session/end-session.service';
+import { StartSessionRequestDto, TableSessionResponseDto } from './shared';
 import { TableSessionConfig } from './table-session.config';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { OptionalJwtGuard } from '../../common/guards';
-import { JwtPayload } from '../../authentication/interfaces';
+import { assertDevice, InvalidDeviceException } from '../../common/interfaces';
 
 @ApiTags('Sessions')
 @Controller('session')
 export class TableSessionController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: import('winston').Logger;
+  private readonly logger: Logger;
 
   constructor(
-    private readonly startSessionService: StartSessionService,
+    private readonly guestSessionContextService: GuestSessionContextService,
     private readonly endSessionService: EndSessionService,
     private readonly tableSessionConfig: TableSessionConfig,
   ) {}
 
   @Post()
   @HttpCode(HttpStatus.OK)
-  @UseGuards(OptionalJwtGuard)
-  @ApiBearerAuth()
-  @ApiOperation({
-    summary: 'Start a new table session by scanning QR code',
-    description: `Customers scan a QR code to start a session (no auth required). 
-    Staff may also start a session by providing a valid Bearer token, which associates 
-    their user ID with the session.`,
-  })
-  @ApiResponse({
-    status: 200,
+  @ApiOperation({ summary: 'Start a new table session by scanning QR code' })
+  @ApiOkResponse({
     description: 'Session started successfully',
     type: TableSessionResponseDto,
   })
-  @ApiResponse({
-    status: 404,
-    description: 'Table not found',
-  })
+  @ApiNotFoundResponse({ description: 'Table not found' })
   async startSession(
     @Body() dto: StartSessionRequestDto,
     @Req() req: Request,
@@ -69,26 +55,18 @@ export class TableSessionController {
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const userAgent = req['device'];
-    if (
-      !userAgent ||
-      typeof userAgent !== 'string' ||
-      userAgent === 'Unknown device'
-    ) {
-      throw new BadRequestException(
-        'Unable to determine client device information',
-      );
+    try {
+      assertDevice(userAgent);
+    } catch (e) {
+      if (e instanceof InvalidDeviceException) {
+        throw new BadRequestException(e.message);
+      }
     }
 
-    // If the request is made by an authenticated staff member, associate
-    // their user ID with the session; otherwise leave it undefined (guest).
-    const staff = req.user as JwtPayload | undefined;
-    const userId = staff?.sub;
-
-    const session = await this.startSessionService.execute(
+    const session = await this.guestSessionContextService.execute(
       userAgent,
       req.ip,
       dto.tableId,
-      userId,
     );
     if (!session) {
       throw new BadRequestException(

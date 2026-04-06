@@ -1,4 +1,4 @@
-import { EntityTaxConfig as DomainEntityTaxConfig } from './entity-tax-config.class';
+import { EntityTaxConfig as DomainEntityTaxConfig } from './entity-tax-config';
 import {
   Prisma,
   EntityTaxConfig as PrismaEntityTaxConfig,

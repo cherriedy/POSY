@@ -11,7 +11,6 @@ export * from './get-product-ingredients';
 export * from './get-products';
 export * from './interfaces';
 export * from './remove-product-ingredient';
-export * from './repositories';
 export * from './update-product';
 export * from './upsert-attributes';
 export * from './upsert-ingredients';

@@ -12,7 +12,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProductIngredientRepositoryImpl implements ProductIngredientRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findByProductId(productId: string): Promise<ProductIngredient[]> {
     return this.prismaService.productIngredient

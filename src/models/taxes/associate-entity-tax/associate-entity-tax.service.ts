@@ -8,11 +8,11 @@ import {
 } from '../exceptions';
 import { EntityType, TaxType } from '../enums';
 import { ZoneRepository } from '../../zones/repositories';
-import { ProductRepository } from '../../products';
-import { CategoryRepository } from '../../categories/repositories';
+import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
+import { CategoryRepository } from '../../categories';
 import { ZoneNotFoundException } from '../../zones/exceptions';
 import { ProductNotFoundException } from '../../products';
-import { CategoryNotFoundException } from '../../categories/exceptions';
+import { CategoryNotFoundException } from '../../categories';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import {
   TaxAssociationBulkUpsertPayload,

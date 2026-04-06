@@ -24,13 +24,13 @@ import {
   IngredientUpdateRequestDto,
   IngredientResponseDto,
   IngredientQueryParamsDto,
-} from './dto';
+} from './shared/dto';
 import {
   UpdateIngredientService,
   UpdateIngredientPayloadMapper,
-} from './update-ingredient';
-import { GetIngredientsService } from './get-ingredients';
-import { DeleteIngredientService } from './delete-ingredient';
+} from './features/update-ingredient';
+import { GetIngredientsService } from './features/get-ingredients';
+import { DeleteIngredientService } from './features/delete-ingredient';
 import { plainToInstance } from 'class-transformer';
 import {
   ApiBearerAuth,
@@ -44,11 +44,11 @@ import {
   DuplicateEntryException,
   ForeignKeyViolationException,
 } from '../../common/exceptions';
-import { IngredientNotFoundException } from './exceptions';
+import { IngredientNotFoundException } from './shared/exceptions';
 import {
   CreateIngredientPayloadMapper,
   CreateIngredientService,
-} from './create-ingredient';
+} from './features/create-ingredient';
 
 @ApiTags('Ingredients')
 @ApiBearerAuth()

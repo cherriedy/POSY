@@ -1,22 +1,18 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   PromotionCategoryRepository,
   PromotionProductRepository,
   PromotionRepository,
 } from '../repositories';
 import { PromotionQueryParams } from '../interfaces';
-import {
-  PromotionCategoryNotFoundException,
-  PromotionNotFoundException,
-  PromotionProductNotFoundException,
-} from '../exceptions';
+import { PromotionNotFoundException } from '../exceptions';
 import { Role } from '../../../common/enums';
 import { Promotion, PromotionCategory, PromotionProduct } from '../types';
-import { ProductRepository } from '../../products/repositories';
+import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 import { ProductNotFoundException } from '../../products/exceptions';
 import { Page } from '../../../common/interfaces';
-import { CategoryRepository } from 'src/models/categories/repositories';
-import { CategoryNotFoundException } from 'src/models/categories/exceptions';
+import { CategoryRepository } from 'src/models/categories/shared/repositories';
+import { CategoryNotFoundException } from 'src/models/categories/shared/exceptions';
 
 @Injectable()
 export class GetPromotionsService {

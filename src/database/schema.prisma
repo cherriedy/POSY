@@ -301,7 +301,7 @@ model IngredientUsage {
   @@map("ingredient_usages")
 }
 
-// Store forecasting results from Prophet model
+// Store forecasting attrs from Prophet model
 model IngredientForecast {
   id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   ingredient_id    String   @db.Uuid
@@ -368,11 +368,6 @@ enum PromotionApplicability {
   QUANTITY_BASED // Quantity-based: "Buy 2 get 10% off"
 }
 
-enum PricingSnapshotStatus {
-  QUOTED
-  CONSUMED
-}
-
 model Promotion {
   id                  String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   code                String                 @unique
@@ -387,7 +382,6 @@ model Promotion {
   start_at            DateTime
   end_at              DateTime
   usage_limit         Int?
-  usage_count         Int                    @default(0)
   version             Int                    @default(1)
   status              PromotionStatus        @default(DRAFT)
   is_stackable        Boolean                @default(false)
@@ -414,42 +408,45 @@ model Promotion {
 }
 
 model PricingSnapshot {
-  id               String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  order_id         String?               @db.Uuid // Link to the order for history tracking
-  subtotal_amount  Decimal               @db.Decimal(10, 2) // Before discounts & taxes
-  discount_amount  Decimal               @db.Decimal(10, 2)
-  total_tax_amount Decimal               @default(0) @db.Decimal(10, 2) // Sum of all taxes
-  total_amount     Decimal               @db.Decimal(10, 2) // Final amount
-  status           PricingSnapshotStatus @default(QUOTED)
-  created_at       DateTime              @default(now())
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id         String   @db.Uuid // Link to the order for history tracking
+  subtotal_amount  Decimal  @db.Decimal(10, 2) // Before discounts & taxes
+  discount_amount  Decimal  @db.Decimal(10, 2)
+  total_tax_amount Decimal  @default(0) @db.Decimal(10, 2) // Sum of all taxes
+  total_amount     Decimal  @db.Decimal(10, 2) // Final amount
+  created_at       DateTime @default(now())
 
   // Relations
   promotions  PricingSnapshotPromotion[]
   taxes       PricingSnapshotTax[]
   redemptions PromotionRedemption[]
-  order       Order?                     @relation("OrderToPricingSnapshots", name: "OrderToPricingSnapshots", fields: [order_id], references: [id])
+  order       Order                      @relation("OrderToPricingSnapshots", name: "OrderToPricingSnapshots", fields: [order_id], references: [id], onDelete: Restrict)
 
+  @@unique([order_id])
   @@map("pricing_snapshots")
 }
 
 model PricingSnapshotTax {
-  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  snapshot_id  String      @db.Uuid
-  tax_id       String      @db.Uuid
-  tax_name     String      @db.VarChar(100) // Snapshot of taxes name
-  tax_type     TaxType
-  rate_type    TaxRateType
-  charge_rate  Decimal     @db.Decimal(10, 4) // Snapshot of rate
-  taxable_base Decimal     @db.Decimal(10, 2) // What the taxes is calculated on
-  quantity     Int? // For PER_UNIT taxes
-  tax_amount   Decimal     @db.Decimal(10, 2) // Calculated taxes amount
+  id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  snapshot_id   String      @db.Uuid
+  order_item_id String?     @db.Uuid
+  tax_config_id String      @db.Uuid
+  tax_name      String      @db.VarChar(100)
+  tax_type      TaxType
+  rate_type     TaxRateType
+  charge_rate   Decimal     @db.Decimal(10, 4)
+  taxable_base  Decimal     @db.Decimal(10, 2)
+  quantity      Int?
+  tax_amount    Decimal     @db.Decimal(10, 2)
 
   // Relations
+  // Once the execute in PricingSnapshot is deleted, the associated tax records must be deleted.
   snapshot PricingSnapshot @relation(fields: [snapshot_id], references: [id], onDelete: Cascade)
-  tax      TaxConfig       @relation(fields: [tax_id], references: [id])
 
+  @@unique([snapshot_id, order_item_id, tax_config_id])
   @@index([snapshot_id])
-  @@index([tax_id])
+  @@index([tax_config_id])
+  @@index([order_item_id])
   @@map("pricing_snapshot_taxes")
 }
 
@@ -530,6 +527,11 @@ enum TableSessionStatus {
   CANCELLED
 }
 
+enum TableSessionType {
+  GUEST
+  STAFF
+}
+
 model Floor {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name       String   @db.VarChar(50)
@@ -564,16 +566,18 @@ model Zone {
 }
 
 model Table {
-  id         String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  zone_id    String?     @db.Uuid
-  name       String      @db.VarChar(100)
-  capacity   Int         @db.SmallInt
-  status     TableStatus @default(AVAILABLE)
-  pos_x      Int?        @db.SmallInt // X coordinate for layout
-  pos_y      Int?        @db.SmallInt // Y coordinate for layout
-  is_active  Boolean     @default(true)
-  created_at DateTime    @default(now())
-  updated_at DateTime    @default(now()) @updatedAt
+  id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  zone_id       String?     @db.Uuid
+  name          String      @db.VarChar(100)
+  hardware_id   String      @unique // The Id of the physical device associated with the table
+  current_token String?     @db.VarChar(9) // Token will be reset once the session is completed or cancelled
+  capacity      Int         @db.SmallInt
+  status        TableStatus @default(AVAILABLE)
+  pos_x         Int?        @db.SmallInt // X coordinate for layout
+  pos_y         Int?        @db.SmallInt // Y coordinate for layout
+  is_active     Boolean     @default(true)
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @default(now()) @updatedAt
 
   // Relations
   orders   Order[]
@@ -588,19 +592,20 @@ model Table {
 }
 
 model TableSession {
-  id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  table_id   String  @db.Uuid
-  created_by String? @db.Uuid
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  table_id String  @db.Uuid
+  user_id  String? @db.Uuid // Applicable for user sessions
 
-  session_token      String             @db.VarChar(512)
-  device_fingerprint String             @db.VarChar(1024)
-  status             TableSessionStatus @default(ACTIVE)
-  start_at           DateTime           @default(now()) // When the customer entered
-  end_at             DateTime? // When the customer left
-  expires_at         DateTime // When the session token expires
+  session_token      String?            @db.VarChar(512) //  Unique token for guest sessions without accounts
+  device_fingerprint String?            @db.VarChar(1024) // Nullable if user session with user_id
+  status             TableSessionStatus @default(ACTIVE) // ACTIVE, COMPLETED, CANCELLED
+  session_type       TableSessionType   @default(GUEST) // Distinguish between guest and user sessions
+  start_at           DateTime           @default(now()) // When the customer entered the restaurant
+  end_at             DateTime? // When the customer left the restaurant
+  expires_at         DateTime? // When the session token expires
 
   // Relations
-  user                       User?                       @relation(fields: [created_by], references: [id], onDelete: Restrict)
+  user                       User?                       @relation(fields: [user_id], references: [id], onDelete: Restrict)
   table                      Table                       @relation(fields: [table_id], references: [id], onDelete: Restrict)
   orders                     Order[]
   sessionBehaviorLogs        SessionBehaviorLog[]
@@ -613,7 +618,7 @@ model TableSession {
   @@unique([session_token])
   @@index([session_token])
   @@index([table_id])
-  @@index([created_by])
+  @@index([user_id])
   @@index([status])
   @@index([start_at, end_at])
   @@index([expires_at])
@@ -626,9 +631,9 @@ model TableSession {
 
 enum OrderStatus {
   PENDING // Waiting for confirmation
-  PREPARING // If any item is being prepared
+  PREPARING // If any orderItem is being prepared
   READY // All items are ready for serving
-  SERVING // If any item is being served
+  SERVING // If any orderItem is being served
   SERVED // All items served
   COMPLETED // Payment done and order closed
   CANCELLED // Order cancelled, all items cancelled as well
@@ -640,14 +645,14 @@ enum OrderItemStatus {
   DONE // Ready for serving
   SERVING // On the way
   SERVED // Delivered to customer
-  CANCELLED // Cancelled item
+  CANCELLED // Cancelled orderItem
 }
 
 model Order {
-  id         String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  created_by String @db.Uuid
-  table_id   String @db.Uuid
-  session_id String @db.Uuid
+  id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_by String? @db.Uuid
+  table_id   String  @db.Uuid
+  session_id String  @db.Uuid
 
   status          OrderStatus
   note            String?     @db.Text
@@ -662,7 +667,7 @@ model Order {
   orderItems       OrderItem[]
   pricingSnapshots PricingSnapshot[]
   promotions       PromotionRedemption[]
-  user             User                  @relation(fields: [created_by], references: [id])
+  user             User?                 @relation(fields: [created_by], references: [id])
   table            Table?                @relation(fields: [table_id], references: [id])
   session          TableSession?         @relation(fields: [session_id], references: [id])
 
@@ -741,9 +746,7 @@ model TaxConfig {
   updated_at  DateTime    @default(now()) @updatedAt
 
   // Relations
-  orderTaxes           OrderTax[]
-  entityTaxConfigs     EntityTaxConfig[]
-  pricingSnapshotTaxes PricingSnapshotTax[]
+  entityTaxConfigs EntityTaxConfig[]
 
   @@index([type])
   @@index([is_active])
@@ -754,23 +757,25 @@ model TaxConfig {
 
 model OrderTax {
   id            String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tax_id        String  @db.Uuid
   order_id      String  @db.Uuid
   order_item_id String? @db.Uuid // null when it applies to entire order
+  tax_config_id String  @db.Uuid // Audit-only — no FK relation; TaxConfig is a live table
 
-  tax_name     String  @db.VarChar(100)
-  tax_rate     Decimal @db.Decimal(10, 4) // Support percentages like 0.1000 (10%)
-  taxable_base Decimal @db.Decimal(10, 2)
-  tax_amount   Decimal @db.Decimal(10, 2)
+  tax_name     String      @db.VarChar(100) // Snapshotted at payment time
+  tax_type     TaxType // Snapshotted at payment time
+  rate_type    TaxRateType // Snapshotted at payment time
+  charge_rate  Decimal     @db.Decimal(10, 4) // Snapshotted at payment time
+  taxable_base Decimal     @db.Decimal(10, 2)
+  tax_amount   Decimal     @db.Decimal(10, 2)
   quantity     Int? // For PER_UNIT taxes (e.g. 3 bottles)
 
   order      Order      @relation(fields: [order_id], references: [id])
-  tax        TaxConfig  @relation(fields: [tax_id], references: [id])
   order_item OrderItem? @relation(fields: [order_item_id], references: [id])
 
+  @@unique([order_id, order_item_id, tax_config_id])
   @@index([order_id])
-  @@index([tax_id])
   @@index([order_item_id])
+  @@index([tax_config_id])
   @@map("order_taxes")
 }
 
@@ -840,10 +845,10 @@ model PaymentMethod {
 }
 
 model Payment {
-  id         String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  method_id  String @db.Uuid
-  order_id   String @db.Uuid
-  created_by String @db.Uuid
+  id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  method_id  String  @db.Uuid
+  order_id   String  @db.Uuid
+  created_by String? @db.Uuid
 
   amount           Decimal       @db.Decimal(10, 2)
   fee_amount       Decimal?      @db.Decimal(10, 2)
@@ -858,7 +863,7 @@ model Payment {
 
   order  Order         @relation(fields: [order_id], references: [id])
   method PaymentMethod @relation(fields: [method_id], references: [id])
-  user   User          @relation(fields: [created_by], references: [id])
+  user   User?         @relation(fields: [created_by], references: [id])
 
   @@index([order_id])
   @@index([method_id])
@@ -915,13 +920,12 @@ model Cuisine {
 
   // Relations
   product_attributes ProductAttribute[]
-  sessionPreferences SessionPreference[]
 
   @@unique([name])
   @@map("cuisines")
 }
 
-// Product attributes for Content-based Filtering
+// Product attrs for Content-based Filtering
 model ProductAttribute {
   id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   cuisine_id String? @db.Uuid
@@ -954,19 +958,18 @@ model SessionPreference {
   session_id String @db.Uuid
 
   // Preference scores (0-1) - learned in the current session
-  favoriteCuisines       Cuisine[] // Top cuisine entities in session
   favorite_meal_sessions MealSession[] // Top meal entities in session
   favorite_taste_profile Taste[] // Preferred tastes
   dietary_restrictions   DietaryTag[] // Dietary needs (if detected)
+  favorite_cuisines      String[]      @db.Uuid // Top cuisine entities in session
   avg_spice_preference   Decimal?      @db.Decimal(3, 2) // Avg spice level (0-5)
   avg_price_range        Decimal?      @db.Decimal(10, 2) // Avg spending in session
 
   // Behavioral patterns trong session
   order_count     Int       @default(0)
   last_order_date DateTime?
-
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @default(now()) @updatedAt
 
   // Relations
   session TableSession @relation(fields: [session_id], references: [id], onDelete: Cascade)

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ProductRepository } from '../repositories';
+import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 import { ProductQueryParams } from '../interfaces';
 import { Page } from '../../../common/interfaces';
 import { Product } from '../entities';
