@@ -1,4 +1,4 @@
-import { TableSession } from '../../models/table-sessions/types';
+import { TableSession } from '../../models/table-sessions/shared/entities';
 import { Product } from '../../models/products';
 
 export class SessionProductInteraction {

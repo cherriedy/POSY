@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { ProductAttributeRepository, ProductRepository } from '../repositories';
+import { ProductAttributeRepository } from 'src/models/products/repositories/product-attribute-repository.abstract';
+import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 import { ProductAttribute } from '../entities';
 import { ProductAttributesUpsertPayload } from '../interfaces';
 import { ProductNotFoundException } from '../exceptions';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UpsertAttributesService {
   constructor(
     private readonly productAttributeRepository: ProductAttributeRepository,
     private readonly productRepository: ProductRepository,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   /**
@@ -34,6 +37,9 @@ export class UpsertAttributesService {
 
       updatePayload.productId = payload.productId;
     }
+
+    // Non-blocking event emission to trigger recommendation recalculation
+    this.eventEmitter.emit('product.updated', { id: payload.productId });
 
     return await this.productAttributeRepository.upsert(updatePayload);
   }

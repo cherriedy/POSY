@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ProductAttributeRepository, ProductRepository } from '../repositories';
+import { ProductAttributeRepository } from 'src/models/products/repositories/product-attribute-repository.abstract';
+import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 import { ProductAttribute } from '../entities';
 import { ProductNotFoundException } from '../exceptions';
 

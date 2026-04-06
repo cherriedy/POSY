@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { ProductRepository } from '../repositories';
+import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 import { Product } from '../entities';
 import { getSlug } from '../../../common/utilities/string.util';
 import { ProductNotFoundException } from '../exceptions';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UpdateProductService {
-  constructor(private readonly productRepository: ProductRepository) {}
+  constructor(
+    private readonly productRepository: ProductRepository,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   /**
    * Updates an existing product in the repository.
@@ -26,6 +30,9 @@ export class UpdateProductService {
     if (product.name && !product.slug) {
       product.slug = getSlug(product.name);
     }
+
+    // Non-blocking event emission to trigger recommendation recalculation after product update
+    this.eventEmitter.emit('product.updated', { id });
 
     return await this.productRepository.update(id, product);
   }

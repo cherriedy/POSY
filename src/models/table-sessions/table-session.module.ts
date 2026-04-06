@@ -1,16 +1,18 @@
 import { Global, Module } from '@nestjs/common';
-import { TableSessionController } from './table-session.controller';
-import { PrismaModule } from 'src/providers/prisma/prisma.module';
-import { StartSessionModule } from './start-session/start-session.module';
-import { EndSessionModule } from './end-session/end-session.module';
+import { JwtModule } from '@nestjs/jwt';
+import { AppConfigModule, JwtConfigModule } from '../../config';
+import { PrismaModule } from '../../providers/prisma/prisma.module';
+import { EndSessionModule } from './features/end-session/end-session.module';
 import {
+  TableSessionGuard,
+  SessionPreferenceRepository,
+  SessionPreferenceRepositoryImpl,
   TableSessionRepository,
   TableSessionRepositoryImpl,
-} from './repositories';
+} from './shared';
+import { StartSessionModule } from './features';
 import { TableSessionConfig } from './table-session.config';
-import { SessionGuard } from './guards';
-import { JwtModule } from '@nestjs/jwt';
-import { AppConfigModule, JwtConfigModule } from 'src/config';
+import { TableSessionController } from './table-session.controller';
 
 @Global()
 @Module({
@@ -19,7 +21,11 @@ import { AppConfigModule, JwtConfigModule } from 'src/config';
       provide: TableSessionRepository,
       useClass: TableSessionRepositoryImpl,
     },
-    SessionGuard,
+    {
+      provide: SessionPreferenceRepository,
+      useClass: SessionPreferenceRepositoryImpl,
+    },
+    TableSessionGuard,
     TableSessionConfig,
   ],
   imports: [
@@ -31,6 +37,11 @@ import { AppConfigModule, JwtConfigModule } from 'src/config';
     JwtConfigModule,
   ],
   controllers: [TableSessionController],
-  exports: [TableSessionRepository, SessionGuard, TableSessionConfig],
+  exports: [
+    TableSessionRepository,
+    SessionPreferenceRepository,
+    TableSessionGuard,
+    TableSessionConfig,
+  ],
 })
 export class TableSessionModule {}

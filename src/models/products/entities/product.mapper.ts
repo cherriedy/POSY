@@ -1,7 +1,7 @@
 import { Prisma, Product as PrismaProduct } from '@prisma/client';
 import { Product as DomainProduct } from './product.class';
 import { ProductDiscountType } from '../enums';
-import { CategoryMapper } from '../../categories/types';
+import { CategoryMapper } from '../../categories/shared/entities';
 
 export class ProductMapper {
   static toDomain(this: void, prisma: PrismaProduct): DomainProduct {

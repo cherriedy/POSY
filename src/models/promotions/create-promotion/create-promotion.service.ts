@@ -1,15 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { Promotion, PromotionCategory, PromotionProduct } from '../types';
-import {
-  PromotionCategoryRepository,
-  PromotionProductRepository,
-  PromotionRepository,
-} from '../repositories';
+import { Injectable } from '@nestjs/common';
+import { Promotion } from '../types';
+import { PromotionRepository } from '../repositories';
 import { PromotionApplicability } from '../enums';
-import { CategoryRepository } from '../../categories/repositories';
-import { ProductRepository } from '../../products/repositories';
-import { FloorRepository } from 'src/models/floors/repositories';
-import { ZoneRepository } from 'src/models/zones/repositories';
 
 @Injectable()
 export class CreatePromotionService {

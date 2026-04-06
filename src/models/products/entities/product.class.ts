@@ -1,5 +1,5 @@
 import { ProductDiscountType } from '../enums';
-import { Category } from '../../categories/types';
+import { Category } from '../../categories/shared/entities';
 
 export class Product {
   constructor(

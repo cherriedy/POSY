@@ -1,5 +1,5 @@
 import { PaymentStatus } from '../enums';
-import { Order } from '../../orders/types/order.class';
+import { Order } from '../../orders/shared/entities/order';
 import { PaymentMethod } from './payment-method.class';
 import { User } from '../../users/types/user.class';
 
@@ -8,7 +8,7 @@ export class Payment {
     public id: string | null,
     public methodId: string,
     public orderId: string,
-    public createdBy: string,
+    public createdBy: string | null,
     public amount: number,
     public feeAmount: number | null,
     public referenceNumber: string | null,

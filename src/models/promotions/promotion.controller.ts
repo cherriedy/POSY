@@ -44,7 +44,7 @@ import { PromotionUnusableException } from './exceptions/PromotionUnusableExcept
 import {
   CategoriesNotFoundException,
   CategoryNotFoundException,
-} from '../categories/exceptions';
+} from '../categories/shared/exceptions';
 import {
   ApiBearerAuth,
   ApiTags,

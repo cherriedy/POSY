@@ -18,7 +18,7 @@ import {
   IngredientCreateUpdateDto,
   IngredientUpdateRequestDto,
   IngredientQueryParamsDto,
-} from '.';
+} from './index';
 import {
   DuplicateEntryException,
   ForeignKeyViolationException,

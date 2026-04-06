@@ -2,7 +2,7 @@ import { PromotionRedemption as DomainPromotionRedemption } from './promotion-re
 import { PromotionRedemption as PrismaPromotionRedemption } from '@prisma/client';
 import { PromotionMapper } from './promotion.mapper';
 import { PricingSnapshotMapper } from './pricing-snapshot.mapper';
-import { OrderMapper } from '../../orders/types';
+import { OrderMapper } from '../../orders/shared/entities';
 
 export class PromotionRedemptionMapper {
   static toDomain(
