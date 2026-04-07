@@ -18,6 +18,12 @@ export abstract class TableRepository implements BaseRepository<Table> {
   abstract findById(id: string): Promise<Table | null>;
 
   /**
+   * Finds all tables that are currently idle (not occupied).
+   * @returns A promise that resolves to an array of idle tables.
+   */
+  abstract findIdleTables(): Promise<Table[]>;
+
+  /**
    * Deletes a table by its unique identifier.
    * @param id - The unique identifier of the table to delete.
    * @returns A promise that resolves when the table is deleted.

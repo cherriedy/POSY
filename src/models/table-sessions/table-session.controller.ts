@@ -53,8 +53,7 @@ export class TableSessionController {
       throw new BadRequestException('Unable to determine client IP address');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const userAgent = req['device'];
+    const userAgent = req['device'] as string;
     try {
       assertDevice(userAgent);
     } catch (e) {
@@ -67,6 +66,7 @@ export class TableSessionController {
       userAgent,
       req.ip,
       dto.tableId,
+      dto.tableToken,
     );
     if (!session) {
       throw new BadRequestException(

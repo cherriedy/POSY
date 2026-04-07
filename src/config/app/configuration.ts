@@ -8,4 +8,5 @@ export default registerAs('app', () => ({
   port: process.env.APP_PORT,
   url: process.env.APP_URL,
   upload_dir: process.env.APP_UPLOAD_DIR,
+  frontend_url: process.env.APP_FRONTEND_URL,
 }));

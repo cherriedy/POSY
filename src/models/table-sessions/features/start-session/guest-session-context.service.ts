@@ -11,7 +11,10 @@ import {
 } from '../../shared';
 import { TableRepository } from 'src/models/tables/repositories';
 import { TableSessionConfig } from '../../table-session.config';
-import { TableNotFoundException } from 'src/models/tables/exceptions';
+import {
+  TableNotFoundException,
+  TableTokenInvalidException,
+} from 'src/models/tables/exceptions';
 
 @Injectable()
 export class GuestSessionContextService {
@@ -26,11 +29,17 @@ export class GuestSessionContextService {
     userAgent: string,
     ipAddress: string,
     tableId: string,
+    tableToken: string,
   ): Promise<TableSession | null> {
     // Verify table exists and is available
     const table = await this.tableRepository.findById(tableId);
     if (!table) throw new TableNotFoundException(tableId);
     if (!table.isActive) throw new UnavailableTableException(tableId);
+
+    // If table has no current token or tokens don't match, reject
+    if (!table.currentToken || table.currentToken !== tableToken) {
+      throw new TableTokenInvalidException(tableId);
+    }
 
     // Generate device fingerprint from request
     const fingerprint = DeviceFingerprintUtility.generate(userAgent, ipAddress);

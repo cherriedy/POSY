@@ -1,4 +1,4 @@
-import { IsUUID } from 'class-validator';
+import { IsString, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class StartSessionRequestDto {
@@ -8,4 +8,11 @@ export class StartSessionRequestDto {
   })
   @IsUUID()
   tableId: string;
+
+  @ApiProperty({
+    description: 'Table token from the scanned QR code',
+    example: 'abc123def',
+  })
+  @IsString()
+  tableToken: string;
 }

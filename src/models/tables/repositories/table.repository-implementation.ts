@@ -24,7 +24,6 @@ export class TableRepositoryImpl implements TableRepository {
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 
   constructor(private readonly prismaService: PrismaService) {}
-
   /**
    * Creates a new table in the database.
    * @param entity - The table entity to create.
@@ -93,6 +92,19 @@ export class TableRepositoryImpl implements TableRepository {
     });
 
     return prismaTable ? TableMapper.toDomain(prismaTable) : null;
+  }
+
+  /**
+   * Finds all active tables that currently have no sessions (idle tables).
+   *
+   * @returns A promise that resolves to an array of idle tables.
+   */
+  async findIdleTables(): Promise<Table[]> {
+    const tables = await this.prismaService.table.findMany({
+      where: { is_active: true, sessions: { none: {} } },
+      include: { zone: { include: { floor: true } } },
+    });
+    return tables.map((t) => TableMapper.toDomain(t));
   }
 
   /**
