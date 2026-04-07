@@ -7,6 +7,7 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { QrService } from './qr.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
@@ -19,7 +20,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { TableNotFoundException } from '../models/tables/exceptions';
+import { RoleGuard } from '../authorization/guards/role.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from '../common/decorators';
+import { Role } from '../common/enums';
 
+@UseGuards(AuthGuard('jwt'), RoleGuard)
+@Roles(Role.ADMIN, Role.MANAGER)
 @ApiTags('QR')
 @Controller('qr')
 export class QrController {
