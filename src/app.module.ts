@@ -36,6 +36,7 @@ import { IngredientModule } from './models/ingredients';
 import { RecommendationModule } from './recommendation/recommendation.module';
 import { PythonConfigModule } from './config/python/config.module';
 import { MqttModule } from './providers/mqtt/mqtt.module';
+import { QrModule } from './qr/qr.module';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { MqttModule } from './providers/mqtt/mqtt.module';
     PythonConfigModule,
     RecommendationModule,
     MqttModule,
+    QrModule,
   ],
   providers: [
     // {

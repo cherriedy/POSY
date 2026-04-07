@@ -1,4 +1,9 @@
 export const tableConfig = {
+  qr: {
+    token: {
+      length: 9,
+    },
+  },
   name: {
     constraint: {
       minLength: 1,
