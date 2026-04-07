@@ -120,10 +120,10 @@ export class RecommendationService {
     topK: number = 5,
   ): Promise<Product[]> {
     try {
-      const url = `${this.baseUrl}/api/recommend/personalized`;
+      const url = `${this.baseUrl}/api/recommend/personalize`;
       const requestBody = {
         session_id: sessionId,
-        bucket_product_ids: productIds,
+        basket_product_ids: productIds,
         top_k: topK,
       };
 

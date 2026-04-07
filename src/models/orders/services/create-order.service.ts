@@ -13,9 +13,7 @@ import { OrderContextService } from '../shared/core/services/order-context.servi
 import { OrderRepository } from '../shared/repositories/order-repository.abstract';
 import { OrderItemRepository } from '../shared/repositories/order-item-repository.abstract';
 import { PricingSnapshotRepository } from '../shared/repositories/pricing-snapshot-repository.abstract';
-import { RecommendationService } from '../../../recommendation/recommendation.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { Product } from '../../products';
 
 @Injectable()
 export class CreateOrderService {
@@ -32,7 +30,6 @@ export class CreateOrderService {
     private readonly pricingSnapshotTaxRepository: PricingSnapshotTaxRepository,
     private readonly recordSessionPreferenceService: RecordPreferenceService,
     private readonly staffOrderGateway: StaffOrderGateway,
-    private readonly recommendationService: RecommendationService,
   ) {}
 
   /**
@@ -59,9 +56,7 @@ export class CreateOrderService {
    *    - Records session preferences based on the order items.
    *    - Emits the created order ID to the kitchen via WebSocket.
    */
-  async execute(
-    payload: CreateOrderPayload,
-  ): Promise<{ order: Order; recommendations: Product[] }> {
+  async execute(payload: CreateOrderPayload): Promise<Order> {
     const { table: tableContext, order: orderContext } = payload;
 
     this.assertHasItems(orderContext.items);
@@ -186,25 +181,7 @@ export class CreateOrderService {
       // Emit only the created order ID to staff and other roles
       this.staffOrderGateway.emitOrderCreated(orderId);
 
-      // Only generate personalized recommendations for guest-created sessions
-      // (i.e., when the session was not created by a staff member).
-      let recommendations: any[] = [];
-      if (!tableContext.session.createdBy) {
-        try {
-          recommendations =
-            await this.recommendationService.getPersonalizedRecommendations(
-              tableContext.session.id,
-              createdOrderItems.map((item) => item.productId),
-            );
-        } catch (error) {
-          this.logger.error(
-            `Failed to get recommendations for order ${orderId}`,
-            error instanceof Error ? error.stack : null,
-          );
-        }
-      }
-
-      return { order: finalOrder, recommendations };
+      return finalOrder;
     });
   }
 

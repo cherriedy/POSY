@@ -11,6 +11,7 @@ import {
 import { ProductNotFoundException } from '../exceptions';
 import { paginationConfig } from '../../../common/config';
 import {
+  ProductIncludeOptions,
   ProductOrderBy,
   ProductQueryFilter,
   ProductQueryParams,
@@ -96,12 +97,16 @@ export class ProductRepositoryImpl implements ProductRepository {
    * Finds a product by its unique identifier.
    *
    * @param {string} id - The unique identifier of the product to find.
+   * @param {ProductIncludeOptions} [include] - Optional relations to eagerly load.
    * @returns {Promise<Product | null>} A promise that resolves to the product domain object if found, or null otherwise.
    */
-  async findById(id: string): Promise<Product | null> {
+  async findById(
+    id: string,
+    include?: ProductIncludeOptions,
+  ): Promise<Product | null> {
     const product = await this.prismaService.product.findUnique({
       where: { id },
-      include: { category: true },
+      include: this.buildIncludeClause(include),
     });
     if (!product) return null;
     return ProductMapper.toDomain(product);
@@ -127,22 +132,22 @@ export class ProductRepositoryImpl implements ProductRepository {
    * Retrieves a paginated list of products based on query parameters.
    *
    * @param {ProductQueryParams} params - The query parameters for pagination, filtering, and sorting.
-   *   - page: The page number to retrieve (default is from config).
-   *   - pageSize: The number of items per page (default is from config).
-   *   - filter: Filtering options for products (see ProductQueryFilter).
-   *   - orderBy: Array of sorting options for specific fields and direction.
+   * @param {ProductIncludeOptions} [include] - Optional relations to eagerly load.
    * @returns {Promise<Page<Product>>} A promise that resolves to a paginated result containing products and pagination info.
    */
-  async getAllPaged(params: ProductQueryParams): Promise<Page<Product>> {
+  async getAllPaged(
+    params: ProductQueryParams,
+    include?: ProductIncludeOptions,
+  ): Promise<Page<Product>> {
     const { filter } = params;
 
     // Use MeiliSearch if there's a search query
     if (filter?.query) {
-      return this.searchWithMeiliSearch(params);
+      return this.searchWithMeiliSearch(params, include);
     }
 
     // Otherwise use Prisma for regular database queries
-    return this.searchWithPrisma(params);
+    return this.searchWithPrisma(params, include);
   }
 
   /**
@@ -150,6 +155,7 @@ export class ProductRepositoryImpl implements ProductRepository {
    */
   private async searchWithMeiliSearch(
     params: ProductQueryParams,
+    include?: ProductIncludeOptions,
   ): Promise<Page<Product>> {
     const {
       page = defaultPage,
@@ -191,7 +197,7 @@ export class ProductRepositoryImpl implements ProductRepository {
 
     const products = await this.prismaService.product.findMany({
       where: { id: { in: productIds } },
-      include: { category: true },
+      include: this.buildIncludeClause(include),
     });
 
     // Maintain the order from MeiliSearch results
@@ -214,6 +220,7 @@ export class ProductRepositoryImpl implements ProductRepository {
    */
   private async searchWithPrisma(
     params: ProductQueryParams,
+    include?: ProductIncludeOptions,
   ): Promise<Page<Product>> {
     const {
       page = defaultPage,
@@ -231,7 +238,7 @@ export class ProductRepositoryImpl implements ProductRepository {
         orderBy,
         skip: (page - 1) * pageSize,
         take: pageSize,
-        include: { category: true },
+        include: this.buildIncludeClause(include),
       }),
       this.prismaService.product.count({ where }),
     ]);
@@ -280,6 +287,24 @@ export class ProductRepositoryImpl implements ProductRepository {
     void this.meilisearchProductService.indexProduct(product);
 
     return product;
+  }
+
+  /**
+   * Builds the Prisma `include` object from a {@link ProductIncludeOptions} descriptor.
+   * `category` is always included since it is part of the core product shape.
+   */
+  private buildIncludeClause(
+    include?: ProductIncludeOptions,
+  ): Prisma.ProductInclude {
+    return {
+      category: true,
+      ...(include?.attributes && {
+        productAttribute: { include: { cuisine: true } },
+      }),
+      ...(include?.ingredients && {
+        productIngredients: { include: { ingredient: true } },
+      }),
+    };
   }
 
   /**

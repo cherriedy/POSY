@@ -15,3 +15,4 @@ export * from './orders.seed';
 export * from './order-items.seed';
 export * from './payment-methods.seed';
 export * from './completed-orders.seed';
+export * from './session-product-interactions.seed';

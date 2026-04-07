@@ -2,9 +2,13 @@ import { Prisma, Product as PrismaProduct } from '@prisma/client';
 import { Product as DomainProduct } from './product.class';
 import { ProductDiscountType } from '../enums';
 import { CategoryMapper } from '../../categories/shared/entities';
+import { ProductAttributeMapper } from './product-attribute.mapper';
+import { ProductIngredientMapper } from './product-ingredient.mapper';
 
 export class ProductMapper {
   static toDomain(this: void, prisma: PrismaProduct): DomainProduct {
+    const p = prisma as any; // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+
     return new DomainProduct(
       prisma.id,
       prisma.category_id,
@@ -26,10 +30,20 @@ export class ProductMapper {
       prisma.deleted_at,
       prisma.created_at,
       prisma.updated_at,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
+      p.category ? CategoryMapper.toDomain(p.category) : undefined,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      (prisma as any).category
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
-          CategoryMapper.toDomain((prisma as any).category)
+      p.productAttribute !== undefined
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          p.productAttribute
+          ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
+            ProductAttributeMapper.toDomain(p.productAttribute)
+          : null
+        : undefined,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      p.productIngredients !== undefined
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          (p.productIngredients as any[]).map(ProductIngredientMapper.toDomain)
         : undefined,
     );
   }

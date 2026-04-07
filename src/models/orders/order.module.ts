@@ -22,6 +22,7 @@ import { OrderItemRepositoryImpl } from './shared/repositories/order-item-reposi
 import { PricingSnapshotRepository } from './shared/repositories/pricing-snapshot-repository.abstract';
 import { PricingSnapshotRepositoryImpl } from './shared/repositories/pricing-snapshot-repository';
 import { RecommendationModule } from '../../recommendation/recommendation.module';
+import { OrderFacadeService } from './services/order-facade.service';
 
 @Global()
 @Module({
@@ -47,6 +48,7 @@ import { RecommendationModule } from '../../recommendation/recommendation.module
     UpdateOrderItemStatusService,
     GetReceiptService,
     ProcessPaymentService,
+    OrderFacadeService,
   ],
   imports: [
     JwtModule,

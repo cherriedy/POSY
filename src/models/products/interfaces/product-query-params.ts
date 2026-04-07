@@ -48,6 +48,17 @@ export interface ProductQueryFilter {
 }
 
 /**
+ * Controls which optional relations are eagerly loaded alongside a product.
+ * Pass only the relations you actually need to keep queries lean.
+ */
+export interface ProductIncludeOptions {
+  /** Include the product's taste/dietary/cuisine attributes. */
+  attributes?: boolean;
+  /** Include the product's ingredient list (with ingredient details). */
+  ingredients?: boolean;
+}
+
+/**
  * Parameters for querying products with pagination, filtering, and sorting.
  *
  * @property {number} [page] - The page number to retrieve (from PaginationParams).

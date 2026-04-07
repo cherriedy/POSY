@@ -82,7 +82,7 @@ export class TableSessionController {
       secure: this.tableSessionConfig.cookie.secure,
       sameSite: this.tableSessionConfig.cookie.sameSite,
       path: this.tableSessionConfig.cookie.path,
-      maxAge: this.tableSessionConfig.jwt.expiresIn,
+      maxAge: this.tableSessionConfig.jwt.expiresIn * 1000, // expiresIn is in seconds; maxAge expects milliseconds
     });
 
     return {
@@ -169,7 +169,7 @@ export class TableSessionController {
         secure: this.tableSessionConfig.cookie.secure,
         sameSite: this.tableSessionConfig.cookie.sameSite,
         path: this.tableSessionConfig.cookie.path,
-        maxAge: this.tableSessionConfig.jwt.expiresIn,
+        maxAge: this.tableSessionConfig.jwt.expiresIn * 1000, // expiresIn is in seconds; maxAge expects milliseconds
       });
       // Return HTML result (no emoji)
       return res.send(`
