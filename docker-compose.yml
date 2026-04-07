@@ -44,6 +44,15 @@ services:
     command: redis-server --appendonly yes
     restart: unless-stopped
 
+  mqtt-broker:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto_server
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+
 volumes:
   pgdata:
   redisdata:

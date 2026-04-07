@@ -38,6 +38,7 @@ export class QrService {
     // Generate the URL for the QR code
     const frontendUrl = this.appConfigService.frontendUrl;
     const qrUrl = `${frontendUrl}/scan?tableId=${table.id}&token=${token}`;
+    // const qrUrl = `192.168.1.101:3001/session/test-scan?tableId=${table.id}&token=${token}`;
 
     // Publish the new QR code URL to the MQTT topic for this table
     const topic = `r/tables/${table.hardwareId}/qr`;
