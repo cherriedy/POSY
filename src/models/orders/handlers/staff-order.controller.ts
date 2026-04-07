@@ -145,7 +145,7 @@ export class StaffOrderController {
       );
       const sessionId = staffTableContext.sessionId;
 
-      const { order } = await this.createOrderService.execute(
+      const order = await this.createOrderService.execute(
         toCreateOrderPayload(dto.items, tableId, sessionId, userId, dto.note),
       );
 

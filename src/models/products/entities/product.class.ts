@@ -1,5 +1,7 @@
 import { ProductDiscountType } from '../enums';
 import { Category } from '../../categories/shared/entities';
+import { ProductAttribute } from './product-attribute.class';
+import { ProductIngredient } from './product-ingredient.class';
 
 export class Product {
   constructor(
@@ -20,5 +22,7 @@ export class Product {
     public createdAt: Date | null,
     public updatedAt: Date | null,
     public category: Category | undefined,
+    public attributes?: ProductAttribute | null,
+    public ingredients?: ProductIngredient[] | null,
   ) {}
 }

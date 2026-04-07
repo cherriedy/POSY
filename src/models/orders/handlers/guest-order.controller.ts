@@ -43,12 +43,9 @@ import {
 import { ProductNotFoundException } from '../../products';
 import { TableNotFoundException } from '../../tables/exceptions';
 import { OrderModificationForbiddenException } from '../shared';
-import {
-  CreateOrderService,
-  toPayload as toCreateOrderPayload,
-} from '../services/create-order.service';
-import { GetOrdersService } from '../services/get-orders.service';
+import { toPayload as toCreateOrderPayload } from '../services/create-order.service';
 import { UpdateOrderService } from '../services/update-order.service';
+import { OrderFacadeService } from '../services/order-facade.service';
 
 @ApiTags('Orders (Guest)')
 @ApiExtraModels(OrderPreviewResponseDto, OrderDetailedResponseDto)
@@ -60,9 +57,8 @@ export class GuestOrderController {
   private readonly logger: LoggerService;
 
   constructor(
-    private readonly createOrderService: CreateOrderService,
-    private readonly getOrdersService: GetOrdersService,
     private readonly updateOrderService: UpdateOrderService,
+    private readonly orderFacadeService: OrderFacadeService,
   ) {}
 
   @Get()
@@ -77,11 +73,11 @@ export class GuestOrderController {
   @ApiNotFoundResponse({ description: 'Order not found' })
   async getById(@CurrentSession() tableSession: TableSession) {
     try {
-      const { tableId: id } = tableSession;
-      const order = await this.getOrdersService.getById(id);
-      return plainToInstance(OrderDetailedResponseDto, order, {
-        excludeExtraneousValues: true,
-      });
+      const { tableId, id: sessionId } = tableSession;
+      return await this.orderFacadeService.getOrderWithRecommendations(
+        tableId,
+        sessionId!,
+      );
     } catch (e) {
       if (e instanceof OrderNotFoundException) {
         throw new BadRequestException(e.message);
@@ -113,13 +109,9 @@ export class GuestOrderController {
   ) {
     try {
       const { tableId, id: sessionId } = tableSession;
-      const { order, recommendations } = await this.createOrderService.execute(
+      return await this.orderFacadeService.createOrderWithRecommendations(
         toCreateOrderPayload(dto.items, tableId, sessionId!, null, dto.note),
       );
-      const orderDto = plainToInstance(OrderDetailedResponseDto, order, {
-        excludeExtraneousValues: true,
-      });
-      return { ...orderDto, recommendations };
     } catch (e) {
       if (
         e instanceof DuplicateEntryException ||

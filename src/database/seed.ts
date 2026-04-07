@@ -18,6 +18,7 @@ import {
   seedOrderItems,
   seedPaymentMethods,
   seedCompletedOrders,
+  seedSessionProductInteractions,
 } from './seeds';
 
 const connectionString = process.env.DATABASE_URL;
@@ -63,6 +64,8 @@ async function main() {
     await seedOrderItems(prisma);
     console.log('Seeding completed orders...');
     await seedCompletedOrders(prisma);
+    console.log('Seeding session product interactions...');
+    await seedSessionProductInteractions(prisma);
     console.log('All seeds completed successfully!');
   } catch (error) {
     console.error('Error during seeding:', error);

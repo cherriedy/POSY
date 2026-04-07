@@ -10,6 +10,7 @@ import { GetProductIngredientsModule } from './get-product-ingredients';
 import { RemoveProductIngredientModule } from './remove-product-ingredient';
 import { UpsertIngredientsModule } from './upsert-ingredients';
 import { ProductRepositoryModule } from './repositories/product-repository.module';
+import { PublicProductController } from './public-product.controller';
 
 @Global()
 @Module({
@@ -26,7 +27,7 @@ import { ProductRepositoryModule } from './repositories/product-repository.modul
     UpsertIngredientsModule,
     ProductRepositoryModule,
   ],
-  controllers: [ProductController],
+  controllers: [ProductController, PublicProductController],
   exports: [ProductRepositoryModule],
 })
 export class ProductModule {}
