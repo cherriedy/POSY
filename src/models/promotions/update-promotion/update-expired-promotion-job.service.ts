@@ -15,6 +15,6 @@ export class UpdateExpiredPromotionJobService {
     const now = new Date();
     const affected =
       await this.promotionRepository.updateExpiredPromotions(now);
-    this.logger.notice(`Expired promotions updated: ${affected} promotions`);
+    this.logger.debug(`Expired promotions updated: ${affected} promotions`);
   }
 }

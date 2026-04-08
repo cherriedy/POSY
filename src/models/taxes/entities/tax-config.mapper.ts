@@ -1,4 +1,4 @@
-import { TaxConfig as DomainTaxConfig } from './tax-config.class';
+import { TaxConfig as DomainTaxConfig } from './tax-config';
 import { Prisma, TaxConfig as PrismaTaxConfig } from '@prisma/client';
 import {
   TaxType as DomainTaxType,
@@ -23,9 +23,6 @@ export class TaxConfigMapper {
       prisma.deleted_at ?? null,
       prisma.created_at,
       prisma.updated_at,
-      // Relations
-      null, // orderTaxes - not loaded by default
-      null, // pricingSnapshotTaxes - not loaded by default
     );
   }
 

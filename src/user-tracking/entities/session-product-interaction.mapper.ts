@@ -5,7 +5,7 @@ import {
 import { SessionProductInteraction as DomainSessionProductInteraction } from './session-product-interaction';
 import { MissingRequireFieldsException } from '../../common/exceptions';
 import { ProductMapper } from '../../models/products';
-import { TableSessionMapper } from '../../models/table-sessions/types';
+import { TableSessionMapper } from '../../models/table-sessions/shared/entities';
 
 export class SessionProductInteractionMapper {
   static toDomain(

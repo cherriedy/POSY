@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayMaxSize, ArrayMinSize, ArrayNotEmpty, IsArray, IsUUID } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  ArrayNotEmpty,
+  IsArray,
+  IsUUID,
+} from 'class-validator';
 
 export class ProductIngredientBulkDeleteRequestDto {
   @ApiProperty({

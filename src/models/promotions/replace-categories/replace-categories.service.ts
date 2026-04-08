@@ -8,8 +8,8 @@ import { PromotionApplicability } from '../enums';
 import { PromotionNotFoundException } from '../exceptions';
 import { PromotionUnusableException } from '../exceptions/PromotionUnusableException';
 import { DuplicateEntryException } from 'src/common/exceptions';
-import { CategoriesNotFoundException } from 'src/models/categories/exceptions';
-import { CategoryRepository } from 'src/models/categories/repositories';
+import { CategoriesNotFoundException } from 'src/models/categories/shared/exceptions';
+import { CategoryRepository } from 'src/models/categories/shared/repositories';
 
 @Injectable()
 export class ReplacePromotionCategoriesService {

@@ -6,7 +6,7 @@ services:
     #      POSTGRES_USER: pos
     #      POSTGRES_PASSWORD: 12345
     #      POSTGRES_DB: posdb
-    image: postgres:16
+    image: postgres:17
     env_file:
       - .env
 
@@ -43,6 +43,15 @@ services:
       - redisdata:/data
     command: redis-server --appendonly yes
     restart: unless-stopped
+
+  mqtt-broker:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto_server
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
 
 volumes:
   pgdata:

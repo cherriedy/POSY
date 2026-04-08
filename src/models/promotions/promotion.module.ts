@@ -7,6 +7,8 @@ import {
   PromotionProductRepositoryImpl,
   PromotionRepository,
   PromotionRepositoryImpl,
+  PromotionRedemptionRepository,
+  PromotionRedemptionRepositoryImpl,
 } from './repositories';
 import { CreatePromotionModule } from './create-promotion/create-promotion.module';
 import { UpdatePromotionModule } from './update-promotion/update-promotion.module';
@@ -32,6 +34,10 @@ import { ReplacePromotionProductModule } from './replace-products/replace-produc
       provide: PromotionProductRepository,
       useClass: PromotionProductRepositoryImpl,
     },
+    {
+      provide: PromotionRedemptionRepository,
+      useClass: PromotionRedemptionRepositoryImpl,
+    },
   ],
   imports: [
     CreatePromotionModule,
@@ -48,6 +54,7 @@ import { ReplacePromotionProductModule } from './replace-products/replace-produc
     PromotionRepository,
     PromotionCategoryRepository,
     PromotionProductRepository,
+    PromotionRedemptionRepository,
   ],
 })
 export class PromotionModule {}

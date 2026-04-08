@@ -10,6 +10,8 @@ export class TableMapper {
       prismaTable.id,
       prismaTable.zone_id,
       prismaTable.name,
+      prismaTable.hardware_id,
+      prismaTable.current_token,
       prismaTable.capacity,
       prismaTable.status as TableStatus,
       prismaTable.pos_x,
@@ -36,6 +38,8 @@ export class TableMapper {
 
     return {
       name: domainTable.name,
+      hardware_id: domainTable.hardwareId,
+      current_token: domainTable.currentToken,
       zone_id: domainTable.zoneId ?? null,
       capacity: domainTable.capacity,
       status: domainTable.status,

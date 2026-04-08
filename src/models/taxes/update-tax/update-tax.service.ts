@@ -38,8 +38,6 @@ export class UpdateTaxService {
       existingTax.deletedAt,
       existingTax.createdAt,
       new Date(),
-      existingTax.orderTaxes,
-      existingTax.pricingSnapshotTaxes,
     );
 
     return await this.taxRepository.update(id, updatedTax);

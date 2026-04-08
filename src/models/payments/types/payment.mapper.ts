@@ -1,7 +1,7 @@
 import { Payment as PrismaPayment, Prisma } from '@prisma/client';
 import { Payment as DomainPayment } from './payment.class';
 import { PaymentStatus as DomainPaymentStatus } from '../enums';
-import { OrderMapper } from '../../orders/types';
+import { OrderMapper } from '../../orders/shared/entities';
 import { UserMapper } from '../../users/types/user.mapper';
 import { PaymentMethodMapper } from './payment-method.mapper';
 
@@ -32,7 +32,7 @@ export class PaymentMapper {
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
           OrderMapper.toDomain((prisma as any).order)
         : null,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (prisma as any).method
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           PaymentMethodMapper.toDomain((prisma as any).method)

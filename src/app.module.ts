@@ -1,5 +1,5 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
-import { CategoryModule } from './models/categories/category.module';
+import { CategoryModule } from './models/categories';
 import { CuisineModule } from './models/cuisines/cuisine.module';
 import { AuthModule } from './authentication/auth.module';
 import { UserModule } from './models/users/user.module';
@@ -13,27 +13,30 @@ import {
   RedisConfigModule,
 } from './config';
 import { LoggerModule } from './logger/logger.module';
-import { DeviceContextMiddleware } from './common/middleware/device-context.middleware';
+import { DeviceContextMiddleware } from './common/middleware';
 import { AuthorizationModule } from './authorization/authorization.module';
 import { MyProfileModule } from './my-profile/my-profile.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { ActivityLogModule } from './models/activity-log/activity-log.module';
 import { CommonModule } from './common/common.module';
 import { PromotionModule } from './models/promotions/promotion.module';
 import { ProductModule } from './models/products';
 import { MeilisearchModule } from './providers/meilisearch/meilisearch.module';
 import { ImageModule } from './models/images/image.module';
 import { TaxModule } from './models/taxes';
-import { OrderModule } from './models/orders/order.module';
+import { OrderModule } from './models/orders';
 import { PaymentModule } from './models/payments/payment.module';
 import { TableModule } from './models/tables/table.module';
 import { FloorModule } from './models/floors/floor.module';
 import { ZoneModule } from './models/zones/zone.module';
-import { TableSessionModule } from './models/table-sessions/table-session.module';
+import { TableSessionModule } from './models/table-sessions';
 import { UserTrackingModule } from './user-tracking';
 import { RedisModule } from './providers/redis';
 import { IngredientModule } from './models/ingredients';
+import { RecommendationModule } from './recommendation/recommendation.module';
+import { PythonConfigModule } from './config/python/config.module';
+import { MqttModule } from './providers/mqtt/mqtt.module';
+import { QrModule } from './qr/qr.module';
 
 @Module({
   imports: [
@@ -60,7 +63,6 @@ import { IngredientModule } from './models/ingredients';
     ZoneModule,
     TableModule,
     TableSessionModule,
-    ActivityLogModule,
     PromotionModule,
     TaxModule,
     OrderModule,
@@ -69,6 +71,10 @@ import { IngredientModule } from './models/ingredients';
     RedisModule,
     RedisConfigModule,
     IngredientModule,
+    PythonConfigModule,
+    RecommendationModule,
+    MqttModule,
+    QrModule,
   ],
   providers: [
     // {

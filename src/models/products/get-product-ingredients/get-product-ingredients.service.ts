@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import {
-  ProductIngredientRepository,
-  ProductRepository,
-} from '../repositories';
+import { ProductIngredientRepository } from 'src/models/products/repositories/product-ingredient-repository.abstract';
 import { ProductIngredient } from '../entities';
 import { ProductNotFoundException } from '../exceptions';
+import { ProductRepository } from '../repositories/product-repository.abstract';
 
 @Injectable()
 export class GetProductIngredientsService {

@@ -3,7 +3,8 @@ import {
   Prisma,
   PricingSnapshot as PrismaPricingSnapshot,
 } from '@prisma/client';
-import { PricingSnapshotStatus as DomainPricingSnapshotStatus } from '../enums';
+import { PricingSnapshotTaxMapper } from '../../taxes';
+import { PricingSnapshotPromotionMapper } from './pricing-snapshot-promotion.mapper';
 
 export class PricingSnapshotMapper {
   static toDomain(
@@ -25,13 +26,26 @@ export class PricingSnapshotMapper {
       prisma.total_amount !== null && prisma.total_amount !== undefined
         ? Number(prisma.total_amount)
         : 0,
-      prisma.status as DomainPricingSnapshotStatus,
       prisma.created_at,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
+      (prisma as any).promotions
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+          (prisma as any).promotions.map(
+            PricingSnapshotPromotionMapper.toDomain,
+          )
+        : null,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
+      (prisma as any).taxes
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+          (prisma as any).taxes.map(PricingSnapshotTaxMapper.toDomain)
+        : null,
     );
   }
 
-  static toPrisma(domain: DomainPricingSnapshot): PrismaPricingSnapshot {
-    return <PrismaPricingSnapshot>{
+  static toPrisma(
+    domain: DomainPricingSnapshot,
+  ): Prisma.PricingSnapshotUncheckedCreateInput {
+    return {
       ...(domain.id ? { id: domain.id } : {}),
       order_id: domain.orderId,
       subtotal_amount:
@@ -50,7 +64,6 @@ export class PricingSnapshotMapper {
         domain.totalAmount !== undefined && domain.totalAmount !== null
           ? new Prisma.Decimal(domain.totalAmount)
           : new Prisma.Decimal(0),
-      status: domain.status,
       created_at: domain.createdAt ?? undefined,
     };
   }
