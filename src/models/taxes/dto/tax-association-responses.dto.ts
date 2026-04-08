@@ -50,21 +50,12 @@ export class TaxAssociationResponseDto {
   @Expose()
   id: string;
 
-  @ApiPropertyOptional({
-    type: String,
-    description: `Entity ID associated with the tax configuration, optional as sometimes the 
-    response my include entity reference instead`,
+  @ApiProperty({
+    type: TaxableEntityReferenceDto,
+    description: `Reference to the entity for which the tax association is being upserted.`,
   })
-  @Expose()
-  entityId?: string;
-
-  @ApiPropertyOptional({
-    type: String,
-    description: `Entity type associated with the tax configuration, optional as sometimes the 
-    response my include entity reference instead`,
-  })
-  @Expose()
-  entityType?: string;
+  @Type(() => TaxableEntityReferenceDto)
+  entityRef: TaxableEntityReferenceDto;
 
   @ApiProperty({ type: Boolean, description: 'Is association active' })
   @Expose()
