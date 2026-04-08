@@ -1,4 +1,3 @@
-import { PricingSnapshotTax as DomainPricingSnapshotTax } from './pricing-snapshot-tax.class';
 import {
   Prisma,
   PricingSnapshotTax as PrismaPricingSnapshotTax,
@@ -7,16 +6,18 @@ import {
   TaxType as DomainTaxType,
   TaxRateType as DomainTaxRateType,
 } from '../enums';
+import { PricingSnapshotTax } from './pricing-snapshot-tax';
 
 export class PricingSnapshotTaxMapper {
   static toDomain(
     this: void,
     prisma: PrismaPricingSnapshotTax,
-  ): DomainPricingSnapshotTax {
-    return new DomainPricingSnapshotTax(
+  ): PricingSnapshotTax {
+    return new PricingSnapshotTax(
       prisma.id,
       prisma.snapshot_id,
-      prisma.tax_id,
+      prisma.order_item_id ?? null,
+      prisma.tax_config_id,
       prisma.tax_name,
       prisma.tax_type as DomainTaxType,
       prisma.rate_type as DomainTaxRateType,
@@ -33,11 +34,14 @@ export class PricingSnapshotTaxMapper {
     );
   }
 
-  static toPrisma(domain: DomainPricingSnapshotTax): PrismaPricingSnapshotTax {
-    return <PrismaPricingSnapshotTax>{
+  static toPrisma(
+    domain: PricingSnapshotTax,
+  ): Prisma.PricingSnapshotTaxUncheckedCreateInput {
+    return {
       ...(domain.id ? { id: domain.id } : {}),
       snapshot_id: domain.snapshotId,
-      tax_id: domain.taxId,
+      order_item_id: domain.orderItemId ?? null,
+      tax_config_id: domain.taxConfigId,
       tax_name: domain.taxName,
       tax_type: domain.taxType,
       rate_type: domain.rateType,
@@ -52,7 +56,7 @@ export class PricingSnapshotTaxMapper {
       quantity:
         domain.quantity !== undefined && domain.quantity !== null
           ? domain.quantity
-          : undefined,
+          : null,
       tax_amount:
         domain.taxAmount !== undefined && domain.taxAmount !== null
           ? new Prisma.Decimal(domain.taxAmount)

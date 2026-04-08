@@ -14,14 +14,16 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CreateCategoryService } from './create-category/create-category.service';
-import { UpdateCategoryService } from './update-category/update-category.service';
-import { DeleteCategoryService } from './delete-category/delete-category.service';
+import {
+  CreateCategoryService,
+  UpdateCategoryService,
+  DeleteCategoryService,
+  GetCategoriesService,
+} from './features';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 import { Role } from '../../common/enums';
 import { Roles } from '../../common/decorators';
-import { GetCategoriesService } from './get-categories/get-categories.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { plainToInstance } from 'class-transformer';
 import {
@@ -30,10 +32,10 @@ import {
   CategoryQueryParamsDto,
   CreateCategoryDto,
   UpdateCategoryDto,
-} from './dto';
+  CategoryNotFoundException,
+  Category,
+} from './shared';
 import { Page } from '../../common/interfaces';
-import { CategoryNotFoundException } from './exceptions';
-import { Category } from './types';
 import {
   DuplicateEntryException,
   ForeignKeyViolationException,

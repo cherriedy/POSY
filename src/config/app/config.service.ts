@@ -24,4 +24,8 @@ export class AppConfigService {
   get uploadDir(): string {
     return this.configService.get<string>('app.upload_dir')!;
   }
+
+  get frontendUrl(): string {
+    return this.configService.get<string>('app.frontend_url')!;
+  }
 }

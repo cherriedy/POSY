@@ -18,7 +18,6 @@ export class OrderTaxRepositoryImpl implements OrderTaxRepository {
       const created = await this.prismaService.orderTax.create({
         data: prisma,
         include: {
-          tax: true,
           order: true,
           order_item: true,
         },
@@ -49,7 +48,6 @@ export class OrderTaxRepositoryImpl implements OrderTaxRepository {
             this.prismaService.orderTax.create({
               data: item,
               include: {
-                tax: true,
                 order: true,
                 order_item: true,
               },
@@ -76,7 +74,6 @@ export class OrderTaxRepositoryImpl implements OrderTaxRepository {
     const taxes = await this.prismaService.orderTax.findMany({
       where: { order_id: orderId },
       include: {
-        tax: true,
         order: true,
         order_item: true,
       },
@@ -88,7 +85,6 @@ export class OrderTaxRepositoryImpl implements OrderTaxRepository {
     const taxes = await this.prismaService.orderTax.findMany({
       where: { order_item_id: orderItemId },
       include: {
-        tax: true,
         order: true,
         order_item: true,
       },

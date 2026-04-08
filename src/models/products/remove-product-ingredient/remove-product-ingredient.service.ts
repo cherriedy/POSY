@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ProductIngredientRepository } from '../repositories';
+import { ProductIngredientRepository } from 'src/models/products/repositories/product-ingredient-repository.abstract';
 import {
   ProductIngredientBulkRemovePayload,
   ProductIngredientBulkDeleteResultItem,
@@ -30,9 +30,7 @@ export class RemoveProductIngredientService {
 
     for (const associateId of payload.associationIds) {
       try {
-        await this.productIngredientRepository.delete(
-          associateId
-        );
+        await this.productIngredientRepository.delete(associateId);
         results.push({ id: associateId, status: 'SUCCEED' });
       } catch (e) {
         let error = 'Unknown error occurred';

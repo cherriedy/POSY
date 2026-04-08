@@ -1,5 +1,4 @@
 import { TableStatus } from '../enums';
-import { Floor } from '../../floors/types';
 import { Zone } from '../../zones/types';
 
 export class Table {
@@ -7,6 +6,8 @@ export class Table {
     public id: string | null,
     public zoneId: string | null,
     public name: string,
+    public hardwareId: string,
+    public currentToken: string | null,
     public capacity: number,
     public status: TableStatus = TableStatus.AVAILABLE,
     public posX: number | null,

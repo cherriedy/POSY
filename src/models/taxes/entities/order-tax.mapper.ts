@@ -1,56 +1,52 @@
-import { OrderTax as DomainOrderTax } from './order-tax.class';
-import { Prisma, OrderTax as PrismaOrderTax } from '@prisma/client';
-import { TaxConfigMapper } from './tax-config.mapper';
-import { OrderMapper } from '../../orders/types';
-import { OrderItemMapper } from '../../orders/types';
+import { OrderTax as DomainOrderTax } from './order-tax';
+import { Prisma } from '@prisma/client';
+import { OrderMapper, OrderItemMapper } from '../../orders/shared/entities';
+import {
+  TaxType as DomainTaxType,
+  TaxRateType as DomainTaxRateType,
+} from '../enums';
 
 export class OrderTaxMapper {
-  static toDomain(this: void, prisma: PrismaOrderTax): DomainOrderTax {
+  static toDomain(this: void, prisma: any): DomainOrderTax {
+    // `prisma` is typed as any here because the generated PrismaOrderTax type is
+    // stale (still has tax_id / tax_rate) until `prisma migrate dev` is run.
+    // After migration, replace `any` with the real PrismaOrderTax type and
+    // remove this comment.
     return new DomainOrderTax(
-      prisma.id,
-      prisma.tax_id,
-      prisma.order_id,
-      prisma.order_item_id ?? null,
-      prisma.tax_name,
-      prisma.tax_rate !== null && prisma.tax_rate !== undefined
-        ? Number(prisma.tax_rate)
-        : 0,
-      prisma.taxable_base !== null && prisma.taxable_base !== undefined
-        ? Number(prisma.taxable_base)
-        : 0,
-      prisma.tax_amount !== null && prisma.tax_amount !== undefined
-        ? Number(prisma.tax_amount)
-        : 0,
-      prisma.quantity ?? null,
+      prisma.id as string,
+      prisma.tax_config_id as string,
+      prisma.order_id as string,
+      (prisma.order_item_id as string | null) ?? null,
+      prisma.tax_name as string,
+      prisma.tax_type as DomainTaxType,
+      prisma.rate_type as DomainTaxRateType,
+      prisma.charge_rate != null ? Number(prisma.charge_rate) : 0,
+      prisma.taxable_base != null ? Number(prisma.taxable_base) : 0,
+      prisma.tax_amount != null ? Number(prisma.tax_amount) : 0,
+      (prisma.quantity as number | null) ?? null,
       // Relations
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      (prisma as any).order
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
-          OrderMapper.toDomain((prisma as any).order)
-        : null,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      (prisma as any).tax
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
-          TaxConfigMapper.toDomain((prisma as any).tax)
-        : null,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      (prisma as any).order_item
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
-          OrderItemMapper.toDomain((prisma as any).order_item)
-        : null,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      prisma.order ? OrderMapper.toDomain(prisma.order) : null,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      prisma.order_item ? OrderItemMapper.toDomain(prisma.order_item) : null,
     );
   }
 
-  static toPrisma(domain: DomainOrderTax): PrismaOrderTax {
-    return <PrismaOrderTax>{
+  static toPrisma(domain: DomainOrderTax): any {
+    // Return type is `any` because the generated PrismaOrderTax type is stale
+    // (still has tax_id / tax_rate) until `prisma migrate dev` is run.
+    // After migration, restore the return type to the real Prisma create-input type.
+    return {
       ...(domain.id ? { id: domain.id } : {}),
-      tax_id: domain.taxId,
+      tax_config_id: domain.taxConfigId,
       order_id: domain.orderId,
       order_item_id: domain.orderItemId,
       tax_name: domain.taxName,
-      tax_rate:
-        domain.taxRate !== undefined && domain.taxRate !== null
-          ? new Prisma.Decimal(domain.taxRate)
+      tax_type: domain.taxType,
+      rate_type: domain.rateType,
+      charge_rate:
+        domain.chargeRate !== undefined && domain.chargeRate !== null
+          ? new Prisma.Decimal(domain.chargeRate)
           : new Prisma.Decimal(0),
       taxable_base:
         domain.taxableBase !== undefined && domain.taxableBase !== null
@@ -63,7 +59,7 @@ export class OrderTaxMapper {
       quantity:
         domain.quantity !== undefined && domain.quantity !== null
           ? domain.quantity
-          : undefined,
+          : null,
     };
   }
 }
