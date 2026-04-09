@@ -73,9 +73,8 @@ export class GuestOrderController {
   @ApiNotFoundResponse({ description: 'Order not found' })
   async getById(@CurrentSession() tableSession: TableSession) {
     try {
-      const { tableId, id: sessionId } = tableSession;
+      const { id: sessionId } = tableSession;
       return await this.orderFacadeService.getOrderWithRecommendations(
-        tableId,
         sessionId!,
       );
     } catch (e) {

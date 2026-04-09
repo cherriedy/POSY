@@ -14,15 +14,14 @@ export class OrderFacadeService {
   ) {}
 
   /**
-   * Fetches an order by table ID and session ID, then retrieves personalized product recommendations
+   * Fetches an order by session ID, then retrieves personalized product recommendations
    * based on the order's items.
    *
-   * @param tableId {string} - The UUID of the table for which to fetch the order.
    * @param sessionId {string} - The UUID of the session associated with the order.
    * @returns An object containing the order details and personalized product recommendations.
    */
-  async getOrderWithRecommendations(tableId: string, sessionId: string) {
-    const order = await this.getOrdersService.getById(tableId);
+  async getOrderWithRecommendations(sessionId: string) {
+    const order = await this.getOrdersService.getBySessionId(sessionId);
 
     const orderDto = plainToInstance(OrderDetailedResponseDto, order, {
       excludeExtraneousValues: true,

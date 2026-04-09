@@ -115,9 +115,9 @@ export class TableSessionController {
   ): Promise<void> {
     const cookieName = this.tableSessionConfig.cookie.name;
     const sessionToken = req.cookies[cookieName] as string;
-  
+
     await this.endSessionService.execute(sessionToken);
-  
+
     // Clear the session cookie
     res.clearCookie(this.tableSessionConfig.cookie.name, {
       path: this.tableSessionConfig.cookie.path,
