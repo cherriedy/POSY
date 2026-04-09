@@ -44,15 +44,6 @@ export class OrderItemCreateDto {
 }
 
 export class OrderCreateRequestDto {
-  @ApiPropertyOptional({
-    type: String,
-    description: 'Table ID. Required for staff-initiated orders.',
-    example: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
-  })
-  @IsOptional()
-  @IsUUID()
-  tableId?: string;
-
   @ApiProperty({
     type: [OrderItemCreateDto],
     description: 'List of order items',

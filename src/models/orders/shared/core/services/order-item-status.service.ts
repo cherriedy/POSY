@@ -27,7 +27,7 @@ export class OrderItemStatusService {
     private readonly orderModificationPolicy: OrderModificationPolicyService,
     private readonly reserveIngredientsService: ReserveIngredientsService,
     private readonly orderPricingService: OrderPricingService,
-  ) {}
+  ) { }
 
   /**
    * Updates the status of a specific order item and recomputes the overall order status.
@@ -83,12 +83,23 @@ export class OrderItemStatusService {
       }
 
       // Ensure current item status allows transition
-      if (
-        orderItem.status !== OrderItemStatus.WAITING &&
-        orderItem.status !== OrderItemStatus.PREPARING
-      ) {
+      const allowedTransitions: Record<OrderItemStatus, OrderItemStatus[]> = {
+        [OrderItemStatus.WAITING]: [OrderItemStatus.PREPARING,
+        OrderItemStatus.CANCELLED],
+        [OrderItemStatus.PREPARING]: [
+          OrderItemStatus.DONE,
+        ],
+        [OrderItemStatus.DONE]: [OrderItemStatus.SERVING],
+        [OrderItemStatus.SERVING]: [OrderItemStatus.SERVED],
+        [OrderItemStatus.SERVED]: [],
+        [OrderItemStatus.CANCELLED]: [],
+      };
+
+      const allowed = allowedTransitions[orderItem.status] || [];
+
+      if (!allowed.includes(status)) {
         throw new OrderModificationForbiddenException(
-          `Cannot change status of an item that is already ${orderItem.status}.`,
+          `Cannot change status from ${orderItem.status} to ${status}`,
         );
       }
 
@@ -106,15 +117,15 @@ export class OrderItemStatusService {
       }
 
       // Rollback reservation when an item moves from PREPARING -> CANCELLED
-      if (
-        prevStatus === OrderItemStatus.PREPARING &&
-        status === OrderItemStatus.CANCELLED
-      ) {
-        await this.reserveIngredientsService.rollback(
-          orderItem.productId,
-          orderItem.quantity,
-        );
-      }
+      // if (
+      //   prevStatus === OrderItemStatus.PREPARING &&
+      //   status === OrderItemStatus.CANCELLED
+      // ) {
+      //   await this.reserveIngredientsService.rollback(
+      //     orderItem.productId,
+      //     orderItem.quantity,
+      //   );
+      // }
 
       await this.orderItemRepository.update(orderItem.id!, {
         status,

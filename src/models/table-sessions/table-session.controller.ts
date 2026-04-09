@@ -96,8 +96,8 @@ export class TableSessionController {
     };
   }
 
-  // @Post('end')
-  // @HttpCode(HttpStatus.OK)
+  @Post('end')
+  @HttpCode(HttpStatus.OK)
   // @UseGuards(SessionGuard)
   // @ApiCookieAuth('session_token')
   // @ApiOperation({ summary: 'End the current table session' })
@@ -109,20 +109,20 @@ export class TableSessionController {
   //   status: 401,
   //   description: 'Invalid or expired session token',
   // })
-  // async endSession(
-  //   @Req() req: Request,
-  //   @Res({ passthrough: true }) res: Response,
-  // ): Promise<void> {
-  //   const cookieName = this.tableSessionConfig.cookie.name;
-  //   const sessionToken = req.cookies[cookieName] as string;
-  //
-  //   await this.endSessionService.execute(sessionToken);
-  //
-  //   // Clear the session cookie
-  //   res.clearCookie(this.tableSessionConfig.cookie.name, {
-  //     path: this.tableSessionConfig.cookie.path,
-  //   });
-  // }
+  async endSession(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    const cookieName = this.tableSessionConfig.cookie.name;
+    const sessionToken = req.cookies[cookieName] as string;
+  
+    await this.endSessionService.execute(sessionToken);
+  
+    // Clear the session cookie
+    res.clearCookie(this.tableSessionConfig.cookie.name, {
+      path: this.tableSessionConfig.cookie.path,
+    });
+  }
 
   @Get('test-scan')
   async testScanDirectly(

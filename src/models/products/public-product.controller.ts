@@ -17,6 +17,7 @@ import {
   ApiOkResponse,
   ApiNotFoundResponse,
   ApiExtraModels,
+  ApiResponse,
 } from '@nestjs/swagger';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { plainToInstance } from 'class-transformer';
@@ -28,23 +29,28 @@ import {
 } from './dto';
 import { createPageResponseSchema } from '../../common/dto';
 import { ProductNotFoundException } from './exceptions';
+import { CategoryPreviewResponseDto, CategoryQueryParamsDto, GetCategoriesService } from '../categories';
+import { Page } from 'src/common/interfaces';
 
-@ApiTags('Products (Public)')
+@ApiTags('(Public)')
 @ApiExtraModels(
   ProductPublicPreviewResponseDto,
   ProductPublicDetailedResponseDto,
 )
-@Controller('public/products')
+@Controller('public')
 export class PublicProductController {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: LoggerService;
 
-  constructor(private readonly getProductsService: GetProductsService) {}
+  constructor(
+    private readonly getProductsService: GetProductsService,
+    private readonly getCategoriesService: GetCategoriesService
+  ) { }
 
   // ────────────────────────────────
   // GET /public/products
   // ────────────────────────────────
-  @Get()
+  @Get('products')
   @ApiOperation({
     summary: 'List all available products (public)',
     description: `Returns a paginated list of active, non-deleted products.
@@ -64,6 +70,11 @@ export class PublicProductController {
   async getAllProducts(@Query() query: ProductPublicQueryParamsDto) {
     try {
       const params = query.toQueryParams();
+
+      if (!params.filter) params.filter = {};
+      params.filter.isDeleted = false;
+      params.filter.isAvailable = true;
+
       const products = await this.getProductsService.getAll(params, {
         attributes: true,
       });
@@ -84,7 +95,7 @@ export class PublicProductController {
   // ────────────────────────────────
   // GET /public/products/:id
   // ────────────────────────────────
-  @Get(':id')
+  @Get('products/:id')
   @ApiOperation({
     summary: 'Get a single product by ID (public)',
     description: `Returns the full detail of a single available, non-deleted product.
@@ -120,6 +131,48 @@ export class PublicProductController {
       if (e instanceof ProductNotFoundException) {
         throw new NotFoundException(e.message);
       }
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
+
+  @Get('categories')
+  @ApiOperation({
+    summary: 'Get all categories',
+    description: `Returns a paginated list of all categories. Accessible by MANAGER and ADMIN roles. 
+      Supports filtering by query parameters such as search query (by name), active status, etc. 
+      Used for listing and searching categories.`,
+  })
+  @ApiQuery({ name: 'query', required: false, type: CategoryQueryParamsDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Paginated list of categories',
+    schema: createPageResponseSchema(CategoryPreviewResponseDto),
+  })
+  async getCategories(
+    @Query() query: CategoryQueryParamsDto,
+  ): Promise<Page<CategoryPreviewResponseDto>> {
+    try {
+      const params = query.toQueryParams();
+
+      if (!params.filter) params.filter = {};
+      params.filter.isDeleted = false;
+
+      const categoryPage = await this.getCategoriesService.getAll(params);
+
+      const categoryPreviewItems = plainToInstance(
+        CategoryPreviewResponseDto,
+        categoryPage.items,
+        { excludeExtraneousValues: true },
+      );
+
+      return {
+        ...categoryPage,
+        items: categoryPreviewItems,
+      };
+    } catch (e) {
       this.logger.error(e);
       throw new InternalServerErrorException(
         'An error occurred while processing your request.',
