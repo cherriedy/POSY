@@ -16,4 +16,10 @@ export class GetOrdersService {
     if (!order) throw new OrderNotFoundException(id);
     return order;
   }
+
+  async getBySessionId(sessionId: string): Promise<Order> {
+    const order = await this.orderRepository.findBySessionId(sessionId);
+    if (!order) throw new OrderNotFoundException(sessionId);
+    return order;
+  }
 }
