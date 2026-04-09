@@ -5,10 +5,9 @@ import { Role } from '../../../../../common/enums';
 import { OrderItemStatus, OrderStatus } from '../../enums';
 import { UserIdentity } from '../../../../../authentication/interfaces';
 
-const COOKING_STATUES = [
+const COOKING_STATUS = [
   OrderItemStatus.PREPARING,
   OrderItemStatus.DONE,
-  OrderItemStatus.SERVED,
 ];
 
 @Injectable()
@@ -76,7 +75,8 @@ export class OrderModificationPolicyService {
    */
   assertItemModifiable(status: OrderItemStatus, user: UserIdentity): void {
     // If the new status is part of the cooking lifecycle, only kitchen role can set it
-    if (COOKING_STATUES.includes(status) && user.role !== Role.KITCHEN) {
+    if (COOKING_STATUS.includes(status) && user.role !== Role.KITCHEN 
+    && user.role !== Role.MANAGER && user.role !== Role.ADMIN) {
       throw new OrderModificationForbiddenException(
         'Only kitchen staff can update cooking-related item statuses.',
       );

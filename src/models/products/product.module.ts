@@ -11,6 +11,7 @@ import { RemoveProductIngredientModule } from './remove-product-ingredient';
 import { UpsertIngredientsModule } from './upsert-ingredients';
 import { ProductRepositoryModule } from './repositories/product-repository.module';
 import { PublicProductController } from './public-product.controller';
+import { GetCategoriesModule } from '../categories';
 
 @Global()
 @Module({
@@ -25,7 +26,7 @@ import { PublicProductController } from './public-product.controller';
     GetProductIngredientsModule,
     RemoveProductIngredientModule,
     UpsertIngredientsModule,
-    ProductRepositoryModule,
+    GetCategoriesModule,
   ],
   controllers: [ProductController, PublicProductController],
   exports: [ProductRepositoryModule],

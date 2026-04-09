@@ -8,6 +8,7 @@ import {
   Inject,
   InternalServerErrorException,
   LoggerService,
+  NotFoundException,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -41,6 +42,7 @@ import {
   OrderDetailedResponseDto,
   OrderModificationForbiddenException,
   OrderNotFoundException,
+  OrderNotFoundForSessionException,
   OrderPreviewResponseDto,
   OrderQueryParamsDto,
   OrderUpdateRequestDto,
@@ -90,7 +92,7 @@ export class StaffOrderController {
     private readonly updateOrderStatusService: UpdateOrderStatusService,
     private readonly updateOrderItemStatusService: UpdateOrderItemStatusService,
     private readonly staffSessionContextService: StaffSessionContextService,
-  ) {}
+  ) { }
 
   @Get()
   @ApiOperation({
@@ -109,6 +111,31 @@ export class StaffOrderController {
       });
       return { ...orders, items };
     } catch (e) {
+      this.logger.error(e);
+      throw new InternalServerErrorException(
+        'An error occurred while processing your request.',
+      );
+    }
+  }
+
+  @Get(':id')
+  @ApiOperation({
+    summary: 'Retrieve order details (Staff)',
+    description: `Returns detailed information about a specific order, accessible by any authenticated staff member.`,
+  })
+  @ApiParam({ name: 'id', type: String })
+  @ApiOkResponse({ description: 'Order details', type: OrderDetailedResponseDto })
+  @ApiBadRequestResponse({ description: 'Invalid order ID' })
+  async getById(@Param('id', new ParseUUIDPipe()) id: string) {
+    try {
+      const order = await this.getOrdersService.getById(id);
+      return plainToInstance(OrderDetailedResponseDto, order, {
+        excludeExtraneousValues: true,
+      });
+    } catch (e) {
+      if (e instanceof OrderNotFoundException) {
+        throw new BadRequestException(e.message);
+      }
       this.logger.error(e);
       throw new InternalServerErrorException(
         'An error occurred while processing your request.',
@@ -139,11 +166,12 @@ export class StaffOrderController {
   ) {
     const userId = (req.user as JwtPayload)?.sub;
     try {
-      const staffTableContext = await this.staffSessionContextService.execute(
+      const staffTableContext = await this.staffSessionContextService.createSessionForOrder(
         tableId,
         userId,
       );
       const sessionId = staffTableContext.sessionId;
+      console.log('CREATE SESSION:', sessionId);
 
       const order = await this.createOrderService.execute(
         toCreateOrderPayload(dto.items, tableId, sessionId, userId, dto.note),
@@ -230,23 +258,26 @@ export class StaffOrderController {
   ) {
     const userId = (req.user as JwtPayload)?.sub;
     try {
-      const staffTableContext = await this.staffSessionContextService.execute(
+      const staffTableContext = await this.staffSessionContextService.getActiveSessionForOrder(
         tableId,
-        userId,
       );
       const sessionId = staffTableContext.sessionId;
+      console.log('UPDATE SESSION:', sessionId);
 
       const userRole = (req.user as JwtPayload)?.role as Role;
       const order = await this.updateOrderService.execute(sessionId, dto, {
         id: userId,
         role: userRole,
       });
+      
       return plainToInstance(OrderDetailedResponseDto, order, {
         excludeExtraneousValues: true,
       });
     } catch (e) {
       if (e instanceof OrderModificationForbiddenException) {
         throw new ForbiddenException(e.message);
+      } if (e instanceof OrderNotFoundForSessionException) {
+        throw new NotFoundException(e.message);
       } else if (
         e instanceof OrderNotFoundException ||
         e instanceof ProductNotFoundException ||
