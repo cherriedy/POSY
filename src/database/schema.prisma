@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  // output   = "../node_modules/.prisma/client"
+  output   = "../../../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -296,8 +296,8 @@ model IngredientUsage {
   @@index([ingredient_id])
   @@index([usage_date])
   @@index([day_of_week])
-  @@index([is_weekend])
-  @@index([is_holiday])
+  // @@index([is_weekend])
+  // @@index([is_holiday])
   @@map("ingredient_usages")
 }
 

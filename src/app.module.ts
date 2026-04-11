@@ -37,6 +37,7 @@ import { RecommendationModule } from './recommendation/recommendation.module';
 import { PythonConfigModule } from './config/python/config.module';
 import { MqttModule } from './providers/mqtt/mqtt.module';
 import { QrModule } from './qr/qr.module';
+import { InventoryModule } from './inventory/inventory.module';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { QrModule } from './qr/qr.module';
     RecommendationModule,
     MqttModule,
     QrModule,
+    InventoryModule,
   ],
   providers: [
     // {
