@@ -42,68 +42,61 @@ export class RecommendationService {
    */
   @OnEvent('product.created')
   @OnEvent('product.updated')
-  async handleProductChangedEvent(payload: { id: string }) {
+  async triggerContentBasedTraining(payload: {
+    id?: string;
+    forceRecalculateAll?: boolean;
+  }) {
     this.logger.log(
       `Received product change event for product ID:) ${payload.id}`,
     );
+    const { id, forceRecalculateAll = false } = payload;
+    if (!id && !forceRecalculateAll) {
+      this.logger.warn(
+        'No product ID or forceRecalculateAll flag. Skipping update.',
+      );
+      return;
+    }
 
     try {
       const url = `${this.baseUrl}/api/recommend/content-based`;
       const requestBody = {
-        product_id: payload.id,
-        force_recalculate_all: false,
+        product_id: id,
+        force_recalculate_all: forceRecalculateAll,
       };
       const response = await lastValueFrom(
         this.httpService.post(url, requestBody),
       );
       if (response.status === 200) {
         this.logger.log(
-          `Successfully triggered recommendation recalculation for product ID: ${payload.id}`,
+          `Successfully triggered recommendation recalculation for product ID: ${id}`,
         );
       }
     } catch (e) {
       this.logger.error(
-        `Failed to trigger recommendation recalculation for product ID: ${payload.id}`,
+        `Failed to trigger recommendation recalculation for product ID: ${id}`,
         e instanceof Error ? e.stack : null,
       );
     }
   }
 
   /**
-   * Performs a full retraining of the collaborative filtering model on a daily basis.
-   *
-   * This scheduled task runs every day at 2 AM and sends a request to the external
-   * Python recommendation service to perform a complete retraining of the collaborative
-   * filtering model. This ensures that the model stays up-to-date with the latest user
-   * interactions and product data, improving recommendation accuracy over time.
-   *
-   * @remarks
-   * The request is sent to the `/api/collaborative` endpoint of the configured `baseUrl`.
-   * It forces a full recalculation by setting `force_recalculate_all` to `true`.
-   *
-   * @throws Will log an error but not rethrow if the HTTP request fails, to prevent
-   * scheduler crashes or blocking other scheduled tasks.
+   * Manually triggers a full recalculation of the content-based recommendation model.
    */
-  @Cron(CronExpression.EVERY_DAY_AT_2AM)
-  async handleDailyCollaborativeTraining() {
-    this.logger.log('Starting daily collaborative filtering training job');
-    try {
-      const url = `${this.baseUrl}/api/recommend/collaborative`;
-      const requestBody = { force_recalculate_all: true };
-      const response = await lastValueFrom(
-        this.httpService.post(url, requestBody),
-      );
-      if (response.status === 200) {
-        this.logger.log(
-          'Successfully completed collaborative filtering training',
-        );
-      }
-    } catch (e) {
-      this.logger.error(
-        'Failed to complete collaborative filtering training',
-        e instanceof Error ? e.stack : null,
-      );
-    }
+  async triggerFullContentBasedRecalculation() {
+    this.logger.log('Manually triggering full recommendation recalculation');
+    await this.triggerContentBasedTraining({
+      forceRecalculateAll: true,
+    });
+  }
+
+  /**
+   * Manually triggers a full recalculation of the collaborative filtering model.
+   */
+  async triggerFullCollaborativeRecalculation() {
+    this.logger.log(
+      'Manually triggering full collaborative filtering recalculation',
+    );
+    await this.handleDailyCollaborativeTraining();
   }
 
   /**
@@ -150,6 +143,43 @@ export class RecommendationService {
         e instanceof Error ? e.stack : null,
       );
       return [];
+    }
+  }
+
+  /**
+   * Performs a full retraining of the collaborative filtering model on a daily basis.
+   *
+   * This scheduled task runs every day at 2 AM and sends a request to the external
+   * Python recommendation service to perform a complete retraining of the collaborative
+   * filtering model. This ensures that the model stays up-to-date with the latest user
+   * interactions and product data, improving recommendation accuracy over time.
+   *
+   * @remarks
+   * The request is sent to the `/api/collaborative` endpoint of the configured `baseUrl`.
+   * It forces a full recalculation by setting `force_recalculate_all` to `true`.
+   *
+   * @throws Will log an error but not rethrow if the HTTP request fails, to prevent
+   * scheduler crashes or blocking other scheduled tasks.
+   */
+  @Cron(CronExpression.EVERY_DAY_AT_2AM)
+  private async handleDailyCollaborativeTraining() {
+    this.logger.log('Starting daily collaborative filtering training job');
+    try {
+      const url = `${this.baseUrl}/api/recommend/collaborative`;
+      const requestBody = { force_recalculate_all: true };
+      const response = await lastValueFrom(
+        this.httpService.post(url, requestBody),
+      );
+      if (response.status === 200) {
+        this.logger.log(
+          'Successfully completed collaborative filtering training',
+        );
+      }
+    } catch (e) {
+      this.logger.error(
+        'Failed to complete collaborative filtering training',
+        e instanceof Error ? e.stack : null,
+      );
     }
   }
 }
