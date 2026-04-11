@@ -3,6 +3,7 @@ import { RecommendationService } from './recommendation.service';
 import { HttpModule } from '@nestjs/axios';
 import { ProductRepositoryModule } from '../models/products/repositories/product-repository.module';
 import { PythonConfigModule } from '../config/python/config.module';
+import { RecommendationController } from './recommendation.controller';
 
 @Module({
   imports: [
@@ -15,5 +16,6 @@ import { PythonConfigModule } from '../config/python/config.module';
   ],
   providers: [RecommendationService],
   exports: [RecommendationService],
+  controllers: [RecommendationController],
 })
 export class RecommendationModule {}
