@@ -3,6 +3,7 @@ import {
   Get,
   InternalServerErrorException,
   NotFoundException,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -152,7 +153,7 @@ export class InventoryController {
     }
   }
 
-  @Get('trigger')
+  @Post('trigger')
   @Roles(Role.ADMIN)
   @ApiOperation({
     summary: 'Trigger forecast recalculation',
