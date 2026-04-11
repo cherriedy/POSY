@@ -2,15 +2,22 @@ import { faker } from '@faker-js/faker';
 import { PrismaClient, OrderItemStatus } from '@prisma/client';
 
 export async function seedOrderItems(prisma: PrismaClient) {
-  // Fetch all orders and products
+  // Fetch all orders
   const orders = await prisma.order.findMany({
     where: { status: { not: 'CANCELLED' } },
     select: { id: true, status: true, created_at: true },
   });
 
+  // Fetch products along with their ingredient formulas
   const products = await prisma.product.findMany({
     where: { is_available: true, is_deleted: false },
-    select: { id: true, price: true },
+    select: {
+      id: true,
+      price: true,
+      productIngredients: {
+        select: { ingredient_id: true, quantity: true },
+      },
+    },
   });
 
   if (!orders.length) {
@@ -21,64 +28,90 @@ export async function seedOrderItems(prisma: PrismaClient) {
     throw new Error('No available products found. Seed products first.');
   }
 
-  // For each order, ensure it has 2-4 order items
+  // Key format: "YYYY-MM-DD|HH|ingredient_id"
+  const ingredientUsageMap = new Map<
+    string,
+    { qty: number; orderCount: number; dayOfWeek: number; hourOfDay: number }
+  >();
+
   for (const order of orders) {
-    // Check existing items
     const existingItems = await prisma.orderItem.findMany({
       where: { order_id: order.id },
     });
 
-    // If order already has items, skip it
     if (existingItems.length > 0) {
       continue;
     }
 
-    // Generate 2-4 items for this order
     const itemCount = faker.number.int({ min: 2, max: 4 });
     const selectedProducts = faker.helpers.arrayElements(
       products,
       Math.min(itemCount, products.length),
     );
 
+    const orderDateString = order.created_at.toISOString().split('T')[0];
+    const hourOfDay = order.created_at.getUTCHours();
+    const dayOfWeek = order.created_at.getUTCDay(); // 0=Sunday, 6=Saturday
+    let orderItemOrderCountTracker = false;
+
     for (const product of selectedProducts) {
       const quantity = faker.number.int({ min: 1, max: 3 });
       const unitPrice = parseFloat(product.price.toString());
       const subtotal = quantity * unitPrice;
 
-      // Determine order item status based on order status
       let itemStatus: OrderItemStatus;
       let startedAt: Date | undefined;
       let completedAt: Date | undefined;
       let servedAt: Date | undefined;
 
+      // Calculate timestamps relative to order.created_at to keep
+      // time logic consistent with historical orders created 60 days back
       switch (order.status) {
         case 'PENDING':
           itemStatus = OrderItemStatus.WAITING;
           break;
         case 'PREPARING':
           itemStatus = OrderItemStatus.PREPARING;
-          startedAt = faker.date.recent({ days: 1 });
+          startedAt = new Date(order.created_at.getTime() + 60000); // 1 min
           break;
         case 'READY':
           itemStatus = OrderItemStatus.DONE;
-          startedAt = new Date(order.created_at.getTime() + 300000); // 5 min after order
-          completedAt = faker.date.recent({ days: 1 });
+          startedAt = new Date(order.created_at.getTime() + 60000);
+          completedAt = new Date(order.created_at.getTime() + 600000); // 10 mins
           break;
         case 'SERVING':
           itemStatus = OrderItemStatus.SERVING;
-          startedAt = new Date(order.created_at.getTime() + 300000);
-          completedAt = new Date(order.created_at.getTime() + 900000); // 15 min after order
-          servedAt = faker.date.recent({ days: 1 });
+          startedAt = new Date(order.created_at.getTime() + 60000);
+          completedAt = new Date(order.created_at.getTime() + 600000);
+          servedAt = new Date(order.created_at.getTime() + 720000); // 12 mins
           break;
         case 'SERVED':
         case 'COMPLETED':
           itemStatus = OrderItemStatus.SERVED;
-          startedAt = new Date(order.created_at.getTime() + 300000);
-          completedAt = new Date(order.created_at.getTime() + 900000);
-          servedAt = new Date(order.created_at.getTime() + 1800000); // 30 min after order
-          break;
-        case 'CANCELLED':
-          itemStatus = OrderItemStatus.CANCELLED;
+          startedAt = new Date(order.created_at.getTime() + 60000);
+          completedAt = new Date(order.created_at.getTime() + 600000);
+          servedAt = new Date(order.created_at.getTime() + 720000);
+
+          // Accumulate ingredient usage for successful orders
+          if (!orderItemOrderCountTracker) orderItemOrderCountTracker = true;
+          for (const pi of product.productIngredients) {
+            const key = `${orderDateString}|${hourOfDay}|${pi.ingredient_id}`;
+            const usageQty = quantity * parseFloat(pi.quantity.toString());
+
+            const current = ingredientUsageMap.get(key) || {
+              qty: 0,
+              orderCount: 0,
+              dayOfWeek,
+              hourOfDay,
+            };
+            ingredientUsageMap.set(key, {
+              qty: current.qty + usageQty,
+              // Only count the order once even if multiple dishes share the same ingredient
+              orderCount: current.orderCount,
+              dayOfWeek,
+              hourOfDay,
+            });
+          }
           break;
         default:
           itemStatus = OrderItemStatus.WAITING;
@@ -100,6 +133,39 @@ export async function seedOrderItems(prisma: PrismaClient) {
           served_at: servedAt,
         },
       });
+    }
+
+    // If this order consumed ingredients, increment orderCount for its records in the Map
+    if (orderItemOrderCountTracker) {
+      for (const [key, data] of ingredientUsageMap.entries()) {
+        if (key.startsWith(`${orderDateString}|${hourOfDay}|`)) {
+          data.orderCount += 1;
+        }
+      }
+    }
+  }
+
+  // ==========================================
+  // UPSERT INGREDIENT USAGE STEP
+  // ==========================================
+  if (ingredientUsageMap.size > 0) {
+    console.log(
+      `Starting upsert of ${ingredientUsageMap.size} ingredient usage records from order items...`,
+    );
+    for (const [key, data] of ingredientUsageMap.entries()) {
+      const [dateStr, , ingredient_id] = key.split('|');
+      const usageDate = new Date(dateStr);
+
+      // Use raw query for insert-on-conflict-update (Postgres standard)
+      // ON CONFLICT matches the unique index on (ingredient_id, usage_date, hour_of_day)
+      await prisma.$executeRaw`
+        INSERT INTO ingredient_usages (ingredient_id, usage_date, quantity_used, order_count, day_of_week, hour_of_day)
+        VALUES (${ingredient_id}::uuid, ${usageDate}::date, ${data.qty}, ${data.orderCount}, ${data.dayOfWeek}, ${data.hourOfDay})
+        ON CONFLICT (ingredient_id, usage_date, hour_of_day) DO UPDATE
+        SET
+          quantity_used = ingredient_usages.quantity_used + EXCLUDED.quantity_used,
+          order_count = ingredient_usages.order_count + EXCLUDED.order_count;
+      `;
     }
   }
 }
