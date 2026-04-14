@@ -3,9 +3,9 @@ import {
   SessionProductInteraction as PrismaSessionProductInteraction,
 } from '@prisma/client';
 import { SessionProductInteraction as DomainSessionProductInteraction } from './session-product-interaction';
-import { MissingRequireFieldsException } from '../../common/exceptions';
-import { ProductMapper } from '../../models/products';
-import { TableSessionMapper } from '../../models/table-sessions/shared/entities';
+import { MissingRequireFieldsException } from '../../../common/exceptions';
+import { ProductMapper } from '../../../models/products';
+import { TableSessionMapper } from '../../../models/table-sessions';
 
 export class SessionProductInteractionMapper {
   static toDomain(

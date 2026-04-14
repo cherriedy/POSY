@@ -8,6 +8,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { CollaborativeResponse } from './recommendation.type';
 import { ProductRepository } from '../models/products/repositories/product-repository.abstract';
 import { Product } from '../models/products';
+import { ProductInteractionService } from '../user-tracking/features/product-interaction.service';
 
 @Injectable()
 export class RecommendationService {
@@ -16,9 +17,10 @@ export class RecommendationService {
   private readonly baseUrl: string;
 
   constructor(
+    pythonConfigService: PythonConfigService,
     private readonly httpService: HttpService,
     private readonly productRepository: ProductRepository,
-    pythonConfigService: PythonConfigService,
+    private readonly productInteractionService: ProductInteractionService,
   ) {
     this.baseUrl = pythonConfigService.url;
   }
@@ -147,23 +149,27 @@ export class RecommendationService {
   }
 
   /**
-   * Performs a full retraining of the collaborative filtering model on a daily basis.
+   * Schedules a daily full retraining of the collaborative filtering model.
    *
-   * This scheduled task runs every day at 2 AM and sends a request to the external
-   * Python recommendation service to perform a complete retraining of the collaborative
-   * filtering model. This ensures that the model stays up-to-date with the latest user
-   * interactions and product data, improving recommendation accuracy over time.
+   * Runs every day at 2 AM, sending a request to the external Python recommendation
+   * service to retrain the collaborative filtering model with the latest user interactions
+   * and product data. This helps maintain and improve recommendation accuracy.
    *
    * @remarks
-   * The request is sent to the `/api/collaborative` endpoint of the configured `baseUrl`.
-   * It forces a full recalculation by setting `force_recalculate_all` to `true`.
+   * Sends a POST request to the `/api/recommend/collaborative` endpoint of the configured `baseUrl`
+   * with `force_recalculate_all` set to `true`.
    *
-   * @throws Will log an error but not rethrow if the HTTP request fails, to prevent
-   * scheduler crashes or blocking other scheduled tasks.
+   * @throws Logs an error if the HTTP request fails, but does not rethrow, ensuring
+   * the scheduler continues running other tasks.
    */
   @Cron(CronExpression.EVERY_DAY_AT_2AM)
   private async handleDailyCollaborativeTraining() {
     this.logger.log('Starting daily collaborative filtering training job');
+
+    this.logger.log('Synchronizing product interactions before training');
+    await this.productInteractionService.syncInteractionToDatabase();
+    this.logger.log('Successfully synchronized product interactions');
+
     try {
       const url = `${this.baseUrl}/api/recommend/collaborative`;
       const requestBody = { force_recalculate_all: true };

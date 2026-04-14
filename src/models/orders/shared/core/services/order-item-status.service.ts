@@ -27,7 +27,7 @@ export class OrderItemStatusService {
     private readonly orderModificationPolicy: OrderModificationPolicyService,
     private readonly reserveIngredientsService: ReserveIngredientsService,
     private readonly orderPricingService: OrderPricingService,
-  ) { }
+  ) {}
 
   /**
    * Updates the status of a specific order item and recomputes the overall order status.
@@ -84,11 +84,11 @@ export class OrderItemStatusService {
 
       // Ensure current item status allows transition
       const allowedTransitions: Record<OrderItemStatus, OrderItemStatus[]> = {
-        [OrderItemStatus.WAITING]: [OrderItemStatus.PREPARING,
-        OrderItemStatus.CANCELLED],
-        [OrderItemStatus.PREPARING]: [
-          OrderItemStatus.DONE,
+        [OrderItemStatus.WAITING]: [
+          OrderItemStatus.PREPARING,
+          OrderItemStatus.CANCELLED,
         ],
+        [OrderItemStatus.PREPARING]: [OrderItemStatus.DONE],
         [OrderItemStatus.DONE]: [OrderItemStatus.SERVING],
         [OrderItemStatus.SERVING]: [OrderItemStatus.SERVED],
         [OrderItemStatus.SERVED]: [],

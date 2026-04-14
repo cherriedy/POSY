@@ -17,5 +17,3 @@ import Joi from '@hapi/joi';
   exports: [MqttConfigService],
 })
 export class MqttConfigModule {}
-
-

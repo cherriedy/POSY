@@ -12,6 +12,7 @@ import { UpsertIngredientsModule } from './upsert-ingredients';
 import { ProductRepositoryModule } from './repositories/product-repository.module';
 import { PublicProductController } from './public-product.controller';
 import { GetCategoriesModule } from '../categories';
+import { ProductFacadeService } from './product-facade.service';
 
 @Global()
 @Module({
@@ -29,6 +30,7 @@ import { GetCategoriesModule } from '../categories';
     GetCategoriesModule,
   ],
   controllers: [ProductController, PublicProductController],
+  providers: [ProductFacadeService],
   exports: [ProductRepositoryModule],
 })
 export class ProductModule {}

@@ -1,4 +1,4 @@
-import { BaseRepository } from '../../common/interfaces';
+import { BaseRepository } from '../../../common/interfaces';
 import { SessionProductInteraction } from '../entities';
 
 export abstract class SessionProductInteractionRepository extends BaseRepository<SessionProductInteraction> {
