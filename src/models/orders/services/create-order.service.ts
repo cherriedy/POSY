@@ -14,6 +14,9 @@ import { OrderRepository } from '../shared/repositories/order-repository.abstrac
 import { OrderItemRepository } from '../shared/repositories/order-item-repository.abstract';
 import { PricingSnapshotRepository } from '../shared/repositories/pricing-snapshot-repository.abstract';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ProductInteractionPayload } from 'src/user-tracking/shared/interfaces/product-interaction-payload';
+import { ProductInteractionType } from 'src/user-tracking/shared/enums/product-interaction-type.enum';
 
 @Injectable()
 export class CreateOrderService {
@@ -30,6 +33,7 @@ export class CreateOrderService {
     private readonly pricingSnapshotTaxRepository: PricingSnapshotTaxRepository,
     private readonly recordSessionPreferenceService: RecordPreferenceService,
     private readonly staffOrderGateway: StaffOrderGateway,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   /**
@@ -168,15 +172,40 @@ export class CreateOrderService {
       // Persist the snapshot taxes linked to the created snapshot
       await this.createSnapshotTaxes(createdSnapshot.id!, orderTaxes);
 
+      // Record session preferences based on created items
+      await this.recordSessionPreferenceService.execute(
+        tableContext.session.id,
+        createdOrderItems,
+      );
+
       const finalOrder = await this.orderRepository.update(orderId, {
         subtotalAmount: orderSubtotal,
         totalAmount: orderSubtotal + totalTaxAmount,
       });
 
-      await this.recordSessionPreferenceService.execute(
-        tableContext.session.id,
-        createdOrderItems,
-      );
+      // Emit product interaction ORDER events for each created order item
+      try {
+        if (createdOrderItems && createdOrderItems.length > 0) {
+          for (const item of createdOrderItems) {
+            const payload: ProductInteractionPayload = {
+              sessionId: tableContext.session.id,
+              productId: item.productId,
+              type: ProductInteractionType.ORDER,
+              quantity: item.quantity,
+              price: item.unitPrice,
+              timestamp: new Date().toISOString(),
+            };
+
+            // Non-blocking emit; user-tracking listens to 'interaction.product.*'
+            this.eventEmitter.emit(
+              `interaction.product.${ProductInteractionType.ORDER}`,
+              payload,
+            );
+          }
+        }
+      } catch (e) {
+        this.logger.error('Failed to emit product interaction ORDER events', e);
+      }
 
       // Emit only the created order ID to staff and other roles
       this.staffOrderGateway.emitOrderCreated(orderId);

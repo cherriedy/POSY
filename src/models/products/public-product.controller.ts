@@ -20,6 +20,10 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { ProductFacadeService } from './product-facade.service';
+import { CurrentSession } from 'src/models/table-sessions/shared/decorators/current-session.decorator';
+import { TableSession } from 'src/models/table-sessions/shared/entities/table-session';
+// ...existing code...
 import { plainToInstance } from 'class-transformer';
 import { GetProductsService } from './get-products';
 import {
@@ -29,7 +33,11 @@ import {
 } from './dto';
 import { createPageResponseSchema } from '../../common/dto';
 import { ProductNotFoundException } from './exceptions';
-import { CategoryPreviewResponseDto, CategoryQueryParamsDto, GetCategoriesService } from '../categories';
+import {
+  CategoryPreviewResponseDto,
+  CategoryQueryParamsDto,
+  GetCategoriesService,
+} from '../categories';
 import { Page } from 'src/common/interfaces';
 
 @ApiTags('(Public)')
@@ -44,8 +52,9 @@ export class PublicProductController {
 
   constructor(
     private readonly getProductsService: GetProductsService,
-    private readonly getCategoriesService: GetCategoriesService
-  ) { }
+    private readonly getCategoriesService: GetCategoriesService,
+    private readonly productFacadeService: ProductFacadeService,
+  ) {}
 
   // ────────────────────────────────
   // GET /public/products
@@ -110,17 +119,16 @@ export class PublicProductController {
   @ApiNotFoundResponse({
     description: 'Product not found or not available',
   })
-  async getProductById(@Param('id', new ParseUUIDPipe()) id: string) {
+  async getProductById(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentSession() tableSession: TableSession,
+  ) {
     try {
-      const product = await this.getProductsService.getById(id, {
-        attributes: true,
-      });
-
-      // Hide soft-deleted or unavailable products from public consumers
-      if (product.isDeleted || !product.isAvailable) {
-        // noinspection ExceptionCaughtLocallyJS
-        throw new ProductNotFoundException(id);
-      }
+      const product =
+        await this.productFacadeService.getProductDetailWithViewEvent(
+          id,
+          tableSession,
+        );
 
       return plainToInstance(
         ProductPublicDetailedResponseDto,
