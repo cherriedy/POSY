@@ -16,6 +16,11 @@ export class PaymentMethodRepositoryImpl implements PaymentMethodRepository {
 
   constructor(private readonly prismaService: PrismaService) {}
 
+  /**
+   * Fetches payment methods using pagination, optional filters, and sorting rules.
+   *
+   * @param params Query parameters for paging, filtering, and ordering.
+   */
   async getAllPaged(
     params: PaymentMethodQueryParams,
   ): Promise<Page<PaymentMethod>> {
@@ -44,6 +49,11 @@ export class PaymentMethodRepositoryImpl implements PaymentMethodRepository {
     };
   }
 
+  /**
+   * Builds Prisma filter conditions from query params.
+   *
+   * @param params Query parameters containing optional filters.
+   */
   private buildWhereClause(
     params: PaymentMethodQueryParams,
   ): Prisma.PaymentMethodWhereInput {
@@ -56,6 +66,11 @@ export class PaymentMethodRepositoryImpl implements PaymentMethodRepository {
     return where;
   }
 
+  /**
+   * Builds Prisma order-by clauses for payment method listing.
+   *
+   * @param orderBy Optional list of sorting instructions.
+   */
   private buildOrderByClause(
     orderBy: PaymentMethodOrderBy | undefined,
   ):
@@ -76,6 +91,11 @@ export class PaymentMethodRepositoryImpl implements PaymentMethodRepository {
     })) as Prisma.PaymentMethodOrderByWithRelationInput[];
   }
 
+  /**
+   * Flips the active status of a payment method by id.
+   *
+   * @param id Payment method UUID.
+   */
   async toggle(id: string): Promise<PaymentMethod> {
     const current = await this.prismaService.paymentMethod.findUnique({
       where: { id },

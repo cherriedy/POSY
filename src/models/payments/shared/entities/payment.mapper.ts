@@ -45,28 +45,23 @@ export class PaymentMapper {
     );
   }
 
-  static toPrisma(domain: DomainPayment): PrismaPayment {
-    return <PrismaPayment>{
+  static toPrismaCreate(
+    domain: DomainPayment,
+  ): Prisma.PaymentUncheckedCreateInput {
+    return {
       ...(domain.id ? { id: domain.id } : {}),
       method_id: domain.methodId,
       order_id: domain.orderId,
       created_by: domain.createdBy,
-      amount:
-        domain.amount !== undefined && domain.amount !== null
-          ? new Prisma.Decimal(domain.amount)
-          : new Prisma.Decimal(0),
-      fee_amount:
-        domain.feeAmount !== undefined && domain.feeAmount !== null
-          ? new Prisma.Decimal(domain.feeAmount)
-          : null,
+      amount: domain.amount,
+      fee_amount: domain.feeAmount,
       reference_number: domain.referenceNumber,
       status: domain.status,
       payment_url: domain.paymentUrl,
-      paid_at: domain.paidAt ?? null,
-      expired_at: domain.expiredAt ?? null,
-      metadata: domain.metadata ?? null,
-      created_at: domain.createdAt ?? undefined,
-      updated_at: domain.updatedAt ?? undefined,
+      paid_at: domain.paidAt,
+      expired_at: domain.expiredAt,
+      metadata: domain.metadata ?? Prisma.DbNull,
+      ...(domain.createdAt ? { created_at: domain.createdAt } : {}),
     };
   }
 }
