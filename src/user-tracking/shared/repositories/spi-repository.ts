@@ -28,14 +28,12 @@ export class SessionProductInteractionRepositoryImpl implements SessionProductIn
             order_count: entity.orderCount,
             total_quantity: entity.totalQuantity,
             total_spent: entity.totalSpent,
-            interaction_score: entity.interactionScore,
           },
           update: {
             view_count: { increment: entity.viewCount },
             order_count: { increment: entity.orderCount },
             total_quantity: { increment: entity.totalQuantity },
             total_spent: { increment: entity.totalSpent },
-            interaction_score: entity.interactionScore,
           },
         });
       }),

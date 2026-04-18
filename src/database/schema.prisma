@@ -993,7 +993,7 @@ model SessionProductInteraction {
   last_ordered   DateTime?
 
   // Implicit feedback score
-  interaction_score Decimal @default(0) @db.Decimal(5, 4) // 0-1, normalized score
+  // interaction_score Decimal @default(0) @db.Decimal(5, 4) // 0-1, normalized score
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
@@ -1005,7 +1005,7 @@ model SessionProductInteraction {
   @@unique([session_id, product_id])
   @@index([session_id])
   @@index([product_id])
-  @@index([interaction_score])
+  // @@index([interaction_score])
   @@index([last_ordered])
   @@map("session_product_interactions")
 }

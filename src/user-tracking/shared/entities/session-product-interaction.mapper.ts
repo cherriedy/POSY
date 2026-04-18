@@ -22,10 +22,6 @@ export class SessionProductInteractionMapper {
       prisma.total_spent !== null && prisma.total_spent !== undefined
         ? Number(prisma.total_spent)
         : 0,
-      prisma.interaction_score !== null &&
-        prisma.interaction_score !== undefined
-        ? Number(prisma.interaction_score)
-        : 0,
       prisma.created_at,
       prisma.updated_at,
       // Relations
@@ -59,11 +55,6 @@ export class SessionProductInteractionMapper {
       total_spent:
         domain.totalSpent !== null && domain.totalSpent !== undefined
           ? new Prisma.Decimal(domain.totalSpent)
-          : new Prisma.Decimal(0),
-      interaction_score:
-        domain.interactionScore !== null &&
-        domain.interactionScore !== undefined
-          ? new Prisma.Decimal(domain.interactionScore)
           : new Prisma.Decimal(0),
       created_at: domain.createdAt ?? new Date(),
       updated_at: domain.updatedAt ?? new Date(),
