@@ -10,7 +10,6 @@ export class SessionProductInteraction {
     public orderCount: number = 0,
     public totalQuantity: number = 0,
     public totalSpent: number = 0,
-    public interactionScore: number = 0,
     public createdAt: Date | null = null,
     public updatedAt: Date | null = null,
     // Relations
