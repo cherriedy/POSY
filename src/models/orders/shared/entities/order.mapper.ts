@@ -5,7 +5,7 @@ import { UserMapper } from '../../../users/types/user.mapper';
 import { TableMapper } from '../../../tables/types';
 import { TableSessionMapper } from '../../../table-sessions/shared/entities';
 import { OrderItemMapper } from './order-item.mapper';
-import { PaymentMapper } from '../../../payments/types';
+import { PaymentMapper } from '../../../payments/shared/entities';
 import { PricingSnapshotMapper } from '../../../promotions/types';
 
 export class OrderMapper {

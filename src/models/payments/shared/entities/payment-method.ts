@@ -1,12 +1,11 @@
 import { PaymentFeeType, PaymentProvider } from '../enums';
-import { Payment } from './payment.class';
+import { Payment } from './payment';
 
 export class PaymentMethod {
   constructor(
     public id: string | null,
     public provider: PaymentProvider,
     public name: string,
-    public displayName: string,
     public iconUrl: string | null,
     public isActive: boolean = true,
     public feeType: PaymentFeeType | null,

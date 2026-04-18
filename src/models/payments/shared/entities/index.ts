@@ -1,4 +1,4 @@
-export * from './payment.class';
+export * from './payment';
 export * from './payment.mapper';
-export * from './payment-method.class';
+export * from './payment-method';
 export * from './payment-method.mapper';

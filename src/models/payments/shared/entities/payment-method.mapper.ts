@@ -1,5 +1,5 @@
 import { PaymentMethod as PrismaPaymentMethod, Prisma } from '@prisma/client';
-import { PaymentMethod as DomainPaymentMethod } from './payment-method.class';
+import { PaymentMethod as DomainPaymentMethod } from './payment-method';
 import { PaymentFeeType, PaymentProvider } from '../enums';
 import { PaymentMapper } from './payment.mapper';
 
@@ -12,7 +12,6 @@ export class PaymentMethodMapper {
       prisma.id,
       prisma.provider as PaymentProvider,
       prisma.name,
-      prisma.display_name,
       prisma.icon_url,
       prisma.is_active,
       prisma.fee_type as PaymentFeeType | null,
@@ -36,7 +35,6 @@ export class PaymentMethodMapper {
       ...(domain.id ? { id: domain.id } : {}),
       provider: domain.provider,
       name: domain.name,
-      display_name: domain.displayName,
       icon_url: domain.iconUrl,
       is_active: domain.isActive,
       fee_type: domain.feeType,
