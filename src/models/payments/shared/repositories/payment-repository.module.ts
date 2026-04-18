@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { PaymentMethodRepository } from './payment-method-repository.abstract';
 import { PaymentMethodRepositoryImpl } from './payment-method-repository';
+import { PaymentRepository } from './payment-repository.abstract';
+import { PaymentRepositoryImpl } from './payment-repository';
 
 @Module({
   providers: [
@@ -8,7 +10,11 @@ import { PaymentMethodRepositoryImpl } from './payment-method-repository';
       provide: PaymentMethodRepository,
       useClass: PaymentMethodRepositoryImpl,
     },
+    {
+      provide: PaymentRepository,
+      useClass: PaymentRepositoryImpl,
+    },
   ],
-  exports: [PaymentMethodRepository],
+  exports: [PaymentMethodRepository, PaymentRepository],
 })
 export class PaymentRepositoryModule {}
