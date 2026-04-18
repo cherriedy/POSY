@@ -1,8 +1,8 @@
 import { Payment as PrismaPayment, Prisma } from '@prisma/client';
-import { Payment as DomainPayment } from './payment.class';
+import { Payment as DomainPayment } from './payment';
 import { PaymentStatus as DomainPaymentStatus } from '../enums';
-import { OrderMapper } from '../../orders/shared/entities';
-import { UserMapper } from '../../users/types/user.mapper';
+import { OrderMapper } from '../../../orders/shared/entities';
+import { UserMapper } from '../../../users/types/user.mapper';
 import { PaymentMethodMapper } from './payment-method.mapper';
 
 export class PaymentMapper {

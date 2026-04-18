@@ -7,8 +7,8 @@ import {
   PromotionRedemption,
   PromotionRedemptionMapper,
 } from '../../promotions/types';
-import { Payment, PaymentMapper } from '../../payments/types';
-import { PaymentStatus } from '../../payments/enums';
+import { Payment, PaymentMapper } from '../../payments/shared/entities';
+import { PaymentStatus } from '../../payments/shared/enums';
 import { OrderStatus } from '../shared';
 import {
   OrderNotFoundException,

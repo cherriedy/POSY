@@ -6,7 +6,6 @@ import { Exclude, Expose, Type } from 'class-transformer';
 @Exclude()
 class PaymentMethodDto {
   @ApiProperty() @Expose() id: string;
-  @ApiProperty() @Expose() displayName: string;
   @ApiProperty() @Expose() provider: string;
 }
 
