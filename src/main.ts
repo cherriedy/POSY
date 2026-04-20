@@ -22,11 +22,7 @@ async function bootstrap() {
 
   // Serve static files from the upload directory
   app.useStaticAssets(uploadDir, {
-    prefix: '/uploads/',
-    setHeaders: (res) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-      res.setHeader('Access-Control-Allow-Origin', '*');
-    },
+    prefix: '/uploads/'
   });
   //------------------------------------------------------------------//
 
