@@ -1,6 +1,6 @@
 import { PricingSnapshotPromotion } from './pricing-snapshot-promotion.class';
 import { PricingSnapshotTax } from '../../taxes';
-import { PromotionRedemption } from './promotion-redemption.class';
+import { PromotionRedemption } from './promotion-redemption';
 import { Order } from '../../orders/shared/entities';
 
 export class PricingSnapshot {

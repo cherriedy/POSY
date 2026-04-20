@@ -459,7 +459,8 @@ model PricingSnapshotPromotion {
   discount_amount   Decimal @db.Decimal(10, 2)
 
   // Relations
-  snapshot  PricingSnapshot @relation(fields: [snapshot_id], references: [id])
+  // Once the execute in PricingSnapshot is deleted, the associated promotion records must be deleted.
+  snapshot  PricingSnapshot @relation(fields: [snapshot_id], references: [id], onDelete: Cascade)
   promotion Promotion       @relation(fields: [promotion_id], references: [id])
 
   @@unique([snapshot_id, promotion_id])

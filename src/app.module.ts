@@ -10,6 +10,7 @@ import {
   JwtConfigModule,
   MailerSendConfigModule,
   MeilisearchConfigModule,
+  MomoConfigModule,
   RedisConfigModule,
 } from './config';
 import { LoggerModule } from './logger/logger.module';
@@ -71,6 +72,7 @@ import { InventoryModule } from './inventory/inventory.module';
     UserTrackingModule,
     RedisModule,
     RedisConfigModule,
+    MomoConfigModule,
     IngredientModule,
     PythonConfigModule,
     RecommendationModule,

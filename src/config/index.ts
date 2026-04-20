@@ -4,3 +4,4 @@ export * from './app/config.module';
 export * from './mailersend/config.module';
 export * from './meilisearch/config.module';
 export * from './redis/config.module';
+export * from './momo/config.module';

@@ -14,12 +14,12 @@ import {
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { createPageResponseSchema } from '../../common/dto';
-import { PaymentMethodsService } from './features/payment-methods.service';
+import { createPageResponseSchema } from '../../../common/dto';
+import { PaymentMethodsService } from '../features/payment-methods.service';
 import {
   PublicPaymentMethodQueryParamsDto,
   PublicPaymentMethodResponseDto,
-} from './shared';
+} from '../shared';
 
 @ApiTags('(Public)')
 @ApiExtraModels(PublicPaymentMethodResponseDto)
