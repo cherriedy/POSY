@@ -126,10 +126,6 @@ class OrderPaymentMethodResponseDto {
   @ApiProperty({ type: String, description: 'Payment method ID' })
   @Expose()
   id: string;
-
-  @ApiProperty({ type: String, description: 'Display name' })
-  @Expose()
-  displayName: string;
 }
 
 @Exclude()

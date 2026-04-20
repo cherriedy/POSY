@@ -9,5 +9,3 @@ export class MqttConfigService {
     return this.configService.get<string>('mqtt.brokerUrl')!;
   }
 }
-
-

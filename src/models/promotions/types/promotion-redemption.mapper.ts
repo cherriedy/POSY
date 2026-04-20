@@ -1,5 +1,8 @@
-import { PromotionRedemption as DomainPromotionRedemption } from './promotion-redemption.class';
-import { PromotionRedemption as PrismaPromotionRedemption } from '@prisma/client';
+import { PromotionRedemption } from './promotion-redemption';
+import {
+  Prisma,
+  PromotionRedemption as PrismaPromotionRedemption,
+} from '@prisma/client';
 import { PromotionMapper } from './promotion.mapper';
 import { PricingSnapshotMapper } from './pricing-snapshot.mapper';
 import { OrderMapper } from '../../orders/shared/entities';
@@ -8,8 +11,8 @@ export class PromotionRedemptionMapper {
   static toDomain(
     this: void,
     prisma: PrismaPromotionRedemption,
-  ): DomainPromotionRedemption {
-    return new DomainPromotionRedemption(
+  ): PromotionRedemption {
+    return new PromotionRedemption(
       prisma.id,
       prisma.promotion_id,
       prisma.snapshot_id,
@@ -33,11 +36,10 @@ export class PromotionRedemptionMapper {
     );
   }
 
-  static toPrisma(
-    domain: DomainPromotionRedemption,
-  ): PrismaPromotionRedemption {
-    return <PrismaPromotionRedemption>{
-      ...(domain.id ? { id: domain.id } : {}),
+  static toPrismaCreate(
+    domain: PromotionRedemption,
+  ): Prisma.PromotionRedemptionUncheckedCreateInput {
+    return {
       promotion_id: domain.promotionId,
       snapshot_id: domain.snapshotId,
       order_id: domain.orderId,

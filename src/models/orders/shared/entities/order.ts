@@ -3,7 +3,7 @@ import { User } from '../../../users/types/user.class';
 import { Table } from '../../../tables/types';
 import { TableSession } from '../../../table-sessions/shared/entities';
 import { OrderItem } from './order-item';
-import { Payment } from '../../../payments/types';
+import { Payment } from '../../../payments/shared/entities';
 import { PricingSnapshot } from '../../../promotions/types';
 
 export class Order {

@@ -82,7 +82,7 @@ export class TaxController {
     private readonly associateEntityTaxService: AssociateEntityTaxService,
     private readonly getEntityTaxAssociationsService: GetEntityTaxAssociationsService,
     private readonly removeEntityTaxAssociationService: RemoveEntityTaxAssociationService,
-  ) { }
+  ) {}
 
   // ────────────────────────────────
   // GET /taxes
@@ -404,11 +404,9 @@ export class TaxController {
         await this.getEntityTaxAssociationsService.getByTaxId(taxId);
 
       const items = associations.map((a) => {
-        const association = plainToInstance(
-          TaxAssociationResponseDto,
-          a,
-          { excludeExtraneousValues: true },
-        );
+        const association = plainToInstance(TaxAssociationResponseDto, a, {
+          excludeExtraneousValues: true,
+        });
 
         ['entityId', 'entityType'].forEach((k) => delete association[k]);
 

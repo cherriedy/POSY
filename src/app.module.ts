@@ -10,6 +10,7 @@ import {
   JwtConfigModule,
   MailerSendConfigModule,
   MeilisearchConfigModule,
+  MomoConfigModule,
   RedisConfigModule,
 } from './config';
 import { LoggerModule } from './logger/logger.module';
@@ -30,7 +31,7 @@ import { TableModule } from './models/tables/table.module';
 import { FloorModule } from './models/floors/floor.module';
 import { ZoneModule } from './models/zones/zone.module';
 import { TableSessionModule } from './models/table-sessions';
-import { UserTrackingModule } from './user-tracking';
+import { UserTrackingModule } from './user-tracking/user-tracking.module';
 import { RedisModule } from './providers/redis';
 import { IngredientModule } from './models/ingredients';
 import { RecommendationModule } from './recommendation/recommendation.module';
@@ -71,6 +72,7 @@ import { InventoryModule } from './inventory/inventory.module';
     UserTrackingModule,
     RedisModule,
     RedisConfigModule,
+    MomoConfigModule,
     IngredientModule,
     PythonConfigModule,
     RecommendationModule,

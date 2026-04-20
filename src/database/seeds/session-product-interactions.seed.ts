@@ -303,26 +303,6 @@ function lightInteraction(): {
   return { viewCount, orderCount, totalQuantity };
 }
 
-/**
- * Compute a normalised interaction_score in [0, 0.9999].
- *
- * Formula (empirically calibrated for Decimal(5,4)):
- *   score = order_count × 0.15  +  view_count × 0.03  +  total_quantity × 0.02
- *
- * Resulting ranges per tier:
- *   strong  → ≈ 0.50 – 0.95
- *   medium  → ≈ 0.18 – 0.50
- *   light   → ≈ 0.03 – 0.15
- */
-function calcInteractionScore(
-  viewCount: number,
-  orderCount: number,
-  totalQuantity: number,
-): number {
-  const raw = orderCount * 0.15 + viewCount * 0.03 + totalQuantity * 0.02;
-  return Math.min(Math.round(raw * 10000) / 10000, 0.9999);
-}
-
 // ---------------------------------------------------------------------------
 // Main seed function
 // ---------------------------------------------------------------------------
@@ -464,11 +444,6 @@ export async function seedSessionProductInteractions(
       }
 
       const totalSpent = orderCount > 0 ? product.price * totalQuantity : 0;
-      const interactionScore = calcInteractionScore(
-        viewCount,
-        orderCount,
-        totalQuantity,
-      );
 
       // last_ordered must fall within the session's time window
       const lastOrdered =
@@ -485,7 +460,6 @@ export async function seedSessionProductInteractions(
           total_quantity: totalQuantity,
           total_spent: totalSpent,
           last_ordered: lastOrdered,
-          interaction_score: interactionScore,
         },
       });
     }

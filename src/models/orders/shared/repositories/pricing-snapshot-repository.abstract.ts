@@ -18,6 +18,15 @@ export abstract class PricingSnapshotRepository {
   abstract findByOrderId(orderId: string): Promise<PricingSnapshot | null>;
 
   /**
+   * Updates monetary totals for a pricing snapshot.
+   */
+  abstract updateAmounts(
+    snapshotId: string,
+    discountAmount: number,
+    totalAmount: number,
+  ): Promise<PricingSnapshot>;
+
+  /**
    * Deletes a pricing snapshot by the associated order ID.
    *
    * @param orderId - The ID of the order whose pricing snapshot is to be deleted.

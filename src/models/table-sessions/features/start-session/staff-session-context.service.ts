@@ -16,7 +16,7 @@ export class StaffSessionContextService {
   constructor(
     private readonly tableSessionRepository: TableSessionRepository,
     private readonly tableRepository: TableRepository,
-  ) { }
+  ) {}
 
   /**
    * This method allows staff members to get the active session for a table or create a new one if none exists.
@@ -107,7 +107,6 @@ export class StaffSessionContextService {
     };
   }
 
-  
   async getActiveSessionForOrder(
     tableId: string,
   ): Promise<{ sessionId: string; tableId: string }> {
@@ -118,8 +117,7 @@ export class StaffSessionContextService {
       await this.tableSessionRepository.findActiveByTableId(tableId);
 
     if (!existing) {
-      throw new TableSessionNotFoundException(
-      );
+      throw new TableSessionNotFoundException();
     }
 
     return {
