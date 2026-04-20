@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../../../node_modules/.prisma/client"
+  output   = "../../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -459,7 +459,8 @@ model PricingSnapshotPromotion {
   discount_amount   Decimal @db.Decimal(10, 2)
 
   // Relations
-  snapshot  PricingSnapshot @relation(fields: [snapshot_id], references: [id])
+  // Once the execute in PricingSnapshot is deleted, the associated promotion records must be deleted.
+  snapshot  PricingSnapshot @relation(fields: [snapshot_id], references: [id], onDelete: Cascade)
   promotion Promotion       @relation(fields: [promotion_id], references: [id])
 
   @@unique([snapshot_id, promotion_id])
@@ -823,22 +824,21 @@ enum PaymentStatus {
 }
 
 model PaymentMethod {
-  id           String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  provider     PaymentProvider
-  name         String          @db.VarChar(100)
-  display_name String          @db.VarChar(100)
-  icon_url     String?         @db.Text
-  is_active    Boolean         @default(true)
-  fee_type     PaymentFeeType?
-  fee_value    Decimal?        @db.Decimal(10, 2)
-  sort_order   Int             @default(0) @db.SmallInt // For ordering in UI
-  created_at   DateTime        @default(now())
-  updated_at   DateTime        @default(now()) @updatedAt
+  id         String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  provider   PaymentProvider
+  name       String          @db.VarChar(100)
+  icon_url   String?         @db.Text
+  is_active  Boolean         @default(true)
+  fee_type   PaymentFeeType?
+  fee_value  Decimal?        @db.Decimal(10, 2)
+  sort_order Int             @default(0) @db.SmallInt // For ordering in UI
+  created_at DateTime        @default(now())
+  updated_at DateTime        @default(now()) @updatedAt
 
   // Relations
   payments Payment[]
 
-  @@unique([name, display_name, provider])
+  @@unique([name, provider])
   @@index([is_active])
   @@index([sort_order])
   @@map("payment_methods")
@@ -993,7 +993,7 @@ model SessionProductInteraction {
   last_ordered   DateTime?
 
   // Implicit feedback score
-  interaction_score Decimal @default(0) @db.Decimal(5, 4) // 0-1, normalized score
+  // interaction_score Decimal @default(0) @db.Decimal(5, 4) // 0-1, normalized score
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
@@ -1005,7 +1005,7 @@ model SessionProductInteraction {
   @@unique([session_id, product_id])
   @@index([session_id])
   @@index([product_id])
-  @@index([interaction_score])
+  // @@index([interaction_score])
   @@index([last_ordered])
   @@map("session_product_interactions")
 }

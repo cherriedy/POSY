@@ -92,7 +92,7 @@ export class StaffOrderController {
     private readonly updateOrderStatusService: UpdateOrderStatusService,
     private readonly updateOrderItemStatusService: UpdateOrderItemStatusService,
     private readonly staffSessionContextService: StaffSessionContextService,
-  ) { }
+  ) {}
 
   @Get()
   @ApiOperation({
@@ -124,7 +124,10 @@ export class StaffOrderController {
     description: `Returns detailed information about a specific order, accessible by any authenticated staff member.`,
   })
   @ApiParam({ name: 'id', type: String })
-  @ApiOkResponse({ description: 'Order details', type: OrderDetailedResponseDto })
+  @ApiOkResponse({
+    description: 'Order details',
+    type: OrderDetailedResponseDto,
+  })
   @ApiBadRequestResponse({ description: 'Invalid order ID' })
   async getById(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
@@ -166,10 +169,11 @@ export class StaffOrderController {
   ) {
     const userId = (req.user as JwtPayload)?.sub;
     try {
-      const staffTableContext = await this.staffSessionContextService.createSessionForOrder(
-        tableId,
-        userId,
-      );
+      const staffTableContext =
+        await this.staffSessionContextService.createSessionForOrder(
+          tableId,
+          userId,
+        );
       const sessionId = staffTableContext.sessionId;
       console.log('CREATE SESSION:', sessionId);
 
@@ -258,9 +262,8 @@ export class StaffOrderController {
   ) {
     const userId = (req.user as JwtPayload)?.sub;
     try {
-      const staffTableContext = await this.staffSessionContextService.getActiveSessionForOrder(
-        tableId,
-      );
+      const staffTableContext =
+        await this.staffSessionContextService.getActiveSessionForOrder(tableId);
       const sessionId = staffTableContext.sessionId;
       console.log('UPDATE SESSION:', sessionId);
 
@@ -269,14 +272,15 @@ export class StaffOrderController {
         id: userId,
         role: userRole,
       });
-      
+
       return plainToInstance(OrderDetailedResponseDto, order, {
         excludeExtraneousValues: true,
       });
     } catch (e) {
       if (e instanceof OrderModificationForbiddenException) {
         throw new ForbiddenException(e.message);
-      } if (e instanceof OrderNotFoundForSessionException) {
+      }
+      if (e instanceof OrderNotFoundForSessionException) {
         throw new NotFoundException(e.message);
       } else if (
         e instanceof OrderNotFoundException ||

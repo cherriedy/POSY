@@ -4,8 +4,7 @@ export async function seedPaymentMethods(prisma: PrismaClient) {
   const paymentMethods = [
     {
       provider: PaymentProvider.CASH,
-      name: 'cash',
-      display_name: 'Cash',
+      name: 'Cash',
       icon_url: null,
       is_active: true,
       fee_type: null,
@@ -14,8 +13,7 @@ export async function seedPaymentMethods(prisma: PrismaClient) {
     },
     {
       provider: PaymentProvider.MOMO,
-      name: 'momo',
-      display_name: 'MoMo',
+      name: 'Momo',
       icon_url: null,
       is_active: true,
       fee_type: PaymentFeeType.PERCENTAGE,
@@ -24,8 +22,7 @@ export async function seedPaymentMethods(prisma: PrismaClient) {
     },
     {
       provider: PaymentProvider.VNPAY,
-      name: 'vnpay',
-      display_name: 'VNPay',
+      name: 'VNPay',
       icon_url: null,
       is_active: true,
       fee_type: PaymentFeeType.PERCENTAGE,
@@ -38,7 +35,6 @@ export async function seedPaymentMethods(prisma: PrismaClient) {
     const exists = await prisma.paymentMethod.findFirst({
       where: {
         name: method.name,
-        display_name: method.display_name,
         provider: method.provider,
       },
     });

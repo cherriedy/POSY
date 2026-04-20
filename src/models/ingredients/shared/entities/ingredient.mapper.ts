@@ -39,9 +39,7 @@ export class IngredientMapper {
       stock: domain.stock,
       min_stock: domain.minStock,
       unit_cost:
-      domain.unitCost !== undefined
-        ? new Prisma.Decimal(domain.unitCost)
-        : 0,
+        domain.unitCost !== undefined ? new Prisma.Decimal(domain.unitCost) : 0,
       expired_at: domain.expiredAt,
     };
   }

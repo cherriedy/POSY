@@ -1,4 +1,4 @@
-import { PricingSnapshotPromotion as DomainPricingSnapshotPromotion } from './pricing-snapshot-promotion.class';
+import { PricingSnapshotPromotion } from './pricing-snapshot-promotion.class';
 import {
   Prisma,
   PricingSnapshotPromotion as PrismaPricingSnapshotPromotion,
@@ -10,8 +10,8 @@ export class PricingSnapshotPromotionMapper {
   static toDomain(
     this: void,
     prisma: PrismaPricingSnapshotPromotion,
-  ): DomainPricingSnapshotPromotion {
-    return new DomainPricingSnapshotPromotion(
+  ): PricingSnapshotPromotion {
+    return new PricingSnapshotPromotion(
       prisma.id,
       prisma.snapshot_id,
       prisma.promotion_id,
@@ -33,11 +33,10 @@ export class PricingSnapshotPromotionMapper {
     );
   }
 
-  static toPrisma(
-    domain: DomainPricingSnapshotPromotion,
-  ): PrismaPricingSnapshotPromotion {
-    return <PrismaPricingSnapshotPromotion>{
-      ...(domain.id ? { id: domain.id } : {}),
+  static toPrismaCreate(
+    domain: PricingSnapshotPromotion,
+  ): Prisma.PricingSnapshotPromotionUncheckedCreateInput {
+    return {
       snapshot_id: domain.snapshotId,
       promotion_id: domain.promotionId,
       promotion_code: domain.promotionCode,

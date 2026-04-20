@@ -6,3 +6,5 @@ export * from './promotion-product-repository.abstract';
 export * from './promotion-product-repository';
 export * from './promotion-redemption-repository.abstract';
 export * from './promotion-redemption-repository';
+export * from './pricing-snapshot-promotion-repository.abstract';
+export * from './pricing-snapshot-promotion-repository';
