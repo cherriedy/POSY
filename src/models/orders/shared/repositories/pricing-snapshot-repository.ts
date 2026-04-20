@@ -7,6 +7,7 @@ import {
 } from '../../../promotions/types';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { OrderSnapshotNotFoundException } from '../exceptions';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class PricingSnapshotRepositoryImpl implements PricingSnapshotRepository {
@@ -37,6 +38,23 @@ export class PricingSnapshotRepositoryImpl implements PricingSnapshotRepository 
       include: { taxes: true, promotions: true },
     });
     return snapshot ? PricingSnapshotMapper.toDomain(snapshot) : null;
+  }
+
+  async updateAmounts(
+    snapshotId: string,
+    discountAmount: number,
+    totalAmount: number,
+  ): Promise<PricingSnapshot> {
+    return await this.prismaService.pricingSnapshot
+      .update({
+        where: { id: snapshotId },
+        data: {
+          discount_amount: new Prisma.Decimal(discountAmount),
+          total_amount: new Prisma.Decimal(totalAmount),
+        },
+        include: { taxes: true, promotions: true },
+      })
+      .then(PricingSnapshotMapper.toDomain);
   }
 
   /**

@@ -4,6 +4,11 @@ import { PaymentMethodQueryParams } from '../interfaces';
 
 export abstract class PaymentMethodRepository implements BaseRepository<PaymentMethod> {
   /**
+   * Finds a payment method by id.
+   */
+  abstract findById(id: string): Promise<PaymentMethod | null>;
+
+  /**
    * Returns a paginated list of payment methods based on query params.
    *
    * @param params Filtering, sorting, and pagination options.

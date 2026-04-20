@@ -64,4 +64,56 @@ export class PaymentMapper {
       ...(domain.createdAt ? { created_at: domain.createdAt } : {}),
     };
   }
+
+  static toPrismaUpdate(
+    domain: Partial<DomainPayment>,
+  ): Prisma.PaymentUncheckedUpdateInput {
+    const updateData: Prisma.PaymentUncheckedUpdateInput = {};
+
+    if (domain.methodId) {
+      updateData.method_id = domain.methodId;
+    }
+
+    if (domain.orderId) {
+      updateData.order_id = domain.orderId;
+    }
+
+    if (domain.createdBy) {
+      updateData.created_by = domain.createdBy;
+    }
+
+    if (domain.amount !== undefined) {
+      updateData.amount = domain.amount;
+    }
+
+    if (domain.feeAmount !== undefined) {
+      updateData.fee_amount = domain.feeAmount;
+    }
+
+    if (domain.referenceNumber) {
+      updateData.reference_number = domain.referenceNumber;
+    }
+
+    if (domain.status) {
+      updateData.status = domain.status;
+    }
+
+    if (domain.paymentUrl) {
+      updateData.payment_url = domain.paymentUrl;
+    }
+
+    if (domain.paidAt) {
+      updateData.paid_at = domain.paidAt;
+    }
+
+    if (domain.expiredAt) {
+      updateData.expired_at = domain.expiredAt;
+    }
+
+    if (domain.metadata !== undefined) {
+      updateData.metadata = domain.metadata ?? Prisma.DbNull;
+    }
+
+    return updateData;
+  }
 }

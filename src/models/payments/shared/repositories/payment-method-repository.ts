@@ -17,6 +17,18 @@ export class PaymentMethodRepositoryImpl implements PaymentMethodRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   /**
+   * Finds a payment method by its unique identifier.
+   *
+   * @param id The UUID of the payment method to retrieve.
+   * @return The found PaymentMethod domain entity, or null if not found.
+   */
+  async findById(id: string): Promise<PaymentMethod | null> {
+    return await this.prismaService.paymentMethod
+      .findUnique({ where: { id } })
+      .then((result) => (result ? PaymentMethodMapper.toDomain(result) : null));
+  }
+
+  /**
    * Fetches payment methods using pagination, optional filters, and sorting rules.
    *
    * @param params Query parameters for paging, filtering, and ordering.

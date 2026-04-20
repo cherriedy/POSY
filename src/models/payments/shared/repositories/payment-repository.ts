@@ -4,6 +4,7 @@ import { Page } from '../../../../common/interfaces';
 import { paginationConfig } from '../../../../common/config';
 import { PrismaService } from '../../../../providers/prisma/prisma.service';
 import { Payment, PaymentMapper } from '../entities';
+import { PaymentStatus } from '../enums';
 import { PaymentOrderBy, PaymentQueryParams } from '../interfaces';
 import { PaymentRepository } from './payment-repository.abstract';
 import { DuplicateEntryException } from '../../../../common/exceptions';
@@ -42,6 +43,78 @@ export class PaymentRepositoryImpl implements PaymentRepository {
       }
       throw e;
     }
+  }
+
+  async update(id: string, entity: Partial<Payment>): Promise<Payment> {
+    const data = PaymentMapper.toPrismaUpdate(entity);
+    const result = await this.prismaService.payment.update({
+      where: { id },
+      data,
+      include: {
+        method: true,
+        order: true,
+        user: true,
+      },
+    });
+    return PaymentMapper.toDomain(result);
+  }
+
+  async updatePendingStatusByOrderId(
+    orderId: string,
+    status: PaymentStatus,
+  ): Promise<number> {
+    return await this.prismaService.payment
+      .updateMany({
+        where: { order_id: orderId, status: PaymentStatus.PENDING },
+        data: {
+          status,
+          paid_at: status === PaymentStatus.COMPLETED ? new Date() : null,
+        },
+      })
+      .then((result) => result.count);
+  }
+
+  async findById(id: string): Promise<Payment | null> {
+    return await this.prismaService.payment
+      .findUnique({
+        where: { id },
+        include: {
+          method: true,
+          order: true,
+          user: true,
+        },
+      })
+      .then((result) => (result ? PaymentMapper.toDomain(result) : null));
+  }
+
+  async findPendingOlderThan(cutoff: Date): Promise<Payment[]> {
+    const rows = await this.prismaService.payment.findMany({
+      where: {
+        status: PaymentStatus.PENDING,
+        created_at: { lt: cutoff },
+      },
+      include: {
+        method: true,
+        order: true,
+        user: true,
+      },
+    });
+
+    return rows.map(PaymentMapper.toDomain);
+  }
+
+  async expirePendingOlderThan(cutoff: Date): Promise<number> {
+    return await this.prismaService.payment
+      .updateMany({
+        where: {
+          status: PaymentStatus.PENDING,
+          created_at: { lt: cutoff },
+        },
+        data: {
+          status: PaymentStatus.EXPIRED,
+        },
+      })
+      .then((result) => result.count);
   }
 
   /**

@@ -6,7 +6,7 @@ export * from './promotion-product.class';
 export * from './promotion-product.mapper';
 export * from './pricing-snapshot.class';
 export * from './pricing-snapshot.mapper';
-export * from './promotion-redemption.class';
+export * from './promotion-redemption';
 export * from './promotion-redemption.mapper';
 export * from './pricing-snapshot-promotion.class';
 export * from './pricing-snapshot-promotion.mapper';
