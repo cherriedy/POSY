@@ -127,58 +127,6 @@ export class GetPromotionsService {
   // }
 
   /**
-   * Retrieves all promotions associated with a given product ID.
-   * For STAFF users, only returns ACTIVE and non-deleted promotions.
-   * For ADMIN and MANAGER users, returns all promotions including deleted and disabled ones.
-   *
-   * @param {string} productId - The unique identifier of the product.
-   * @param {string} role - The role of the requesting user (ADMIN, MANAGER, or STAFF).
-   * @returns {Promise<Promotion[]>} A promise that resolves to an array of promotions.
-   */
-  async getPromotionsByProductId(
-    productId: string,
-    role: string,
-  ): Promise<Promotion[]> {
-    const product = await this.productRepository.findById(productId);
-
-    if (!product || product.isDeleted) {
-      throw new ProductNotFoundException(productId);
-    }
-
-    const includeAll = role === Role.ADMIN || role === Role.MANAGER;
-    return await this.promotionProductRepository.getPromotionsByProductId(
-      productId,
-      includeAll,
-    );
-  }
-
-  /**
-   * Retrieves all promotions associated with a given category ID.
-   * For STAFF users, only returns ACTIVE and non-deleted promotions.
-   * For ADMIN and MANAGER users, returns all promotions including deleted and disabled ones.
-   *
-   * @param {string} categoryId - The unique identifier of the category.
-   * @param {string} role - The role of the requesting user (ADMIN, MANAGER, or STAFF).
-   * @returns {Promise<Promotion[]>} A promise that resolves to an array of promotions.
-   */
-  async getPromotionsByCategoryId(
-    categoryId: string,
-    role: string,
-  ): Promise<Promotion[]> {
-    const category = await this.categoryRepository.findById(categoryId);
-
-    if (!category || category.isDeleted) {
-      throw new CategoryNotFoundException(categoryId);
-    }
-
-    const includeAll = Role[role] === Role.ADMIN || Role[role] === Role.MANAGER;
-    return await this.promotionCategoryRepository.getPromotionsByCategoryId(
-      categoryId,
-      includeAll,
-    );
-  }
-
-  /**
    * Retrieves all applicable promotions for a given product.
    *
    * This method returns all active, non-deleted promotions that can be applied to the specified product.

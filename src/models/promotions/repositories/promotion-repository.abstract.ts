@@ -49,6 +49,8 @@ export abstract class PromotionRepository implements BaseRepository<Promotion> {
    */
   abstract getAllPaged(params: PromotionQueryParams): Promise<Page<Promotion>>;
 
+  abstract getAvailablePromotions(): Promise<any[]>;
+
   /**
    * Updates the status of all promotions that have expired before the given date.
    * @param {Date} date - The cutoff date; promotions with end dates before this will be updated.

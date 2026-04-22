@@ -20,7 +20,7 @@ import {
   PromotionRedemptionRepository,
   PromotionRepository,
 } from '../../promotions/repositories';
-import { PromotionNotFoundException } from '../../promotions/exceptions';
+import { PromotionNotFoundException, PromotionUnusableException } from '../../promotions/exceptions';
 import { PaymentCoreService } from './payment-core.service';
 import { CheckoutRequestDto } from '../shared';
 import { MomoPaymentGateway } from '../shared/providers/momo-payment-gateway';
@@ -28,6 +28,8 @@ import { UnsupportedValueException } from '../../../common/exceptions';
 import { UpdateOrderStatusService } from 'src/models/orders/services/update-order-status.service';
 import { Role } from 'src/common/enums';
 import { OrderNotReadyForCheckoutException } from 'src/models/orders/shared/exceptions/order-not-ready-for-checkout.exception';
+import { PrismaService } from 'src/providers/prisma/prisma.service';
+import { ProductNotFoundException } from 'src/models/products';
 
 @Injectable()
 export class PaymentCheckoutService {
@@ -42,7 +44,8 @@ export class PaymentCheckoutService {
     private readonly momoPaymentGateway: MomoPaymentGateway,
     private readonly uow: UnitOfWork,
     private readonly updateOrderStatusService: UpdateOrderStatusService,
-  ) {}
+    private readonly prismaService: PrismaService,
+  ) { }
 
   /**
    * Executes the payment checkout process.
@@ -82,15 +85,94 @@ export class PaymentCheckoutService {
         throw new OrderSnapshotNotFoundException(payload.orderId);
       }
 
+      const productIds = snapshot.order?.orderItems?.map(i => i.productId) ?? [];
+
+      const products = await this.prismaService.product.findMany({
+        where: { id: { in: productIds } },
+      });
+
+      const enrichedItems = snapshot.order?.orderItems?.map((item: any) => {
+        const product = products.find(p => p.id === item.productId);
+
+        if (!product) {
+          throw new ProductNotFoundException(item.productId);
+        }
+
+        const unitPrice = Number(product.price);
+
+        return {
+          productId: item.productId,
+          categoryId: product.category_id,
+          quantity: item.quantity,
+          unitPrice,
+          subtotal: unitPrice * item.quantity,
+        };
+      }) ?? [];
+
+      const totalAmount = enrichedItems.reduce(
+        (sum, i) => sum + i.subtotal,
+        0,
+      );
+
       let totalDiscount = 0;
 
       if (promotionIds.length > 0) {
         for (const pId of promotionIds) {
           const promotion = await this.promotionRepository.findById(pId);
+
           if (!promotion) throw new PromotionNotFoundException({ id: pId });
 
           const usageCount = await this.promotionRepository.getUsageCount(pId);
-          promotion.assertUsable(usageCount); // Validate promotion can be applied based on usage limits
+
+          // 1. basic rule
+          promotion.assertUsable(usageCount);
+
+          // 2. APPLY SAME RULE AS "AVAILABLE API"
+          const reasons: string[] = [];
+
+          if (totalAmount < Number(promotion.minOrderValue)) {
+            reasons.push('MIN_ORDER_NOT_MET');
+          }
+
+          if (promotion.applicability === 'SPECIFIC_ITEMS') {
+            const match = enrichedItems.some(item =>
+              (promotion.promotionProducts ?? []).some(
+                p => p.product_id === item.productId,
+              ),
+            );
+
+            if (!match) reasons.push('NOT_APPLICABLE_PRODUCT');
+          }
+
+          if (promotion.applicability === 'SPECIFIC_CATEGORIES') {
+            const match = enrichedItems.some(item =>
+              (promotion.promotionCategories ?? []).some(
+                c => c.category_id === item.categoryId,
+              ),
+            );
+
+            if (!match) reasons.push('NOT_APPLICABLE_CATEGORY');
+          }
+
+          if (promotion.applicability === 'QUANTITY_BASED') {
+            const totalQty = enrichedItems.reduce(
+              (sum, i) => sum + i.quantity,
+              0,
+            );
+
+            if (totalQty < (promotion.minQuantity ?? 0)) {
+              reasons.push('NOT_ENOUGH_QUANTITY');
+            }
+          }
+
+          if (reasons.length > 0) {
+            throw new PromotionUnusableException(
+              promotion.id!,
+              reasons.join(', '),
+            );
+          }
+
+          // 3. calculate discount
           const discountAmount = promotion.calculate(snapshot.subtotalAmount);
           totalDiscount += discountAmount;
 

@@ -28,7 +28,10 @@ export class Promotion {
     public deletedAt: Date | null,
     public createdAt: Date,
     public updateAt: Date,
-  ) {}
+
+    public promotionProducts?: { product_id: string }[],
+    public promotionCategories?: { category_id: string }[],
+  ) { }
 
   /**
    * Calculates the discount amount for the promotion based on the subtotal amount.

@@ -7,8 +7,8 @@ import {
 } from '../enums';
 
 export class PromotionMapper {
-  static toDomain(this: void, prisma: PrismaPromotion): DomainPromotion {
-    return new DomainPromotion(
+  static toDomain(this: void, prisma: any): DomainPromotion {
+    const promo = new DomainPromotion(
       prisma.id,
       prisma.code,
       prisma.title,
@@ -42,6 +42,11 @@ export class PromotionMapper {
       prisma.created_at,
       prisma.updated_at,
     );
+
+    promo.promotionProducts = prisma.promotionProducts ?? [];
+    promo.promotionCategories = prisma.promotionCategories ?? [];
+
+    return promo;
   }
 
   static toPrisma(domain: DomainPromotion): PrismaPromotion {
@@ -57,7 +62,7 @@ export class PromotionMapper {
           : undefined,
       max_discount_amount:
         domain.maxDiscountAmount !== undefined &&
-        domain.maxDiscountAmount !== null
+          domain.maxDiscountAmount !== null
           ? new Prisma.Decimal(domain.maxDiscountAmount)
           : undefined,
       min_order_value:

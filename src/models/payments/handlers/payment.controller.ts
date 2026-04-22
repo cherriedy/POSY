@@ -51,7 +51,7 @@ import {
   OrderNotFoundException,
   OrderSnapshotNotFoundException,
 } from 'src/models/orders';
-import { PromotionNotFoundException } from 'src/models/promotions/exceptions';
+import { PromotionNotFoundException, PromotionUnusableException } from 'src/models/promotions/exceptions';
 import { OrderNotReadyForCheckoutException } from 'src/models/orders/shared/exceptions/order-not-ready-for-checkout.exception';
 import { UnsupportedValueException } from 'src/common/exceptions';
 
@@ -180,7 +180,8 @@ export class PaymentController {
         e instanceof OrderSnapshotNotFoundException ||
         e instanceof PromotionNotFoundException ||
         e instanceof OrderNotReadyForCheckoutException ||
-        e instanceof UnsupportedValueException
+        e instanceof UnsupportedValueException ||
+        e instanceof PromotionUnusableException
       ) {
         throw new BadRequestException(e.message || e.toString());
       }

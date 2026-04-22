@@ -16,7 +16,7 @@ const { page: defaultPage, pageSize: defaultPageSize } =
 
 @Injectable()
 export class PromotionRepositoryImpl implements PromotionRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   /**
    * Creates a new promotion in the database.
@@ -86,6 +86,10 @@ export class PromotionRepositoryImpl implements PromotionRepository {
   async findById(id: string): Promise<Promotion | null> {
     const record = await this.prismaService.promotion.findUnique({
       where: { id },
+      include: {
+      promotionProducts: true,
+      promotionCategories: true,
+    },
     });
 
     return record ? PromotionMapper.toDomain(record) : null;
@@ -108,8 +112,6 @@ export class PromotionRepositoryImpl implements PromotionRepository {
       }),
       this.prismaService.promotion.count({ where }),
     ]);
-
-    console.log(JSON.stringify(where, null, 2));
     return {
       items: items.map(PromotionMapper.toDomain),
       page,
@@ -117,6 +119,31 @@ export class PromotionRepositoryImpl implements PromotionRepository {
       total,
       totalPages: Math.ceil(total / pageSize),
     };
+  }
+
+  async getAvailablePromotions(): Promise<any[]> {
+    const now = new Date();
+
+    return this.prismaService.promotion.findMany({
+      where: {
+        is_deleted: false,
+        status: 'ACTIVE',
+        start_at: { lte: now },
+        end_at: { gte: now },
+      },
+      include: {
+        promotionProducts: true,
+        promotionCategories: true,
+        _count: {
+          select: {
+            promotionRedemptions: true,
+          },
+        },
+      },
+      orderBy: {
+        priority: 'desc',
+      },
+    });
   }
 
   /**
@@ -223,6 +250,24 @@ export class PromotionRepositoryImpl implements PromotionRepository {
       if (filters.priorityMax !== undefined) {
         where.priority.lte = filters.priorityMax;
       }
+    }
+
+    /* ------------------------------ RELATION FILTER ------------------------------ */
+
+    if (filters.productId) {
+      where.promotionProducts = {
+        some: {
+          product_id: filters.productId,
+        },
+      };
+    }
+
+    if (filters.categoryId) {
+      where.promotionCategories = {
+        some: {
+          category_id: filters.categoryId,
+        },
+      };
     }
 
     /* ------------------------------ SEARCH FILTER ------------------------------ */

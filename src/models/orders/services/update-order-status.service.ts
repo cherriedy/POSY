@@ -25,7 +25,7 @@ export class UpdateOrderStatusService {
     private readonly policyService: OrderModificationPolicyService,
     private readonly staffOrderGateway: StaffOrderGateway,
     private readonly guestOrderGateway: GuestOrderGateway,
-  ) {}
+  ) { }
 
   /**
    * Updates the status of an order and broadcasts the update to staff and guests.
@@ -50,13 +50,17 @@ export class UpdateOrderStatusService {
       note: payload.order.note,
     });
 
-    // If the order is marked as COMPLETED, end the corresponding table session if it's active
-    if (payload.order.status === OrderStatus.COMPLETED) {
+    // If order is COMPLETED or CANCELLED → end session
+    const shouldEndSession =
+      payload.order.status === OrderStatus.COMPLETED ||
+      payload.order.status === OrderStatus.CANCELLED;
+
+    if (shouldEndSession) {
       const session = await this.tableSessionRepository.findActiveByTableId(
         order.tableId,
       );
 
-      if (session && session.sessionType === TableSessionType.STAFF) {
+      if (session) {
         await this.tableSessionRepository.endSession(session.id!);
       }
     }
