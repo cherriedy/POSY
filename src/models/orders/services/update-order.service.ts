@@ -25,7 +25,7 @@ export class UpdateOrderService {
     private readonly orderModificationPolicy: OrderModificationPolicyService,
     private readonly guestOrderGateway: GuestOrderGateway,
     private readonly orderPricingService: OrderPricingService,
-  ) { }
+  ) {}
 
   async execute(
     sessionId: string,
@@ -107,7 +107,9 @@ export class UpdateOrderService {
 
     if (dto.note) existing.note = dto.note; // Update order-level note if provided
 
-    const updatedOrderItems = await this.orderItemRepository.findByOrderId(existing.id!);
+    const updatedOrderItems = await this.orderItemRepository.findByOrderId(
+      existing.id!,
+    );
 
     if (updatedOrderItems.length === 0) {
       throw new AtLeastOneItemRequiredException();

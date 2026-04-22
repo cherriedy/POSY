@@ -42,7 +42,7 @@ export class PaymentCheckoutService {
     private readonly momoPaymentGateway: MomoPaymentGateway,
     private readonly uow: UnitOfWork,
     private readonly updateOrderStatusService: UpdateOrderStatusService,
-  ) { }
+  ) {}
 
   /**
    * Executes the payment checkout process.
@@ -123,7 +123,9 @@ export class PaymentCheckoutService {
       }
 
       const finalAmount = Math.max(
-        Math.round(snapshot.subtotalAmount + snapshot.totalTaxAmount - totalDiscount),
+        Math.round(
+          snapshot.subtotalAmount + snapshot.totalTaxAmount - totalDiscount,
+        ),
         0,
       );
 

@@ -22,7 +22,7 @@ async function bootstrap() {
 
   // Serve static files from the upload directory
   app.useStaticAssets(uploadDir, {
-    prefix: '/uploads/'
+    prefix: '/uploads/',
   });
   //------------------------------------------------------------------//
 

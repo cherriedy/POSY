@@ -1,5 +1,11 @@
 import { Transform } from 'class-transformer';
-import { IsOptional, IsBoolean, IsNumber, IsString, IsEnum } from 'class-validator';
+import {
+  IsOptional,
+  IsBoolean,
+  IsNumber,
+  IsString,
+  IsEnum,
+} from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { UserOrderBy, UserQueryParams, UserSortField } from '../interfaces';
 import { SortDirection } from '../../../common/interfaces';

@@ -7,7 +7,7 @@ import { PaymentNotFoundException, PaymentStatus } from '../shared';
 
 @Injectable()
 export class PaymentCoreService {
-  constructor(private readonly paymentRepository: PaymentRepository) { }
+  constructor(private readonly paymentRepository: PaymentRepository) {}
 
   /**
    * Returns paginated payments for internal users.

@@ -24,7 +24,7 @@ import { UpdateOrderStatusService } from '../orders/services/update-order-status
     PaymentRefundService,
     PaymentMiscellaneousService,
     MomoPaymentGateway,
-    UpdateOrderStatusService
+    UpdateOrderStatusService,
   ],
   controllers: [
     PublicPaymentMethodController,

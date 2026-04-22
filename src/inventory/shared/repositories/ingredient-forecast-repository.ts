@@ -15,28 +15,32 @@ export class IngredientForecastRepositoryImpl implements IngredientForecastRepos
    * upper_bound, forecast_date) for all ingredients on `date`.
    * Only touches the `ingredient_forecasts` table.
    */
-async findByDate(date: Date): Promise<ForecastRow[]> {
-  const start = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const end = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+  async findByDate(date: Date): Promise<ForecastRow[]> {
+    const start = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const end = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate() + 1,
+    );
 
-  console.log("start:", start);
-  console.log("end:", end);
+    console.log('start:', start);
+    console.log('end:', end);
 
-  return this.prismaService.ingredientForecast.findMany({
-    where: {
-      forecast_date: {
-        gte: start,
-        lt: end,
+    return this.prismaService.ingredientForecast.findMany({
+      where: {
+        forecast_date: {
+          gte: start,
+          lt: end,
+        },
       },
-    },
-    select: {
-      ingredient_id: true,
-      predicted_usage: true,
-      upper_bound: true,
-      forecast_date: true,
-    },
-  });
-}
+      select: {
+        ingredient_id: true,
+        predicted_usage: true,
+        upper_bound: true,
+        forecast_date: true,
+      },
+    });
+  }
 
   /**
    * Returns full forecast rows for a single ingredient where

@@ -8,7 +8,7 @@ import { User } from '../types/user.class';
 
 @Injectable()
 export class UpdateUserService {
-  constructor(private userRepository: UserRepository) { }
+  constructor(private userRepository: UserRepository) {}
 
   /**
    * Updates a user's information in the database.
