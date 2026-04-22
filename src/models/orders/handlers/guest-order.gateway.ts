@@ -16,7 +16,9 @@ import { AuthenticatedGuestSocket } from '../../../common/interfaces';
 @WebSocketGateway({
   namespace: 'guest/orders',
   cors: {
-    origin: process.env.APP_FRONTEND_URL || 'http://localhost:3000 || http://localhost:51771',
+    origin:
+      process.env.APP_FRONTEND_URL ||
+      'http://localhost:3000 || http://localhost:51771',
     credentials: true,
   },
 })

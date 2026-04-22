@@ -56,20 +56,19 @@ export class InventoryController {
   ): Promise<IngredientOverviewResponseDto> {
     try {
       const formatDateLocal = (date: Date) => {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-};
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      };
 
       let targetDate: Date;
       if (!target) {
-  targetDate = new Date();
-  targetDate.setDate(targetDate.getDate() + 1);
-} else {
-  const [y, m, d] = target.split('-').map(Number);
-  targetDate = new Date(y, m - 1, d); // local time
-}
-console.log("target:", target);
-      console.log("targetDate:", targetDate);
-      
+        targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + 1);
+      } else {
+        const [y, m, d] = target.split('-').map(Number);
+        targetDate = new Date(y, m - 1, d); // local time
+      }
+      console.log('target:', target);
+      console.log('targetDate:', targetDate);
 
       const { targetDate: resolvedDate, overview } =
         await this.ingredientForecastService.getOverview(targetDate);
@@ -95,18 +94,18 @@ console.log("target:", target);
         }).length,
       };
 
-      console.log("targetDate local:", formatDateLocal(targetDate));
+      console.log('targetDate local:', formatDateLocal(targetDate));
 
       return plainToInstance(
-  IngredientOverviewResponseDto,
-  {
-    meta,
-    items,
-  },
-  {
-    excludeExtraneousValues: true,
-  },
-);
+        IngredientOverviewResponseDto,
+        {
+          meta,
+          items,
+        },
+        {
+          excludeExtraneousValues: true,
+        },
+      );
     } catch {
       throw new InternalServerErrorException('Failed to fetch overview');
     }

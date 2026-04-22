@@ -47,7 +47,10 @@ import {
   PaymentMethodNotFoundException,
 } from '../shared';
 import { PaymentRefundService } from '../features/payment-refund.service';
-import { OrderNotFoundException, OrderSnapshotNotFoundException } from 'src/models/orders';
+import {
+  OrderNotFoundException,
+  OrderSnapshotNotFoundException,
+} from 'src/models/orders';
 import { PromotionNotFoundException } from 'src/models/promotions/exceptions';
 import { OrderNotReadyForCheckoutException } from 'src/models/orders/shared/exceptions/order-not-ready-for-checkout.exception';
 import { UnsupportedValueException } from 'src/common/exceptions';
@@ -65,7 +68,7 @@ export class PaymentController {
     private readonly checkoutFacadeService: PaymentCheckoutService,
     private readonly paymentRefundService: PaymentRefundService,
     private readonly paymentFacadeService: PaymentFacadeService,
-  ) { }
+  ) {}
 
   /**
    * Returns a paginated list of payments for MANAGER and ADMIN users.
@@ -119,7 +122,10 @@ export class PaymentController {
     type: PaymentResponseDto,
   })
   @ApiNotFoundResponse({ description: 'Payment not found' })
-  async getById(@Req() req: Request & { user: JwtPayload }, @Param('id') id: string) {
+  async getById(
+    @Req() req: Request & { user: JwtPayload },
+    @Param('id') id: string,
+  ) {
     try {
       const payment = await this.paymentService.getPaymentById(id);
       if (!payment) {
@@ -168,12 +174,14 @@ export class PaymentController {
         excludeExtraneousValues: true,
       });
     } catch (e) {
-      if (e instanceof OrderNotFoundException ||
+      if (
+        e instanceof OrderNotFoundException ||
         e instanceof PaymentMethodNotFoundException ||
         e instanceof OrderSnapshotNotFoundException ||
         e instanceof PromotionNotFoundException ||
         e instanceof OrderNotReadyForCheckoutException ||
-        e instanceof UnsupportedValueException) {
+        e instanceof UnsupportedValueException
+      ) {
         throw new BadRequestException(e.message || e.toString());
       }
       this.logger.error(e);
@@ -212,7 +220,8 @@ export class PaymentController {
   @Roles(Role.MANAGER, Role.ADMIN)
   @ApiOperation({
     summary: 'Refund a payment',
-    description: 'Refund a completed payment. Only COMPLETED payments can be refunded.',
+    description:
+      'Refund a completed payment. Only COMPLETED payments can be refunded.',
   })
   @ApiOkResponse({
     description: 'Payment refunded successfully',
@@ -222,9 +231,7 @@ export class PaymentController {
     description: 'Payment is not eligible for refund',
   })
   @ApiNotFoundResponse({ description: 'Payment not found' })
-  async refundPayment(
-    @Param('id') id: string,
-  ) {
+  async refundPayment(@Param('id') id: string) {
     try {
       const payment = await this.paymentRefundService.execute(id);
 

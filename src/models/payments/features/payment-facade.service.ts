@@ -21,7 +21,7 @@ export class PaymentFacadeService {
     private readonly orderRepository: OrderRepository,
     private readonly momoPaymentGateway: MomoPaymentGateway,
     private readonly updateOrderStatusService: UpdateOrderStatusService,
-  ) { }
+  ) {}
 
   /**
    * Marks pending payments of an order as FAILED and releases reserved promotions.
@@ -74,7 +74,7 @@ export class PaymentFacadeService {
     if (result.status === PaymentVerificationStatus.SUCCESS) {
       await this.paymentRepository.update(payment.id!, {
         status: PaymentStatus.COMPLETED,
-        referenceNumber: String(result.transactionId), 
+        referenceNumber: String(result.transactionId),
         metadata: result.rawResponse,
         paidAt: new Date(),
       });
