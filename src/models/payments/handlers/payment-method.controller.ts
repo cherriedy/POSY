@@ -6,7 +6,7 @@ import {
   NotFoundException,
   Param,
   ParseUUIDPipe,
-  Patch,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -82,9 +82,9 @@ export class PaymentMethodController {
   }
 
   // ────────────────────────────────
-  // PATCH /payment-methods/:id/toggle-status
+  // POST /payment-methods/:id/toggle-active
   // ────────────────────────────────
-  @Patch(':id/toggle-status')
+  @Post(':id/toggle-active')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.ADMIN)
   @ApiOperation({

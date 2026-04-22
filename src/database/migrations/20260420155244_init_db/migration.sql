@@ -14,13 +14,13 @@ CREATE TYPE "PromotionStatus" AS ENUM ('DRAFT', 'ACTIVE', 'EXPIRED', 'DISABLE');
 CREATE TYPE "PromotionApplicability" AS ENUM ('ALL_ITEMS', 'SPECIFIC_CATEGORIES', 'SPECIFIC_ITEMS', 'QUANTITY_BASED');
 
 -- CreateEnum
-CREATE TYPE "PricingSnapshotStatus" AS ENUM ('QUOTED', 'CONSUMED');
-
--- CreateEnum
 CREATE TYPE "TableStatus" AS ENUM ('AVAILABLE', 'OCCUPIED', 'RESERVED');
 
 -- CreateEnum
 CREATE TYPE "TableSessionStatus" AS ENUM ('ACTIVE', 'COMPLETED', 'CANCELLED');
+
+-- CreateEnum
+CREATE TYPE "TableSessionType" AS ENUM ('GUEST', 'STAFF');
 
 -- CreateEnum
 CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'PREPARING', 'READY', 'SERVING', 'SERVED', 'COMPLETED', 'CANCELLED');
@@ -306,7 +306,6 @@ CREATE TABLE "promotions" (
     "start_at" TIMESTAMP(3) NOT NULL,
     "end_at" TIMESTAMP(3) NOT NULL,
     "usage_limit" INTEGER,
-    "usage_count" INTEGER NOT NULL DEFAULT 0,
     "version" INTEGER NOT NULL DEFAULT 1,
     "status" "PromotionStatus" NOT NULL DEFAULT 'DRAFT',
     "is_stackable" BOOLEAN NOT NULL DEFAULT false,
@@ -322,12 +321,11 @@ CREATE TABLE "promotions" (
 -- CreateTable
 CREATE TABLE "pricing_snapshots" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "order_id" UUID,
+    "order_id" UUID NOT NULL,
     "subtotal_amount" DECIMAL(10,2) NOT NULL,
     "discount_amount" DECIMAL(10,2) NOT NULL,
     "total_tax_amount" DECIMAL(10,2) NOT NULL DEFAULT 0,
     "total_amount" DECIMAL(10,2) NOT NULL,
-    "status" "PricingSnapshotStatus" NOT NULL DEFAULT 'QUOTED',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "pricing_snapshots_pkey" PRIMARY KEY ("id")
@@ -337,7 +335,8 @@ CREATE TABLE "pricing_snapshots" (
 CREATE TABLE "pricing_snapshot_taxes" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "snapshot_id" UUID NOT NULL,
-    "tax_id" UUID NOT NULL,
+    "order_item_id" UUID,
+    "tax_config_id" UUID NOT NULL,
     "tax_name" VARCHAR(100) NOT NULL,
     "tax_type" "TaxType" NOT NULL,
     "rate_type" "TaxRateType" NOT NULL,
@@ -420,6 +419,8 @@ CREATE TABLE "tables" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "zone_id" UUID,
     "name" VARCHAR(100) NOT NULL,
+    "hardware_id" TEXT NOT NULL,
+    "current_token" VARCHAR(9),
     "capacity" SMALLINT NOT NULL,
     "status" "TableStatus" NOT NULL DEFAULT 'AVAILABLE',
     "pos_x" SMALLINT,
@@ -435,13 +436,14 @@ CREATE TABLE "tables" (
 CREATE TABLE "table_sessions" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "table_id" UUID NOT NULL,
-    "created_by" UUID,
-    "session_token" VARCHAR(512) NOT NULL,
-    "device_fingerprint" VARCHAR(1024) NOT NULL,
+    "user_id" UUID,
+    "session_token" VARCHAR(512),
+    "device_fingerprint" VARCHAR(1024),
     "status" "TableSessionStatus" NOT NULL DEFAULT 'ACTIVE',
+    "session_type" "TableSessionType" NOT NULL DEFAULT 'GUEST',
     "start_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "end_at" TIMESTAMP(3),
-    "expires_at" TIMESTAMP(3) NOT NULL,
+    "expires_at" TIMESTAMP(3),
 
     CONSTRAINT "table_sessions_pkey" PRIMARY KEY ("id")
 );
@@ -449,7 +451,7 @@ CREATE TABLE "table_sessions" (
 -- CreateTable
 CREATE TABLE "orders" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "created_by" UUID NOT NULL,
+    "created_by" UUID,
     "table_id" UUID NOT NULL,
     "session_id" UUID NOT NULL,
     "status" "OrderStatus" NOT NULL,
@@ -486,13 +488,11 @@ CREATE TABLE "tax_configs" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "type" "TaxType" NOT NULL,
     "name" VARCHAR(100) NOT NULL,
-    "display_name" VARCHAR(100) NOT NULL,
     "description" TEXT,
     "rate_type" "TaxRateType" NOT NULL,
     "charge_rate" DECIMAL(10,4) NOT NULL,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "is_included" BOOLEAN NOT NULL DEFAULT false,
-    "apply_after_vat" BOOLEAN NOT NULL DEFAULT false,
     "sort_order" SMALLINT NOT NULL DEFAULT 0,
     "is_deleted" BOOLEAN NOT NULL DEFAULT false,
     "deleted_at" TIMESTAMP(3),
@@ -505,11 +505,13 @@ CREATE TABLE "tax_configs" (
 -- CreateTable
 CREATE TABLE "order_taxes" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "tax_id" UUID NOT NULL,
     "order_id" UUID NOT NULL,
     "order_item_id" UUID,
+    "tax_config_id" UUID NOT NULL,
     "tax_name" VARCHAR(100) NOT NULL,
-    "tax_rate" DECIMAL(10,4) NOT NULL,
+    "tax_type" "TaxType" NOT NULL,
+    "rate_type" "TaxRateType" NOT NULL,
+    "charge_rate" DECIMAL(10,4) NOT NULL,
     "taxable_base" DECIMAL(10,2) NOT NULL,
     "tax_amount" DECIMAL(10,2) NOT NULL,
     "quantity" INTEGER,
@@ -536,7 +538,6 @@ CREATE TABLE "payment_methods" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "provider" "PaymentProvider" NOT NULL,
     "name" VARCHAR(100) NOT NULL,
-    "display_name" VARCHAR(100) NOT NULL,
     "icon_url" TEXT,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "fee_type" "PaymentFeeType",
@@ -553,7 +554,7 @@ CREATE TABLE "payments" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "method_id" UUID NOT NULL,
     "order_id" UUID NOT NULL,
-    "created_by" UUID NOT NULL,
+    "created_by" UUID,
     "amount" DECIMAL(10,2) NOT NULL,
     "fee_amount" DECIMAL(10,2),
     "reference_number" VARCHAR(255),
@@ -606,6 +607,7 @@ CREATE TABLE "session_preferences" (
     "favorite_meal_sessions" "MealSession"[],
     "favorite_taste_profile" "Taste"[],
     "dietary_restrictions" "DietaryTag"[],
+    "favorite_cuisines" UUID[],
     "avg_spice_preference" DECIMAL(3,2),
     "avg_price_range" DECIMAL(10,2),
     "order_count" INTEGER NOT NULL DEFAULT 0,
@@ -626,7 +628,6 @@ CREATE TABLE "session_product_interactions" (
     "total_quantity" INTEGER NOT NULL DEFAULT 0,
     "total_spent" DECIMAL(10,2) NOT NULL DEFAULT 0,
     "last_ordered" TIMESTAMP(3),
-    "interaction_score" DECIMAL(5,4) NOT NULL DEFAULT 0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -724,14 +725,6 @@ CREATE TABLE "user_notifications" (
     CONSTRAINT "user_notifications_pkey" PRIMARY KEY ("notification_id","user_id")
 );
 
--- CreateTable
-CREATE TABLE "_CuisineToSessionPreference" (
-    "A" UUID NOT NULL,
-    "B" UUID NOT NULL,
-
-    CONSTRAINT "_CuisineToSessionPreference_AB_pkey" PRIMARY KEY ("A","B")
-);
-
 -- CreateIndex
 CREATE INDEX "images_entity_id_entity_type_idx" ON "images"("entity_id", "entity_type");
 
@@ -787,6 +780,9 @@ CREATE INDEX "vendors_status_idx" ON "vendors"("status");
 CREATE INDEX "vendors_is_deleted_idx" ON "vendors"("is_deleted");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "vendors_name_key" ON "vendors"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "units_name_key" ON "units"("name");
 
 -- CreateIndex
@@ -817,12 +813,6 @@ CREATE INDEX "ingredient_usages_usage_date_idx" ON "ingredient_usages"("usage_da
 CREATE INDEX "ingredient_usages_day_of_week_idx" ON "ingredient_usages"("day_of_week");
 
 -- CreateIndex
-CREATE INDEX "ingredient_usages_is_weekend_idx" ON "ingredient_usages"("is_weekend");
-
--- CreateIndex
-CREATE INDEX "ingredient_usages_is_holiday_idx" ON "ingredient_usages"("is_holiday");
-
--- CreateIndex
 CREATE UNIQUE INDEX "ingredient_usages_ingredient_id_usage_date_hour_of_day_key" ON "ingredient_usages"("ingredient_id", "usage_date", "hour_of_day");
 
 -- CreateIndex
@@ -850,6 +840,9 @@ CREATE INDEX "seasonal_patterns_day_of_week_idx" ON "seasonal_patterns"("day_of_
 CREATE INDEX "seasonal_patterns_is_active_idx" ON "seasonal_patterns"("is_active");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "seasonal_patterns_name_key" ON "seasonal_patterns"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "promotions_code_key" ON "promotions"("code");
 
 -- CreateIndex
@@ -874,10 +867,19 @@ CREATE INDEX "promotions_priority_idx" ON "promotions"("priority");
 CREATE INDEX "promotions_applicability_idx" ON "promotions"("applicability");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "pricing_snapshots_order_id_key" ON "pricing_snapshots"("order_id");
+
+-- CreateIndex
 CREATE INDEX "pricing_snapshot_taxes_snapshot_id_idx" ON "pricing_snapshot_taxes"("snapshot_id");
 
 -- CreateIndex
-CREATE INDEX "pricing_snapshot_taxes_tax_id_idx" ON "pricing_snapshot_taxes"("tax_id");
+CREATE INDEX "pricing_snapshot_taxes_tax_config_id_idx" ON "pricing_snapshot_taxes"("tax_config_id");
+
+-- CreateIndex
+CREATE INDEX "pricing_snapshot_taxes_order_item_id_idx" ON "pricing_snapshot_taxes"("order_item_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "pricing_snapshot_taxes_snapshot_id_order_item_id_tax_config_key" ON "pricing_snapshot_taxes"("snapshot_id", "order_item_id", "tax_config_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "pricing_snapshot_promotions_snapshot_id_promotion_id_key" ON "pricing_snapshot_promotions"("snapshot_id", "promotion_id");
@@ -913,6 +915,9 @@ CREATE UNIQUE INDEX "floors_name_key" ON "floors"("name");
 CREATE UNIQUE INDEX "zones_name_key" ON "zones"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "tables_hardware_id_key" ON "tables"("hardware_id");
+
+-- CreateIndex
 CREATE INDEX "tables_name_idx" ON "tables"("name");
 
 -- CreateIndex
@@ -922,7 +927,7 @@ CREATE INDEX "tables_status_idx" ON "tables"("status");
 CREATE INDEX "tables_zone_id_idx" ON "tables"("zone_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "tables_name_zone_id_key" ON "tables"("name", "zone_id");
+CREATE UNIQUE INDEX "tables_name_key" ON "tables"("name");
 
 -- CreateIndex
 CREATE INDEX "table_sessions_session_token_idx" ON "table_sessions"("session_token");
@@ -931,7 +936,7 @@ CREATE INDEX "table_sessions_session_token_idx" ON "table_sessions"("session_tok
 CREATE INDEX "table_sessions_table_id_idx" ON "table_sessions"("table_id");
 
 -- CreateIndex
-CREATE INDEX "table_sessions_created_by_idx" ON "table_sessions"("created_by");
+CREATE INDEX "table_sessions_user_id_idx" ON "table_sessions"("user_id");
 
 -- CreateIndex
 CREATE INDEX "table_sessions_status_idx" ON "table_sessions"("status");
@@ -970,6 +975,9 @@ CREATE INDEX "order_items_product_id_idx" ON "order_items"("product_id");
 CREATE INDEX "order_items_status_idx" ON "order_items"("status");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "tax_configs_name_key" ON "tax_configs"("name");
+
+-- CreateIndex
 CREATE INDEX "tax_configs_type_idx" ON "tax_configs"("type");
 
 -- CreateIndex
@@ -985,10 +993,13 @@ CREATE INDEX "tax_configs_is_active_is_deleted_idx" ON "tax_configs"("is_active"
 CREATE INDEX "order_taxes_order_id_idx" ON "order_taxes"("order_id");
 
 -- CreateIndex
-CREATE INDEX "order_taxes_tax_id_idx" ON "order_taxes"("tax_id");
+CREATE INDEX "order_taxes_order_item_id_idx" ON "order_taxes"("order_item_id");
 
 -- CreateIndex
-CREATE INDEX "order_taxes_order_item_id_idx" ON "order_taxes"("order_item_id");
+CREATE INDEX "order_taxes_tax_config_id_idx" ON "order_taxes"("tax_config_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "order_taxes_order_id_order_item_id_tax_config_id_key" ON "order_taxes"("order_id", "order_item_id", "tax_config_id");
 
 -- CreateIndex
 CREATE INDEX "entity_tax_configs_tax_id_idx" ON "entity_tax_configs"("tax_id");
@@ -997,13 +1008,16 @@ CREATE INDEX "entity_tax_configs_tax_id_idx" ON "entity_tax_configs"("tax_id");
 CREATE INDEX "entity_tax_configs_entity_id_entity_type_idx" ON "entity_tax_configs"("entity_id", "entity_type");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "entity_tax_configs_tax_id_entity_type_entity_id_key" ON "entity_tax_configs"("tax_id", "entity_type", "entity_id");
+
+-- CreateIndex
 CREATE INDEX "payment_methods_is_active_idx" ON "payment_methods"("is_active");
 
 -- CreateIndex
 CREATE INDEX "payment_methods_sort_order_idx" ON "payment_methods"("sort_order");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "payment_methods_name_display_name_provider_key" ON "payment_methods"("name", "display_name", "provider");
+CREATE UNIQUE INDEX "payment_methods_name_provider_key" ON "payment_methods"("name", "provider");
 
 -- CreateIndex
 CREATE INDEX "payments_order_id_idx" ON "payments"("order_id");
@@ -1043,9 +1057,6 @@ CREATE INDEX "session_product_interactions_session_id_idx" ON "session_product_i
 
 -- CreateIndex
 CREATE INDEX "session_product_interactions_product_id_idx" ON "session_product_interactions"("product_id");
-
--- CreateIndex
-CREATE INDEX "session_product_interactions_interaction_score_idx" ON "session_product_interactions"("interaction_score");
 
 -- CreateIndex
 CREATE INDEX "session_product_interactions_last_ordered_idx" ON "session_product_interactions"("last_ordered");
@@ -1107,9 +1118,6 @@ CREATE INDEX "session_behavior_logs_action_idx" ON "session_behavior_logs"("acti
 -- CreateIndex
 CREATE INDEX "session_behavior_logs_created_at_idx" ON "session_behavior_logs"("created_at");
 
--- CreateIndex
-CREATE INDEX "_CuisineToSessionPreference_B_index" ON "_CuisineToSessionPreference"("B");
-
 -- AddForeignKey
 ALTER TABLE "user_groups" ADD CONSTRAINT "user_groups_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -1141,16 +1149,13 @@ ALTER TABLE "ingredient_usages" ADD CONSTRAINT "ingredient_usages_ingredient_id_
 ALTER TABLE "ingredient_forecasts" ADD CONSTRAINT "ingredient_forecasts_ingredient_id_fkey" FOREIGN KEY ("ingredient_id") REFERENCES "ingredients"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "pricing_snapshots" ADD CONSTRAINT "pricing_snapshots_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "pricing_snapshots" ADD CONSTRAINT "pricing_snapshots_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "pricing_snapshot_taxes" ADD CONSTRAINT "pricing_snapshot_taxes_snapshot_id_fkey" FOREIGN KEY ("snapshot_id") REFERENCES "pricing_snapshots"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "pricing_snapshot_taxes" ADD CONSTRAINT "pricing_snapshot_taxes_tax_id_fkey" FOREIGN KEY ("tax_id") REFERENCES "tax_configs"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "pricing_snapshot_promotions" ADD CONSTRAINT "pricing_snapshot_promotions_snapshot_id_fkey" FOREIGN KEY ("snapshot_id") REFERENCES "pricing_snapshots"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "pricing_snapshot_promotions" ADD CONSTRAINT "pricing_snapshot_promotions_snapshot_id_fkey" FOREIGN KEY ("snapshot_id") REFERENCES "pricing_snapshots"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "pricing_snapshot_promotions" ADD CONSTRAINT "pricing_snapshot_promotions_promotion_id_fkey" FOREIGN KEY ("promotion_id") REFERENCES "promotions"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -1183,13 +1188,13 @@ ALTER TABLE "zones" ADD CONSTRAINT "zones_floor_id_fkey" FOREIGN KEY ("floor_id"
 ALTER TABLE "tables" ADD CONSTRAINT "tables_zone_id_fkey" FOREIGN KEY ("zone_id") REFERENCES "zones"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "table_sessions" ADD CONSTRAINT "table_sessions_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "table_sessions" ADD CONSTRAINT "table_sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "table_sessions" ADD CONSTRAINT "table_sessions_table_id_fkey" FOREIGN KEY ("table_id") REFERENCES "tables"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "orders" ADD CONSTRAINT "orders_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "orders" ADD CONSTRAINT "orders_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "orders" ADD CONSTRAINT "orders_table_id_fkey" FOREIGN KEY ("table_id") REFERENCES "tables"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -1207,9 +1212,6 @@ ALTER TABLE "order_items" ADD CONSTRAINT "order_items_product_id_fkey" FOREIGN K
 ALTER TABLE "order_taxes" ADD CONSTRAINT "order_taxes_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "order_taxes" ADD CONSTRAINT "order_taxes_tax_id_fkey" FOREIGN KEY ("tax_id") REFERENCES "tax_configs"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "order_taxes" ADD CONSTRAINT "order_taxes_order_item_id_fkey" FOREIGN KEY ("order_item_id") REFERENCES "order_items"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -1222,7 +1224,7 @@ ALTER TABLE "payments" ADD CONSTRAINT "payments_order_id_fkey" FOREIGN KEY ("ord
 ALTER TABLE "payments" ADD CONSTRAINT "payments_method_id_fkey" FOREIGN KEY ("method_id") REFERENCES "payment_methods"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "payments" ADD CONSTRAINT "payments_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "payments" ADD CONSTRAINT "payments_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "product_attributes" ADD CONSTRAINT "product_attributes_cuisine_id_fkey" FOREIGN KEY ("cuisine_id") REFERENCES "cuisines"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -1280,9 +1282,3 @@ ALTER TABLE "user_notifications" ADD CONSTRAINT "user_notifications_notification
 
 -- AddForeignKey
 ALTER TABLE "user_notifications" ADD CONSTRAINT "user_notifications_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_CuisineToSessionPreference" ADD CONSTRAINT "_CuisineToSessionPreference_A_fkey" FOREIGN KEY ("A") REFERENCES "cuisines"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_CuisineToSessionPreference" ADD CONSTRAINT "_CuisineToSessionPreference_B_fkey" FOREIGN KEY ("B") REFERENCES "session_preferences"("id") ON DELETE CASCADE ON UPDATE CASCADE;

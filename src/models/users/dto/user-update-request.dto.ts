@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { IsValidPhoneNumber, IsValidRole } from '../../../common/decorators';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Role } from '../../../common/enums';
@@ -29,6 +29,6 @@ export class UpdateUserDto {
     enum: Role,
   })
   @IsOptional()
-  @IsValidRole()
-  role?: string;
+  @IsEnum(Role)
+  role?: Role;
 }

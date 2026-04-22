@@ -25,6 +25,9 @@ import { PaymentCoreService } from './payment-core.service';
 import { CheckoutRequestDto } from '../shared';
 import { MomoPaymentGateway } from '../shared/providers/momo-payment-gateway';
 import { UnsupportedValueException } from '../../../common/exceptions';
+import { UpdateOrderStatusService } from 'src/models/orders/services/update-order-status.service';
+import { Role } from 'src/common/enums';
+import { OrderNotReadyForCheckoutException } from 'src/models/orders/shared/exceptions/order-not-ready-for-checkout.exception';
 
 @Injectable()
 export class PaymentCheckoutService {
@@ -38,7 +41,8 @@ export class PaymentCheckoutService {
     private readonly paymentService: PaymentCoreService,
     private readonly momoPaymentGateway: MomoPaymentGateway,
     private readonly uow: UnitOfWork,
-  ) {}
+    private readonly updateOrderStatusService: UpdateOrderStatusService,
+  ) { }
 
   /**
    * Executes the payment checkout process.
@@ -59,6 +63,10 @@ export class PaymentCheckoutService {
     return await this.uow.execute!<Payment>(async () => {
       const order = await this.orderRepository.findById(payload.orderId);
       if (!order) throw new OrderNotFoundException(payload.orderId);
+
+      if (order.status !== OrderStatus.SERVED) {
+        throw new OrderNotReadyForCheckoutException();
+      }
 
       const method = await this.paymentMethodRepository.findById(
         payload.methodId,
@@ -115,7 +123,7 @@ export class PaymentCheckoutService {
       }
 
       const finalAmount = Math.max(
-        snapshot.subtotalAmount + snapshot.totalTaxAmount - totalDiscount,
+        Math.round(snapshot.subtotalAmount + snapshot.totalTaxAmount - totalDiscount),
         0,
       );
 
@@ -131,7 +139,7 @@ export class PaymentCheckoutService {
             null,
             method.id!,
             payload.orderId,
-            payload.staffId,
+            payload.user.id,
             finalAmount,
             null,
             null,
@@ -148,10 +156,13 @@ export class PaymentCheckoutService {
           ),
         );
 
-        await this.orderRepository.update(payload.orderId, {
-          status: OrderStatus.COMPLETED,
+        await this.updateOrderStatusService.execute({
+          user: payload.user,
+          order: {
+            id: payload.orderId,
+            status: OrderStatus.COMPLETED,
+          },
         });
-
         return payment;
       }
 
@@ -161,7 +172,7 @@ export class PaymentCheckoutService {
             null,
             method.id!,
             payload.orderId,
-            payload.staffId,
+            payload.user.id,
             finalAmount,
             null,
             null,
@@ -206,7 +217,10 @@ export class PaymentCheckoutService {
  * @property promotionIds {string[]} [optional] - An array of promotion IDs to apply to the order during checkout.
  */
 export type PaymentCheckoutPayload = {
-  staffId: string;
+  user: {
+    id: string;
+    role: Role;
+  };
   orderId: string;
   methodId: string;
   promotionIds?: string[];
@@ -220,11 +234,14 @@ export class PaymentCheckoutPayloadMapper {
    * @returns A PaymentCheckoutPayload object.
    */
   static fromDto(
-    staffId: string,
+    user: { sub: string; role: Role },
     dto: CheckoutRequestDto,
   ): PaymentCheckoutPayload {
     return {
-      staffId,
+      user: {
+        id: user.sub,
+        role: user.role,
+      },
       orderId: dto.orderId,
       methodId: dto.methodId,
       promotionIds: dto.promotionIds,

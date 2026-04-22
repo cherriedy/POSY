@@ -1,6 +1,7 @@
 import { User as PrismaUser } from '@prisma/client';
 import { User as DomainUser } from './user.class';
 import { MissingRequireFieldsException } from '../../../common/exceptions';
+import { mapRole } from './role.mapper';
 
 export class UserMapper {
   static toDomain(this: void, prismaUser: PrismaUser): DomainUser {
@@ -11,7 +12,7 @@ export class UserMapper {
       prismaUser.phone,
       prismaUser.password_hash,
       prismaUser.full_name,
-      prismaUser.role,
+      mapRole(prismaUser.role),
       prismaUser.is_active,
       prismaUser.is_deleted,
       prismaUser.reset_code,

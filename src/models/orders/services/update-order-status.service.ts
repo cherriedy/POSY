@@ -51,7 +51,6 @@ export class UpdateOrderStatusService {
     });
 
     // If the order is marked as COMPLETED, end the corresponding table session if it's active
-    // nè con cho huy, muons xóa thi xoa hj
     if (payload.order.status === OrderStatus.COMPLETED) {
       const session = await this.tableSessionRepository.findActiveByTableId(
         order.tableId,

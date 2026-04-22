@@ -100,7 +100,7 @@
 
 <script>
   // --- CẤU HÌNH THIẾT BỊ ---
-  const HARDWARE_ID = '92:c8:97:86:cc:ec';  // Thay đổi nếu cần, phải khớp với Database
+  const HARDWARE_ID = '7a:d2:dd:44:a3:8a';  // Thay đổi nếu cần, phải khớp với Database
   const MQTT_BROKER = 'ws://localhost:9001'; // Dùng ws:// cho trình duyệt
   const TOPIC = `r/tables/${HARDWARE_ID}/qr`;
 
@@ -128,7 +128,7 @@
 
     // Đăng ký nhận tin nhắn
     client.subscribe(TOPIC, (err) => {
-      if (err) console.e('Lỗi subscribe:', err);
+      if (err) console.error('Lỗi subscribe:', err);
     });
   });
 

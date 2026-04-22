@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Page } from '../../../common/interfaces';
 import { Payment } from '../shared/entities';
 import { PaymentQueryParams } from '../shared/interfaces';
 import { PaymentRepository } from '../shared/repositories/payment-repository.abstract';
+import { PaymentNotFoundException, PaymentStatus } from '../shared';
 
 @Injectable()
 export class PaymentCoreService {
-  constructor(private readonly paymentRepository: PaymentRepository) {}
+  constructor(private readonly paymentRepository: PaymentRepository) { }
 
   /**
    * Returns paginated payments for internal users.
@@ -15,6 +16,10 @@ export class PaymentCoreService {
    */
   async getPayments(params: PaymentQueryParams): Promise<Page<Payment>> {
     return this.paymentRepository.getAllPaged(params);
+  }
+
+  async getPaymentById(id: string): Promise<Payment | null> {
+    return this.paymentRepository.findById(id);
   }
 
   async createCheckoutPayment(payment: Payment): Promise<Payment> {

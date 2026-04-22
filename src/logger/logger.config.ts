@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { createLogger, format, transports, Logger } from 'winston';
+import safeStringify from 'safe-stable-stringify';
 
 const logDir = path.resolve('logs');
 if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
@@ -26,7 +27,7 @@ const consoleFormat = format.combine(
   format.printf(({ timestamp, level, message, context, stack, ...meta }) => {
     const ctx = context ? `[${context}] ` : '';
     const metaStr = Object.keys(meta).length
-      ? ` | meta: ${JSON.stringify(meta)}`
+      ? ` | meta: ${safeStringify(meta)}`
       : '';
     return `${timestamp} ${level} ${ctx}${message}${stack ? `\n${stack}` : ''}${metaStr}`;
   }),

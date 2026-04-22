@@ -9,6 +9,9 @@ import { PaymentStatus } from '../shared/enums';
 import { PaymentRepository } from '../shared/repositories/payment-repository.abstract';
 import { OrderRepository } from '../../orders/shared/repositories/order-repository.abstract';
 import { MomoPaymentGateway } from '../shared/providers/momo-payment-gateway';
+import { UpdateOrderStatusService } from 'src/models/orders/services/update-order-status.service';
+import { OrderStatus } from 'src/models/orders';
+import { Role } from 'src/common/enums';
 
 @Injectable()
 export class PaymentFacadeService {
@@ -17,7 +20,8 @@ export class PaymentFacadeService {
     private readonly promotionRedemptionRepository: PromotionRedemptionRepository,
     private readonly orderRepository: OrderRepository,
     private readonly momoPaymentGateway: MomoPaymentGateway,
-  ) {}
+    private readonly updateOrderStatusService: UpdateOrderStatusService,
+  ) { }
 
   /**
    * Marks pending payments of an order as FAILED and releases reserved promotions.
@@ -70,9 +74,24 @@ export class PaymentFacadeService {
     if (result.status === PaymentVerificationStatus.SUCCESS) {
       await this.paymentRepository.update(payment.id!, {
         status: PaymentStatus.COMPLETED,
-        referenceNumber: result.transactionId,
+        referenceNumber: String(result.transactionId), 
         metadata: result.rawResponse,
         paidAt: new Date(),
+      });
+
+      // MoMo callbacks are server-to-server, therefore there are NO real users.
+      const systemUser = {
+        id: 'system',
+        role: Role.ADMIN,
+      };
+
+      // update status and end table session
+      await this.updateOrderStatusService.execute({
+        user: systemUser,
+        order: {
+          id: payment.orderId,
+          status: OrderStatus.COMPLETED,
+        },
       });
     } else if (result.status === PaymentVerificationStatus.FAILED) {
       await this.paymentRepository.update(payment.id!, {
