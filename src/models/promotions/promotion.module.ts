@@ -20,6 +20,7 @@ import { ValidatePromotionModule } from './validate-promotion/validate-promotion
 import { CategoryModule } from '../categories/category.module';
 import { ReplacePromotionCategoriesModule } from './replace-categories/replace-categories.module';
 import { ReplacePromotionProductModule } from './replace-products/replace-products.module';
+import { GetAvailablePromotionsModule } from './get-available-promotions/get-available-promotions.module';
 
 @Global()
 @Module({
@@ -54,6 +55,7 @@ import { ReplacePromotionProductModule } from './replace-products/replace-produc
     DeletePromotionModule,
     ValidatePromotionModule,
     CategoryModule,
+    GetAvailablePromotionsModule
   ],
   controllers: [PromotionController],
   exports: [

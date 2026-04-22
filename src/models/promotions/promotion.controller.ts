@@ -55,8 +55,6 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { PromotionProductPreviewResponseDto } from './dto/promotion-product-response.dto';
-import { Request } from 'express';
-import { JwtPayload } from '../../authentication/interfaces';
 import {
   ProductNotFoundException,
   ProductsNotFoundException,
@@ -64,8 +62,10 @@ import {
 import { createPageResponseSchema } from '../../common/dto';
 import { ReplacePromotionProductService } from './replace-products/replace-products.service';
 import { ReplacePromotionCategoriesService } from './replace-categories/replace-categories.service';
-import { BulkReplacePromotionCategoryDto } from './dto/promotion-category-replacedto';
+import { BulkReplacePromotionCategoryDto } from './dto/promotion-category-replace.dto';
 import { BulkReplacePromotionProductDto } from './dto/promotion-product-replace.dto';
+import { GetAvailablePromotionsService } from './get-available-promotions/get-available-promotions.service';
+import { PromotionAvailableListResponseDto, PromotionAvailableResponseDto } from './dto/promotion-available.response';
 
 @ApiTags('Promotions')
 @ApiBearerAuth()
@@ -82,7 +82,8 @@ export class PromotionController {
     private readonly replacePromotionProductsService: ReplacePromotionProductService,
     private readonly deletePromotionService: DeletePromotionService,
     private readonly validatePromotionService: ValidatePromotionService,
-  ) {}
+    private readonly getAvailablePromotionsService: GetAvailablePromotionsService,
+  ) { }
 
   @Get('categories')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
@@ -446,88 +447,6 @@ export class PromotionController {
     }
   }
 
-  @Get('by-product/:productId')
-  @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({
-    summary: 'Get promotions by product ID',
-    description: `Returns all promotions for a specific product. 
-    For STAFF users, only active and non-deleted promotions are returned. 
-    For ADMIN and MANAGER, all promotions (including deleted/disabled) are returned. 
-    Used for checking which promotions are linked to a product.`,
-  })
-  @ApiParam({ name: 'productId', type: String })
-  @ApiResponse({
-    status: 200,
-    description: 'List of promotions for the product',
-    type: [PromotionPreviewResponseDto],
-  })
-  async getPromotionsByProductId(
-    @Param('productId', ParseUUIDPipe) productId: string,
-    @Req() req: Request,
-  ) {
-    try {
-      const role = (req.user as JwtPayload).role;
-
-      const promotions =
-        await this.getPromotionsService.getPromotionsByProductId(
-          productId,
-          role,
-        );
-
-      return plainToInstance(PromotionPreviewResponseDto, promotions, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof ProductNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
-  }
-
-  @Get('by-category/:categoryId')
-  @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({
-    summary: 'Get promotions by category ID',
-    description: `Returns all promotions for a specific category. 
-    For STAFF users, only active and non-deleted promotions are returned. 
-    For ADMIN and MANAGER, all promotions (including deleted/disabled) are returned. 
-    Used for checking which promotions are linked to a category.`,
-  })
-  @ApiParam({ name: 'categoryId', type: String })
-  @ApiResponse({
-    status: 200,
-    description: 'List of promotions for the category',
-    type: [PromotionPreviewResponseDto],
-  })
-  async getPromotionsByCategoryId(
-    @Param('categoryId', ParseUUIDPipe) categoryId: string,
-    @Req() req: Request,
-  ) {
-    try {
-      const role = (req.user as JwtPayload).role;
-      const promotions =
-        await this.getPromotionsService.getPromotionsByCategoryId(
-          categoryId,
-          role,
-        );
-      return plainToInstance(PromotionPreviewResponseDto, promotions, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof CategoryNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
-  }
-
   @Get()
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
@@ -700,71 +619,113 @@ export class PromotionController {
     }
   }
 
-  @Post('validate')
-  @UseGuards(AuthGuard('jwt'))
+  // @Post('validate')
+  // @UseGuards(AuthGuard('jwt'))
+  // @ApiOperation({
+  //   summary: 'Validate a promotion for a specific product',
+  //   description: `Validates if a promotion can be applied to a specific product at purchase time. 
+  //   Checks status, dates, usage limit, minimum value, and product/category eligibility. 
+  //   Used at checkout to ensure a promotion is valid for the product and context.`,
+  // })
+  // @ApiBody({
+  //   schema: {
+  //     type: 'object',
+  //     properties: {
+  //       promotionId: {
+  //         type: 'string',
+  //         description: 'Promotion ID to validate',
+  //       },
+  //       productId: {
+  //         type: 'string',
+  //         description: 'Specific product ID',
+  //       },
+  //       productPrice: {
+  //         type: 'number',
+  //         description: 'Price of the specific product',
+  //       },
+  //       quantity: {
+  //         type: 'number',
+  //         description: 'Quantity of the specific product',
+  //       },
+  //       categoryId: {
+  //         type: 'string',
+  //         description:
+  //           'Product category (optional, required for SPECIFIC_CATEGORIES)',
+  //       },
+  //     },
+  //     required: ['promotionId', 'productId', 'productPrice', 'quantity'],
+  //   },
+  // })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Validation result',
+  //   schema: {
+  //     type: 'object',
+  //     properties: {
+  //       isValid: { type: 'boolean' },
+  //       reason: { type: 'string' },
+  //       metadata: { type: 'object' },
+  //     },
+  //   },
+  // })
+  // async validatePromotion(
+  //   @Body()
+  //   dto: {
+  //     promotionId: string;
+  //     productId: string;
+  //     productPrice: number;
+  //     quantity: number;
+  //     categoryId?: string;
+  //   },
+  // ) {
+  //   try {
+  //     return await this.validatePromotionService.validate(dto);
+  //   } catch (e) {
+  //     this.logger.error(e);
+  //     throw new InternalServerErrorException(
+  //       'An error occurred while processing your request.',
+  //     );
+  //   }
+  // }
+
+  @Get('available/:orderId')
   @ApiOperation({
-    summary: 'Validate a promotion for a specific product',
-    description: `Validates if a promotion can be applied to a specific product at purchase time. 
-    Checks status, dates, usage limit, minimum value, and product/category eligibility. 
-    Used at checkout to ensure a promotion is valid for the product and context.`,
-  })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        promotionId: {
-          type: 'string',
-          description: 'Promotion ID to validate',
-        },
-        productId: {
-          type: 'string',
-          description: 'Specific product ID',
-        },
-        productPrice: {
-          type: 'number',
-          description: 'Price of the specific product',
-        },
-        quantity: {
-          type: 'number',
-          description: 'Quantity of the specific product',
-        },
-        categoryId: {
-          type: 'string',
-          description:
-            'Product category (optional, required for SPECIFIC_CATEGORIES)',
-        },
-      },
-      required: ['promotionId', 'productId', 'productPrice', 'quantity'],
-    },
+    summary: 'Get available promotions',
+    description: ` Returns all active promotions and evaluates their eligibility based on the given order data. 
+    Includes both eligible and ineligible promotions. Each promotion contains: isEligible flag, ineligibleReasons list
+`,
   })
   @ApiResponse({
     status: 200,
-    description: 'Validation result',
-    schema: {
-      type: 'object',
-      properties: {
-        isValid: { type: 'boolean' },
-        reason: { type: 'string' },
-        metadata: { type: 'object' },
-      },
-    },
+    description: 'List of available promotions with eligibility status',
+    type: PromotionAvailableListResponseDto
   })
-  async validatePromotion(
-    @Body()
-    dto: {
-      promotionId: string;
-      productId: string;
-      productPrice: number;
-      quantity: number;
-      categoryId?: string;
-    },
-  ) {
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+  })
+  async getAvailable(@Param('orderId') orderId: string){
     try {
-      return await this.validatePromotionService.validate(dto);
+      const promotions =
+        await this.getAvailablePromotionsService.execute(orderId);
+
+      const items = plainToInstance(
+        PromotionAvailableResponseDto,
+        promotions,
+        { excludeExtraneousValues: true },
+      );
+
+      return {
+        items,
+        total: items.length,
+      };
     } catch (e) {
+      if (e instanceof ProductNotFoundException) {
+        throw new BadRequestException(e.message);
+      }
       this.logger.error(e);
       throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
+        'Error fetching available promotions',
       );
     }
   }

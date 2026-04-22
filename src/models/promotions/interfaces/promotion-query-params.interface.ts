@@ -8,6 +8,8 @@ import {
 export interface PromotionQueryFilters {
   /** Blind search query for code, title, or description */
   query?: string;
+  productId?: string;
+  categoryId?: string;
   discountType?: PromotionDiscountType[];
   applicability?: PromotionApplicability[];
   status?: PromotionStatus[];
