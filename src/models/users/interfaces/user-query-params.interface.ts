@@ -1,3 +1,4 @@
+import { Role } from 'src/common/enums';
 import { PaginationParams } from '../../../common/interfaces';
 import { OrderBy } from '../../../common/interfaces';
 
@@ -28,7 +29,7 @@ export type UserOrderBy = Array<OrderBy<UserSortField>>;
  */
 export interface UserQueryFilter {
   query?: string;
-  role?: string;
+  role?: Role;
   isActive?: boolean;
   isDeleted?: boolean;
 }

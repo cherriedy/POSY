@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../repositories';
-import { User } from '@prisma/client';
 import { UserNotFoundException } from '../exceptions';
 import { hash } from '../../../common/utilities/hash.util';
 import { UnnecessaryOperationException } from '../../../common/exceptions';
+import { mapRole } from '../types/role.mapper';
+import { User } from '../types/user.class';
 
 @Injectable()
 export class UpdateUserService {
-  constructor(private userRepository: UserRepository) {}
+  constructor(private userRepository: UserRepository) { }
 
   /**
    * Updates a user's information in the database.

@@ -1,6 +1,7 @@
 import {
   IsBoolean,
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsString,
   Matches,
@@ -12,6 +13,7 @@ import {
   IsValidPhoneNumber,
   IsValidRole,
 } from '../../../common/decorators';
+import { Role } from 'src/common/enums';
 
 export class CreateUserDto {
   @IsString()
@@ -40,8 +42,8 @@ export class CreateUserDto {
   fullName: string;
 
   @IsString()
-  @IsValidRole()
-  role: string = 'STAFF';
+  @IsEnum(Role)
+  role: Role.STAFF;
 
   @IsBoolean()
   isActive: boolean = true;

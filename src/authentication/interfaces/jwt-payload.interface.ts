@@ -1,3 +1,5 @@
+import { Role } from "src/common/enums";
+
 /**
  * Interface representing the structure of a JWT payload.
  * @property sub - Subject identifier, typically the user ID.
@@ -10,7 +12,7 @@
 export interface JwtPayload {
   sub: string;
   email: string;
-  role: string;
+  role: Role;
   username: string;
   iat?: number;
   exp?: number;

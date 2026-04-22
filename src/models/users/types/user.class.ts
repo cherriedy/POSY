@@ -1,3 +1,5 @@
+import { Role } from "src/common/enums";
+
 export class User {
   constructor(
     public id: string | null,
@@ -6,7 +8,7 @@ export class User {
     public phone: string | null,
     public passwordHash: string | null,
     public fullName: string,
-    public role: string,
+    public role: Role,
     public isActive: boolean = true,
     public isDeleted: boolean = false,
     public resetCode: string | null,

@@ -12,6 +12,7 @@ import { OrderModificationPolicyService } from '../shared/core/services/order-mo
 import { OrderRepository } from '../shared/repositories/order-repository.abstract';
 import { OrderItemRepository } from '../shared/repositories/order-item-repository.abstract';
 import { UserIdentity } from '../../../authentication/interfaces';
+import { computeOrderStatus } from '../shared/utilities';
 @Injectable()
 export class UpdateOrderService {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
@@ -24,7 +25,7 @@ export class UpdateOrderService {
     private readonly orderModificationPolicy: OrderModificationPolicyService,
     private readonly guestOrderGateway: GuestOrderGateway,
     private readonly orderPricingService: OrderPricingService,
-  ) {}
+  ) { }
 
   async execute(
     sessionId: string,
@@ -106,13 +107,18 @@ export class UpdateOrderService {
 
     if (dto.note) existing.note = dto.note; // Update order-level note if provided
 
-    const updatedOrderItems = await this.orderItemRepository.findByOrderId(
-      existing.id!,
-    );
+    const updatedOrderItems = await this.orderItemRepository.findByOrderId(existing.id!);
+
     if (updatedOrderItems.length === 0) {
       throw new AtLeastOneItemRequiredException();
     }
 
+    // recompute status
+    const newStatus = computeOrderStatus(
+      updatedOrderItems.map((i) => i.status),
+    );
+
+    // pricing
     const pricing = await this.orderPricingService.recomputeAndPersistPricing(
       existing,
       updatedOrderItems,
@@ -120,6 +126,7 @@ export class UpdateOrderService {
 
     existing.subtotalAmount = pricing.subtotal;
     existing.totalAmount = pricing.totalAmount;
+    existing.status = newStatus;
 
     const updated = await this.orderRepository.update(existing.id!, existing);
     this.guestOrderGateway.emitOrderUpdated(updated.tableId, updated.id!);
