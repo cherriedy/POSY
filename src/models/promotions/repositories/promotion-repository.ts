@@ -16,7 +16,7 @@ const { page: defaultPage, pageSize: defaultPageSize } =
 
 @Injectable()
 export class PromotionRepositoryImpl implements PromotionRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   /**
    * Creates a new promotion in the database.

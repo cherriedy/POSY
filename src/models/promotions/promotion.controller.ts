@@ -65,7 +65,10 @@ import { ReplacePromotionCategoriesService } from './replace-categories/replace-
 import { BulkReplacePromotionCategoryDto } from './dto/promotion-category-replace.dto';
 import { BulkReplacePromotionProductDto } from './dto/promotion-product-replace.dto';
 import { GetAvailablePromotionsService } from './get-available-promotions/get-available-promotions.service';
-import { PromotionAvailableListResponseDto, PromotionAvailableResponseDto } from './dto/promotion-available.response';
+import {
+  PromotionAvailableListResponseDto,
+  PromotionAvailableResponseDto,
+} from './dto/promotion-available.response';
 
 @ApiTags('Promotions')
 @ApiBearerAuth()
@@ -83,7 +86,7 @@ export class PromotionController {
     private readonly deletePromotionService: DeletePromotionService,
     private readonly validatePromotionService: ValidatePromotionService,
     private readonly getAvailablePromotionsService: GetAvailablePromotionsService,
-  ) { }
+  ) {}
 
   @Get('categories')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
@@ -623,8 +626,8 @@ export class PromotionController {
   // @UseGuards(AuthGuard('jwt'))
   // @ApiOperation({
   //   summary: 'Validate a promotion for a specific product',
-  //   description: `Validates if a promotion can be applied to a specific product at purchase time. 
-  //   Checks status, dates, usage limit, minimum value, and product/category eligibility. 
+  //   description: `Validates if a promotion can be applied to a specific product at purchase time.
+  //   Checks status, dates, usage limit, minimum value, and product/category eligibility.
   //   Used at checkout to ensure a promotion is valid for the product and context.`,
   // })
   // @ApiBody({
@@ -698,22 +701,20 @@ export class PromotionController {
   @ApiResponse({
     status: 200,
     description: 'List of available promotions with eligibility status',
-    type: PromotionAvailableListResponseDto
+    type: PromotionAvailableListResponseDto,
   })
   @ApiResponse({
     status: 500,
     description: 'Internal server error',
   })
-  async getAvailable(@Param('orderId') orderId: string){
+  async getAvailable(@Param('orderId') orderId: string) {
     try {
       const promotions =
         await this.getAvailablePromotionsService.execute(orderId);
 
-      const items = plainToInstance(
-        PromotionAvailableResponseDto,
-        promotions,
-        { excludeExtraneousValues: true },
-      );
+      const items = plainToInstance(PromotionAvailableResponseDto, promotions, {
+        excludeExtraneousValues: true,
+      });
 
       return {
         items,

@@ -51,7 +51,10 @@ import {
   OrderNotFoundException,
   OrderSnapshotNotFoundException,
 } from 'src/models/orders';
-import { PromotionNotFoundException, PromotionUnusableException } from 'src/models/promotions/exceptions';
+import {
+  PromotionNotFoundException,
+  PromotionUnusableException,
+} from 'src/models/promotions/exceptions';
 import { OrderNotReadyForCheckoutException } from 'src/models/orders/shared/exceptions/order-not-ready-for-checkout.exception';
 import { UnsupportedValueException } from 'src/common/exceptions';
 
