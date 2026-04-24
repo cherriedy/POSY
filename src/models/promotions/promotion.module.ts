@@ -61,7 +61,7 @@ import { PricingSnapshotRepository } from '../orders/shared/repositories/pricing
     DeletePromotionModule,
     ValidatePromotionModule,
     CategoryModule,
-    GetAvailablePromotionsModule
+    GetAvailablePromotionsModule,
   ],
   controllers: [PromotionController],
   exports: [

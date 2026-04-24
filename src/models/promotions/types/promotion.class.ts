@@ -31,7 +31,7 @@ export class Promotion {
 
     public promotionProducts?: { product_id: string }[],
     public promotionCategories?: { category_id: string }[],
-  ) { }
+  ) {}
 
   /**
    * Calculates the discount amount for the promotion based on the subtotal amount.

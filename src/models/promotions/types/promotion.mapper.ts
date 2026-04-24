@@ -62,7 +62,7 @@ export class PromotionMapper {
           : undefined,
       max_discount_amount:
         domain.maxDiscountAmount !== undefined &&
-          domain.maxDiscountAmount !== null
+        domain.maxDiscountAmount !== null
           ? new Prisma.Decimal(domain.maxDiscountAmount)
           : undefined,
       min_order_value:

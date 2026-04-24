@@ -36,12 +36,18 @@ export class PromotionQueryParamsDto {
   @IsString()
   query?: string;
 
-  @ApiPropertyOptional({ type: String, description: 'Filter promotion by product' })
+  @ApiPropertyOptional({
+    type: String,
+    description: 'Filter promotion by product',
+  })
   @IsOptional()
   @IsString()
   productId?: string;
 
-  @ApiPropertyOptional({ type: String, description: 'Filter promotion by category' })
+  @ApiPropertyOptional({
+    type: String,
+    description: 'Filter promotion by category',
+  })
   @IsOptional()
   @IsString()
   categoryId?: string;

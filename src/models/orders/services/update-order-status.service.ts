@@ -25,7 +25,7 @@ export class UpdateOrderStatusService {
     private readonly policyService: OrderModificationPolicyService,
     private readonly staffOrderGateway: StaffOrderGateway,
     private readonly guestOrderGateway: GuestOrderGateway,
-  ) { }
+  ) {}
 
   /**
    * Updates the status of an order and broadcasts the update to staff and guests.

@@ -32,24 +32,24 @@ export class PricingSnapshotMapper {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
       (prisma as any).promotions
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-        (prisma as any).promotions.map(
-          PricingSnapshotPromotionMapper.toDomain,
-        )
+          (prisma as any).promotions.map(
+            PricingSnapshotPromotionMapper.toDomain,
+          )
         : null,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
       (prisma as any).taxes
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-        (prisma as any).taxes.map(PricingSnapshotTaxMapper.toDomain)
+          (prisma as any).taxes.map(PricingSnapshotTaxMapper.toDomain)
         : null,
 
-        (prisma as any).redemptions
+      (prisma as any).redemptions
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-        (prisma as any).redemptions.map(PromotionRedemptionMapper.toDomain)
+          (prisma as any).redemptions.map(PromotionRedemptionMapper.toDomain)
         : null,
 
       (prisma as any).order
-  ? OrderMapper.toDomain((prisma as any).order)
-  : null
+        ? OrderMapper.toDomain((prisma as any).order)
+        : null,
     );
   }
 
