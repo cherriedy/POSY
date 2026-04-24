@@ -22,7 +22,7 @@ export class GetPromotionsService {
     private readonly promotionProductRepository: PromotionProductRepository,
     private readonly productRepository: ProductRepository,
     private readonly categoryRepository: CategoryRepository,
-  ) {}
+  ) { }
 
   /**
    * Retrieves a paginated list of promotions based on the provided query parameters.
@@ -43,6 +43,9 @@ export class GetPromotionsService {
   async getById(id: string): Promise<Promotion | null> {
     const promotion = await this.promotionRepository.findById(id);
     if (!promotion) throw new PromotionNotFoundException({ id });
+    const usageCount = await this.promotionRepository.getUsageCount(id);
+    promotion.usageCount = usageCount;
+
     return promotion;
   }
 
