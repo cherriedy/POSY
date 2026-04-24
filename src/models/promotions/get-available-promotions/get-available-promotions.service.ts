@@ -2,12 +2,14 @@ import { Injectable } from "@nestjs/common";
 import { PromotionRepository } from "../repositories";
 import { PrismaService } from "src/providers/prisma/prisma.service";
 import { PricingSnapshotRepository } from "src/models/orders/shared/repositories/pricing-snapshot-repository.abstract";
+import { ProductRepository } from "src/models/products/repositories/product-repository.abstract";
+import { ProductNotFoundException } from "src/models/products";
 
 @Injectable()
 export class GetAvailablePromotionsService {
     constructor(
         private readonly promotionRepository: PromotionRepository,
-        private readonly prismaService: PrismaService,
+        private readonly productRepository: ProductRepository,
         private readonly pricingSnapshotRepository: PricingSnapshotRepository,
     ) { }
 
@@ -18,37 +20,34 @@ export class GetAvailablePromotionsService {
             throw new Error('Snapshot not found');
         }
 
-        // lấy items từ snapshot giống checkout
+        // console.log('snapshot: ', snapshot);
+        // console.log('orderItems:', snapshot.order?.orderItems);
+
+        // lấy order items từ snapshot
         const productIds = snapshot.order?.orderItems?.map(i => i.productId) ?? [];
 
-        const products = await this.prismaService.product.findMany({
-            where: { id: { in: productIds } },
-        });
+        const products = await this.productRepository.findByIds(productIds);
 
         const enrichedItems = snapshot.order?.orderItems?.map((item: any) => {
             const product = products.find(p => p.id === item.productId);
 
             if (!product) {
-                throw new Error(`Product not found: ${item.productId}`);
+                throw new ProductNotFoundException(item.productId);
             }
 
             const unitPrice = Number(product.price);
 
             return {
                 productId: item.productId,
-                categoryId: product.category_id,
+                categoryId: product.categoryId,
                 quantity: item.quantity,
                 unitPrice,
-                subtotal: unitPrice * item.quantity,
+                subtotal: item.quantity * unitPrice,
             };
         }) ?? [];
 
-        const totalAmount = enrichedItems.reduce(
-            (sum, i) => sum + i.subtotal,
-            0,
-        );
+        const totalAmount = snapshot.subtotalAmount;
 
-        // lấy domain promotions
         const promotions = await this.promotionRepository.getAvailablePromotions();
 
         return Promise.all(

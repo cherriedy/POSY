@@ -87,9 +87,9 @@ export class PromotionRepositoryImpl implements PromotionRepository {
     const record = await this.prismaService.promotion.findUnique({
       where: { id },
       include: {
-      promotionProducts: true,
-      promotionCategories: true,
-    },
+        promotionProducts: true,
+        promotionCategories: true,
+      },
     });
 
     return record ? PromotionMapper.toDomain(record) : null;
@@ -121,10 +121,10 @@ export class PromotionRepositoryImpl implements PromotionRepository {
     };
   }
 
-  async getAvailablePromotions(): Promise<any[]> {
+  async getAvailablePromotions(): Promise<Promotion[]> {
     const now = new Date();
 
-    return this.prismaService.promotion.findMany({
+    const raws = await this.prismaService.promotion.findMany({
       where: {
         is_deleted: false,
         status: 'ACTIVE',
@@ -144,6 +144,7 @@ export class PromotionRepositoryImpl implements PromotionRepository {
         priority: 'desc',
       },
     });
+    return raws.map(PromotionMapper.toDomain);
   }
 
   /**

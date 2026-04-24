@@ -184,6 +184,8 @@ export class PaymentController {
         e instanceof PromotionUnusableException
       ) {
         throw new BadRequestException(e.message || e.toString());
+      } else if (e instanceof HttpException) {
+        throw e;
       }
       this.logger.error(e);
       throw new InternalServerErrorException(

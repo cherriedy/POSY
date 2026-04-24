@@ -35,7 +35,11 @@ export class PricingSnapshotRepositoryImpl implements PricingSnapshotRepository 
   async findByOrderId(orderId: string): Promise<PricingSnapshot | null> {
     const snapshot = await this.prismaService.pricingSnapshot.findUnique({
       where: { order_id: orderId },
-      include: { taxes: true, promotions: true },
+      include: { taxes: true, promotions: true, order: {
+      include: {
+        orderItems: true,
+      },
+    }, },
     });
     return snapshot ? PricingSnapshotMapper.toDomain(snapshot) : null;
   }
