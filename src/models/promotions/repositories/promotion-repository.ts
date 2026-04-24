@@ -297,7 +297,7 @@ export class PromotionRepositoryImpl implements PromotionRepository {
     return await this.prismaService.promotion
       .updateMany({
         where: {
-          end_at: { gte: date },
+          end_at: { lte: date },
           status: PromotionStatus.ACTIVE,
         },
         data: {

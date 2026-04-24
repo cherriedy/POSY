@@ -33,6 +33,9 @@ export class PromotionMapper {
       prisma.usage_limit !== null && prisma.usage_limit !== undefined
         ? prisma.usage_limit
         : null,
+      prisma.usage_count !== null && prisma.usage_count !== undefined
+        ? prisma.usage_count
+        : null,
       prisma.version ?? 1,
       prisma.status as DomainPromotionStatus,
       prisma.is_stackable ?? false,
