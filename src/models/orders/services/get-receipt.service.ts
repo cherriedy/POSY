@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { OrderTaxRepository } from '../../taxes/repositories';
 import { PromotionRedemptionRepository } from '../../promotions/repositories';
 import { Order } from '../shared';
@@ -18,6 +18,7 @@ export class GetReceiptService {
   constructor(
     private readonly orderRepository: OrderRepository,
     private readonly orderTaxRepository: OrderTaxRepository,
+    @Inject(forwardRef(() => PromotionRedemptionRepository))
     private readonly promotionRedemptionRepository: PromotionRedemptionRepository,
   ) {}
 
@@ -38,7 +39,6 @@ export class GetReceiptService {
       this.orderTaxRepository.findByOrderId(orderId),
       this.promotionRedemptionRepository.findByOrderId(orderId),
     ]);
-
     return { order, orderTaxes, redemptions };
   }
 }

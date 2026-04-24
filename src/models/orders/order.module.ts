@@ -1,4 +1,4 @@
-import { Global, Module } from '@nestjs/common';
+import { forwardRef, Global, Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TokenGeneratorsModule } from '../../authentication/common/token-generators';
 import { StartSessionModule } from '../table-sessions';
@@ -24,6 +24,11 @@ import { PricingSnapshotRepository } from './shared/repositories/pricing-snapsho
 import { PricingSnapshotRepositoryImpl } from './shared/repositories/pricing-snapshot-repository';
 import { RecommendationModule } from '../../recommendation/recommendation.module';
 import { OrderFacadeService } from './services/order-facade.service';
+import { PromotionRedemptionRepository } from '../promotions/repositories/promotion-redemption-repository.abstract';
+import { PromotionRedemptionRepositoryImpl } from '../promotions/repositories/promotion-redemption-repository';
+import { OrderTaxRepository } from '../taxes/repositories/order-tax-repository.abstract';
+import { OrderTaxRepositoryImpl } from '../taxes/repositories/order-tax-repository';
+import { PromotionModule } from '../promotions/promotion.module';
 
 @Global()
 @Module({
@@ -35,6 +40,10 @@ import { OrderFacadeService } from './services/order-facade.service';
     {
       provide: OrderItemRepository,
       useClass: OrderItemRepositoryImpl,
+    },
+    {
+      provide: PromotionRedemptionRepository,
+      useClass: PromotionRedemptionRepositoryImpl,
     },
     {
       provide: PricingSnapshotRepository,
@@ -62,6 +71,7 @@ import { OrderFacadeService } from './services/order-facade.service';
     StartSessionModule,
     RecordPreferenceModule,
     RecommendationModule,
+    forwardRef(() => PromotionModule),
   ],
   controllers: [StaffOrderController, GuestOrderController],
   exports: [

@@ -49,7 +49,7 @@ export abstract class PromotionRepository implements BaseRepository<Promotion> {
    */
   abstract getAllPaged(params: PromotionQueryParams): Promise<Page<Promotion>>;
 
-  abstract getAvailablePromotions(): Promise<any[]>;
+  abstract getAvailablePromotions(): Promise<Promotion[]>;
 
   /**
    * Updates the status of all promotions that have expired before the given date.

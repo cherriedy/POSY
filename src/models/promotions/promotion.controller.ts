@@ -233,34 +233,34 @@ export class PromotionController {
     }
   }
 
-  @Get('applicable/:productId')
-  @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({ summary: 'Get applicable promotions for a product' })
-  @ApiParam({ name: 'productId', type: String })
-  @ApiResponse({
-    status: 200,
-    description: 'List of applicable promotions',
-    type: [PromotionPreviewResponseDto],
-  })
-  async getApplicablePromotions(@Param('productId') productId: string) {
-    try {
-      const promotions =
-        await this.getPromotionsService.getApplicablePromotionsForProduct(
-          productId,
-        );
-      return plainToInstance(PromotionPreviewResponseDto, promotions, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof ProductNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
-  }
+  // @Get('applicable/:productId')
+  // @UseGuards(AuthGuard('jwt'))
+  // @ApiOperation({ summary: 'Get applicable promotions for a product' })
+  // @ApiParam({ name: 'productId', type: String })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'List of applicable promotions',
+  //   type: [PromotionPreviewResponseDto],
+  // })
+  // async getApplicablePromotions(@Param('productId') productId: string) {
+  //   try {
+  //     const promotions =
+  //       await this.getPromotionsService.getApplicablePromotionsForProduct(
+  //         productId,
+  //       );
+  //     return plainToInstance(PromotionPreviewResponseDto, promotions, {
+  //       excludeExtraneousValues: true,
+  //     });
+  //   } catch (e) {
+  //     if (e instanceof ProductNotFoundException) {
+  //       throw new BadRequestException(e.message);
+  //     }
+  //     this.logger.error(e);
+  //     throw new InternalServerErrorException(
+  //       'An error occurred while processing your request.',
+  //     );
+  //   }
+  // }
 
   @Get(':id/products')
   @UseGuards(AuthGuard('jwt'), RoleGuard)

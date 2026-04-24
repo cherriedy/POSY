@@ -21,6 +21,8 @@ import { CategoryModule } from '../categories/category.module';
 import { ReplacePromotionCategoriesModule } from './replace-categories/replace-categories.module';
 import { ReplacePromotionProductModule } from './replace-products/replace-products.module';
 import { GetAvailablePromotionsModule } from './get-available-promotions/get-available-promotions.module';
+import { PricingSnapshotRepositoryImpl } from '../orders/shared/repositories/pricing-snapshot-repository';
+import { PricingSnapshotRepository } from '../orders/shared/repositories/pricing-snapshot-repository.abstract';
 
 @Global()
 @Module({
@@ -44,6 +46,10 @@ import { GetAvailablePromotionsModule } from './get-available-promotions/get-ava
     {
       provide: PricingSnapshotPromotionRepository,
       useClass: PricingSnapshotPromotionRepositoryImpl,
+    },
+    {
+      provide: PricingSnapshotRepository,
+      useClass: PricingSnapshotRepositoryImpl,
     },
   ],
   imports: [
