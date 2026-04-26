@@ -72,7 +72,7 @@ export class PaymentController {
     private readonly checkoutFacadeService: PaymentCheckoutService,
     private readonly paymentRefundService: PaymentRefundService,
     private readonly paymentFacadeService: PaymentFacadeService,
-  ) { }
+  ) {}
 
   /**
    * Returns a paginated list of payments for MANAGER and ADMIN users.

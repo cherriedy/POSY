@@ -13,7 +13,11 @@ import { OrderRepository } from '../shared/repositories/order-repository.abstrac
 import { OrderItemRepository } from '../shared/repositories/order-item-repository.abstract';
 import { UserIdentity } from '../../../authentication/interfaces';
 import { computeOrderStatus } from '../shared/utilities';
-import { TableSessionRepository, TableSessionStatus, TableSessionType } from 'src/models/table-sessions';
+import {
+  TableSessionRepository,
+  TableSessionStatus,
+  TableSessionType,
+} from 'src/models/table-sessions';
 import { StaffOrderGateway } from '../handlers/staff-order.gateway';
 @Injectable()
 export class UpdateOrderService {
@@ -29,7 +33,7 @@ export class UpdateOrderService {
     private readonly staffOrderGateway: StaffOrderGateway,
     private readonly orderPricingService: OrderPricingService,
     private readonly tableSessionRepository: TableSessionRepository,
-  ) { }
+  ) {}
 
   async execute(
     sessionId: string,
@@ -91,9 +95,7 @@ export class UpdateOrderService {
     if (dto.remove?.length) {
       // Load items requested for removal to validate their current status.
       const itemsToRemove = await Promise.all(
-        dto.remove.map((r) =>
-          this.orderItemRepository.findById(r.orderItemId),
-        ),
+        dto.remove.map((r) => this.orderItemRepository.findById(r.orderItemId)),
       ).then((items) =>
         // Filter out any nulls, we will handle missing items in the deletion step.
         items.filter((it): it is NonNullable<typeof it> => it != null),
@@ -137,7 +139,7 @@ export class UpdateOrderService {
     order.status = newStatus;
 
     const updated = await this.orderRepository.update(order.id!, order);
-    
+
     // Broadcast to guests if the corresponding table session is active and of type GUEST
     try {
       const session = await this.tableSessionRepository.findActiveByTableId(

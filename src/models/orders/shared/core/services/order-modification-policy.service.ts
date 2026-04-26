@@ -48,9 +48,7 @@ export class OrderModificationPolicyService {
    * @throws OrderModificationForbiddenException if any item cannot be removed due to its status
    */
   assertItemsRemovable(items: OrderItem[], actor?: UserIdentity): void {
-    const invalid = items.filter(
-      (it) => it.status !== OrderItemStatus.WAITING,
-    );
+    const invalid = items.filter((it) => it.status !== OrderItemStatus.WAITING);
 
     if (invalid.length > 0) {
       throw new OrderModificationForbiddenException(
