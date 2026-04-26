@@ -30,7 +30,9 @@ export class MomoPaymentGateway implements PaymentGateway {
     const requestId = `${orderId}_${Date.now()}`;
     const orderInfo = metadata?.orderInfo || `Thanh toán đơn hàng #${orderId}`;
     const requestType = 'captureWallet';
-    const extraData = metadata?.extraData || '';
+    const extraData = JSON.stringify({
+      platform: metadata?.platform || 'web',
+    });
 
     const rawSignature =
       `accessKey=${this.accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${this.ipnUrl}` +

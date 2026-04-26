@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ArrayUnique, IsArray, IsOptional, IsUUID } from 'class-validator';
+import { ArrayUnique, IsArray, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CheckoutRequestDto {
   @ApiProperty({
@@ -26,4 +26,11 @@ export class CheckoutRequestDto {
   @ArrayUnique()
   @IsOptional()
   promotionIds?: string[];
+
+  @ApiProperty({
+    description: 'Platform',
+    example: 'app',
+  })
+  @IsString()
+  platform: string;
 }

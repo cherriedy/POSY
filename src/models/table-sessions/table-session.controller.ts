@@ -96,7 +96,7 @@ export class TableSessionController {
     };
   }
 
-  @Post('end')
+  @Get('end')
   @HttpCode(HttpStatus.OK)
   // @UseGuards(SessionGuard)
   // @ApiCookieAuth('session_token')

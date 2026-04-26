@@ -8,6 +8,7 @@ import {
   Param,
   ParseUUIDPipe,
   Query,
+  Res,
 } from '@nestjs/common';
 import {
   ApiOperation,
@@ -39,6 +40,7 @@ import {
   GetCategoriesService,
 } from '../categories';
 import { Page } from 'src/common/interfaces';
+import { Response } from 'express';
 
 @ApiTags('(Public)')
 @ApiExtraModels(
@@ -54,7 +56,7 @@ export class PublicProductController {
     private readonly getProductsService: GetProductsService,
     private readonly getCategoriesService: GetCategoriesService,
     private readonly productFacadeService: ProductFacadeService,
-  ) {}
+  ) { }
 
   // ────────────────────────────────
   // GET /public/products
@@ -186,5 +188,66 @@ export class PublicProductController {
         'An error occurred while processing your request.',
       );
     }
+  }
+
+
+  @Get('/momo/redirect')
+  @ApiOperation({
+    summary: 'MoMo payment redirect handler',
+    description:
+      'Handles redirect callback from MoMo after payment. Determines payment result and redirects user back to Flutter Web or App with status and orderId.',
+  })
+  @ApiQuery({
+    name: 'resultCode',
+    required: true,
+    type: Number,
+    description: 'MoMo result code (0 = success, others = failed)',
+    example: 0,
+  })
+  @ApiQuery({
+    name: 'orderId',
+    required: true,
+    type: String,
+    description: 'Order ID returned from MoMo',
+    example: 'facfd15d-9558-4e4b-9050-3a9b6b7c13e0',
+  })
+  @ApiQuery({
+    name: 'extraData',
+    required: false,
+    type: String,
+    description:
+      'Optional JSON string containing metadata such as platform (web/app)',
+    example: '{"platform":"web"}',
+  })
+  @ApiOkResponse({
+    description: 'Redirects user to frontend return URL with payment result',
+  })
+  async momoRedirect(@Query() query: any, @Res() res: Response) {
+    const isSuccess = Number(query.resultCode) === 0;
+
+    let platform = 'web';
+
+    try {
+      if (query.extraData) {
+        const parsed = JSON.parse(query.extraData);
+        platform = parsed.platform || 'web';
+      }
+    } catch (e) {
+      console.warn('Invalid extraData:', query.extraData);
+    }
+
+    const orderId = query.orderId;
+
+    // ===== APP =====
+    if (platform === 'app') {
+      return res.redirect(
+        `${process.env.FLUTTER_RETURN_URL_FOR_NEXTJS_WEB}?status=${isSuccess ? 'success' : 'fail'}&orderId=${orderId}`,
+      );
+    }
+
+    // ===== WEB =====
+    return res.redirect(
+      `${process.env.FLUTTER_RETURN_URL_FOR_FLUTTER_WEB}?status=${isSuccess ? 'success' : 'fail'}&orderId=${orderId}`,
+    );
   }
 }

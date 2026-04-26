@@ -13,6 +13,7 @@ import {
   NotFoundException,
   Param,
   BadRequestException,
+  Res,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -26,7 +27,7 @@ import {
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { JwtPayload } from '../../../authentication/interfaces';
 import { RoleGuard } from '../../../authorization/guards/role.guard';
 import { createPageResponseSchema } from '../../../common/dto';
@@ -71,7 +72,7 @@ export class PaymentController {
     private readonly checkoutFacadeService: PaymentCheckoutService,
     private readonly paymentRefundService: PaymentRefundService,
     private readonly paymentFacadeService: PaymentFacadeService,
-  ) {}
+  ) { }
 
   /**
    * Returns a paginated list of payments for MANAGER and ADMIN users.
