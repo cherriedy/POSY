@@ -79,7 +79,11 @@ export class StaffOrderGateway
    *   }
    */
   emitOrderUpdated(orderId: string, paymentId?: string) {
-    this.server.to('order-room').emit('order:updated', { id: orderId, paymentId: paymentId });
-    this.logger.debug(`Emitted order ${orderId} update to order room with payment ${paymentId}`);
+    this.server
+      .to('order-room')
+      .emit('order:updated', { id: orderId, paymentId: paymentId });
+    this.logger.debug(
+      `Emitted order ${orderId} update to order room with payment ${paymentId}`,
+    );
   }
 }

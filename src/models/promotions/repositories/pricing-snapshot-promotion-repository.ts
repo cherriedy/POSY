@@ -7,9 +7,7 @@ import {
 } from '../types';
 
 @Injectable()
-export class PricingSnapshotPromotionRepositoryImpl
-  implements PricingSnapshotPromotionRepository
-{
+export class PricingSnapshotPromotionRepositoryImpl implements PricingSnapshotPromotionRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(

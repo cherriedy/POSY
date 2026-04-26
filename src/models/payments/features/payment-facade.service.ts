@@ -27,7 +27,7 @@ export class PaymentFacadeService {
     private readonly updateOrderStatusService: UpdateOrderStatusService,
     private readonly pricingSnapshotRepository: PricingSnapshotRepository,
     private readonly staffOrderGateway: StaffOrderGateway,
-  ) { }
+  ) {}
 
   /**
    * Marks pending payments of an order as FAILED and releases reserved promotions.
@@ -78,12 +78,11 @@ export class PaymentFacadeService {
 
     // Depending on the verification result, we update the payment status and related fields accordingly.
     if (result.status === PaymentVerificationStatus.SUCCESS) {
-      const orderId = payment.orderId
+      const orderId = payment.orderId;
 
       // create promotion redemption
-      const snapshot = await this.pricingSnapshotRepository.findByOrderId(
-        orderId,
-      );
+      const snapshot =
+        await this.pricingSnapshotRepository.findByOrderId(orderId);
       if (!snapshot || !snapshot.id || snapshot.promotions == null) {
         throw new OrderSnapshotNotFoundException(orderId);
       }

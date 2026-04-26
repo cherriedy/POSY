@@ -56,7 +56,7 @@ export class PublicProductController {
     private readonly getProductsService: GetProductsService,
     private readonly getCategoriesService: GetCategoriesService,
     private readonly productFacadeService: ProductFacadeService,
-  ) { }
+  ) {}
 
   // ────────────────────────────────
   // GET /public/products
@@ -189,7 +189,6 @@ export class PublicProductController {
       );
     }
   }
-
 
   @Get('/momo/redirect')
   @ApiOperation({

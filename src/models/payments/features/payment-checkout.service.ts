@@ -233,7 +233,10 @@ export class PaymentCheckoutService {
         const momoPayment = await this.momoPaymentGateway.createPayment(
           payment.id!,
           finalAmount,
-          { orderInfo: `Thanh toán đơn hàng #${payload.orderId}`, platform: payload.platform },
+          {
+            orderInfo: `Thanh toán đơn hàng #${payload.orderId}`,
+            platform: payload.platform,
+          },
         );
 
         return await this.paymentService.updateCheckoutPayment(payment.id!, {
@@ -333,7 +336,7 @@ export class PaymentCheckoutPayloadMapper {
       orderId: dto.orderId,
       methodId: dto.methodId,
       promotionIds: dto.promotionIds,
-      platform: dto.platform
+      platform: dto.platform,
     };
   }
 }

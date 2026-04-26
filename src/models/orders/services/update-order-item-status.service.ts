@@ -8,7 +8,11 @@ import { Order, OrderItemStatus } from '../shared';
 import { UnsupportedValueException } from '../../../common/exceptions';
 import { Role } from '../../../common/enums';
 import { JwtPayload, UserIdentity } from '../../../authentication/interfaces';
-import { TableSessionRepository, TableSessionStatus, TableSessionType } from 'src/models/table-sessions';
+import {
+  TableSessionRepository,
+  TableSessionStatus,
+  TableSessionType,
+} from 'src/models/table-sessions';
 
 @Injectable()
 export class UpdateOrderItemStatusService {
@@ -20,7 +24,7 @@ export class UpdateOrderItemStatusService {
     private readonly staffOrderGateway: StaffOrderGateway,
     private readonly guestOrderGateway: GuestOrderGateway,
     private readonly tableSessionRepository: TableSessionRepository,
-  ) { }
+  ) {}
 
   /**
    * Updates the status of a specific order item and broadcasts the update to staff and guests.
@@ -128,9 +132,9 @@ export function toPayload(
     },
     user: jwtPayload
       ? {
-        id: jwtPayload.sub,
-        role: jwtPayload.role as Role,
-      }
+          id: jwtPayload.sub,
+          role: jwtPayload.role as Role,
+        }
       : undefined,
   };
 }
