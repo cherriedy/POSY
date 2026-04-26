@@ -48,17 +48,15 @@ export class OrderModificationPolicyService {
    * @throws OrderModificationForbiddenException if any item cannot be removed due to its status
    */
   assertItemsRemovable(items: OrderItem[], actor?: UserIdentity): void {
-    if (!actor) {
-      const nonRemovable = items
-        .filter((it) => it.status !== OrderItemStatus.WAITING)
-        .map((it) => `${it.id}:${it.status}`);
+    const invalid = items.filter(
+      (it) => it.status !== OrderItemStatus.WAITING,
+    );
 
-      if (nonRemovable.length > 0) {
-        throw new OrderModificationForbiddenException(
-          `Cannot remove items with non-waiting status`,
-          nonRemovable,
-        );
-      }
+    if (invalid.length > 0) {
+      throw new OrderModificationForbiddenException(
+        `Only WAITING items can be removed`,
+        invalid.map((it) => `${it.id}:${it.status}`),
+      );
     }
   }
 

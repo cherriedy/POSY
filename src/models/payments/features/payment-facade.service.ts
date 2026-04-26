@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, LoggerService } from '@nestjs/common';
 import {
   MomoCallbackPayload,
   PaymentNotFoundException,
@@ -10,18 +10,24 @@ import { PaymentRepository } from '../shared/repositories/payment-repository.abs
 import { OrderRepository } from '../../orders/shared/repositories/order-repository.abstract';
 import { MomoPaymentGateway } from '../shared/providers/momo-payment-gateway';
 import { UpdateOrderStatusService } from 'src/models/orders/services/update-order-status.service';
-import { OrderStatus } from 'src/models/orders';
+import { OrderSnapshotNotFoundException, OrderStatus } from 'src/models/orders';
 import { Role } from 'src/common/enums';
+import { PromotionRedemption } from 'src/models/promotions/types';
+import { PricingSnapshotRepository } from 'src/models/orders/shared/repositories/pricing-snapshot-repository.abstract';
+import { StaffOrderGateway } from 'src/models/orders/handlers/staff-order.gateway';
 
 @Injectable()
 export class PaymentFacadeService {
+  private readonly logger: LoggerService;
   constructor(
     private readonly paymentRepository: PaymentRepository,
     private readonly promotionRedemptionRepository: PromotionRedemptionRepository,
     private readonly orderRepository: OrderRepository,
     private readonly momoPaymentGateway: MomoPaymentGateway,
     private readonly updateOrderStatusService: UpdateOrderStatusService,
-  ) {}
+    private readonly pricingSnapshotRepository: PricingSnapshotRepository,
+    private readonly staffOrderGateway: StaffOrderGateway,
+  ) { }
 
   /**
    * Marks pending payments of an order as FAILED and releases reserved promotions.
@@ -72,12 +78,47 @@ export class PaymentFacadeService {
 
     // Depending on the verification result, we update the payment status and related fields accordingly.
     if (result.status === PaymentVerificationStatus.SUCCESS) {
+      const orderId = payment.orderId
+
+      // create promotion redemption
+      const snapshot = await this.pricingSnapshotRepository.findByOrderId(
+        orderId,
+      );
+      if (!snapshot || !snapshot.id || snapshot.promotions == null) {
+        throw new OrderSnapshotNotFoundException(orderId);
+      }
+      for (const promo of snapshot.promotions) {
+        await this.promotionRedemptionRepository.create(
+          new PromotionRedemption(
+            null,
+            promo.promotionId!,
+            snapshot.id,
+            orderId,
+            new Date(),
+            null,
+            null,
+            null,
+          ),
+        );
+      }
+
+      // update payment
       await this.paymentRepository.update(payment.id!, {
         status: PaymentStatus.COMPLETED,
         referenceNumber: String(result.transactionId),
         metadata: result.rawResponse,
         paidAt: new Date(),
       });
+
+      // Broadcast to staff
+      try {
+        this.staffOrderGateway.emitOrderUpdated(orderId, payment.id!);
+      } catch (e) {
+        this.logger.error(
+          `Failed to broadcast order update to staff for order ${orderId}`,
+          e instanceof Error ? e.stack : e,
+        );
+      }
 
       // MoMo callbacks are server-to-server, therefore there are NO real users.
       const systemUser = {

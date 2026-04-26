@@ -7,15 +7,26 @@ import {
 } from '../types';
 
 @Injectable()
-export class PricingSnapshotPromotionRepositoryImpl implements PricingSnapshotPromotionRepository {
+export class PricingSnapshotPromotionRepositoryImpl
+  implements PricingSnapshotPromotionRepository
+{
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(
     entity: PricingSnapshotPromotion,
   ): Promise<PricingSnapshotPromotion> {
-    return await this.prismaService.pricingSnapshotPromotion
-      .create({
-        data: PricingSnapshotPromotionMapper.toPrismaCreate(entity),
+    return this.prismaService.pricingSnapshotPromotion
+      .upsert({
+        where: {
+          snapshot_id_promotion_id: {
+            snapshot_id: entity.snapshotId,
+            promotion_id: entity.promotionId,
+          },
+        },
+        create: PricingSnapshotPromotionMapper.toPrismaCreate(entity),
+        update: {
+          discount_amount: entity.discountAmount,
+        },
       })
       .then(PricingSnapshotPromotionMapper.toDomain);
   }

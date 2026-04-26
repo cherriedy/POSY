@@ -146,18 +146,18 @@ export class PaymentCheckoutService {
             ),
           );
 
-          await this.promotionRedemptionRepository.create(
-            new PromotionRedemption(
-              null,
-              promotion.id!,
-              snapshot.id,
-              payload.orderId,
-              new Date(),
-              null,
-              null,
-              null,
-            ),
-          );
+          // await this.promotionRedemptionRepository.create(
+          //   new PromotionRedemption(
+          //     null,
+          //     promotion.id!,
+          //     snapshot.id,
+          //     payload.orderId,
+          //     new Date(),
+          //     null,
+          //     null,
+          //     null,
+          //   ),
+          // );
         }
       }
 
@@ -233,7 +233,7 @@ export class PaymentCheckoutService {
         const momoPayment = await this.momoPaymentGateway.createPayment(
           payment.id!,
           finalAmount,
-          { orderInfo: `Thanh toán đơn hàng #${payload.orderId}` },
+          { orderInfo: `Thanh toán đơn hàng #${payload.orderId}`, platform: payload.platform },
         );
 
         return await this.paymentService.updateCheckoutPayment(payment.id!, {
@@ -311,6 +311,7 @@ export type PaymentCheckoutPayload = {
   orderId: string;
   methodId: string;
   promotionIds?: string[];
+  platform: string;
 };
 
 export class PaymentCheckoutPayloadMapper {
@@ -332,6 +333,7 @@ export class PaymentCheckoutPayloadMapper {
       orderId: dto.orderId,
       methodId: dto.methodId,
       promotionIds: dto.promotionIds,
+      platform: dto.platform
     };
   }
 }

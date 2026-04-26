@@ -8,6 +8,7 @@ import { Order, OrderItemStatus } from '../shared';
 import { UnsupportedValueException } from '../../../common/exceptions';
 import { Role } from '../../../common/enums';
 import { JwtPayload, UserIdentity } from '../../../authentication/interfaces';
+import { TableSessionRepository, TableSessionStatus, TableSessionType } from 'src/models/table-sessions';
 
 @Injectable()
 export class UpdateOrderItemStatusService {
@@ -18,7 +19,8 @@ export class UpdateOrderItemStatusService {
     private readonly orderItemStatusService: OrderItemStatusService,
     private readonly staffOrderGateway: StaffOrderGateway,
     private readonly guestOrderGateway: GuestOrderGateway,
-  ) {}
+    private readonly tableSessionRepository: TableSessionRepository,
+  ) { }
 
   /**
    * Updates the status of a specific order item and broadcasts the update to staff and guests.
@@ -43,20 +45,34 @@ export class UpdateOrderItemStatusService {
       user: payload.user,
     });
 
+    // Broadcast to staff
     try {
       this.staffOrderGateway.emitOrderUpdated(updated.id!);
     } catch (e) {
       this.logger.error(
-        `Failed to broadcast order update to StaffOrderGateway for order ${updated.id}`,
+        `Failed to broadcast order update to staff for order ${updated.id}`,
         e instanceof Error ? e.stack : e,
       );
     }
 
+    // Broadcast to guests if the corresponding table session is active and of type GUEST
     try {
-      this.guestOrderGateway.emitOrderUpdated(updated.tableId, updated.id!);
+      const session = await this.tableSessionRepository.findActiveByTableId(
+        updated.tableId,
+      );
+      if (!session || session.status !== TableSessionStatus.ACTIVE) {
+        this.logger.warn(
+          `No active session found for table ${updated.tableId}. 
+              Skipping guest notification for order ${updated.id}.`,
+        );
+      } else {
+        if (session.sessionType == TableSessionType.GUEST) {
+          this.guestOrderGateway.emitOrderUpdated(updated.tableId, updated.id!);
+        }
+      }
     } catch (e) {
       this.logger.error(
-        `Failed to broadcast order update to GuestOrderGateway for order ${updated.id}`,
+        `Failed to broadcast order update to guests for order ${updated.id}`,
         e instanceof Error ? e.stack : e,
       );
     }
@@ -112,9 +128,9 @@ export function toPayload(
     },
     user: jwtPayload
       ? {
-          id: jwtPayload.sub,
-          role: jwtPayload.role as Role,
-        }
+        id: jwtPayload.sub,
+        role: jwtPayload.role as Role,
+      }
       : undefined,
   };
 }
