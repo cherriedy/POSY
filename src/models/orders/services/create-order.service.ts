@@ -17,6 +17,9 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ProductInteractionPayload } from 'src/user-tracking/shared/interfaces/product-interaction-payload';
 import { ProductInteractionType } from 'src/user-tracking/shared/enums/product-interaction-type.enum';
+import { TableRepository } from 'src/models/tables/repositories';
+import { TableStatus } from 'src/models/tables/enums';
+import { UpdateOrderService } from './update-order.service';
 
 @Injectable()
 export class CreateOrderService {
@@ -34,6 +37,8 @@ export class CreateOrderService {
     private readonly recordSessionPreferenceService: RecordPreferenceService,
     private readonly staffOrderGateway: StaffOrderGateway,
     private readonly eventEmitter: EventEmitter2,
+    private readonly tableRepository: TableRepository,
+    private readonly updateOrderService: UpdateOrderService,
   ) {}
 
   /**
@@ -68,6 +73,15 @@ export class CreateOrderService {
     const table = await this.orderContextService.getRequiredTable(
       tableContext.id,
     );
+    const existingOrder = await this.orderRepository.findActiveBySessionId(
+      tableContext.session.id,
+    );
+    if (existingOrder) {
+      return await this.updateOrderService.addItemsToOrder(
+        existingOrder.id!,
+        orderContext.items,
+      );
+    }
     const { productIds, products } =
       await this.orderContextService.getRequiredProducts(orderContext.items);
 
@@ -101,6 +115,12 @@ export class CreateOrderService {
 
       const createdOrderItems =
         await this.orderItemRepository.bulkCreate(orderItems);
+
+      if (table.status !== TableStatus.OCCUPIED) {
+        await this.tableRepository.update(table.id!, {
+          status: TableStatus.OCCUPIED,
+        });
+      }
 
       // Calculate the product-level taxes for each item based on its price and quantity
       const { taxes: productTaxes, total: productLevelTaxTotal } =

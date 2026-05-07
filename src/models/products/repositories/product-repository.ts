@@ -242,7 +242,6 @@ export class ProductRepositoryImpl implements ProductRepository {
       }),
       this.prismaService.product.count({ where }),
     ]);
-    console.log(JSON.stringify(where, null, 2));
 
     return {
       items: items.map((p) => ProductMapper.toDomain(p)),

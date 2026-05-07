@@ -70,7 +70,7 @@ export class InventoryController {
       console.log('target:', target);
       console.log('targetDate:', targetDate);
 
-      const { targetDate: resolvedDate, overview } =
+      const { overview } =
         await this.ingredientForecastService.getOverview(targetDate);
 
       const items = overview.map((item) => ({

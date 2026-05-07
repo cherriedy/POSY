@@ -11,14 +11,9 @@ import { PaymentMethodNotFoundException } from '../shared';
 import { PaymentMethodRepository } from '../shared/repositories/payment-method-repository.abstract';
 import { PaymentProvider, PaymentStatus } from '../shared';
 import { Payment } from '../shared';
-import {
-  PricingSnapshotPromotion,
-  Promotion,
-  PromotionRedemption,
-} from '../../promotions/types';
+import { PricingSnapshotPromotion, Promotion } from '../../promotions/types';
 import {
   PricingSnapshotPromotionRepository,
-  PromotionRedemptionRepository,
   PromotionRepository,
 } from '../../promotions/repositories';
 import { PromotionNotFoundException } from '../../promotions/exceptions';
@@ -31,16 +26,17 @@ import { Role } from 'src/common/enums';
 import { OrderNotReadyForCheckoutException } from 'src/models/orders/shared/exceptions/order-not-ready-for-checkout.exception';
 import { ProductNotFoundException } from 'src/models/products';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
+import { PaymentRepository } from '../shared/repositories/payment-repository.abstract';
 
 @Injectable()
 export class PaymentCheckoutService {
   constructor(
     private readonly orderRepository: OrderRepository,
+    private readonly paymentRepository: PaymentRepository,
     private readonly pricingSnapshotRepository: PricingSnapshotRepository,
     private readonly paymentMethodRepository: PaymentMethodRepository,
     private readonly promotionRepository: PromotionRepository,
     private readonly pricingSnapshotPromotionRepository: PricingSnapshotPromotionRepository,
-    private readonly promotionRedemptionRepository: PromotionRedemptionRepository,
     private readonly paymentService: PaymentCoreService,
     private readonly momoPaymentGateway: MomoPaymentGateway,
     private readonly uow: UnitOfWork,
@@ -104,8 +100,6 @@ export class PaymentCheckoutService {
           };
         }) ?? [];
 
-      const totalAmount = snapshot.subtotalAmount;
-
       let totalDiscount = 0;
 
       if (promotionIds.length > 0) {
@@ -120,7 +114,7 @@ export class PaymentCheckoutService {
           const reasons = this.validatePromotion(
             promotion,
             enrichedItems,
-            totalAmount,
+            snapshot.subtotalAmount,
           );
 
           if (reasons.length > 0) {
@@ -130,7 +124,7 @@ export class PaymentCheckoutService {
             });
           }
 
-          const discountAmount = promotion.calculate(totalAmount);
+          const discountAmount = promotion.calculate(snapshot.subtotalAmount);
           totalDiscount += discountAmount;
 
           await this.pricingSnapshotPromotionRepository.create(
@@ -173,6 +167,11 @@ export class PaymentCheckoutService {
         totalDiscount,
         finalAmount,
       );
+
+      await this.orderRepository.update(snapshot.orderId, {
+        totalAmount: finalAmount,
+        updatedAt: new Date(),
+      });
 
       if (method.provider === PaymentProvider.CASH) {
         const payment = await this.paymentService.createCheckoutPayment(

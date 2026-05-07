@@ -75,10 +75,10 @@ export class StaffSessionContextService {
     if (!table) throw new TableNotFoundException(tableId);
     if (!table.isActive) throw new UnavailableTableException(tableId);
 
-    const existing =
+    const session =
       await this.tableSessionRepository.findActiveByTableId(tableId);
 
-    if (existing) {
+    if (session) {
       throw new DuplicateEntryException(
         'Table already has an active session. Cannot create new order.',
       );

@@ -13,6 +13,8 @@ import { OrderRepository } from '../shared/repositories/order-repository.abstrac
 import { UserIdentity } from '../../../authentication/interfaces';
 import { UpdateOrderStatusDto } from '../shared/dto/update-order-status.dto';
 import { UnsupportedValueException } from '../../../common/exceptions';
+import { TableRepository } from 'src/models/tables/repositories';
+import { TableStatus } from 'src/models/tables/enums';
 
 @Injectable()
 export class UpdateOrderStatusService {
@@ -25,6 +27,7 @@ export class UpdateOrderStatusService {
     private readonly policyService: OrderModificationPolicyService,
     private readonly staffOrderGateway: StaffOrderGateway,
     private readonly guestOrderGateway: GuestOrderGateway,
+    private readonly tableRepository: TableRepository,
   ) {}
 
   /**
@@ -41,6 +44,7 @@ export class UpdateOrderStatusService {
     const orderId = payload.order.id;
     const order = await this.orderRepository.findById(orderId);
     if (!order) throw new OrderNotFoundException(orderId);
+    const table = await this.tableRepository.findById(order.tableId);
 
     // Check if the order can be modified according to the policy service
     this.policyService.assertOrderModifiable(order, payload.user);
@@ -62,6 +66,12 @@ export class UpdateOrderStatusService {
 
       if (session) {
         await this.tableSessionRepository.endSession(session.id!);
+      }
+
+      if (table!.status == TableStatus.OCCUPIED) {
+        await this.tableRepository.update(order.tableId, {
+          status: TableStatus.AVAILABLE,
+        });
       }
     }
 
