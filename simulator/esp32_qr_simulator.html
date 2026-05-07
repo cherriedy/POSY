@@ -90,7 +90,7 @@
 <div class="device-casing">
   <div id="led" class="led"></div>
   <div class="e-ink-screen">
-    <div class="title" id="table-name">BÀN 01</div>
+    <div class="title" id="table-name">BÀN Private Room 2-T5</div>
 
     <div id="qrcode"></div>
 
@@ -100,7 +100,7 @@
 
 <script>
   // --- CẤU HÌNH THIẾT BỊ ---
-  const HARDWARE_ID = '7a:d2:dd:44:a3:8a';  // Thay đổi nếu cần, phải khớp với Database
+  const HARDWARE_ID = 'a2:58:ef:f5:a1:55';  // Phải khớp với Database
   const MQTT_BROKER = 'ws://localhost:9001'; // Dùng ws:// cho trình duyệt
   const TOPIC = `r/tables/${HARDWARE_ID}/qr`;
 
@@ -138,6 +138,7 @@
     // Xóa QR cũ và tạo QR mới với URL nhận được
     qrcode.clear();
     qrcode.makeCode(url);
+    console.log("url: ", url)
 
     // Hiển thị một phần URL ra màn hình để debug
     const token = new URLSearchParams(url.split('?')[1]).get('token');

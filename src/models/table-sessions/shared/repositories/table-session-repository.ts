@@ -109,7 +109,7 @@ export class TableSessionRepositoryImpl implements TableSessionRepository {
       where: {
         table_id: tableId,
         status: TableSessionStatus.ACTIVE,
-        OR: [{ expires_at: null }, { expires_at: { gt: new Date() } }],
+        // OR: [{ expires_at: null }, { expires_at: { gt: new Date() } }],
       },
       include: {
         table: true,

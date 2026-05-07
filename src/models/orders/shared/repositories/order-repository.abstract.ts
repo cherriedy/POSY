@@ -9,6 +9,8 @@ export abstract class OrderRepository implements BaseRepository<Order> {
 
   abstract findBySessionId(sessionId: string): Promise<Order | null>;
 
+  abstract findActiveBySessionId(sessionId: string): Promise<Order | null>;
+
   abstract update(id: string, entity: Partial<Order>): Promise<Order>;
 
   abstract getAllPaged(params: OrderQueryParams): Promise<Page<Order>>;

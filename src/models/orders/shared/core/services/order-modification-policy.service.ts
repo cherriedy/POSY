@@ -26,17 +26,17 @@ export class OrderModificationPolicyService {
     }
 
     // Orders that are ready/serving/served require manager/admin privileges to modify.
-    if (
-      order.status === OrderStatus.READY ||
-      order.status === OrderStatus.SERVING ||
-      order.status === OrderStatus.SERVED
-    ) {
-      if (actor?.role !== Role.MANAGER && actor?.role !== Role.ADMIN) {
-        throw new OrderModificationForbiddenException(
-          'Only managers or admins can modify orders that are ready, serving, or served.',
-        );
-      }
-    }
+    // if (
+    //   order.status === OrderStatus.READY ||
+    //   order.status === OrderStatus.SERVING ||
+    //   order.status === OrderStatus.SERVED
+    // ) {
+    //   if (actor?.role !== Role.MANAGER && actor?.role !== Role.ADMIN) {
+    //     throw new OrderModificationForbiddenException(
+    //       'Only managers or admins can modify orders that are ready, serving, or served.',
+    //     );
+    //   }
+    // }
   }
 
   /**

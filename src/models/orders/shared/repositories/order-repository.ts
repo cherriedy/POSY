@@ -173,6 +173,40 @@ export class OrderRepositoryImpl implements OrderRepository {
     return order ? OrderMapper.toDomain(order) : null;
   }
 
+  async findActiveBySessionId(sessionId: string): Promise<Order | null> {
+    const order = await this.prismaService.order.findFirst({
+      where: {
+        session_id: sessionId,
+        status: {
+          notIn: ['COMPLETED', 'CANCELLED'],
+        },
+      },
+      include: {
+        user: true,
+        table: true,
+        session: true,
+        orderItems: {
+          include: {
+            product: true,
+            orderTaxes: true,
+          },
+        },
+        payments: {
+          include: {
+            method: true,
+          },
+        },
+        pricingSnapshots: {
+          include: {
+            taxes: true,
+          },
+        },
+      },
+    });
+
+    return order ? OrderMapper.toDomain(order) : null;
+  }
+
   /**
    * Updates mutable fields of an existing Order.
    *

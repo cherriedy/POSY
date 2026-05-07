@@ -1,6 +1,10 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { OrderStatus, OrderUpdateRequestDto } from '../shared';
+import {
+  OrderItemPayload,
+  OrderStatus,
+  OrderUpdateRequestDto,
+} from '../shared';
 import { OrderItemStatus, OrderNotFoundForSessionException } from '../shared';
 import { Order, OrderItem } from '../shared';
 import { GuestOrderGateway } from '../handlers/guest-order.gateway';
@@ -19,6 +23,8 @@ import {
   TableSessionType,
 } from 'src/models/table-sessions';
 import { StaffOrderGateway } from '../handlers/staff-order.gateway';
+import { TableStatus } from 'src/models/tables/enums';
+import { TableRepository } from 'src/models/tables/repositories';
 @Injectable()
 export class UpdateOrderService {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
@@ -33,6 +39,7 @@ export class UpdateOrderService {
     private readonly staffOrderGateway: StaffOrderGateway,
     private readonly orderPricingService: OrderPricingService,
     private readonly tableSessionRepository: TableSessionRepository,
+    private readonly tableRepository: TableRepository,
   ) {}
 
   async execute(
@@ -42,6 +49,7 @@ export class UpdateOrderService {
   ): Promise<Order> {
     const order = await this.orderRepository.findBySessionId(sessionId);
     if (!order) throw new OrderNotFoundForSessionException(sessionId);
+    const table = await this.tableRepository.findById(order.tableId);
 
     // Delegate policy checks to a reusable service
     this.orderModificationPolicy.assertOrderModifiable(order, user);
@@ -128,10 +136,14 @@ export class UpdateOrderService {
       updatedOrderItems.map((i) => i.status),
     );
 
-    // pricing
+    // recompute pricing
+    const validItems = updatedOrderItems.filter(
+      (i) => i.status !== OrderItemStatus.CANCELLED,
+    );
+
     const pricing = await this.orderPricingService.recomputeAndPersistPricing(
       order,
-      updatedOrderItems,
+      validItems,
     );
 
     order.subtotalAmount = pricing.subtotal;
@@ -183,8 +195,109 @@ export class UpdateOrderService {
       if (session) {
         await this.tableSessionRepository.endSession(session.id!);
       }
+      if (table!.status == TableStatus.OCCUPIED) {
+        await this.tableRepository.update(order.tableId, {
+          status: TableStatus.AVAILABLE,
+        });
+      }
     }
 
     return updated;
+  }
+
+  async addItemsToOrder(
+    orderId: string,
+    items: OrderItemPayload[],
+  ): Promise<Order> {
+    const order = await this.orderRepository.findById(orderId);
+    if (!order) throw new OrderNotFoundForSessionException(orderId);
+
+    // check policy
+    this.orderModificationPolicy.assertOrderModifiable(order);
+
+    // build new order items
+    const newItems = await Promise.all(
+      items.map(async (item) => {
+        const product = await this.productRepository.findById(item.productId);
+        if (!product) throw new ProductNotFoundException(item.productId);
+
+        return new OrderItem(
+          null,
+          order.id!,
+          item.productId,
+          item.quantity,
+          product.price,
+          item.quantity * product.price,
+          item.note || null,
+          OrderItemStatus.WAITING,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+        );
+      }),
+    );
+
+    await this.orderItemRepository.bulkCreate(newItems);
+
+    // reload items
+    const updatedItems = await this.orderItemRepository.findByOrderId(
+      order.id!,
+    );
+
+    const validItems = updatedItems.filter(
+      (i) => i.status !== OrderItemStatus.CANCELLED,
+    );
+    // recompute pricing
+    const pricing = await this.orderPricingService.recomputeAndPersistPricing(
+      order,
+      validItems,
+    );
+
+    order.subtotalAmount = pricing.subtotal;
+    order.totalAmount = pricing.totalAmount;
+
+    // recompute status
+    order.status = computeOrderStatus(updatedItems.map((i) => i.status));
+
+    const updatedOrder = await this.orderRepository.update(order.id!, order);
+
+    // Broadcast to guests if the corresponding table session is active and of type GUEST
+    try {
+      const session = await this.tableSessionRepository.findActiveByTableId(
+        order.tableId,
+      );
+      if (!session || session.status !== TableSessionStatus.ACTIVE) {
+        this.logger.warn(
+          `No active session found for table ${order.tableId}. 
+              Skipping guest notification for order ${order.id}.`,
+        );
+      } else {
+        if (session.sessionType == TableSessionType.GUEST) {
+          this.guestOrderGateway.emitOrderUpdated(order.tableId, order.id!);
+        }
+      }
+    } catch (e) {
+      this.logger.error(
+        `Failed to broadcast order update to guests for order ${order.id}`,
+        e instanceof Error ? e.stack : e,
+      );
+    }
+
+    // Broadcast to staff
+    try {
+      this.staffOrderGateway.emitOrderUpdated(order.id!);
+    } catch (e) {
+      this.logger.error(
+        `Failed to broadcast order update to staff for order ${order.id}`,
+        e instanceof Error ? e.stack : e,
+      );
+    }
+
+    return updatedOrder;
   }
 }

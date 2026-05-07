@@ -25,7 +25,10 @@ export class AppConfigService {
     return this.configService.get<string>('app.upload_dir')!;
   }
 
-  get frontendUrl(): string {
-    return this.configService.get<string>('app.frontend_url')!;
+  get frontendClientUrl(): string {
+    return this.configService.get<string>('app.frontend_client_url')!;
+  }
+  get frontendAdminUrl(): string {
+    return this.configService.get<string>('app.frontend_admin_url')!;
   }
 }

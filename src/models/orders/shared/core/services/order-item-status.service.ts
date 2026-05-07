@@ -1,6 +1,6 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { OrderItemStatus } from '../../enums';
+import { OrderItemStatus, OrderStatus } from '../../enums';
 import { Order } from '../../entities';
 import { OrderModificationPolicyService } from './order-modification-policy.service';
 import { computeOrderStatus } from '../../utilities';
@@ -14,6 +14,9 @@ import { ReserveIngredientsService } from './reserve-ingredients.service';
 import { OrderItemRepository } from '../../repositories/order-item-repository.abstract';
 import { OrderRepository } from '../../repositories/order-repository.abstract';
 import { UnitOfWork } from '../../../../../common/unit-of-works';
+import { TableSessionRepository } from 'src/models/table-sessions';
+import { TableRepository } from 'src/models/tables/repositories';
+import { TableStatus } from 'src/models/tables/enums';
 
 @Injectable()
 export class OrderItemStatusService {
@@ -27,6 +30,8 @@ export class OrderItemStatusService {
     private readonly orderModificationPolicy: OrderModificationPolicyService,
     private readonly reserveIngredientsService: ReserveIngredientsService,
     private readonly orderPricingService: OrderPricingService,
+    private readonly tableSessionRepository: TableSessionRepository,
+    private readonly tableRepository: TableRepository,
   ) {}
 
   /**
@@ -74,6 +79,7 @@ export class OrderItemStatusService {
         this.logger.error(`Order ${orderId} not found for policy checks.`);
         throw new OrderModificationForbiddenException('Order not found.');
       }
+      const table = await this.tableRepository.findById(order.tableId);
 
       if (params.user) {
         // Assert order-level modifiability rules before allowing item status change
@@ -137,10 +143,33 @@ export class OrderItemStatusService {
       // After updating the item status, recompute the overall order status based on all item statuses
       const items = await this.orderItemRepository.findByOrderId(orderId);
       const newOrderStatus = computeOrderStatus(items.map((i) => i.status));
+      const validItems = items.filter(
+        (i) => i.status !== OrderItemStatus.CANCELLED,
+      );
       const pricing = await this.orderPricingService.recomputeAndPersistPricing(
         order,
-        items,
+        validItems,
       );
+      // If order is COMPLETED or CANCELLED → end session
+      const shouldEndSession =
+        newOrderStatus === OrderStatus.COMPLETED ||
+        newOrderStatus === OrderStatus.CANCELLED;
+
+      if (shouldEndSession) {
+        const session = await this.tableSessionRepository.findActiveByTableId(
+          order.tableId,
+        );
+
+        if (session) {
+          await this.tableSessionRepository.endSession(session.id!);
+        }
+
+        if (table!.status == TableStatus.OCCUPIED) {
+          await this.tableRepository.update(order.tableId, {
+            status: TableStatus.AVAILABLE,
+          });
+        }
+      }
       return await this.orderRepository.update(orderId, {
         status: newOrderStatus,
         subtotalAmount: pricing.subtotal,

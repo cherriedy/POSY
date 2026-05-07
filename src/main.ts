@@ -23,6 +23,9 @@ async function bootstrap() {
   // Serve static files from the upload directory
   app.useStaticAssets(uploadDir, {
     prefix: '/uploads/',
+    setHeaders: (res) => {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+    },
   });
   //------------------------------------------------------------------//
 
@@ -39,7 +42,7 @@ async function bootstrap() {
 
   //------------------------- CORS Setup ---------------------------//
   app.enableCors({
-    origin: appConfig.env === 'development' || 'test',
+    origin: appConfig.env === 'development',
     credentials: true,
   });
   //------------------------------------------------------------------//
