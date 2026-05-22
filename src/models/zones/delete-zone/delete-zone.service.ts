@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ZoneRepository } from '../repositories';
+import { ZoneRepository } from '../repositories/zone.repository-abstract';
 
 @Injectable()
 export class DeleteZoneService {

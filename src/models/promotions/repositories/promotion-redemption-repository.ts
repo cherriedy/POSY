@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PromotionRedemptionRepository } from './promotion-redemption-repository.abstract';
-import { PromotionRedemption, PromotionRedemptionMapper } from '../types';
+import { PromotionRedemption } from '../types/promotion-redemption';
+import { PromotionRedemptionMapper } from '../types/promotion-redemption.mapper';
 
 @Injectable()
 export class PromotionRedemptionRepositoryImpl implements PromotionRedemptionRepository {

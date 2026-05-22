@@ -28,36 +28,30 @@ import {
 import { plainToInstance } from 'class-transformer';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Request, Response } from 'express';
-import { JwtPayload } from '../../../authentication/interfaces';
+import { JwtPayload } from '../../../authentication/interfaces/jwt-payload.interface';
 import { RoleGuard } from '../../../authorization/guards/role.guard';
-import { createPageResponseSchema } from '../../../common/dto';
-import { Roles } from '../../../common/decorators';
-import { Role } from '../../../common/enums';
+import { createPageResponseSchema } from '../../../common/dto/page-response';
+import { Roles } from '../../../common/decorators/roles.decorator';
+import { Role } from '../../../common/enums/role.enum';
 import {
   PaymentCheckoutPayloadMapper,
   PaymentCheckoutService,
 } from '../features/payment-checkout.service';
 import { PaymentCoreService } from '../features/payment-core.service';
 import { PaymentFacadeService } from '../features/payment-facade.service';
-import {
-  PaymentQueryParamsDto,
-  PaymentResponseDto,
-  CheckoutRequestDto,
-  MomoCallbackPayload,
-  PaymentNotFoundException,
-  PaymentMethodNotFoundException,
-} from '../shared';
+import { PaymentQueryParamsDto } from '../shared/dto/payment-query-params.dto';
+import { PaymentResponseDto } from '../shared/dto/payment-response.dto';
+import { CheckoutRequestDto } from '../shared/dto/checkout.dto';
+import { MomoCallbackPayload } from '../shared/interfaces/payment-callback-payload.interface';
+import { PaymentNotFoundException } from '../shared/exceptions/payment-not-found.exception';
+import { PaymentMethodNotFoundException } from '../shared/exceptions/payment-method-not-found.exception';
 import { PaymentRefundService } from '../features/payment-refund.service';
-import {
-  OrderNotFoundException,
-  OrderSnapshotNotFoundException,
-} from 'src/models/orders';
-import {
-  PromotionNotFoundException,
-  PromotionUnusableException,
-} from 'src/models/promotions/exceptions';
+import { OrderNotFoundException } from 'src/models/orders/shared/exceptions/order-not-found.exception';
+import { OrderSnapshotNotFoundException } from 'src/models/orders/shared/exceptions/order-snapshot-not-found.exception';
+import { PromotionNotFoundException } from 'src/models/promotions/exceptions/PromotionNotFoundException';
+import { PromotionUnusableException } from 'src/models/promotions/exceptions/PromotionUnusableException';
 import { OrderNotReadyForCheckoutException } from 'src/models/orders/shared/exceptions/order-not-ready-for-checkout.exception';
-import { UnsupportedValueException } from 'src/common/exceptions';
+import { UnsupportedValueException } from 'src/common/exceptions/unsupported-value.exception';
 
 @ApiTags('Payments')
 @ApiBearerAuth()

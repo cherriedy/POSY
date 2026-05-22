@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { IngredientRepository } from '../../shared/repositories';
-import { Ingredient } from '../../shared/entities';
-import { Page } from '../../../../common/interfaces';
-import { IngredientNotFoundException } from '../../shared/exceptions';
-import { IngredientQueryParams } from '../../shared/interfaces';
+import { IngredientRepository } from '../../shared/repositories/ingredient-repository.abstract';
+import { Ingredient } from '../../shared/entities/ingredient';
+import { Page } from '../../../../common/interfaces/page.interface';
+import { IngredientNotFoundException } from '../../shared/exceptions/ingredient-not-found.exception';
+import { IngredientQueryParams } from '../../shared/interfaces/ingredient-query-params.interface';
 
 @Injectable()
 export class GetIngredientsService {

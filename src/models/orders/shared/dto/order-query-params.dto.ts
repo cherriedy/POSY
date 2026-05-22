@@ -1,8 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsUUID, IsInt, Min } from 'class-validator';
 import { Type } from 'class-transformer';
-import { OrderStatus } from '../enums';
-import { OrderQueryParams } from '../interfaces';
+import { OrderStatus } from '../enums/order-status.enum';
+import { OrderQueryParams } from '../interfaces/order-query-params.interface';
 
 export class OrderQueryParamsDto {
   @ApiPropertyOptional({ type: Number, description: 'Page number', example: 1 })

@@ -1,4 +1,5 @@
-import { OrderBy, PaginationParams } from '../../../../common/interfaces';
+import { OrderBy } from '../../../../common/interfaces/sort-field.interface';
+import { PaginationParams } from '../../../../common/interfaces/pagination-params.interface';
 
 /**
  * Allowed fields for sorting payment methods.

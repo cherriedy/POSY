@@ -1,6 +1,7 @@
-import { Category } from '../entities';
-import { BaseRepository, Page } from '../../../../common/interfaces';
-import { CategoryQueryParams } from '../interfaces';
+import { Category } from '../entities/category';
+import { BaseRepository } from '../../../../common/interfaces/base-repository.interface';
+import { Page } from '../../../../common/interfaces/page.interface';
+import { CategoryQueryParams } from '../interfaces/category-query-params.interface';
 
 export abstract class CategoryRepository implements BaseRepository<Category> {
   /**

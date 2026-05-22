@@ -1,5 +1,6 @@
 import { Global, Module } from '@nestjs/common';
-import { UserRepository, UserRepositoryImpl } from './repositories';
+import { UserRepository } from './repositories/user.repository-abstract';
+import { UserRepositoryImpl } from './repositories/user.repository-implementation';
 import { CreateUserModule } from './create-user/create-user.module';
 import { UserController } from './user.controller';
 import { UpdateUserModule } from './update-user/update-user.module';

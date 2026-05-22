@@ -1,5 +1,5 @@
-import { BaseRepository } from '../../../../common/interfaces';
-import { SessionPreference } from '../entities';
+import { BaseRepository } from '../../../../common/interfaces/base-repository.interface';
+import { SessionPreference } from '../entities/session-preference';
 
 export abstract class SessionPreferenceRepository implements BaseRepository<SessionPreference> {
   /**

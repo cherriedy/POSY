@@ -1,15 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import {
-  TableSessionRepository,
-  TableSession,
-  TableSessionStatus,
-  TableSessionType,
-  UnavailableTableException,
-  TableSessionNotFoundException,
-} from '../../shared';
-import { TableRepository } from 'src/models/tables/repositories';
-import { TableNotFoundException } from 'src/models/tables/exceptions';
-import { DuplicateEntryException } from 'src/common/exceptions';
+import { TableSessionRepository } from '../../shared/repositories/table-session-repository.abstract';
+import { TableSession } from '../../shared/entities/table-session';
+import { TableSessionStatus } from '../../shared/enums/table-session-status.enum';
+import { TableSessionType } from '../../shared/enums/table-session-type.enum';
+import { UnavailableTableException } from '../../shared/exceptions/unavailable-table.exception';
+import { TableSessionNotFoundException } from '../../shared/exceptions/table-session-not-found.exception';
+import { TableRepository } from 'src/models/tables/repositories/table.repository-abstract';
+import { TableNotFoundException } from 'src/models/tables/exceptions/table-not-found.exception';
+import { DuplicateEntryException } from 'src/common/exceptions/DuplicateEntryException';
 
 @Injectable()
 export class StaffSessionContextService {

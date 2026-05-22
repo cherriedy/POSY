@@ -1,6 +1,6 @@
 import { Promotion } from './promotion.class';
 import { PricingSnapshot } from './pricing-snapshot.class';
-import { Order } from '../../orders/shared/entities';
+import { Order } from '../../orders/shared/entities/order';
 
 export class PromotionRedemption {
   constructor(

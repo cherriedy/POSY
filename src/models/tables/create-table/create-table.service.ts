@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { TableRepository } from '../repositories';
-import { Table } from '../types';
-import { ZoneRepository } from 'src/models/zones/repositories';
-import { RelatedRecordNotFoundException } from 'src/common/exceptions';
+import { TableRepository } from '../repositories/table.repository-abstract';
+import { Table } from '../types/table.class';
+import { ZoneRepository } from 'src/models/zones/repositories/zone.repository-abstract';
+import { RelatedRecordNotFoundException } from 'src/common/exceptions/RelatedRecordNotFoundException';
 
 @Injectable()
 export class CreateTableService {

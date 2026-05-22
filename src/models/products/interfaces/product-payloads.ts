@@ -1,5 +1,5 @@
-import { BulkOperationStatus } from 'src/common/types';
-import { DietaryTag, MealSession, Season, Taste } from '../enums';
+import { BulkOperationStatus } from 'src/common/types/bulk-operation.type';
+import { DietaryTag, MealSession, Season, Taste } from '../enums/product-attribute.enum';
 
 /**
  * Payload for creating a product with optional attributes.

@@ -6,13 +6,11 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import { TokenGeneratorsService } from '../../authentication/common/token-generators';
-import { AuthenticatedGuestSocket } from '../interfaces';
+import { TokenGeneratorsService } from '../../authentication/common/token-generators/token-generators.service';
+import { AuthenticatedGuestSocket } from '../interfaces/authenticated-guest-socket.interface';
 import { WsException } from '@nestjs/websockets';
-import {
-  AccessTokenHasExpiredException,
-  InvalidAccessTokenException,
-} from '../../authentication/exceptions';
+import { AccessTokenHasExpiredException } from '../../authentication/exceptions/AccessTokenHasExpiredException';
+import { InvalidAccessTokenException } from '../../authentication/exceptions/InvalidAccessTokenException';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()

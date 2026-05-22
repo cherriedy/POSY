@@ -7,7 +7,7 @@ import { lastValueFrom } from 'rxjs';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CollaborativeResponse } from './recommendation.type';
 import { ProductRepository } from '../models/products/repositories/product-repository.abstract';
-import { Product } from '../models/products';
+import { Product } from '../models/products/entities/product.class';
 import { ProductInteractionService } from '../user-tracking/features/product-interaction.service';
 
 @Injectable()

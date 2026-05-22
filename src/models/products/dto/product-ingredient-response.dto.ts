@@ -1,6 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { UnitResponseDto } from 'src/models/units';
+import { UnitResponseDto } from 'src/models/units/dto/unit-response.dto';
 
 class IngredientPreview {
   @Expose()

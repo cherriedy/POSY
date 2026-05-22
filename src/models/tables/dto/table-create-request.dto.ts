@@ -1,7 +1,8 @@
 import { IsBoolean, IsEnum, IsInt, IsOptional, IsUUID } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsValidTableName, IsValidTableCapacity } from '../decorators';
-import { TableStatus } from '../enums';
+import { IsValidTableName } from '../decorators/is-valid-name.decorator';
+import { IsValidTableCapacity } from '../decorators/is-valid-capacity.decorator';
+import { TableStatus } from '../enums/table-status.enum';
 
 export class TableCreateRequestDto {
   @ApiProperty({

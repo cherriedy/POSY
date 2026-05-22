@@ -1,5 +1,5 @@
-import { Image } from '../types';
-import { BaseRepository } from '../../../common/interfaces';
+import { Image } from '../types/image.class';
+import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
 
 export abstract class ImageRepository implements BaseRepository<Image> {
   /**

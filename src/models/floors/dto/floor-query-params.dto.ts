@@ -1,8 +1,8 @@
 import { Transform } from 'class-transformer';
 import { IsOptional, IsBoolean, IsNumber, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { FloorOrderBy, FloorQueryParams, FloorSortField } from '../interfaces';
-import { SortDirection } from '../../../common/interfaces';
+import { FloorOrderBy, FloorQueryParams, FloorSortField } from '../interfaces/floor-query-params.interface';
+import { SortDirection } from '../../../common/interfaces/sort-field.interface';
 
 export class FloorQueryParamsDto {
   @ApiPropertyOptional({

@@ -1,5 +1,5 @@
-import { IngredientUpdateRequestDto } from '../../shared/dto';
-import { Ingredient } from '../../shared/entities';
+import { IngredientUpdateRequestDto } from '../../shared/dto/ingredient-update-request.dto';
+import { Ingredient } from '../../shared/entities/ingredient';
 
 export class UpdateIngredientPayloadMapper {
   static fromDto(dto: IngredientUpdateRequestDto): Partial<Ingredient> {

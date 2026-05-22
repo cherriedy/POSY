@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ProductIngredientRepository } from 'src/models/products/repositories/product-ingredient-repository.abstract';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
-import { ProductIngredient } from '../entities';
-import { ProductIngredientBulkUpsertPayload } from '../interfaces';
-import { ProductNotFoundException } from '../exceptions';
+import { ProductIngredient } from '../entities/product-ingredient.class';
+import { ProductIngredientBulkUpsertPayload } from '../interfaces/product-payloads';
+import { ProductNotFoundException } from '../exceptions/product-not-found.exception';
 
 @Injectable()
 export class UpsertIngredientsService {

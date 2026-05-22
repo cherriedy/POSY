@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CuisineRepository } from '../repositories';
-import { Cuisine } from '../types';
-import { CuisineQueryParams } from '../interfaces';
-import { Page } from '../../../common/interfaces';
-import { CuisineNotFoundException } from '../exceptions';
+import { CuisineRepository } from '../repositories/cuisine.repository-abstract';
+import { Cuisine } from '../types/cuisine.class';
+import { CuisineQueryParams } from '../interfaces/cuisine-query-params.interface';
+import { Page } from '../../../common/interfaces/page.interface';
+import { CuisineNotFoundException } from '../exceptions/cuisine-not-found.exception';
 
 /**
  * Service responsible for retrieving cuisines.

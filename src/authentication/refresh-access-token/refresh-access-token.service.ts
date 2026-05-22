@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { AuthTokensSchema, JwtPayload } from '../interfaces';
-import { UserRepository } from '../../models/users/repositories';
-import { UserNotFoundException } from '../../models/users/exceptions';
+import { AuthTokensSchema } from '../interfaces/auth-tokens-schema.interface';
+import { JwtPayload } from '../interfaces/jwt-payload.interface';
+import { UserRepository } from '../../models/users/repositories/user.repository-abstract';
+import { UserNotFoundException } from '../../models/users/exceptions/UserNotFoundException';
 import { hash, verifyHash } from '../../common/utilities/hash.util';
-import { InvalidRefreshTokenException } from '../exceptions';
+import { InvalidRefreshTokenException } from '../exceptions/InvalidRefreshTokenException';
 import { TokenGeneratorsService } from '../common/token-generators/token-generators.service';
 import { authConfig } from '../auth.config';
 

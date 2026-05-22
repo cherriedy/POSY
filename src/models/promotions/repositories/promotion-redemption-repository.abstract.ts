@@ -1,4 +1,4 @@
-import { PromotionRedemption } from '../types';
+import { PromotionRedemption } from '../types/promotion-redemption';
 
 export abstract class PromotionRedemptionRepository {
   /**

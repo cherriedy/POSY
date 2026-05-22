@@ -5,7 +5,7 @@ import {
 } from '@prisma/client';
 import { PromotionMapper } from './promotion.mapper';
 import { PricingSnapshotMapper } from './pricing-snapshot.mapper';
-import { OrderMapper } from '../../orders/shared/entities';
+import { OrderMapper } from '../../orders/shared/entities/order.mapper';
 
 export class PromotionRedemptionMapper {
   static toDomain(

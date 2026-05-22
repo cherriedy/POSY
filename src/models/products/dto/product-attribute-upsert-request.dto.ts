@@ -9,8 +9,8 @@ import {
   Min,
   Max,
 } from 'class-validator';
-import { MealSession, Taste, DietaryTag, Season } from '../enums';
-import { RequiredWhen } from '../../../common/decorators';
+import { MealSession, Taste, DietaryTag, Season } from '../enums/product-attribute.enum';
+import { RequiredWhen } from '../../../common/decorators/required-when.decorator';
 
 /**
  * DTO for creating or updating product attributes.

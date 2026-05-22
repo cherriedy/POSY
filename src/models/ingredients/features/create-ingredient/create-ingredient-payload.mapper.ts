@@ -1,4 +1,4 @@
-import { IngredientCreateUpdateDto } from '../../shared/dto';
+import { IngredientCreateUpdateDto } from '../../shared/dto/ingredient-create-update.dto';
 import { CreateIngredientPayload } from './create-ingredient.payload';
 
 export class CreateIngredientPayloadMapper {

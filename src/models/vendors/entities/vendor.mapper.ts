@@ -3,7 +3,7 @@ import {
   Vendor as PrismaVendor,
   VendorStatus as PrismaVendorStatus,
 } from '@prisma/client';
-import { VendorStatus } from '../enums';
+import { VendorStatus } from '../enums/vendor-status.enum';
 
 export class VendorMapper {
   static toDomain(this: void, prisma: PrismaVendor): Vendor {

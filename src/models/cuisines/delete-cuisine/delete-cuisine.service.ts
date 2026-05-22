@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CuisineRepository } from '../repositories';
-import { CuisineNotFoundException } from '../exceptions';
+import { CuisineRepository } from '../repositories/cuisine.repository-abstract';
+import { CuisineNotFoundException } from '../exceptions/cuisine-not-found.exception';
 
 /**
  * Service responsible for soft-deleting cuisines.

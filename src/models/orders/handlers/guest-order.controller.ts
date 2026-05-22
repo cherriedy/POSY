@@ -23,26 +23,20 @@ import {
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import {
-  OrderCreateRequestDto,
-  OrderDetailedResponseDto,
-  OrderPreviewResponseDto,
-  OrderUpdateRequestDto,
-} from '../shared';
-import { OrderNotFoundException } from '../shared';
-import {
-  CurrentSession,
-  TableSession,
-  TableSessionGuard,
-} from '../../table-sessions';
-import {
-  AtLeastOneItemRequiredException,
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../../common/exceptions';
-import { ProductNotFoundException } from '../../products';
-import { TableNotFoundException } from '../../tables/exceptions';
-import { OrderModificationForbiddenException } from '../shared';
+import { OrderCreateRequestDto } from '../shared/dto/order-create-request.dto';
+import { OrderDetailedResponseDto } from '../shared/dto/order-detailed-response.dto';
+import { OrderPreviewResponseDto } from '../shared/dto/order-preview-response.dto';
+import { OrderUpdateRequestDto } from '../shared/dto/order-update-request.dto';
+import { OrderNotFoundException } from '../shared/exceptions/order-not-found.exception';
+import { CurrentSession } from '../../table-sessions/shared/decorators/current-session.decorator';
+import { TableSession } from '../../table-sessions/shared/entities/table-session';
+import { TableSessionGuard } from '../../table-sessions/shared/guards/table-session.guard';
+import { AtLeastOneItemRequiredException } from '../../../common/exceptions/at-least-one-item-required.exception';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { ProductNotFoundException } from '../../products/exceptions/product-not-found.exception';
+import { TableNotFoundException } from '../../tables/exceptions/table-not-found.exception';
+import { OrderModificationForbiddenException } from '../shared/exceptions/order-modification-forbidden.exception';
 import { toPayload as toCreateOrderPayload } from '../services/create-order.service';
 import { UpdateOrderService } from '../services/update-order.service';
 import { OrderFacadeService } from '../services/order-facade.service';

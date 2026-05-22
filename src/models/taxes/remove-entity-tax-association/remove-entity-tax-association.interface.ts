@@ -1,4 +1,4 @@
-import { BulkOperationStatus } from '../../../common/types';
+import { BulkOperationStatus } from '../../../common/types/bulk-operation.type';
 
 /**
  * Payload for bulk removing entity-tax associations by their unique IDs.

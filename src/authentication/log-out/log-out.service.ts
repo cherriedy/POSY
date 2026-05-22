@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../../models/users/repositories';
-import { UserNotFoundException } from '../../models/users/exceptions';
+import { UserRepository } from '../../models/users/repositories/user.repository-abstract';
+import { UserNotFoundException } from '../../models/users/exceptions/UserNotFoundException';
 
 @Injectable()
 export class LogOutService {

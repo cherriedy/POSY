@@ -1,5 +1,7 @@
 import { PromotionProductRepository } from './promotion-product-repository.abstract';
-import { Promotion, PromotionProduct, PromotionProductMapper } from '../types';
+import { Promotion } from '../types/promotion.class';
+import { PromotionProduct } from '../types/promotion-product.class';
+import { PromotionProductMapper } from '../types/promotion-product.mapper';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PromotionStatus } from '@prisma/client';

@@ -1,5 +1,5 @@
-import { PricingSnapshotTax } from '../entities';
-import { BaseRepository } from '../../../common/interfaces';
+import { PricingSnapshotTax } from '../entities/pricing-snapshot-tax';
+import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
 
 export abstract class PricingSnapshotTaxRepository extends BaseRepository<PricingSnapshotTax> {
   /**

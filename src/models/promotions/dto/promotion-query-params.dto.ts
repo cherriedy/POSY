@@ -9,12 +9,10 @@ import {
   IsDate,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  PromotionApplicability,
-  PromotionDiscountType,
-  PromotionStatus,
-} from '../enums';
-import { PromotionQueryParams } from '../interfaces';
+import { PromotionApplicability } from '../enums/promotion-applicability.enum';
+import { PromotionDiscountType } from '../enums/promotion-discount-type.enum';
+import { PromotionStatus } from '../enums/promotion-status.enum';
+import { PromotionQueryParams } from '../interfaces/promotion-query-params.interface';
 
 /* -------------------------------------------------------------------------- */
 /*                           BOOLEAN TRANSFORM HELPER                         */

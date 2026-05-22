@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
-import { OrderStatus } from '../../../orders/shared/enums';
-import { PaymentProvider, PaymentStatus } from '../enums';
+import { OrderStatus } from '../../../orders/shared/enums/order-status.enum';
+import { PaymentProvider } from '../enums/payment-provider.enum';
+import { PaymentStatus } from '../enums/payment-status.enum';
 
 @Exclude()
 export class PaymentMethodDto {

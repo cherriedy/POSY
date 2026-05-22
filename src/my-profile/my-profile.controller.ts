@@ -11,12 +11,10 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { GetUsersService } from '../models/users/get-users/get-users.service';
 import { UpdateUserService } from '../models/users/update-user/update-user.service';
-import {
-  UpdatePasswordDto,
-  UpdateUserDto,
-  UserDetailedResponseDto,
-} from '../models/users/dto';
-import { JwtPayload } from '../authentication/interfaces';
+import { UpdatePasswordDto } from '../models/users/dto/update-password-request.dto';
+import { UpdateUserDto } from '../models/users/dto/user-update-request.dto';
+import { UserDetailedResponseDto } from '../models/users/dto/user-detailed-response.dto';
+import { JwtPayload } from '../authentication/interfaces/jwt-payload.interface';
 import { Request } from 'express';
 import { plainToInstance } from 'class-transformer';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';

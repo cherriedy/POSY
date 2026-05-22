@@ -1,6 +1,7 @@
 import { PaymentMethod as PrismaPaymentMethod, Prisma } from '@prisma/client';
 import { PaymentMethod as DomainPaymentMethod } from './payment-method';
-import { PaymentFeeType, PaymentProvider } from '../enums';
+import { PaymentFeeType } from '../enums/payment-fee-type.enum';
+import { PaymentProvider } from '../enums/payment-provider.enum';
 import { PaymentMapper } from './payment.mapper';
 
 export class PaymentMethodMapper {

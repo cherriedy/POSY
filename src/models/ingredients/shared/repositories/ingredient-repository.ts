@@ -1,17 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { IngredientRepository } from './ingredient-repository.abstract';
-import { Ingredient, IngredientMapper } from '../entities';
-import { Page } from '../../../../common/interfaces';
+import { Ingredient } from '../entities/ingredient';
+import { IngredientMapper } from '../entities/ingredient.mapper';
+import { Page } from '../../../../common/interfaces/page.interface';
 import { PrismaService } from '../../../../providers/prisma/prisma.service';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../../../common/exceptions';
-import { paginationConfig } from '../../../../common/config';
+import { DuplicateEntryException } from '../../../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../../../common/exceptions/ForeignKeyViolationException';
+import { paginationConfig } from '../../../../common/config/pagination.config';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { Prisma } from '@prisma/client';
-import { IngredientQueryParams, IngredientOrderBy } from '../interfaces';
-import { IngredientNotFoundException } from '../exceptions';
+import { IngredientQueryParams, IngredientOrderBy } from '../interfaces/ingredient-query-params.interface';
+import { IngredientNotFoundException } from '../exceptions/ingredient-not-found.exception';
 
 const { page: defaultPage, pageSize: defaultPageSize } =
   paginationConfig.default;

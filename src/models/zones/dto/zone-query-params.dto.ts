@@ -1,8 +1,8 @@
 import { Transform } from 'class-transformer';
 import { IsOptional, IsBoolean, IsNumber, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { ZoneOrderBy, ZoneQueryParams, ZoneSortField } from '../interfaces';
-import { SortDirection } from '../../../common/interfaces';
+import { ZoneOrderBy, ZoneQueryParams, ZoneSortField } from '../interfaces/zone-query-params.interface';
+import { SortDirection } from '../../../common/interfaces/sort-field.interface';
 
 export class ZoneQueryParamsDto {
   @ApiPropertyOptional({

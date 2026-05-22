@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { UnitRepository } from '../repositories';
-import { Unit } from '../entities';
-import { UnitNotFoundException } from '../exceptions';
-import { Page } from '../../../common/interfaces';
-import { UnitQueryParams } from '../interfaces';
+import { UnitRepository } from '../repositories/unit-repository.abstract';
+import { Unit } from '../entities/unit.class';
+import { UnitNotFoundException } from '../exceptions/unit-not-found.exception';
+import { Page } from '../../../common/interfaces/page.interface';
+import { UnitQueryParams } from '../interfaces/unit-query-params.inerface';
 
 @Injectable()
 export class GetUnitsService {

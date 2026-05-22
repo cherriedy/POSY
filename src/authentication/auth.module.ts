@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from '../models/users/user.module';
-import { JwtStrategy } from './strategy';
+import { JwtStrategy } from './strategy/jwt.strategy';
 import { AppConfigModule, JwtConfigModule } from '../config';
 import { MailModule } from '../mails/mail.module';
 import { ValidateResetCodeModule } from './validate-reset-code/validate-reset-code.module';

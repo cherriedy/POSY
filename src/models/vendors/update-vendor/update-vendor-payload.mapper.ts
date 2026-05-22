@@ -1,5 +1,5 @@
-import { VendorUpdateRequestDto } from '../dto';
-import { VendorUpdatePayload } from '../interfaces';
+import { VendorUpdateRequestDto } from '../dto/vendor-update-request.dto';
+import { VendorUpdatePayload } from '../interfaces/vendor-payloads.interface';
 
 export class UpdateVendorPayloadMapper {
   static fromDto(dto: VendorUpdateRequestDto): VendorUpdatePayload {

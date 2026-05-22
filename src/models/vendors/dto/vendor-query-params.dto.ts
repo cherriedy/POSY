@@ -8,14 +8,9 @@ import {
   IsEnum,
 } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
-import {
-  VendorQueryParams,
-  VendorOrderBy,
-  VendorQueryFilter,
-  VendorSortField,
-} from '../interfaces';
-import { VendorStatus } from '../enums';
-import { SortDirection } from '../../../common/interfaces';
+import { VendorQueryParams, VendorOrderBy, VendorQueryFilter, VendorSortField } from '../interfaces/vendor-query-params.interface';
+import { VendorStatus } from '../enums/vendor-status.enum';
+import { SortDirection } from '../../../common/interfaces/sort-field.interface';
 
 export class VendorQueryParamsDto {
   @ApiPropertyOptional({

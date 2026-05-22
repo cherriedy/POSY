@@ -18,30 +18,27 @@ import {
 import { CreateUserService } from './create-user/create-user.service';
 import { UpdateUserService } from './update-user/update-user.service';
 import { User } from './types/user.class';
-import {
-  DuplicateEntryException,
-  UnnecessaryOperationException,
-} from '../../common/exceptions';
+import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
+import { UnnecessaryOperationException } from '../../common/exceptions/UnnecessaryOperationException';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import {
-  CreateUserDto,
-  UpdatePasswordDto,
-  UpdateUserDto,
-  UserDetailedResponseDto,
-  UserPreviewResponseDto,
-  UserQueryParamsDto,
-} from './dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdatePasswordDto } from './dto/update-password-request.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserDetailedResponseDto } from './dto/user-detailed-response.dto';
+import { UserPreviewResponseDto } from './dto/user-preview-response.dto';
+import { UserQueryParamsDto } from './dto/user-query-params.dto';
 import { hash } from '../../common/utilities/hash.util';
 import { AuthGuard } from '@nestjs/passport';
-import { UserNotFoundException } from './exceptions';
+import { UserNotFoundException } from './exceptions/UserNotFoundException';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 import { PreventManagerAdminAccessGuard } from '../../authorization/guards/prevent-manager-admin-access.guard';
-import { Roles, PreventManagerAdminAccess } from '../../common/decorators';
-import { Role } from '../../common/enums';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { PreventManagerAdminAccess } from '../../common/decorators/prevent-manager-admin-access.decorator';
+import { Role } from '../../common/enums/role.enum';
 import { GetUsersService } from './get-users/get-users.service';
 import { plainToInstance } from 'class-transformer';
-import { Page } from '../../common/interfaces';
-import { JwtPayload } from '../../authentication/interfaces';
+import { Page } from '../../common/interfaces/page.interface';
+import { JwtPayload } from '../../authentication/interfaces/jwt-payload.interface';
 import { Request } from 'express';
 import { DeleteUserService } from './delete-user/delete-user.service';
 import {
@@ -53,7 +50,7 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto';
+import { createPageResponseSchema } from '../../common/dto/page-response';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -173,7 +170,7 @@ export class UserController {
     const requesterRole = (req.user as JwtPayload).role;
 
     // Prevent managers from creating admin users
-    if (requesterRole === Role.MANAGER.toString() && dto.role === 'ADMIN') {
+    if (requesterRole === Role.MANAGER.toString() && (dto.role as Role) === Role.ADMIN) {
       throw new BadRequestException(
         'Managers are not authorized to create admin users.',
       );
@@ -236,7 +233,7 @@ export class UserController {
     @Body() dto: UpdateUserDto,
   ) {
     try {
-      return this.updateUserService.updateUser(id, dto);
+      return this.updateUserService.updateUser(id, dto as any);
     } catch (e) {
       if (e instanceof UserNotFoundException) {
         throw new NotFoundException(e.message);

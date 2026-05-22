@@ -1,4 +1,5 @@
-import { PaginationParams, OrderBy } from 'src/common/interfaces';
+import { PaginationParams } from 'src/common/interfaces/pagination-params.interface';
+import { OrderBy } from 'src/common/interfaces/sort-field.interface';
 
 /**
  * Represents the allowed fields by which cuisines can be sorted.

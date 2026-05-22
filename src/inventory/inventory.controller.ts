@@ -26,8 +26,8 @@ import {
 import { StockStatus } from './shared/enum';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../authorization/guards/role.guard';
-import { Role } from '../common/enums';
-import { Roles } from '../common/decorators';
+import { Role } from '../common/enums/role.enum';
+import { Roles } from '../common/decorators/roles.decorator';
 import { inventoryConfig } from './inventory.config';
 
 @UseGuards(AuthGuard('jwt'), RoleGuard)

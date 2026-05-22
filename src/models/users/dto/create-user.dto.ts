@@ -8,12 +8,10 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import {
-  IsValidPassword,
-  IsValidPhoneNumber,
-  IsValidRole,
-} from '../../../common/decorators';
-import { Role } from 'src/common/enums';
+import { IsValidPassword } from '../../../common/decorators/is-valid-password.decorator';
+import { IsValidPhoneNumber } from '../../../common/decorators/is-valid-phone-number.decorator';
+import { IsValidRole } from '../../../common/decorators/is-valid-role.decorator';
+import { Role } from 'src/common/enums/role.enum';
 
 export class CreateUserDto {
   @IsString()

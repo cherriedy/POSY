@@ -1,4 +1,4 @@
-import { Product } from '../../../models/products';
+import { Product } from '../../../models/products/entities/product.class';
 import { MeiliSearchProduct } from '../types';
 
 /**

@@ -1,6 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { CuisineController } from './cuisine.controller';
-import { CuisineRepository, CuisineRepositoryImpl } from './repositories';
+import { CuisineRepository } from './repositories/cuisine.repository-abstract';
+import { CuisineRepositoryImpl } from './repositories/cuisine.repository-implementation';
 import { GetCuisinesModule } from './get-cuisines/get-cuisines.module';
 import { CreateCuisineModule } from './create-cuisine/create-cuisine.module';
 import { UpdateCuisineModule } from './update-cuisine/update-cuisine.module';

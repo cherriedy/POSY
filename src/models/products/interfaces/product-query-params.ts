@@ -1,6 +1,6 @@
-import { ProductDiscountType } from '../enums';
-import { PaginationParams } from '../../../common/interfaces';
-import { OrderBy } from '../../../common/interfaces';
+import { ProductDiscountType } from '../enums/product.enum';
+import { PaginationParams } from '../../../common/interfaces/pagination-params.interface';
+import { OrderBy } from '../../../common/interfaces/sort-field.interface';
 
 export type ProductSortField =
   | 'price'
