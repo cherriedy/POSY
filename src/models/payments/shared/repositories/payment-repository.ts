@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, Payment as PrismaPayment } from '@prisma/client';
 import { Page } from '../../../../common/interfaces/page.interface';
-import { paginationConfig } from '../../../../common/config/pagination.config';
+import { paginationConfig } from '../../../../common/constants/pagination.config';
 import { PrismaService } from '../../../../providers/prisma/prisma.service';
 import { Payment } from '../entities/payment';
 import { PaymentMapper } from '../entities/payment.mapper';

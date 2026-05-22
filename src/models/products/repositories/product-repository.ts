@@ -8,7 +8,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
 import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
 import { ProductNotFoundException } from '../exceptions/product-not-found.exception';
-import { paginationConfig } from '../../../common/config/pagination.config';
+import { paginationConfig } from '../../../common/constants/pagination.config';
 import {
   ProductIncludeOptions,
   ProductOrderBy,

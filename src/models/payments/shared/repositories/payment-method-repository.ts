@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { Page } from '../../../../common/interfaces/page.interface';
-import { paginationConfig } from '../../../../common/config/pagination.config';
+import { paginationConfig } from '../../../../common/constants/pagination.config';
 import { PrismaService } from '../../../../providers/prisma/prisma.service';
 import { PaymentMethod } from '../entities/payment-method';
 import { PaymentMethodMapper } from '../entities/payment-method.mapper';

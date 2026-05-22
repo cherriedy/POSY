@@ -4,7 +4,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { CookieParserGateway } from '../../../common/handlers/cookie-parser.gateway';
+import { CookieParserGateway } from '../../../common/gateways/cookie-parser.gateway';
 import { Server } from 'socket.io';
 import { wsGuestAuthMiddleware } from '../../../common/middleware/websocket-guest-auth.middleware';
 import { Inject, Logger } from '@nestjs/common';

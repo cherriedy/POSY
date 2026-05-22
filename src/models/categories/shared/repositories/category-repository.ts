@@ -4,7 +4,7 @@ import { CategoryMapper } from '../entities/category.mapper';
 import { PrismaService } from '../../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { DuplicateEntryException } from '../../../../common/exceptions/DuplicateEntryException';
-import { paginationConfig } from '../../../../common/config/pagination.config';
+import { paginationConfig } from '../../../../common/constants/pagination.config';
 import { Page } from '../../../../common/interfaces/page.interface';
 import { Injectable } from '@nestjs/common';
 import { CategoryNotFoundException } from '../exceptions/category-not-found.exception';
