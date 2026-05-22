@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { EntityTaxConfigRepository } from '../repositories';
-import { EntityTaxConfig } from '../entities';
+import { EntityTaxConfigRepository } from '../repositories/entity-tax-config-repository.abstract';
+import { EntityTaxConfig } from '../entities/entity-tax-config';
 
 @Injectable()
 export class GetEntityTaxAssociationsService {

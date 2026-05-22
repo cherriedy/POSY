@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { Page } from '../../../../common/interfaces';
-import { paginationConfig } from '../../../../common/config';
+import { Page } from '../../../../common/interfaces/page.interface';
+import { paginationConfig } from '../../../../common/constants/pagination.config';
 import { PrismaService } from '../../../../providers/prisma/prisma.service';
-import { PaymentMethod, PaymentMethodMapper } from '../entities';
-import { PaymentMethodNotFoundException } from '../exceptions';
-import { PaymentMethodOrderBy, PaymentMethodQueryParams } from '../interfaces';
+import { PaymentMethod } from '../entities/payment-method';
+import { PaymentMethodMapper } from '../entities/payment-method.mapper';
+import { PaymentMethodNotFoundException } from '../exceptions/payment-method-not-found.exception';
+import { PaymentMethodOrderBy, PaymentMethodQueryParams } from '../interfaces/payment-method-query-params.interface';
 import { PaymentMethodRepository } from './payment-method-repository.abstract';
 
 @Injectable()

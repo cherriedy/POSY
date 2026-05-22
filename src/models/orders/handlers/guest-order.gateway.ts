@@ -4,14 +4,14 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { CookieParserGateway } from '../../../common/handlers';
+import { CookieParserGateway } from '../../../common/gateways/cookie-parser.gateway';
 import { Server } from 'socket.io';
-import { wsGuestAuthMiddleware } from '../../../common/middleware';
+import { wsGuestAuthMiddleware } from '../../../common/middleware/websocket-guest-auth.middleware';
 import { Inject, Logger } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { TokenGeneratorsService } from 'src/authentication/common/token-generators';
-import { TableSessionConfig } from '../../table-sessions';
-import { AuthenticatedGuestSocket } from '../../../common/interfaces';
+import { TokenGeneratorsService } from 'src/authentication/common/token-generators/token-generators.service';
+import { TableSessionConfig } from '../../table-sessions/table-session.config';
+import { AuthenticatedGuestSocket } from '../../../common/interfaces/authenticated-guest-socket.interface';
 
 @WebSocketGateway({
   namespace: 'guest/orders',

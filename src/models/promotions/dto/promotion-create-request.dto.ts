@@ -8,17 +8,13 @@ import {
   IsEnum,
   Min,
 } from 'class-validator';
-import {
-  PromotionApplicability,
-  PromotionDiscountType,
-  PromotionStatus,
-} from '../enums';
-import {
-  IsValidDescription,
-  IsValidDiscountValue,
-  IsValidTitle,
-} from '../decorators';
-import { IsAfter } from '../../../common/decorators';
+import { PromotionApplicability } from '../enums/promotion-applicability.enum';
+import { PromotionDiscountType } from '../enums/promotion-discount-type.enum';
+import { PromotionStatus } from '../enums/promotion-status.enum';
+import { IsValidDescription } from '../decorators/is-valid-description.decorator';
+import { IsValidDiscountValue } from '../decorators/is-valid-discount-value.decorator';
+import { IsValidTitle } from '../decorators/is-valid-title.decorator';
+import { IsAfter } from '../../../common/decorators/is-after.decorator';
 import { promotionConfig } from '../promotion.config';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';

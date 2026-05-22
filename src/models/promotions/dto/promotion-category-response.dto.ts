@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
-import { CategoryPreviewResponseDto } from '../../categories/shared/dto';
+import { CategoryPreviewResponseDto } from '../../categories/shared/dto/category-preview-response.dto';
 
 @Exclude()
 export class PromotionCategoryPreviewResponseDto {

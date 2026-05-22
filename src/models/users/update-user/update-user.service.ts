@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../repositories';
-import { UserNotFoundException } from '../exceptions';
+import { UserRepository } from '../repositories/user.repository-abstract';
+import { UserNotFoundException } from '../exceptions/UserNotFoundException';
 import { hash } from '../../../common/utilities/hash.util';
-import { UnnecessaryOperationException } from '../../../common/exceptions';
+import { UnnecessaryOperationException } from '../../../common/exceptions/UnnecessaryOperationException';
 import { mapRole } from '../types/role.mapper';
 import { User } from '../types/user.class';
 

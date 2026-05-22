@@ -1,10 +1,10 @@
-import { OrderStatus } from '../enums';
+import { OrderStatus } from '../enums/order-status.enum';
 import { User } from '../../../users/types/user.class';
-import { Table } from '../../../tables/types';
-import { TableSession } from '../../../table-sessions/shared/entities';
+import { Table } from '../../../tables/types/table.class';
+import { TableSession } from '../../../table-sessions/shared/entities/table-session';
 import { OrderItem } from './order-item';
-import { Payment } from '../../../payments/shared/entities';
-import { PricingSnapshot } from '../../../promotions/types';
+import { Payment } from '../../../payments/shared/entities/payment';
+import { PricingSnapshot } from '../../../promotions/types/pricing-snapshot.class';
 
 export class Order {
   constructor(

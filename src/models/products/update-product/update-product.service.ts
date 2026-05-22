@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
-import { Product } from '../entities';
+import { Product } from '../entities/product.class';
 import { getSlug } from '../../../common/utilities/string.util';
-import { ProductNotFoundException } from '../exceptions';
+import { ProductNotFoundException } from '../exceptions/product-not-found.exception';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()

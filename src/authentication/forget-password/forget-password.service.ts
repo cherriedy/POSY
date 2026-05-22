@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { authConfig } from '../auth.config';
-import { DeviceContext } from '../../common/interfaces';
+import { DeviceContext } from '../../common/interfaces/device-context.interface';
 import crypto from 'crypto';
-import { UserNotFoundException } from '../../models/users/exceptions';
+import { UserNotFoundException } from '../../models/users/exceptions/UserNotFoundException';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import winston from 'winston';
-import { UserRepository } from '../../models/users/repositories';
+import { UserRepository } from '../../models/users/repositories/user.repository-abstract';
 import { HandlebarsService } from '../../mails/handlebars.service';
 import { MailerSendService } from '../../mails/mailersend.service';
 

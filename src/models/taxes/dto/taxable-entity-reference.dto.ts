@@ -1,4 +1,4 @@
-import { EntityType } from '../enums';
+import { EntityType } from '../enums/entity-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsEnum, IsUUID } from 'class-validator';

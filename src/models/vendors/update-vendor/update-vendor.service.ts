@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { VendorRepository } from '../repositories';
-import { Vendor } from '../entities';
-import { VendorUpdatePayload } from '../interfaces';
-import { VendorNotFoundException } from '../exceptions';
+import { VendorRepository } from '../repositories/vendor-repository.abstract';
+import { Vendor } from '../entities/vendor.class';
+import { VendorUpdatePayload } from '../interfaces/vendor-payloads.interface';
+import { VendorNotFoundException } from '../exceptions/vendor-not-found.exception';
 
 @Injectable()
 export class UpdateVendorService {

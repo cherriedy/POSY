@@ -1,10 +1,9 @@
 import { OrderTax as DomainOrderTax } from './order-tax';
 import { Prisma } from '@prisma/client';
-import { OrderMapper, OrderItemMapper } from '../../orders/shared/entities';
-import {
-  TaxType as DomainTaxType,
-  TaxRateType as DomainTaxRateType,
-} from '../enums';
+import { OrderMapper } from '../../orders/shared/entities/order.mapper';
+import { OrderItemMapper } from '../../orders/shared/entities/order-item.mapper';
+import { TaxType as DomainTaxType } from '../enums/tax-type.enum';
+import { TaxRateType as DomainTaxRateType } from '../enums/tax-rate-type.enum';
 
 export class OrderTaxMapper {
   static toDomain(this: void, prisma: any): DomainOrderTax {

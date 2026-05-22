@@ -1,9 +1,9 @@
 import { Expose, Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { TaxRateType } from '../enums';
+import { TaxRateType } from '../enums/tax-rate-type.enum';
 import { TaxableEntityReferenceDto } from './taxable-entity-reference.dto';
-import { BulkOperationStatusEnum } from '../../../common/enums';
-import { BulkOperationStatus } from '../../../common/types';
+import { BulkOperationStatusEnum } from '../../../common/enums/bulk-operation-status.enum';
+import { BulkOperationStatus } from '../../../common/types/bulk-operation.type';
 
 /**
  * Represents the tax configuration details included in a tax association response.

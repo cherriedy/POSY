@@ -1,20 +1,20 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { Order, OrderNotFoundException, OrderStatus } from '../shared';
+import { Order } from '../shared/entities/order';
+import { OrderNotFoundException } from '../shared/exceptions/order-not-found.exception';
+import { OrderStatus } from '../shared/enums/order-status.enum';
 import { OrderModificationPolicyService } from '../shared/core/services/order-modification-policy.service';
 import { StaffOrderGateway } from '../handlers/staff-order.gateway';
 import { GuestOrderGateway } from '../handlers/guest-order.gateway';
-import {
-  TableSessionRepository,
-  TableSessionStatus,
-  TableSessionType,
-} from '../../table-sessions';
+import { TableSessionRepository } from '../../table-sessions/shared/repositories/table-session-repository.abstract';
+import { TableSessionStatus } from '../../table-sessions/shared/enums/table-session-status.enum';
+import { TableSessionType } from '../../table-sessions/shared/enums/table-session-type.enum';
 import { OrderRepository } from '../shared/repositories/order-repository.abstract';
-import { UserIdentity } from '../../../authentication/interfaces';
+import { UserIdentity } from '../../../authentication/interfaces/user-identity.interface';
 import { UpdateOrderStatusDto } from '../shared/dto/update-order-status.dto';
-import { UnsupportedValueException } from '../../../common/exceptions';
-import { TableRepository } from 'src/models/tables/repositories';
-import { TableStatus } from 'src/models/tables/enums';
+import { UnsupportedValueException } from '../../../common/exceptions/unsupported-value.exception';
+import { TableRepository } from 'src/models/tables/repositories/table.repository-abstract';
+import { TableStatus } from 'src/models/tables/enums/table-status.enum';
 
 @Injectable()
 export class UpdateOrderStatusService {

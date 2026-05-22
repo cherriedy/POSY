@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { FloorRepository } from '../repositories';
-import { Floor } from '../types';
+import { FloorRepository } from '../repositories/floor.repository-abstract';
+import { Floor } from '../types/floor.class';
 
 @Injectable()
 export class CreateFloorService {

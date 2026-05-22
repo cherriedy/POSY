@@ -1,9 +1,7 @@
-import { PaginationParams } from '../../../common/interfaces';
-import {
-  PromotionApplicability,
-  PromotionDiscountType,
-  PromotionStatus,
-} from '../enums';
+import { PaginationParams } from '../../../common/interfaces/pagination-params.interface';
+import { PromotionApplicability } from '../enums/promotion-applicability.enum';
+import { PromotionDiscountType } from '../enums/promotion-discount-type.enum';
+import { PromotionStatus } from '../enums/promotion-status.enum';
 
 export interface PromotionQueryFilters {
   /** Blind search query for code, title, or description */

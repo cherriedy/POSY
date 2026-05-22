@@ -1,7 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsNumber, IsOptional } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { PaymentMethodQueryParams } from '../interfaces';
+import { PaymentMethodQueryParams } from '../interfaces/payment-method-query-params.interface';
 
 export class PublicPaymentMethodQueryParamsDto {
   @ApiPropertyOptional({ type: Number, description: 'Page number' })

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ProductAttributeRepository } from 'src/models/products/repositories/product-attribute-repository.abstract';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
-import { ProductAttribute } from '../entities';
-import { ProductNotFoundException } from '../exceptions';
+import { ProductAttribute } from '../entities/product-attribute.class';
+import { ProductNotFoundException } from '../exceptions/product-not-found.exception';
 
 @Injectable()
 export class GetAttributesService {

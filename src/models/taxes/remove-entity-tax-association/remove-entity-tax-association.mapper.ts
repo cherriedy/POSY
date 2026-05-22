@@ -1,4 +1,4 @@
-import { TaxAssociationDeleteRequestDto } from '../dto';
+import { TaxAssociationDeleteRequestDto } from '../dto/tax-association-requests.dto';
 import { TaxAssociationBulkRemovePayload } from './remove-entity-tax-association.interface';
 
 /**

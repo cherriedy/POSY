@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
-import { FloorPreviewResponseDto } from 'src/models/floors/dto';
+import { FloorPreviewResponseDto } from 'src/models/floors/dto/floor-preview-response.dto';
 
 @Exclude()
 export class ZonePreviewResponseDto {

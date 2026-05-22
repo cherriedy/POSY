@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PromotionRepository } from '../repositories';
+import { PromotionRepository } from '../repositories/promotion-repository.abstract';
 
 @Injectable()
 export class DeletePromotionService {

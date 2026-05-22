@@ -1,5 +1,5 @@
-import { ProductDiscountType } from '../enums';
-import { Category } from '../../categories/shared/entities';
+import { ProductDiscountType } from '../enums/product.enum';
+import { Category } from '../../categories/shared/entities/category';
 import { ProductAttribute } from './product-attribute.class';
 import { ProductIngredient } from './product-ingredient.class';
 

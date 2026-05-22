@@ -1,21 +1,16 @@
 import { TableRepository } from './table.repository-abstract';
-import { Table, TableMapper } from '../types';
+import { Table } from '../types/table.class';
+import { TableMapper } from '../types/table.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../../common/exceptions';
-import { paginationConfig } from '../../../common/config';
-import { Page } from '../../../common/interfaces';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { paginationConfig } from '../../../common/constants/pagination.config';
+import { Page } from '../../../common/interfaces/page.interface';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 import { Injectable } from '@nestjs/common';
-import { TableNotFoundException } from '../exceptions';
-import {
-  TableOrderBy,
-  TableQueryFilter,
-  TableQueryParams,
-} from '../interfaces';
+import { TableNotFoundException } from '../exceptions/table-not-found.exception';
+import { TableOrderBy, TableQueryFilter, TableQueryParams } from '../interfaces/table-query-params.interface';
 import { Prisma } from '@prisma/client';
 
 @Injectable()

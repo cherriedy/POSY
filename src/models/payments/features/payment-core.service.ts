@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Page } from '../../../common/interfaces';
-import { Payment } from '../shared/entities';
-import { PaymentQueryParams } from '../shared/interfaces';
+import { Page } from '../../../common/interfaces/page.interface';
+import { Payment } from '../shared/entities/payment';
+import { PaymentQueryParams } from '../shared/interfaces/payment-query-params.interface';
 import { PaymentRepository } from '../shared/repositories/payment-repository.abstract';
-import { PaymentNotFoundException, PaymentStatus } from '../shared';
+import { PaymentNotFoundException } from '../shared/exceptions/payment-not-found.exception';
+import { PaymentStatus } from '../shared/enums/payment-status.enum';
 
 @Injectable()
 export class PaymentCoreService {

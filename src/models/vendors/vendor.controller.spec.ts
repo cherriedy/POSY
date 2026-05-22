@@ -1,20 +1,22 @@
 import {
   BadRequestException,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 import { VendorController } from './vendor.controller';
-import { CreateVendorService } from './create-vendor';
-import { GetVendorsService } from './get-vendors';
-import { UpdateVendorService } from './update-vendor';
-import { DeleteVendorService } from './delete-vendor';
-import { DuplicateEntryException } from '../../common/exceptions';
-import { VendorNotFoundException } from './exceptions';
-import { VendorCreateRequestDto, VendorQueryParamsDto } from './dto';
-import { VendorStatus } from './enums';
+import { CreateVendorService } from './create-vendor/create-vendor.service';
+import { GetVendorsService } from './get-vendors/get-vendors.service';
+import { UpdateVendorService } from './update-vendor/update-vendor.service';
+import { DeleteVendorService } from './delete-vendor/delete-vendor.service';
+import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
+import { VendorNotFoundException } from './exceptions/vendor-not-found.exception';
+import { VendorCreateRequestDto } from './dto/vendor-create-request.dto';
+import { VendorQueryParamsDto } from './dto/vendor-query-params.dto';
+import { VendorStatus } from './enums/vendor-status.enum';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -116,13 +118,13 @@ describe('VendorController', () => {
       expect(result).toBeDefined();
     });
 
-    it('should throw BadRequestException when vendor not found', async () => {
+    it('should throw NotFoundException when vendor not found', async () => {
       mockGetVendorsService.getById.mockRejectedValue(
         new VendorNotFoundException(vendorId),
       );
 
       await expect(controller.getById(vendorId)).rejects.toThrow(
-        BadRequestException,
+        NotFoundException,
       );
     });
 
@@ -229,17 +231,19 @@ describe('VendorController', () => {
         paymentTerm: dto.paymentTerm,
         note: dto.note,
         status: dto.status,
+        suspendedReason: null,
+        suspendedUntil: null,
       });
       expect(result).toBeDefined();
     });
 
-    it('should throw BadRequestException when vendor not found', async () => {
+    it('should throw NotFoundException when vendor not found', async () => {
       mockUpdateVendorService.update.mockRejectedValue(
         new VendorNotFoundException(vendorId),
       );
 
       await expect(controller.update(vendorId, dto)).rejects.toThrow(
-        BadRequestException,
+        NotFoundException,
       );
     });
 
@@ -277,13 +281,13 @@ describe('VendorController', () => {
       expect(result).toEqual({ message: 'Vendor deleted successfully.' });
     });
 
-    it('should throw BadRequestException when vendor not found', async () => {
+    it('should throw NotFoundException when vendor not found', async () => {
       mockDeleteVendorService.delete.mockRejectedValue(
         new VendorNotFoundException(vendorId),
       );
 
       await expect(controller.delete(vendorId)).rejects.toThrow(
-        BadRequestException,
+        NotFoundException,
       );
     });
 

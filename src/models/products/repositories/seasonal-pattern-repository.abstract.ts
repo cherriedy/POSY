@@ -1,5 +1,5 @@
-import { BaseRepository } from '../../../common/interfaces';
-import { SeasonalPattern } from '../entities';
+import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { SeasonalPattern } from '../entities/seasonal-pattern';
 
 export abstract class SeasonalPatternRepository extends BaseRepository<SeasonalPattern> {
   /**

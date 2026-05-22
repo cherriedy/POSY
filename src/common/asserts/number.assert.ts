@@ -1,4 +1,4 @@
-import { ConstraintViolationException } from '../exceptions';
+import { ConstraintViolationException } from '../exceptions/constraint-violation.exception';
 
 /**
  * Ensures that each value in `values` is strictly greater than

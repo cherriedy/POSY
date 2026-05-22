@@ -1,4 +1,4 @@
-import { UserTrackingConfig } from './shared/interfaces';
+import { UserTrackingConfig } from './shared/interfaces/user-tracking-configs';
 
 export const USER_TRACKING_CONFIG: UserTrackingConfig = {
   redis: {

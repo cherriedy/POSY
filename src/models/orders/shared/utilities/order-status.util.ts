@@ -1,4 +1,5 @@
-import { OrderItemStatus, OrderStatus } from '../enums';
+import { OrderItemStatus } from '../enums/order-item-status.enum';
+import { OrderStatus } from '../enums/order-status.enum';
 
 /**
  * Computes the aggregate {@link OrderStatus} based on a collection of {@link OrderItemStatus} values.

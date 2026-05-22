@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, Payment as PrismaPayment } from '@prisma/client';
-import { Page } from '../../../../common/interfaces';
-import { paginationConfig } from '../../../../common/config';
+import { Page } from '../../../../common/interfaces/page.interface';
+import { paginationConfig } from '../../../../common/constants/pagination.config';
 import { PrismaService } from '../../../../providers/prisma/prisma.service';
-import { Payment, PaymentMapper } from '../entities';
-import { PaymentStatus } from '../enums';
-import { PaymentOrderBy, PaymentQueryParams } from '../interfaces';
+import { Payment } from '../entities/payment';
+import { PaymentMapper } from '../entities/payment.mapper';
+import { PaymentStatus } from '../enums/payment-status.enum';
+import { PaymentOrderBy, PaymentQueryParams } from '../interfaces/payment-query-params.interface';
 import { PaymentRepository } from './payment-repository.abstract';
-import { DuplicateEntryException } from '../../../../common/exceptions';
+import { DuplicateEntryException } from '../../../../common/exceptions/DuplicateEntryException';
 
 @Injectable()
 export class PaymentRepositoryImpl implements PaymentRepository {

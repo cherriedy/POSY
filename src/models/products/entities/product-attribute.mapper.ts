@@ -1,7 +1,7 @@
 import { ProductAttribute as PrismaProductAttribute } from '@prisma/client';
 import { ProductAttribute } from './product-attribute.class';
-import { MealSession, Taste, DietaryTag, Season } from '../enums';
-import { CuisineMapper } from '../../cuisines/types';
+import { MealSession, Taste, DietaryTag, Season } from '../enums/product-attribute.enum';
+import { CuisineMapper } from '../../cuisines/types/cuisine.mapper';
 
 /**
  * Mapper for converting between Prisma and domain ProductAttribute entities.

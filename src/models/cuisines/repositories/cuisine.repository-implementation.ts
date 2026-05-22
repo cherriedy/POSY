@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { CuisineRepository } from './cuisine.repository-abstract';
-import { Cuisine, CuisineMapper } from '../types';
-import { Page } from '../../../common/interfaces';
-import { CuisineOrderBy, CuisineQueryParams } from '../interfaces';
+import { Cuisine } from '../types/cuisine.class';
+import { CuisineMapper } from '../types/cuisine.mapper';
+import { Page } from '../../../common/interfaces/page.interface';
+import { CuisineOrderBy, CuisineQueryParams } from '../interfaces/cuisine-query-params.interface';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../../common/exceptions';
-import { CuisineNotFoundException } from '../exceptions';
-import { paginationConfig } from '../../../common/config';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { CuisineNotFoundException } from '../exceptions/cuisine-not-found.exception';
+import { paginationConfig } from '../../../common/constants/pagination.config';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 import { Prisma } from '@prisma/client';
 

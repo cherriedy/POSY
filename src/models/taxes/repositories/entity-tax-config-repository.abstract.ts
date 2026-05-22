@@ -1,6 +1,6 @@
-import { BaseRepository } from '../../../common/interfaces';
-import { EntityTaxConfig } from '../entities';
-import { TaxableEntityReference } from '../interfaces';
+import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { EntityTaxConfig } from '../entities/entity-tax-config';
+import { TaxableEntityReference } from '../interfaces/taxable-entity-reference';
 
 /**
  * Abstract repository for managing entity-tax associations.

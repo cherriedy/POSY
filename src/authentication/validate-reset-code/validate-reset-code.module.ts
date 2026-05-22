@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ValidateResetCodeService } from './validate-reset-code.service';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from '../../models/users/user.module';
-import { JwtConfigModule } from '../../config';
+import { JwtConfigModule } from '../../config/jwt/config.module';
 
 @Module({
   imports: [UserModule, JwtModule, JwtConfigModule],

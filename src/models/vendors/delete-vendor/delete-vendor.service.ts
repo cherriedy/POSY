@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { VendorRepository } from '../repositories';
-import { VendorNotFoundException } from '../exceptions';
+import { VendorRepository } from '../repositories/vendor-repository.abstract';
+import { VendorNotFoundException } from '../exceptions/vendor-not-found.exception';
 
 @Injectable()
 export class DeleteVendorService {

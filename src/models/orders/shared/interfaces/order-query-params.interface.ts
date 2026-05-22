@@ -1,5 +1,5 @@
-import { PaginationParams } from '../../../../common/interfaces';
-import { OrderStatus } from '../enums';
+import { PaginationParams } from '../../../../common/interfaces/pagination-params.interface';
+import { OrderStatus } from '../enums/order-status.enum';
 
 export interface OrderQueryFilter {
   sessionId?: string;

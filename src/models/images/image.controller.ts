@@ -31,14 +31,14 @@ import e from 'express';
 import path from 'path';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Roles } from '../../common/decorators';
-import { Role } from '../../common/enums';
-import { FileValidationPipe } from './pipes';
-import { DuplicateEntryException } from '../../common/exceptions';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '../../common/enums/role.enum';
+import { FileValidationPipe } from './pipes/file-validation.pipe';
+import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { ImageNotFoundException } from './exceptions';
-import { ImageUrlTransformInterceptor } from './interceptors';
-import { UploadImageDto } from './dto';
+import { ImageNotFoundException } from './exceptions/ImageNotFoundException';
+import { ImageUrlTransformInterceptor } from './interceptors/image-url-transform.interceptor';
+import { UploadImageDto } from './dto/upload-image.dto';
 import { DeleteImagesDto } from './dto/delete-images.dto';
 
 @ApiTags('Images')

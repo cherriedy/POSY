@@ -1,10 +1,11 @@
 import { ImageRepository } from './image.repository-abstract';
-import { Image, ImageMapper } from '../types';
+import { Image } from '../types/image.class';
+import { ImageMapper } from '../types/image.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
 import { Injectable } from '@nestjs/common';
-import { ImageNotFoundException } from '../exceptions';
+import { ImageNotFoundException } from '../exceptions/ImageNotFoundException';
 
 @Injectable()
 export class ImageRepositoryImpl implements ImageRepository {

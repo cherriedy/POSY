@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { ProductAttributeRepository } from './product-attribute-repository.abstract';
-import { ProductAttribute, ProductAttributeMapper } from '../entities';
+import { ProductAttribute } from '../entities/product-attribute.class';
+import { ProductAttributeMapper } from '../entities/product-attribute.mapper';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../../common/exceptions';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 
 @Injectable()

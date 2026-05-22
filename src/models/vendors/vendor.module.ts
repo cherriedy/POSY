@@ -1,10 +1,11 @@
 import { Global, Module } from '@nestjs/common';
 import { VendorController } from './vendor.controller';
-import { VendorRepository, VendorRepositoryImpl } from './repositories';
-import { CreateVendorModule } from './create-vendor';
-import { GetVendorsModule } from './get-vendors';
-import { UpdateVendorModule } from './update-vendor';
-import { DeleteVendorModule } from './delete-vendor';
+import { VendorRepository } from './repositories/vendor-repository.abstract';
+import { VendorRepositoryImpl } from './repositories/vendor-repository';
+import { CreateVendorModule } from './create-vendor/create-vendor.module';
+import { GetVendorsModule } from './get-vendors/get-vendors.module';
+import { UpdateVendorModule } from './update-vendor/update-vendor.module';
+import { DeleteVendorModule } from './delete-vendor/delete-vendor.module';
 
 @Global()
 @Module({

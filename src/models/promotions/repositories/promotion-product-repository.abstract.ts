@@ -1,5 +1,7 @@
-import { BaseRepository, PaginationParams } from '../../../common/interfaces';
-import { Promotion, PromotionProduct } from '../types';
+import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { PaginationParams } from '../../../common/interfaces/pagination-params.interface';
+import { Promotion } from '../types/promotion.class';
+import { PromotionProduct } from '../types/promotion-product.class';
 
 export abstract class PromotionProductRepository implements BaseRepository<PromotionProduct> {
   // abstract create(entity: PromotionProduct): Promise<PromotionProduct>;

@@ -1,7 +1,7 @@
 import { ZonePreviewResponseDto } from './zone-preview-response.dto';
 import { Exclude, Expose, Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { TablePreviewResponseDto } from 'src/models/tables/dto';
+import { TablePreviewResponseDto } from 'src/models/tables/dto/table-preview-response.dto';
 
 @Exclude()
 export class ZoneDetailedResponseDto extends ZonePreviewResponseDto {

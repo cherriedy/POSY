@@ -1,39 +1,40 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
-import { CategoryModule } from './models/categories';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { CategoryModule } from './models/categories/category.module';
 import { CuisineModule } from './models/cuisines/cuisine.module';
 import { AuthModule } from './authentication/auth.module';
 import { UserModule } from './models/users/user.module';
 import { MailModule } from './mails/mail.module';
-import {
-  AppConfigModule,
-  DatabaseConfigModule,
-  JwtConfigModule,
-  MailerSendConfigModule,
-  MeilisearchConfigModule,
-  MomoConfigModule,
-  RedisConfigModule,
-} from './config';
+import { AppConfigModule } from './config/app/config.module';
+import { DatabaseConfigModule } from './config/database/config.module';
+import { JwtConfigModule } from './config/jwt/config.module';
+import { MailerSendConfigModule } from './config/mailersend/config.module';
+import { MeilisearchConfigModule } from './config/meilisearch/config.module';
+import { MomoConfigModule } from './config/momo/config.module';
+import { RedisConfigModule } from './config/redis/config.module';
 import { LoggerModule } from './logger/logger.module';
-import { DeviceContextMiddleware } from './common/middleware';
+import { DeviceContextMiddleware } from './common/middleware/device-context.middleware';
 import { AuthorizationModule } from './authorization/authorization.module';
 import { MyProfileModule } from './my-profile/my-profile.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CommonModule } from './common/common.module';
 import { PromotionModule } from './models/promotions/promotion.module';
-import { ProductModule } from './models/products';
+import { ProductModule } from './models/products/product.module';
 import { MeilisearchModule } from './providers/meilisearch/meilisearch.module';
 import { ImageModule } from './models/images/image.module';
-import { TaxModule } from './models/taxes';
-import { OrderModule } from './models/orders';
+import { TaxModule } from './models/taxes/tax.module';
+import { OrderModule } from './models/orders/order.module';
 import { PaymentModule } from './models/payments/payment.module';
 import { TableModule } from './models/tables/table.module';
 import { FloorModule } from './models/floors/floor.module';
 import { ZoneModule } from './models/zones/zone.module';
-import { TableSessionModule } from './models/table-sessions';
+import { TableSessionModule } from './models/table-sessions/table-session.module';
 import { UserTrackingModule } from './user-tracking/user-tracking.module';
-import { RedisModule } from './providers/redis';
-import { IngredientModule } from './models/ingredients';
+import { RedisModule } from './providers/redis/redis.module';
+import { VendorModule } from './models/vendors/vendor.module';
+import { UnitModule } from './models/units/unit.module';
+import { IngredientModule } from './models/ingredients/ingredient.module';
 import { RecommendationModule } from './recommendation/recommendation.module';
 import { PythonConfigModule } from './config/python/config.module';
 import { MqttModule } from './providers/mqtt/mqtt.module';
@@ -42,6 +43,7 @@ import { InventoryModule } from './inventory/inventory.module';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot({ wildcard: true, delimiter: '.' }),
     ScheduleModule.forRoot(),
     ThrottlerModule.forRoot(),
     AppConfigModule,
@@ -73,6 +75,8 @@ import { InventoryModule } from './inventory/inventory.module';
     RedisModule,
     RedisConfigModule,
     MomoConfigModule,
+    VendorModule,
+    UnitModule,
     IngredientModule,
     PythonConfigModule,
     RecommendationModule,

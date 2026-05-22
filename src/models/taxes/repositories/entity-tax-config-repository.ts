@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { EntityTaxConfigRepository } from './entity-tax-config-repository.abstract';
-import { EntityTaxConfig, EntityTaxConfigMapper } from '../entities';
+import { EntityTaxConfig } from '../entities/entity-tax-config';
+import { EntityTaxConfigMapper } from '../entities/entity-tax-config.mapper';
 import { Prisma, TaxConfigEntityType } from '@prisma/client';
-import {
-  DuplicateEntityTaxAssociationException,
-  TaxAssociationNotFoundException,
-} from '../exceptions';
-import { TaxableEntityReference } from '../interfaces';
+import { DuplicateEntityTaxAssociationException } from '../exceptions/duplicate-entity-tax-association.exception';
+import { TaxAssociationNotFoundException } from '../exceptions/tax-association-not-found.exception';
+import { TaxableEntityReference } from '../interfaces/taxable-entity-reference';
 
 @Injectable()
 export class EntityTaxConfigRepositoryImpl implements EntityTaxConfigRepository {
