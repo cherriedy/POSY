@@ -1,4 +1,5 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CategoryModule } from './models/categories';
 import { CuisineModule } from './models/cuisines/cuisine.module';
 import { AuthModule } from './authentication/auth.module';
@@ -33,6 +34,8 @@ import { ZoneModule } from './models/zones/zone.module';
 import { TableSessionModule } from './models/table-sessions';
 import { UserTrackingModule } from './user-tracking/user-tracking.module';
 import { RedisModule } from './providers/redis';
+import { VendorModule } from './models/vendors/vendor.module';
+import { UnitModule } from './models/units/unit.module';
 import { IngredientModule } from './models/ingredients';
 import { RecommendationModule } from './recommendation/recommendation.module';
 import { PythonConfigModule } from './config/python/config.module';
@@ -42,6 +45,7 @@ import { InventoryModule } from './inventory/inventory.module';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot({ wildcard: true, delimiter: '.' }),
     ScheduleModule.forRoot(),
     ThrottlerModule.forRoot(),
     AppConfigModule,
@@ -73,6 +77,8 @@ import { InventoryModule } from './inventory/inventory.module';
     RedisModule,
     RedisConfigModule,
     MomoConfigModule,
+    VendorModule,
+    UnitModule,
     IngredientModule,
     PythonConfigModule,
     RecommendationModule,

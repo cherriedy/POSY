@@ -4,8 +4,6 @@ import { CreateIngredientModule } from './features/create-ingredient';
 import { UpdateIngredientModule } from './features/update-ingredient';
 import { GetIngredientsModule } from './features/get-ingredients';
 import { DeleteIngredientModule } from './features/delete-ingredient';
-import { UnitModule } from '../units';
-import { VendorModule } from '../vendors';
 import { RecordIngredientUsageModule } from './features/record-ingredient-usage';
 import { IngredientRepositoryModule } from './shared/repositories/ingredient-repository.module';
 
@@ -17,8 +15,6 @@ import { IngredientRepositoryModule } from './shared/repositories/ingredient-rep
     UpdateIngredientModule,
     GetIngredientsModule,
     DeleteIngredientModule,
-    UnitModule,
-    VendorModule,
     RecordIngredientUsageModule,
   ],
   controllers: [IngredientController],

@@ -1,5 +1,4 @@
 import { forwardRef, Global, Module } from '@nestjs/common';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TokenGeneratorsModule } from '../../authentication/common/token-generators';
 import { StartSessionModule } from '../table-sessions';
 import { JwtModule } from '@nestjs/jwt';
@@ -61,10 +60,6 @@ import { PromotionModule } from '../promotions/promotion.module';
     OrderFacadeService,
   ],
   imports: [
-    EventEmitterModule.forRoot({
-      wildcard: true,
-      delimiter: '.',
-    }),
     JwtModule,
     OrderCoreModule,
     TokenGeneratorsModule,
