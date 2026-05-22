@@ -8,7 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { PromotionNotFoundException } from '../exceptions/PromotionNotFoundException';
 import { PromotionQueryFilters, PromotionQueryParams } from '../interfaces/promotion-query-params.interface';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
-import { paginationConfig } from '../../../common/config/pagination.config';
+import { paginationConfig } from '../../../common/constants/pagination.config';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { Page } from '../../../common/interfaces/page.interface';
 

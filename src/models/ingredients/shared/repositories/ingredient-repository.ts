@@ -6,7 +6,7 @@ import { Page } from '../../../../common/interfaces/page.interface';
 import { PrismaService } from '../../../../providers/prisma/prisma.service';
 import { DuplicateEntryException } from '../../../../common/exceptions/DuplicateEntryException';
 import { ForeignKeyViolationException } from '../../../../common/exceptions/ForeignKeyViolationException';
-import { paginationConfig } from '../../../../common/config/pagination.config';
+import { paginationConfig } from '../../../../common/constants/pagination.config';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { Prisma } from '@prisma/client';
 import { IngredientQueryParams, IngredientOrderBy } from '../interfaces/ingredient-query-params.interface';

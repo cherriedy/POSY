@@ -12,7 +12,7 @@ import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 import { Page } from '../../../common/interfaces/page.interface';
 import { VendorQueryParams, VendorQueryFilter, VendorOrderBy } from '../interfaces/vendor-query-params.interface';
 import { Prisma } from '@prisma/client';
-import { paginationConfig } from '../../../common/config/pagination.config';
+import { paginationConfig } from '../../../common/constants/pagination.config';
 
 @Injectable()
 export class VendorRepositoryImpl implements VendorRepository {

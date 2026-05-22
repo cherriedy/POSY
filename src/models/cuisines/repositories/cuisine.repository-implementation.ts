@@ -9,7 +9,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
 import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
 import { CuisineNotFoundException } from '../exceptions/cuisine-not-found.exception';
-import { paginationConfig } from '../../../common/config/pagination.config';
+import { paginationConfig } from '../../../common/constants/pagination.config';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 import { Prisma } from '@prisma/client';
 
