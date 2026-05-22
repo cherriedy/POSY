@@ -16,8 +16,8 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Role } from '../../common/enums';
-import { Roles } from '../../common/decorators';
+import { Role } from '../../common/enums/role.enum';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { plainToInstance } from 'class-transformer';
 import {
@@ -29,22 +29,18 @@ import {
   ApiBody,
   ApiExtraModels,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto';
-import {
-  CuisineCreateRequestDto,
-  CuisineUpdateRequestDto,
-  CuisineResponseDto,
-  CuisineQueryParamsDto,
-} from './dto';
+import { createPageResponseSchema } from '../../common/dto/page-response';
+import { CuisineCreateRequestDto } from './dto/cuisine-create-request.dto';
+import { CuisineUpdateRequestDto } from './dto/cuisine-update-request.dto';
+import { CuisineResponseDto } from './dto/cuisine-response.dto';
+import { CuisineQueryParamsDto } from './dto/cuisine-query-params.dto';
 import { GetCuisinesService } from './get-cuisines/get-cuisines.service';
 import { CreateCuisineService } from './create-cuisine/create-cuisine.service';
 import { UpdateCuisineService } from './update-cuisine/update-cuisine.service';
 import { DeleteCuisineService } from './delete-cuisine/delete-cuisine.service';
-import { CuisineNotFoundException } from './exceptions';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../common/exceptions';
+import { CuisineNotFoundException } from './exceptions/cuisine-not-found.exception';
+import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../common/exceptions/ForeignKeyViolationException';
 
 @ApiTags('Cuisines')
 @ApiBearerAuth()

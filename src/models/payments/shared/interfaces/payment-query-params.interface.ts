@@ -1,5 +1,6 @@
-import { OrderBy, PaginationParams } from '../../../../common/interfaces';
-import { PaymentStatus } from '../enums';
+import { OrderBy } from '../../../../common/interfaces/sort-field.interface';
+import { PaginationParams } from '../../../../common/interfaces/pagination-params.interface';
+import { PaymentStatus } from '../enums/payment-status.enum';
 
 /**
  * Allowed fields for sorting payment records.

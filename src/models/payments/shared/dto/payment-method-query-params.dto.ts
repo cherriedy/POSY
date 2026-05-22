@@ -1,12 +1,12 @@
 import { Transform } from 'class-transformer';
 import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { SortDirection } from '../../../../common/interfaces';
+import { SortDirection } from '../../../../common/interfaces/sort-field.interface';
 import {
   PaymentMethodOrderBy,
   PaymentMethodQueryParams,
   PaymentMethodSortField,
-} from '../interfaces';
+} from '../interfaces/payment-method-query-params.interface';
 
 export class PaymentMethodQueryParamsDto {
   @ApiPropertyOptional({ type: Number, description: 'Page number' })

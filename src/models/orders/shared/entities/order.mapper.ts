@@ -1,12 +1,12 @@
 import { Order as DomainOrder } from './order';
 import { Prisma, Order as PrismaOrder } from '@prisma/client';
-import { OrderStatus as DomainOrderStatus } from '../enums';
+import { OrderStatus as DomainOrderStatus } from '../enums/order-status.enum';
 import { UserMapper } from '../../../users/types/user.mapper';
-import { TableMapper } from '../../../tables/types';
-import { TableSessionMapper } from '../../../table-sessions/shared/entities';
+import { TableMapper } from '../../../tables/types/table.mapper';
+import { TableSessionMapper } from '../../../table-sessions/shared/entities/table-session.mapper';
 import { OrderItemMapper } from './order-item.mapper';
-import { PaymentMapper } from '../../../payments/shared/entities';
-import { PricingSnapshotMapper } from '../../../promotions/types';
+import { PaymentMapper } from '../../../payments/shared/entities/payment.mapper';
+import { PricingSnapshotMapper } from '../../../promotions/types/pricing-snapshot.mapper';
 
 export class OrderMapper {
   static toDomain(this: void, prisma: PrismaOrder): DomainOrder {

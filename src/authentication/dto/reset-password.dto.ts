@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { IsValidPassword, Match } from '../../common/decorators';
+import { IsValidPassword } from '../../common/decorators/is-valid-password.decorator';
+import { Match } from '../../common/decorators/match.decorator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ResetPasswordDto {

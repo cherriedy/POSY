@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import {
-  PromotionCategoryRepository,
-  PromotionRepository,
-} from '../repositories';
-import { Promotion, PromotionCategory } from '../types';
-import { PromotionApplicability } from '../enums';
-import { PromotionNotFoundException } from '../exceptions';
+import { PromotionCategoryRepository } from '../repositories/promotion-category-repository.abstract';
+import { PromotionRepository } from '../repositories/promotion-repository.abstract';
+import { Promotion } from '../types/promotion.class';
+import { PromotionCategory } from '../types/promotion-category.class';
+import { PromotionApplicability } from '../enums/promotion-applicability.enum';
+import { PromotionNotFoundException } from '../exceptions/PromotionNotFoundException';
 import { PromotionUnusableException } from '../exceptions/PromotionUnusableException';
-import { DuplicateEntryException } from 'src/common/exceptions';
-import { CategoriesNotFoundException } from 'src/models/categories/shared/exceptions';
-import { CategoryRepository } from 'src/models/categories/shared/repositories';
+import { DuplicateEntryException } from 'src/common/exceptions/DuplicateEntryException';
+import { CategoriesNotFoundException } from 'src/models/categories/shared/exceptions/category-not-found.exception';
+import { CategoryRepository } from 'src/models/categories/shared/repositories/category-repository.abstract';
 
 @Injectable()
 export class ReplacePromotionCategoriesService {

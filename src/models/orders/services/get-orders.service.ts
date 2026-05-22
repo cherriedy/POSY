@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Order, OrderNotFoundException, OrderQueryParams } from '../shared';
-import { Page } from '../../../common/interfaces';
+import { Order } from '../shared/entities/order';
+import { OrderNotFoundException } from '../shared/exceptions/order-not-found.exception';
+import { OrderQueryParams } from '../shared/interfaces/order-query-params.interface';
+import { Page } from '../../../common/interfaces/page.interface';
 import { OrderRepository } from '../shared/repositories/order-repository.abstract';
 
 @Injectable()

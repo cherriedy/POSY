@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../providers/prisma/prisma.service';
 import { OrderItemRepository } from './order-item-repository.abstract';
-import { OrderItem, OrderItemMapper } from '../entities';
+import { OrderItem } from '../entities/order-item';
+import { OrderItemMapper } from '../entities/order-item.mapper';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../../../common/exceptions';
+import { DuplicateEntryException } from '../../../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../../../common/exceptions/ForeignKeyViolationException';
 
 const orderItemInclude = {
   product: true,

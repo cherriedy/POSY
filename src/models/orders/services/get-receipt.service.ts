@@ -1,10 +1,10 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { OrderTaxRepository } from '../../taxes/repositories';
-import { PromotionRedemptionRepository } from '../../promotions/repositories';
-import { Order } from '../shared';
-import { OrderTax } from '../../taxes';
-import { PromotionRedemption } from '../../promotions/types';
-import { OrderNotFoundException } from '../shared';
+import { OrderTaxRepository } from '../../taxes/repositories/order-tax-repository.abstract';
+import { PromotionRedemptionRepository } from '../../promotions/repositories/promotion-redemption-repository.abstract';
+import { Order } from '../shared/entities/order';
+import { OrderTax } from '../../taxes/entities/order-tax';
+import { PromotionRedemption } from '../../promotions/types/promotion-redemption';
+import { OrderNotFoundException } from '../shared/exceptions/order-not-found.exception';
 import { OrderRepository } from '../shared/repositories/order-repository.abstract';
 
 export interface ReceiptResult {

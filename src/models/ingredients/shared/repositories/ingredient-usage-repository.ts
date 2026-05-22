@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../providers/prisma/prisma.service';
 import { IngredientUsageRepository } from './ingredient-usage-repository.abstract';
-import { IngredientUsage, IngredientUsageMapper } from '../entities';
+import { IngredientUsage } from '../entities/ingredient-usage';
+import { IngredientUsageMapper } from '../entities/ingredient-usage.mapper';
 
 @Injectable()
 export class IngredientUsageRepositoryImpl implements IngredientUsageRepository {

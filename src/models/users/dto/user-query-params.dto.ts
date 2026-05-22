@@ -7,9 +7,9 @@ import {
   IsEnum,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { UserOrderBy, UserQueryParams, UserSortField } from '../interfaces';
-import { SortDirection } from '../../../common/interfaces';
-import { Role } from '../../../common/enums';
+import { UserOrderBy, UserQueryParams, UserSortField } from '../interfaces/user-query-params.interface';
+import { SortDirection } from '../../../common/interfaces/sort-field.interface';
+import { Role } from '../../../common/enums/role.enum';
 
 export class UserQueryParamsDto {
   @ApiPropertyOptional({

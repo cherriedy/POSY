@@ -1,15 +1,16 @@
 import { PromotionRepository } from './promotion-repository.abstract';
-import { Promotion, PromotionMapper } from '../types';
+import { Promotion } from '../types/promotion.class';
+import { PromotionMapper } from '../types/promotion.mapper';
 import { Prisma, PromotionStatus } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
 import { Injectable } from '@nestjs/common';
-import { PromotionNotFoundException } from '../exceptions';
-import { PromotionQueryFilters, PromotionQueryParams } from '../interfaces';
+import { PromotionNotFoundException } from '../exceptions/PromotionNotFoundException';
+import { PromotionQueryFilters, PromotionQueryParams } from '../interfaces/promotion-query-params.interface';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
-import { paginationConfig } from '../../../common/config';
+import { paginationConfig } from '../../../common/config/pagination.config';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
-import { Page } from '../../../common/interfaces';
+import { Page } from '../../../common/interfaces/page.interface';
 
 const { page: defaultPage, pageSize: defaultPageSize } =
   paginationConfig.default;

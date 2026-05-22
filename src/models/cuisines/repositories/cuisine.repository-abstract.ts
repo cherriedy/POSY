@@ -1,6 +1,7 @@
-import { BaseRepository, Page } from '../../../common/interfaces';
-import { Cuisine } from '../types';
-import { CuisineQueryParams } from '../interfaces';
+import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { Page } from '../../../common/interfaces/page.interface';
+import { Cuisine } from '../types/cuisine.class';
+import { CuisineQueryParams } from '../interfaces/cuisine-query-params.interface';
 
 /**
  * Abstract repository defining the contract for cuisine data access.

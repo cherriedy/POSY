@@ -1,6 +1,7 @@
-import { Table } from '../types';
-import { BaseRepository, Page } from '../../../common/interfaces';
-import { TableQueryParams } from '../interfaces';
+import { Table } from '../types/table.class';
+import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { Page } from '../../../common/interfaces/page.interface';
+import { TableQueryParams } from '../interfaces/table-query-params.interface';
 
 export abstract class TableRepository implements BaseRepository<Table> {
   /**

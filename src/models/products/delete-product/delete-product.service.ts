@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
-import { ProductNotFoundException } from '../exceptions';
+import { ProductNotFoundException } from '../exceptions/product-not-found.exception';
 
 @Injectable()
 export class DeleteProductService {

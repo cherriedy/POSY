@@ -1,9 +1,10 @@
 import { Prisma, TableSession as PrismaTableSession } from '@prisma/client';
 import { TableSession } from './table-session';
-import { TableSessionStatus, TableSessionType } from '../enums';
-import { TableMapper } from '../../../tables/types';
+import { TableSessionStatus } from '../enums/table-session-status.enum';
+import { TableSessionType } from '../enums/table-session-type.enum';
+import { TableMapper } from '../../../tables/types/table.mapper';
 import { UserMapper } from '../../../users/types/user.mapper';
-import { MissingRequireFieldsException } from '../../../../common/exceptions';
+import { MissingRequireFieldsException } from '../../../../common/exceptions/MissingRequireFieldsException';
 
 export class TableSessionMapper {
   /**

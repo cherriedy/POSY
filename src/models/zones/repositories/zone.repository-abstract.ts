@@ -1,6 +1,7 @@
-import { Zone } from '../types';
-import { BaseRepository, Page } from '../../../common/interfaces';
-import { ZoneQueryParams } from '../interfaces';
+import { Zone } from '../types/zone.class';
+import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { Page } from '../../../common/interfaces/page.interface';
+import { ZoneQueryParams } from '../interfaces/zone-query-params.interface';
 
 export abstract class ZoneRepository implements BaseRepository<Zone> {
   /**

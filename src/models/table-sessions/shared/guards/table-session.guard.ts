@@ -10,14 +10,11 @@ import {
 } from '@nestjs/common';
 import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { Request } from 'express';
-import { TableSessionRepository } from '../repositories';
+import { TableSessionRepository } from '../repositories/table-session-repository.abstract';
 import { TableSessionConfig } from '../../table-session.config';
-import { TableSessionStatus } from '../enums';
-import { DeviceFingerprintUtility } from '../utilities';
-import {
-  assertDevice,
-  InvalidDeviceException,
-} from '../../../../common/interfaces';
+import { TableSessionStatus } from '../enums/table-session-status.enum';
+import { DeviceFingerprintUtility } from '../utilities/device-fingerprint.utility';
+import { assertDevice, InvalidDeviceException } from '../../../../common/interfaces/device-context.interface';
 
 class InvalidSessionTokenException extends UnauthorizedException {
   constructor() {

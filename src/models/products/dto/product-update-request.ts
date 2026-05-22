@@ -8,7 +8,7 @@ import {
   IsEnum,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { ProductDiscountType } from '../enums';
+import { ProductDiscountType } from '../enums/product.enum';
 
 export class UpdateProductDto {
   @ApiPropertyOptional({ type: String, description: 'Category ID' })

@@ -7,13 +7,13 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-import { SortDirection } from '../../../../common/interfaces';
-import { PaymentStatus } from '../enums';
+import { SortDirection } from '../../../../common/interfaces/sort-field.interface';
+import { PaymentStatus } from '../enums/payment-status.enum';
 import {
   PaymentOrderBy,
   PaymentQueryParams,
   PaymentSortField,
-} from '../interfaces';
+} from '../interfaces/payment-query-params.interface';
 
 export class PaymentQueryParamsDto {
   @ApiPropertyOptional({ type: Number, description: 'Page number', example: 1 })

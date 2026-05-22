@@ -1,5 +1,5 @@
-import { BaseRepository } from '../../../../common/interfaces';
-import { OrderItem } from '../entities';
+import { BaseRepository } from '../../../../common/interfaces/base-repository.interface';
+import { OrderItem } from '../entities/order-item';
 
 export abstract class OrderItemRepository implements BaseRepository<OrderItem> {
   abstract create(entity: OrderItem): Promise<OrderItem>;

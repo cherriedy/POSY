@@ -1,11 +1,15 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
-import { Order, OrderItem } from '../shared';
-import { OrderItemStatus, OrderStatus } from '../shared';
-import { UnitOfWork } from '../../../common/unit-of-works';
-import { AtLeastOneItemRequiredException } from '../../../common/exceptions';
-import { OrderItemPayload } from '../shared';
-import { PricingSnapshot } from '../../promotions/types';
-import { OrderTax, PricingSnapshotTaxRepository, TaxType } from '../../taxes';
+import { Order } from '../shared/entities/order';
+import { OrderItem } from '../shared/entities/order-item';
+import { OrderItemStatus } from '../shared/enums/order-item-status.enum';
+import { OrderStatus } from '../shared/enums/order-status.enum';
+import { UnitOfWork } from '../../../common/unit-of-works/unit-of-work.abstract';
+import { AtLeastOneItemRequiredException } from '../../../common/exceptions/at-least-one-item-required.exception';
+import { OrderItemPayload } from '../shared/interfaces/order-item-payload.interface';
+import { PricingSnapshot } from '../../promotions/types/pricing-snapshot.class';
+import { OrderTax } from '../../taxes/entities/order-tax';
+import { PricingSnapshotTaxRepository } from '../../taxes/repositories/pricing-snapshot-tax-repository.abstract';
+import { TaxType } from '../../taxes/enums/tax-type.enum';
 import { RecordPreferenceService } from 'src/models/table-sessions/features/record-preference/record-preference.service';
 import { StaffOrderGateway } from '../handlers/staff-order.gateway';
 import { OrderTaxCalculatorService } from '../shared/core/services/order-tax-calculator.service';
@@ -17,8 +21,8 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ProductInteractionPayload } from 'src/user-tracking/shared/interfaces/product-interaction-payload';
 import { ProductInteractionType } from 'src/user-tracking/shared/enums/product-interaction-type.enum';
-import { TableRepository } from 'src/models/tables/repositories';
-import { TableStatus } from 'src/models/tables/enums';
+import { TableRepository } from 'src/models/tables/repositories/table.repository-abstract';
+import { TableStatus } from 'src/models/tables/enums/table-status.enum';
 import { UpdateOrderService } from './update-order.service';
 
 @Injectable()

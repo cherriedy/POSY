@@ -23,15 +23,13 @@ import { plainToInstance } from 'class-transformer';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Inject } from '@nestjs/common';
 import { RoleGuard } from '../../../authorization/guards/role.guard';
-import { Roles } from '../../../common/decorators';
-import { Role } from '../../../common/enums';
-import { createPageResponseSchema } from '../../../common/dto';
+import { Roles } from '../../../common/decorators/roles.decorator';
+import { Role } from '../../../common/enums/role.enum';
+import { createPageResponseSchema } from '../../../common/dto/page-response';
 import { PaymentMethodsService } from '../features/payment-methods.service';
-import {
-  PaymentMethodQueryParamsDto,
-  PaymentMethodResponseDto,
-} from '../shared';
-import { PaymentMethodNotFoundException } from '../shared';
+import { PaymentMethodQueryParamsDto } from '../shared/dto/payment-method-query-params.dto';
+import { PaymentMethodResponseDto } from '../shared/dto/payment-method-responses.dto';
+import { PaymentMethodNotFoundException } from '../shared/exceptions/payment-method-not-found.exception';
 
 @ApiTags('Payment Methods')
 @ApiBearerAuth()

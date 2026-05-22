@@ -1,9 +1,7 @@
 import { TaxConfig as DomainTaxConfig } from './tax-config';
 import { Prisma, TaxConfig as PrismaTaxConfig } from '@prisma/client';
-import {
-  TaxType as DomainTaxType,
-  TaxRateType as DomainTaxRateType,
-} from '../enums';
+import { TaxType as DomainTaxType } from '../enums/tax-type.enum';
+import { TaxRateType as DomainTaxRateType } from '../enums/tax-rate-type.enum';
 
 export class TaxConfigMapper {
   static toDomain(this: void, prisma: PrismaTaxConfig): DomainTaxConfig {

@@ -13,8 +13,8 @@ import {
 import { RecommendationService } from './recommendation.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../authorization/guards/role.guard';
-import { Roles } from '../common/decorators';
-import { Role } from '../common/enums';
+import { Roles } from '../common/decorators/roles.decorator';
+import { Role } from '../common/enums/role.enum';
 
 @ApiTags('Recommendation')
 @Controller('recommendation')

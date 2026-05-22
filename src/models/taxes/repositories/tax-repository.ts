@@ -1,16 +1,17 @@
 import { TaxRepository } from './tax-repository.abstract';
-import { TaxConfig, TaxConfigMapper } from '../entities';
+import { TaxConfig } from '../entities/tax-config';
+import { TaxConfigMapper } from '../entities/tax-config.mapper';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
 import { Injectable } from '@nestjs/common';
-import { TaxNotFoundException } from '../exceptions';
-import { TaxOrderBy, TaxQueryFilters, TaxQueryParams } from '../interfaces';
+import { TaxNotFoundException } from '../exceptions/tax-not-found.exception';
+import { TaxOrderBy, TaxQueryFilters, TaxQueryParams } from '../interfaces/tax-query-params';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
-import { paginationConfig } from '../../../common/config';
+import { paginationConfig } from '../../../common/config/pagination.config';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
-import { Page } from '../../../common/interfaces';
-import { TaxType } from '../enums';
+import { Page } from '../../../common/interfaces/page.interface';
+import { TaxType } from '../enums/tax-type.enum';
 
 const { page: defaultPage, pageSize: defaultPageSize } =
   paginationConfig.default;

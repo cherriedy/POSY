@@ -1,7 +1,7 @@
 import { Ingredient } from './ingredient';
 import { Ingredient as PrismaIngredient, Prisma } from '@prisma/client';
-import { UnitMapper } from '../../../units';
-import { VendorMapper } from '../../../vendors';
+import { UnitMapper } from '../../../units/entities/unit.mapper';
+import { VendorMapper } from '../../../vendors/entities/vendor.mapper';
 
 export class IngredientMapper {
   static toDomain(this: void, prisma: PrismaIngredient): Ingredient {

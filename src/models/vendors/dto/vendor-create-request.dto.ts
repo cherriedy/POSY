@@ -9,7 +9,7 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
-import { VendorStatus } from '../enums';
+import { VendorStatus } from '../enums/vendor-status.enum';
 
 export class VendorCreateRequestDto {
   @ApiProperty({

@@ -1,7 +1,7 @@
 import { MeilisearchService } from '../meilisearch.service';
 import { Index } from 'meilisearch';
 import type { Logger } from 'winston';
-import { Page } from '../../../common/interfaces';
+import { Page } from '../../../common/interfaces/page.interface';
 
 /**
  * Base abstract class for MeiliSearch service implementations.

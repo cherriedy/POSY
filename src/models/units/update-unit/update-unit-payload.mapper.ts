@@ -1,5 +1,5 @@
-import { UnitCreateRequestDto } from '../dto';
-import { UnitUpdatePayload } from '../interfaces';
+import { UnitCreateRequestDto } from '../dto/unit-create-request.dto';
+import { UnitUpdatePayload } from '../interfaces/unit-payloads.interface';
 
 export class UpdateUnitPayloadMapper {
   static fromDto(this: void, dto: UnitCreateRequestDto): UnitUpdatePayload {

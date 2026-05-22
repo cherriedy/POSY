@@ -1,6 +1,6 @@
 import { Cuisine as PrismaCuisine } from '@prisma/client';
 import { Cuisine } from './cuisine.class';
-import { MissingRequireFieldsException } from '../../../common/exceptions';
+import { MissingRequireFieldsException } from '../../../common/exceptions/MissingRequireFieldsException';
 
 /**
  * Mapper for converting between Prisma and domain Cuisine entities.

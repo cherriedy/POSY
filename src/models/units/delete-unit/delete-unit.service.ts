@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { UnitRepository } from '../repositories';
-import { UnitNotFoundException } from '../exceptions';
+import { UnitRepository } from '../repositories/unit-repository.abstract';
+import { UnitNotFoundException } from '../exceptions/unit-not-found.exception';
 
 @Injectable()
 export class DeleteUnitService {

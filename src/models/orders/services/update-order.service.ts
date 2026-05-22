@@ -1,30 +1,28 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import {
-  OrderItemPayload,
-  OrderStatus,
-  OrderUpdateRequestDto,
-} from '../shared';
-import { OrderItemStatus, OrderNotFoundForSessionException } from '../shared';
-import { Order, OrderItem } from '../shared';
+import { OrderItemPayload } from '../shared/interfaces/order-item-payload.interface';
+import { OrderStatus } from '../shared/enums/order-status.enum';
+import { OrderUpdateRequestDto } from '../shared/dto/order-update-request.dto';
+import { OrderItemStatus } from '../shared/enums/order-item-status.enum';
+import { OrderNotFoundForSessionException } from '../shared/exceptions/order-not-found-for-session.exception';
+import { Order } from '../shared/entities/order';
+import { OrderItem } from '../shared/entities/order-item';
 import { GuestOrderGateway } from '../handlers/guest-order.gateway';
-import { AtLeastOneItemRequiredException } from '../../../common/exceptions';
+import { AtLeastOneItemRequiredException } from '../../../common/exceptions/at-least-one-item-required.exception';
 import { ProductRepository } from '../../products/repositories/product-repository.abstract';
-import { ProductNotFoundException } from '../../products';
+import { ProductNotFoundException } from '../../products/exceptions/product-not-found.exception';
 import { OrderPricingService } from '../shared/core/services/order-pricing.service';
 import { OrderModificationPolicyService } from '../shared/core/services/order-modification-policy.service';
 import { OrderRepository } from '../shared/repositories/order-repository.abstract';
 import { OrderItemRepository } from '../shared/repositories/order-item-repository.abstract';
-import { UserIdentity } from '../../../authentication/interfaces';
-import { computeOrderStatus } from '../shared/utilities';
-import {
-  TableSessionRepository,
-  TableSessionStatus,
-  TableSessionType,
-} from 'src/models/table-sessions';
+import { UserIdentity } from '../../../authentication/interfaces/user-identity.interface';
+import { computeOrderStatus } from '../shared/utilities/order-status.util';
+import { TableSessionRepository } from 'src/models/table-sessions/shared/repositories/table-session-repository.abstract';
+import { TableSessionStatus } from 'src/models/table-sessions/shared/enums/table-session-status.enum';
+import { TableSessionType } from 'src/models/table-sessions/shared/enums/table-session-type.enum';
 import { StaffOrderGateway } from '../handlers/staff-order.gateway';
-import { TableStatus } from 'src/models/tables/enums';
-import { TableRepository } from 'src/models/tables/repositories';
+import { TableStatus } from 'src/models/tables/enums/table-status.enum';
+import { TableRepository } from 'src/models/tables/repositories/table.repository-abstract';
 @Injectable()
 export class UpdateOrderService {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)

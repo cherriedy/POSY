@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { JwtConfigService } from '../../config/jwt/config.service';
 import { AppConfigService } from '../../config/app/config.service';
 import { CookieOptions } from 'express';
-import { JwtConfig } from '../../common/interfaces';
-import { SessionPreferenceConfig } from './shared';
+import { JwtConfig } from '../../common/interfaces/jwt-config.interface';
+import { SessionPreferenceConfig } from './shared/interfaces/session-preference-config.interface';
 
 @Injectable()
 export class TableSessionConfig {

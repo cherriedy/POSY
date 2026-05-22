@@ -1,8 +1,8 @@
-import { ProductIngredientBulkUpsertRequestDto } from '../dto';
+import { ProductIngredientBulkUpsertRequestDto } from '../dto/product-ingredient-bulk-upsert-request.dto';
 import {
   ProductIngredientBulkUpsertItemPayload,
   ProductIngredientBulkUpsertPayload,
-} from '../interfaces';
+} from '../interfaces/product-payloads';
 
 /**
  * Mapper for upserting product ingredients.

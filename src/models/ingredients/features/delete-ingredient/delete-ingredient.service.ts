@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { IngredientRepository } from '../../shared/repositories';
-import { IngredientNotFoundException } from '../../shared/exceptions';
+import { IngredientRepository } from '../../shared/repositories/ingredient-repository.abstract';
+import { IngredientNotFoundException } from '../../shared/exceptions/ingredient-not-found.exception';
 
 @Injectable()
 export class DeleteIngredientService {

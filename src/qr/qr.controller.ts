@@ -19,11 +19,11 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import { TableNotFoundException } from '../models/tables/exceptions';
+import { TableNotFoundException } from '../models/tables/exceptions/table-not-found.exception';
 import { RoleGuard } from '../authorization/guards/role.guard';
 import { AuthGuard } from '@nestjs/passport';
-import { Roles } from '../common/decorators';
-import { Role } from '../common/enums';
+import { Roles } from '../common/decorators/roles.decorator';
+import { Role } from '../common/enums/role.enum';
 
 @UseGuards(AuthGuard('jwt'), RoleGuard)
 @Roles(Role.ADMIN, Role.MANAGER)

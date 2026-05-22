@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { SeasonalPatternRepository } from './seasonal-pattern-repository.abstract';
-import { SeasonalPattern, SeasonalPatternMapper } from '../entities';
+import { SeasonalPattern } from '../entities/seasonal-pattern';
+import { SeasonalPatternMapper } from '../entities/seasonal-pattern.mapper';
 
 @Injectable()
 export class SeasonalPatternRepositoryImpl implements SeasonalPatternRepository {

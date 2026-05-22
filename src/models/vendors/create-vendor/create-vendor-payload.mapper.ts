@@ -1,5 +1,5 @@
-import { VendorCreateRequestDto } from '../dto';
-import { VendorCreatePayload } from '../interfaces';
+import { VendorCreateRequestDto } from '../dto/vendor-create-request.dto';
+import { VendorCreatePayload } from '../interfaces/vendor-payloads.interface';
 
 export class CreateVendorPayloadMapper {
   static fromDto(dto: VendorCreateRequestDto): VendorCreatePayload {

@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../../models/users/repositories';
-import { SignInDto } from '../dto';
-import {
-  AccountLockedException,
-  InvalidCredentialsException,
-} from '../exceptions';
+import { UserRepository } from '../../models/users/repositories/user.repository-abstract';
+import { SignInDto } from '../dto/sign-in.dto';
+import { AccountLockedException } from '../exceptions/AccountLockedException';
+import { InvalidCredentialsException } from '../exceptions/InvalidCredentialsException';
 import { hash, verifyHash } from '../../common/utilities/hash.util';
-import { JwtPayload, AuthTokensSchema } from '../interfaces';
+import { JwtPayload } from '../interfaces/jwt-payload.interface';
+import { AuthTokensSchema } from '../interfaces/auth-tokens-schema.interface';
 import { User } from '../../models/users/types/user.class';
 import { TokenGeneratorsService } from '../common/token-generators/token-generators.service';
 import { authConfig } from '../auth.config';

@@ -1,7 +1,7 @@
 import { Floor as PrismaFloor } from '@prisma/client';
 import { Floor as DomainFloor } from './floor.class';
-import { MissingRequireFieldsException } from '../../../common/exceptions';
-import { ZoneMapper } from 'src/models/zones/types';
+import { MissingRequireFieldsException } from '../../../common/exceptions/MissingRequireFieldsException';
+import { ZoneMapper } from 'src/models/zones/types/zone.mapper';
 
 export class FloorMapper {
   static toDomain(this: void, prismaFloor: PrismaFloor): DomainFloor {

@@ -1,6 +1,7 @@
-import { Promotion } from '../types';
-import { BaseRepository, Page } from '../../../common/interfaces';
-import { PromotionQueryParams } from '../interfaces';
+import { Promotion } from '../types/promotion.class';
+import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { Page } from '../../../common/interfaces/page.interface';
+import { PromotionQueryParams } from '../interfaces/promotion-query-params.interface';
 
 export abstract class PromotionRepository implements BaseRepository<Promotion> {
   /**

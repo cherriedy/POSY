@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TableRepository } from '../repositories';
+import { TableRepository } from '../repositories/table.repository-abstract';
 
 @Injectable()
 export class DeleteTableService {

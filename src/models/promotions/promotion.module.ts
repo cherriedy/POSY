@@ -1,17 +1,15 @@
 import { Global, Module } from '@nestjs/common';
 import { PromotionController } from './promotion.controller';
-import {
-  PromotionCategoryRepository,
-  PromotionCategoryRepositoryImpl,
-  PromotionProductRepository,
-  PromotionProductRepositoryImpl,
-  PromotionRepository,
-  PromotionRepositoryImpl,
-  PromotionRedemptionRepository,
-  PromotionRedemptionRepositoryImpl,
-  PricingSnapshotPromotionRepository,
-  PricingSnapshotPromotionRepositoryImpl,
-} from './repositories';
+import { PromotionCategoryRepository } from './repositories/promotion-category-repository.abstract';
+import { PromotionCategoryRepositoryImpl } from './repositories/promotion-category-repository';
+import { PromotionProductRepository } from './repositories/promotion-product-repository.abstract';
+import { PromotionProductRepositoryImpl } from './repositories/promotion-product-repository';
+import { PromotionRepository } from './repositories/promotion-repository.abstract';
+import { PromotionRepositoryImpl } from './repositories/promotion-repository';
+import { PromotionRedemptionRepository } from './repositories/promotion-redemption-repository.abstract';
+import { PromotionRedemptionRepositoryImpl } from './repositories/promotion-redemption-repository';
+import { PricingSnapshotPromotionRepository } from './repositories/pricing-snapshot-promotion-repository.abstract';
+import { PricingSnapshotPromotionRepositoryImpl } from './repositories/pricing-snapshot-promotion-repository';
 import { CreatePromotionModule } from './create-promotion/create-promotion.module';
 import { UpdatePromotionModule } from './update-promotion/update-promotion.module';
 import { GetPromotionsModule } from './get-promotions/get-promotions.module';

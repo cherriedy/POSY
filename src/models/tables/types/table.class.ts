@@ -1,5 +1,5 @@
-import { TableStatus } from '../enums';
-import { Zone } from '../../zones/types';
+import { TableStatus } from '../enums/table-status.enum';
+import { Zone } from '../../zones/types/zone.class';
 
 export class Table {
   constructor(

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CuisineRepository } from '../repositories';
-import { Cuisine } from '../types';
+import { CuisineRepository } from '../repositories/cuisine.repository-abstract';
+import { Cuisine } from '../types/cuisine.class';
 import { CuisineInsertPayload } from '../interfaces/cuisine-payloads.interface';
 
 /**

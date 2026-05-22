@@ -1,4 +1,4 @@
-import { TaxAssociationBulkUpsertRequestDto } from '../dto';
+import { TaxAssociationBulkUpsertRequestDto } from '../dto/tax-association-requests.dto';
 import { TaxAssociationBulkUpsertPayload } from './associate-entity-tax.interface';
 
 /**

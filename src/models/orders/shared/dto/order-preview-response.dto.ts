@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
-import { OrderStatus } from '../enums';
+import { OrderStatus } from '../enums/order-status.enum';
 
 @Exclude()
 class OrderTablePreviewDto {

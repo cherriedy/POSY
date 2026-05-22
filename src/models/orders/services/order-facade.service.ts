@@ -3,7 +3,7 @@ import { plainToInstance } from 'class-transformer';
 import { GetOrdersService } from './get-orders.service';
 import { CreateOrderService, CreateOrderPayload } from './create-order.service';
 import { RecommendationService } from '../../../recommendation/recommendation.service';
-import { OrderDetailedResponseDto } from '../shared';
+import { OrderDetailedResponseDto } from '../shared/dto/order-detailed-response.dto';
 
 @Injectable()
 export class OrderFacadeService {

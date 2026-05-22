@@ -18,25 +18,23 @@ import {
 import { CreatePromotionService } from './create-promotion/create-promotion.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Roles } from '../../common/decorators';
-import { Role } from '../../common/enums';
-import {
-  CreatePromotionDto,
-  PromotionCategoryPreviewResponseDto,
-  PromotionDetailedResponseDto,
-  PromotionPreviewResponseDto,
-  PromotionQueryParamsDto,
-  PromotionUpdateDto,
-} from './dto';
-import { Promotion, PromotionCategory, PromotionProduct } from './types';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '../../common/enums/role.enum';
+import { CreatePromotionDto } from './dto/promotion-create-request.dto';
+import { PromotionCategoryPreviewResponseDto } from './dto/promotion-category-response.dto';
+import { PromotionDetailedResponseDto } from './dto/promotion-detailed-response.dto';
+import { PromotionPreviewResponseDto } from './dto/promotion-preview-response.dto';
+import { PromotionQueryParamsDto } from './dto/promotion-query-params.dto';
+import { PromotionUpdateDto } from './dto/promotion-update-request.dto';
+import { Promotion } from './types/promotion.class';
+import { PromotionCategory } from './types/promotion-category.class';
+import { PromotionProduct } from './types/promotion-product.class';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import {
-  DuplicateEntryException,
-  RelatedRecordNotFoundException,
-} from '../../common/exceptions';
+import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
+import { RelatedRecordNotFoundException } from '../../common/exceptions/RelatedRecordNotFoundException';
 import { plainToInstance } from 'class-transformer';
 import { UpdatePromotionService } from './update-promotion/update-promotion.service';
-import { PromotionNotFoundException } from './exceptions';
+import { PromotionNotFoundException } from './exceptions/PromotionNotFoundException';
 import { GetPromotionsService } from './get-promotions/get-promotions.service';
 import { DeletePromotionService } from './delete-promotion/delete-promotion.service';
 import { ValidatePromotionService } from './validate-promotion/validate-promotion.service';
@@ -44,7 +42,7 @@ import { PromotionUnusableException } from './exceptions/PromotionUnusableExcept
 import {
   CategoriesNotFoundException,
   CategoryNotFoundException,
-} from '../categories/shared/exceptions';
+} from '../categories/shared/exceptions/category-not-found.exception';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -55,11 +53,8 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { PromotionProductPreviewResponseDto } from './dto/promotion-product-response.dto';
-import {
-  ProductNotFoundException,
-  ProductsNotFoundException,
-} from '../products/exceptions';
-import { createPageResponseSchema } from '../../common/dto';
+import { ProductNotFoundException, ProductsNotFoundException } from '../products/exceptions/product-not-found.exception';
+import { createPageResponseSchema } from '../../common/dto/page-response';
 import { ReplacePromotionProductService } from './replace-products/replace-products.service';
 import { ReplacePromotionCategoriesService } from './replace-categories/replace-categories.service';
 import { BulkReplacePromotionCategoryDto } from './dto/promotion-category-replace.dto';

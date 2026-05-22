@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { UnitRepository } from '../repositories';
-import { Unit } from '../entities';
-import { UnitCreatePayload } from '../interfaces';
+import { UnitRepository } from '../repositories/unit-repository.abstract';
+import { Unit } from '../entities/unit.class';
+import { UnitCreatePayload } from '../interfaces/unit-payloads.interface';
 
 @Injectable()
 export class CreateUnitService {

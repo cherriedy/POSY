@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ImageRepository } from './repositories';
-import { Image, ImageMapper } from './types';
-import { ImageNotFoundException } from './exceptions';
+import { ImageRepository } from './repositories/image.repository-abstract';
+import { Image } from './types/image.class';
+import { ImageMapper } from './types/image.mapper';
+import { ImageNotFoundException } from './exceptions/ImageNotFoundException';
 import * as fs from 'fs/promises';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';

@@ -3,15 +3,15 @@ import { User } from '../types/user.class';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { UserMapper } from '../types/user.mapper';
 import { UserRepository } from './user.repository-abstract';
-import { UserNotFoundException } from '../exceptions';
+import { UserNotFoundException } from '../exceptions/UserNotFoundException';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
-import { Page } from '../../../common/interfaces';
-import { paginationConfig } from '../../../common/config';
-import { UserOrderBy, UserQueryFilter, UserQueryParams } from '../interfaces';
+import { Page } from '../../../common/interfaces/page.interface';
+import { paginationConfig } from '../../../common/config/pagination.config';
+import { UserOrderBy, UserQueryFilter, UserQueryParams } from '../interfaces/user-query-params.interface';
 import { Prisma } from '@prisma/client';
-import { Role } from '../../../common/enums';
+import { Role } from '../../../common/enums/role.enum';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {

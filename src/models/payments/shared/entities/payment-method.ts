@@ -1,4 +1,5 @@
-import { PaymentFeeType, PaymentProvider } from '../enums';
+import { PaymentFeeType } from '../enums/payment-fee-type.enum';
+import { PaymentProvider } from '../enums/payment-provider.enum';
 import { Payment } from './payment';
 
 export class PaymentMethod {

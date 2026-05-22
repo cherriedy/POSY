@@ -7,9 +7,10 @@ import {
   IsString,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
-import { TaxType, TaxRateType } from '../enums';
-import { TaxOrderBy, TaxQueryParams, TaxSortField } from '../interfaces';
-import { SortDirection } from '../../../common/interfaces';
+import { TaxType } from '../enums/tax-type.enum';
+import { TaxRateType } from '../enums/tax-rate-type.enum';
+import { TaxOrderBy, TaxQueryParams, TaxSortField } from '../interfaces/tax-query-params';
+import { SortDirection } from '../../../common/interfaces/sort-field.interface';
 
 export class TaxQueryParamsDto {
   @ApiPropertyOptional({ type: Number, description: 'Page number', default: 1 })

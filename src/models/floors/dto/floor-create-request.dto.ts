@@ -1,6 +1,7 @@
 import { IsBoolean, IsInt } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsValidFloorName, IsValidFloorOrder } from '../decorators';
+import { IsValidFloorName } from '../decorators/is-valid-name.decorator';
+import { IsValidFloorOrder } from '../decorators/is-valid-order.decorator';
 
 export class FloorCreateRequestDto {
   @ApiProperty({

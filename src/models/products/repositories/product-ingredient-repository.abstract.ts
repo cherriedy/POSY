@@ -1,4 +1,4 @@
-import { ProductIngredient } from '../entities';
+import { ProductIngredient } from '../entities/product-ingredient.class';
 
 export abstract class ProductIngredientRepository {
   abstract findByProductId(productId: string): Promise<ProductIngredient[]>;

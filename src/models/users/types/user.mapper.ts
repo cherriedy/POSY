@@ -1,6 +1,6 @@
 import { User as PrismaUser } from '@prisma/client';
 import { User as DomainUser } from './user.class';
-import { MissingRequireFieldsException } from '../../../common/exceptions';
+import { MissingRequireFieldsException } from '../../../common/exceptions/MissingRequireFieldsException';
 import { mapRole } from './role.mapper';
 
 export class UserMapper {

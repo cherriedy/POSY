@@ -1,15 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../../models/users/repositories';
-import { UserNotFoundException } from '../../models/users/exceptions';
-import {
-  InvalidResetCodeException,
-  ResetCodeHasExpiredException,
-} from '../exceptions';
+import { UserRepository } from '../../models/users/repositories/user.repository-abstract';
+import { UserNotFoundException } from '../../models/users/exceptions/UserNotFoundException';
+import { InvalidResetCodeException } from '../exceptions/InvalidResetCodeException';
+import { ResetCodeHasExpiredException } from '../exceptions/ResetCodeHasExpiredException';
 import { JwtConfigService } from '../../config/jwt/config.service';
 import { authConfig } from '../auth.config';
 import { JwtService } from '@nestjs/jwt';
-import { ValidateResetCodeDto } from '../dto';
-import { ResetTokenSchema } from '../interfaces';
+import { ValidateResetCodeDto } from '../dto/validate-reset-code.dto';
+import { ResetTokenSchema } from '../interfaces/reset-token-schema.interface';
 
 @Injectable()
 export class ValidateResetCodeService {

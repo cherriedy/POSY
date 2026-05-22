@@ -4,8 +4,8 @@ import {
   CuisineOrderBy,
   CuisineQueryParams,
   CuisineSortField,
-} from '../interfaces';
-import { SortDirection } from '../../../common/interfaces';
+} from '../interfaces/cuisine-query-params.interface';
+import { SortDirection } from '../../../common/interfaces/sort-field.interface';
 import { Transform } from 'class-transformer';
 
 /**
