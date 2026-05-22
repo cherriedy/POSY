@@ -7,9 +7,9 @@ import {
 import { Observable } from 'rxjs';
 import { AccessControlService } from '../access-control/access-control.service';
 import { Reflector } from '@nestjs/core';
-import { Role } from '../../common/enums';
-import { ROLE_KEY } from '../../common/decorators';
-import { JwtPayload } from '../../authentication/interfaces';
+import { Role } from '../../common/enums/role.enum';
+import { ROLE_KEY } from '../../common/decorators/roles.decorator';
+import { JwtPayload } from '../../authentication/interfaces/jwt-payload.interface';
 import { Request } from 'express';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 

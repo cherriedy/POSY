@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { OrderItemStatus } from '../enums';
+import { OrderItemStatus } from '../enums/order-item-status.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateOrderItemStatusDto {

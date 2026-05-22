@@ -1,17 +1,16 @@
 import { ZoneRepository } from './zone.repository-abstract';
-import { Zone, ZoneMapper } from '../types';
+import { Zone } from '../types/zone.class';
+import { ZoneMapper } from '../types/zone.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../../common/exceptions';
-import { paginationConfig } from '../../../common/config';
-import { Page } from '../../../common/interfaces';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { paginationConfig } from '../../../common/config/pagination.config';
+import { Page } from '../../../common/interfaces/page.interface';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 import { Injectable } from '@nestjs/common';
-import { ZoneNotFoundException } from '../exceptions';
-import { ZoneOrderBy, ZoneQueryFilter, ZoneQueryParams } from '../interfaces';
+import { ZoneNotFoundException } from '../exceptions/zone-not-found.exception';
+import { ZoneOrderBy, ZoneQueryFilter, ZoneQueryParams } from '../interfaces/zone-query-params.interface';
 import { Prisma } from '@prisma/client';
 
 @Injectable()

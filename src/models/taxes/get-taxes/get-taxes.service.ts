@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { TaxRepository } from '../repositories';
-import { TaxQueryParams } from '../interfaces';
-import { TaxNotFoundException } from '../exceptions';
-import { TaxConfig } from '../entities';
-import { Page } from '../../../common/interfaces';
+import { TaxRepository } from '../repositories/tax-repository.abstract';
+import { TaxQueryParams } from '../interfaces/tax-query-params';
+import { TaxNotFoundException } from '../exceptions/tax-not-found.exception';
+import { TaxConfig } from '../entities/tax-config';
+import { Page } from '../../../common/interfaces/page.interface';
 
 @Injectable()
 export class GetTaxesService {

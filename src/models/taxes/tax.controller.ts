@@ -17,35 +17,27 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Roles } from '../../common/decorators';
-import { Role } from '../../common/enums';
-import {
-  TaxCreateRequestDto,
-  TaxDetailedResponseDto,
-  TaxPreviewResponseDto,
-  TaxQueryParamsDto,
-  TaxUpdateRequestDto,
-  TaxAssociationResponseDto,
-  TaxAssociationBulkUpsertItemResponseDto,
-  TaxAssociationBulkUpsertResponseDto,
-  TaxAssociationBulkRemoveItemResponseDto,
-  TaxAssociationBulkRemoveResponseDto,
-} from './dto';
-import { TaxConfig } from './entities';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '../../common/enums/role.enum';
+import { TaxCreateRequestDto, TaxUpdateRequestDto } from './dto/tax-requests.dto';
+import { TaxDetailedResponseDto, TaxPreviewResponseDto } from './dto/tax-responses.dto';
+import { TaxQueryParamsDto } from './dto/tax-query-params.dto';
+import { TaxAssociationResponseDto, TaxAssociationBulkUpsertItemResponseDto, TaxAssociationBulkUpsertResponseDto, TaxAssociationBulkRemoveItemResponseDto, TaxAssociationBulkRemoveResponseDto } from './dto/tax-association-responses.dto';
+import { TaxAssociationBulkUpsertRequestDto, TaxAssociationDeleteRequestDto } from './dto/tax-association-requests.dto';
+import { TaxConfig } from './entities/tax-config';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { DuplicateEntryException } from '../../common/exceptions';
+import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
 import { plainToInstance } from 'class-transformer';
-import { GetTaxesService } from './get-taxes';
-import { CreateTaxService } from './create-tax';
-import { UpdateTaxService } from './update-tax';
-import { DeleteTaxService } from './delete-tax';
-import { AssociateEntityTaxService } from './associate-entity-tax';
-import { GetEntityTaxAssociationsService } from './get-entity-tax-associations';
-import {
-  RemoveEntityTaxAssociationService,
-  RemoveEntityTaxAssociationMapper,
-} from './remove-entity-tax-association';
-import { TaxNotFoundException } from './exceptions';
+import { GetTaxesService } from './get-taxes/get-taxes.service';
+import { CreateTaxService } from './create-tax/create-tax.service';
+import { UpdateTaxService } from './update-tax/update-tax.service';
+import { DeleteTaxService } from './delete-tax/delete-tax.service';
+import { AssociateEntityTaxService } from './associate-entity-tax/associate-entity-tax.service';
+import { AssociateEntityTaxMapper } from './associate-entity-tax/associate-entity-tax.mapper';
+import { GetEntityTaxAssociationsService } from './get-entity-tax-associations/get-entity-tax-associations.service';
+import { RemoveEntityTaxAssociationService } from './remove-entity-tax-association/remove-entity-tax-association.service';
+import { RemoveEntityTaxAssociationMapper } from './remove-entity-tax-association/remove-entity-tax-association.mapper';
+import { TaxNotFoundException } from './exceptions/tax-not-found.exception';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -59,13 +51,8 @@ import {
   ApiNotFoundResponse,
   ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto';
-import { EntityType } from './enums';
-import { AssociateEntityTaxMapper } from './associate-entity-tax';
-import {
-  TaxAssociationBulkUpsertRequestDto,
-  TaxAssociationDeleteRequestDto,
-} from './dto';
+import { createPageResponseSchema } from '../../common/dto/page-response';
+import { EntityType } from './enums/entity-type.enum';
 
 @ApiTags('Taxes')
 @ApiBearerAuth()

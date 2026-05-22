@@ -1,7 +1,8 @@
-import { BaseRepository, Page } from '../../../../common/interfaces';
-import { Payment } from '../entities';
-import { PaymentStatus } from '../enums';
-import { PaymentQueryParams } from '../interfaces';
+import { BaseRepository } from '../../../../common/interfaces/base-repository.interface';
+import { Page } from '../../../../common/interfaces/page.interface';
+import { Payment } from '../entities/payment';
+import { PaymentStatus } from '../enums/payment-status.enum';
+import { PaymentQueryParams } from '../interfaces/payment-query-params.interface';
 
 export abstract class PaymentRepository implements BaseRepository<Payment> {
   /**

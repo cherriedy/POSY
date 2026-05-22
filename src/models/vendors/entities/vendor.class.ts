@@ -1,4 +1,4 @@
-import { VendorStatus } from '../enums';
+import { VendorStatus } from '../enums/vendor-status.enum';
 
 export class Vendor {
   constructor(

@@ -1,6 +1,7 @@
-import { BaseRepository, Page } from '../../../common/interfaces';
-import { Vendor } from '../entities';
-import { VendorQueryParams } from '../interfaces';
+import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { Page } from '../../../common/interfaces/page.interface';
+import { Vendor } from '../entities/vendor.class';
+import { VendorQueryParams } from '../interfaces/vendor-query-params.interface';
 
 export abstract class VendorRepository implements BaseRepository<Vendor> {
   abstract create(entity: Vendor): Promise<Vendor>;

@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
-import { DietaryTag, MealSession, Season, Taste } from '../enums';
+import { DietaryTag, MealSession, Season, Taste } from '../enums/product-attribute.enum';
 import { ProductAttributeCuisineResponseDto } from './product-attribute-cuisine-response.dto';
 
 /**

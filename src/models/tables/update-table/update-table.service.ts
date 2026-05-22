@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { TableRepository } from '../repositories';
-import { Table } from '../types';
-import { ZoneRepository } from 'src/models/zones/repositories';
-import { TableNotFoundException } from '../exceptions';
-import { ZoneNotFoundException } from 'src/models/zones/exceptions';
-import { DuplicateEntryException } from 'src/common/exceptions';
+import { TableRepository } from '../repositories/table.repository-abstract';
+import { Table } from '../types/table.class';
+import { ZoneRepository } from 'src/models/zones/repositories/zone.repository-abstract';
+import { TableNotFoundException } from '../exceptions/table-not-found.exception';
+import { ZoneNotFoundException } from 'src/models/zones/exceptions/zone-not-found.exception';
+import { DuplicateEntryException } from 'src/common/exceptions/DuplicateEntryException';
 
 @Injectable()
 export class UpdateTableService {

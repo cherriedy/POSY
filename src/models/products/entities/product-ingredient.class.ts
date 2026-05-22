@@ -1,5 +1,5 @@
 import { Product } from './product.class';
-import { Ingredient } from '../../ingredients';
+import { Ingredient } from '../../ingredients/shared/entities/ingredient';
 
 export class ProductIngredient {
   constructor(

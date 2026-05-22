@@ -1,4 +1,4 @@
-import { DietaryTag, MealSession, Taste } from '../../../products';
+import { DietaryTag, MealSession, Taste } from '../../../products/enums/product-attribute.enum';
 
 /**
  * @description

@@ -3,7 +3,7 @@ import {
   ValidationArguments,
   ValidationOptions,
 } from 'class-validator';
-import { PromotionDiscountType } from '../enums';
+import { PromotionDiscountType } from '../enums/promotion-discount-type.enum';
 import { promotionConfig } from '../promotion.config';
 
 const constraint = promotionConfig.discountValue.constraint;

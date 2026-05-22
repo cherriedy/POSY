@@ -14,33 +14,27 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {
-  CreateCategoryService,
-  UpdateCategoryService,
-  DeleteCategoryService,
-  GetCategoriesService,
-} from './features';
+import { CreateCategoryService } from './features/create-category/create-category.service';
+import { UpdateCategoryService } from './features/update-category/update-category.service';
+import { DeleteCategoryService } from './features/delete-category/delete-category.service';
+import { GetCategoriesService } from './features/get-categories/get-categories.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Role } from '../../common/enums';
-import { Roles } from '../../common/decorators';
+import { Role } from '../../common/enums/role.enum';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { plainToInstance } from 'class-transformer';
-import {
-  CategoryDetailedResponseDto,
-  CategoryPreviewResponseDto,
-  CategoryQueryParamsDto,
-  CreateCategoryDto,
-  UpdateCategoryDto,
-  CategoryNotFoundException,
-  Category,
-} from './shared';
-import { Page } from '../../common/interfaces';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-  RelatedRecordNotFoundException,
-} from '../../common/exceptions';
+import { CategoryDetailedResponseDto } from './shared/dto/category-detailed-response.dto';
+import { CategoryPreviewResponseDto } from './shared/dto/category-preview-response.dto';
+import { CategoryQueryParamsDto } from './shared/dto/category-query-params.dto';
+import { CreateCategoryDto } from './shared/dto/create-category.dto';
+import { UpdateCategoryDto } from './shared/dto/update-category.dto';
+import { CategoryNotFoundException } from './shared/exceptions/category-not-found.exception';
+import { Category } from './shared/entities/category';
+import { Page } from '../../common/interfaces/page.interface';
+import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../common/exceptions/ForeignKeyViolationException';
+import { RelatedRecordNotFoundException } from '../../common/exceptions/RelatedRecordNotFoundException';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -50,7 +44,7 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto';
+import { createPageResponseSchema } from '../../common/dto/page-response';
 
 @ApiTags('Categories')
 @ApiBearerAuth()

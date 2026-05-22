@@ -2,9 +2,9 @@ import {
   Prisma,
   SessionPreference as PrismaSessionPreference,
 } from '@prisma/client';
-import { DietaryTag, MealSession, Taste } from '../../../products';
+import { DietaryTag, MealSession, Taste } from '../../../products/enums/product-attribute.enum';
 import { SessionPreference } from './session-preference';
-import { MissingRequireFieldsException } from '../../../../common/exceptions';
+import { MissingRequireFieldsException } from '../../../../common/exceptions/MissingRequireFieldsException';
 
 export class SessionPreferenceMapper {
   /**

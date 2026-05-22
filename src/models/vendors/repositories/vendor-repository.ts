@@ -1,23 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { VendorRepository } from './vendor-repository.abstract';
-import { Vendor, VendorMapper } from '../entities';
+import { Vendor } from '../entities/vendor.class';
+import { VendorMapper } from '../entities/vendor.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-  MissingRequireFieldsException,
-} from '../../../common/exceptions';
-import { VendorNotFoundException } from '../exceptions';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { MissingRequireFieldsException } from '../../../common/exceptions/MissingRequireFieldsException';
+import { VendorNotFoundException } from '../exceptions/vendor-not-found.exception';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
-import { Page } from '../../../common/interfaces';
-import {
-  VendorQueryParams,
-  VendorQueryFilter,
-  VendorOrderBy,
-} from '../interfaces';
+import { Page } from '../../../common/interfaces/page.interface';
+import { VendorQueryParams, VendorQueryFilter, VendorOrderBy } from '../interfaces/vendor-query-params.interface';
 import { Prisma } from '@prisma/client';
-import { paginationConfig } from '../../../common/config';
+import { paginationConfig } from '../../../common/config/pagination.config';
 
 @Injectable()
 export class VendorRepositoryImpl implements VendorRepository {

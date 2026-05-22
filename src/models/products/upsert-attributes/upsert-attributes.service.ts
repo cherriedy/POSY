@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ProductAttributeRepository } from 'src/models/products/repositories/product-attribute-repository.abstract';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
-import { ProductAttribute } from '../entities';
-import { ProductAttributesUpsertPayload } from '../interfaces';
-import { ProductNotFoundException } from '../exceptions';
+import { ProductAttribute } from '../entities/product-attribute.class';
+import { ProductAttributesUpsertPayload } from '../interfaces/product-payloads';
+import { ProductNotFoundException } from '../exceptions/product-not-found.exception';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()

@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import {
-  CategoryRepository,
-  Category,
-  CategoryNotFoundException,
-  CategoryQueryParams,
-} from '../../shared';
-import { Page } from '../../../../common/interfaces';
+import { CategoryRepository } from '../../shared/repositories/category-repository.abstract';
+import { Category } from '../../shared/entities/category';
+import { CategoryNotFoundException } from '../../shared/exceptions/category-not-found.exception';
+import { CategoryQueryParams } from '../../shared/interfaces/category-query-params.interface';
+import { Page } from '../../../../common/interfaces/page.interface';
 
 @Injectable()
 export class GetCategoriesService {

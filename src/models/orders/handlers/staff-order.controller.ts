@@ -36,29 +36,25 @@ import {
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import {
-  InsufficientRequiredIngredientException,
-  OrderCreateRequestDto,
-  OrderDetailedResponseDto,
-  OrderModificationForbiddenException,
-  OrderNotFoundException,
-  OrderNotFoundForSessionException,
-  OrderPreviewResponseDto,
-  OrderQueryParamsDto,
-  OrderUpdateRequestDto,
-} from '../shared';
-import { StaffSessionContextService } from '../../table-sessions';
-import { JwtPayload } from '../../../authentication/interfaces';
-import { createPageResponseSchema } from '../../../common/dto';
-import { Roles } from '../../../common/decorators';
-import { Role } from '../../../common/enums';
-import {
-  AtLeastOneItemRequiredException,
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../../common/exceptions';
-import { ProductNotFoundException } from '../../products';
-import { TableNotFoundException } from '../../tables/exceptions';
+import { InsufficientRequiredIngredientException } from '../shared/exceptions/insufficient-required-ingredient.exception';
+import { OrderCreateRequestDto } from '../shared/dto/order-create-request.dto';
+import { OrderDetailedResponseDto } from '../shared/dto/order-detailed-response.dto';
+import { OrderModificationForbiddenException } from '../shared/exceptions/order-modification-forbidden.exception';
+import { OrderNotFoundException } from '../shared/exceptions/order-not-found.exception';
+import { OrderNotFoundForSessionException } from '../shared/exceptions/order-not-found-for-session.exception';
+import { OrderPreviewResponseDto } from '../shared/dto/order-preview-response.dto';
+import { OrderQueryParamsDto } from '../shared/dto/order-query-params.dto';
+import { OrderUpdateRequestDto } from '../shared/dto/order-update-request.dto';
+import { StaffSessionContextService } from '../../table-sessions/features/start-session/staff-session-context.service';
+import { JwtPayload } from '../../../authentication/interfaces/jwt-payload.interface';
+import { createPageResponseSchema } from '../../../common/dto/page-response';
+import { Roles } from '../../../common/decorators/roles.decorator';
+import { Role } from '../../../common/enums/role.enum';
+import { AtLeastOneItemRequiredException } from '../../../common/exceptions/at-least-one-item-required.exception';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { ProductNotFoundException } from '../../products/exceptions/product-not-found.exception';
+import { TableNotFoundException } from '../../tables/exceptions/table-not-found.exception';
 import { UpdateOrderStatusDto } from '../shared/dto/update-order-status.dto';
 import { UpdateOrderItemStatusDto } from '../shared/dto/update-order-item-status.dto';
 import {

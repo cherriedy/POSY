@@ -1,6 +1,6 @@
-import { Role } from 'src/common/enums';
-import { PaginationParams } from '../../../common/interfaces';
-import { OrderBy } from '../../../common/interfaces';
+import { Role } from 'src/common/enums/role.enum';
+import { PaginationParams } from '../../../common/interfaces/pagination-params.interface';
+import { OrderBy } from '../../../common/interfaces/sort-field.interface';
 
 export type UserSortField =
   | 'fullName'

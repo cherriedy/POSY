@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TaxRepository } from '../repositories';
+import { TaxRepository } from '../repositories/tax-repository.abstract';
 
 @Injectable()
 export class DeleteTaxService {

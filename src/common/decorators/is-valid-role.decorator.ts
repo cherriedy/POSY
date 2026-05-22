@@ -1,5 +1,5 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
-import { Role } from '../enums';
+import { Role } from '../enums/role.enum';
 
 export function IsValidRole(validationOptions?: ValidationOptions) {
   return function (object: object, propertyName: string) {

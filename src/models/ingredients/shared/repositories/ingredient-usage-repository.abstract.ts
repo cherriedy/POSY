@@ -1,5 +1,5 @@
-import { BaseRepository } from '../../../../common/interfaces';
-import { IngredientUsage } from '../entities';
+import { BaseRepository } from '../../../../common/interfaces/base-repository.interface';
+import { IngredientUsage } from '../entities/ingredient-usage';
 
 export abstract class IngredientUsageRepository extends BaseRepository<IngredientUsage> {
   /**

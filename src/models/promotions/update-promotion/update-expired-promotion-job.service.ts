@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PromotionRepository } from '../repositories';
+import { PromotionRepository } from '../repositories/promotion-repository.abstract';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 

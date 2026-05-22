@@ -1,9 +1,10 @@
 import { Global, Module } from '@nestjs/common';
 import { ImageController } from './image.controller';
-import { ImageRepository, ImageRepositoryImpl } from './repositories';
+import { ImageRepository } from './repositories/image.repository-abstract';
+import { ImageRepositoryImpl } from './repositories/image.repository-implementation';
 import { ImageService } from './image.service';
 import { AppConfigModule } from '../../config';
-import { ImageUrlTransformInterceptor } from './interceptors';
+import { ImageUrlTransformInterceptor } from './interceptors/image-url-transform.interceptor';
 
 @Global()
 @Module({

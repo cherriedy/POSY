@@ -3,17 +3,13 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtConfigService } from '../../../config/jwt/config.service';
 import { authConfig } from '../../auth.config';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
-import {
-  AccessTokenHasExpiredException,
-  InvalidAccessTokenException,
-  InvalidRefreshTokenException,
-  RefreshTokenHasExpiredException,
-} from '../../exceptions';
-import {
-  TableSessionConfig,
-  TableSessionPayload,
-  TableSessionRepository,
-} from '../../../models/table-sessions';
+import { AccessTokenHasExpiredException } from '../../exceptions/AccessTokenHasExpiredException';
+import { InvalidAccessTokenException } from '../../exceptions/InvalidAccessTokenException';
+import { InvalidRefreshTokenException } from '../../exceptions/InvalidRefreshTokenException';
+import { RefreshTokenHasExpiredException } from '../../exceptions/RefreshTokenHasExpiredException';
+import { TableSessionConfig } from '../../../models/table-sessions/table-session.config';
+import { TableSessionPayload } from '../../../models/table-sessions/shared/interfaces/table-session-payload.interface';
+import { TableSessionRepository } from '../../../models/table-sessions/shared/repositories/table-session-repository.abstract';
 
 @Injectable()
 export class TokenGeneratorsService {

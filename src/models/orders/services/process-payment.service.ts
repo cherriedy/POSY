@@ -1,20 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
-import { OrderTaxMapper } from '../../taxes';
-import { OrderTax } from '../../taxes';
-import {
-  PromotionRedemption,
-  PromotionRedemptionMapper,
-} from '../../promotions/types';
-import { Payment, PaymentMapper } from '../../payments/shared/entities';
-import { PaymentStatus } from '../../payments/shared/enums';
-import { OrderStatus } from '../shared';
-import {
-  OrderNotFoundException,
-  OrderSnapshotNotFoundException,
-  OrderAlreadyCompletedException,
-} from '../shared';
+import { OrderTaxMapper } from '../../taxes/entities/order-tax.mapper';
+import { OrderTax } from '../../taxes/entities/order-tax';
+import { PromotionRedemption } from '../../promotions/types/promotion-redemption';
+import { PromotionRedemptionMapper } from '../../promotions/types/promotion-redemption.mapper';
+import { Payment } from '../../payments/shared/entities/payment';
+import { PaymentMapper } from '../../payments/shared/entities/payment.mapper';
+import { PaymentStatus } from '../../payments/shared/enums/payment-status.enum';
+import { OrderStatus } from '../shared/enums/order-status.enum';
+import { OrderNotFoundException } from '../shared/exceptions/order-not-found.exception';
+import { OrderSnapshotNotFoundException } from '../shared/exceptions/order-snapshot-not-found.exception';
+import { OrderAlreadyCompletedException } from '../shared/exceptions/order-already-completed.exception';
 import { PricingSnapshotRepository } from '../shared/repositories/pricing-snapshot-repository.abstract';
 import { OrderRepository } from '../shared/repositories/order-repository.abstract';
 

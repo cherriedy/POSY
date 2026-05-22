@@ -10,29 +10,26 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ForgotPasswordDto,
-  ResetPasswordDto,
-  SignInDto,
-  ValidateResetCodeDto,
-} from './dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { SignInDto } from './dto/sign-in.dto';
+import { ValidateResetCodeDto } from './dto/validate-reset-code.dto';
 import { Request, Response } from 'express';
-import { DeviceContext } from '../common/interfaces';
+import { DeviceContext } from '../common/interfaces/device-context.interface';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import {
-  AccountLockedException,
-  InvalidCredentialsException,
-  InvalidRefreshTokenException,
-  InvalidResetCodeException,
-  InvalidResetTokenException,
-  ResetCodeHasExpiredException,
-  ResetTokenHasExpiredException,
-} from './exceptions';
+import { AccountLockedException } from './exceptions/AccountLockedException';
+import { InvalidCredentialsException } from './exceptions/InvalidCredentialsException';
+import { InvalidRefreshTokenException } from './exceptions/InvalidRefreshTokenException';
+import { InvalidResetCodeException } from './exceptions/InvalidResetCodeException';
+import { InvalidResetTokenException } from './exceptions/InvalidResetTokenException';
+import { ResetCodeHasExpiredException } from './exceptions/ResetCodeHasExpiredException';
+import { ResetTokenHasExpiredException } from './exceptions/ResetTokenHasExpiredException';
 import { SignInService } from './sign-in/sign-in.service';
 import { ForgetPasswordService } from './forget-password/forget-password.service';
 import { ValidateResetCodeService } from './validate-reset-code/validate-reset-code.service';
-import { JwtPayload, ResetTokenSchema } from './interfaces';
-import { UserNotFoundException } from '../models/users/exceptions';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { ResetTokenSchema } from './interfaces/reset-token-schema.interface';
+import { UserNotFoundException } from '../models/users/exceptions/UserNotFoundException';
 import { ResetPasswordService } from './reset-password/reset-password.service';
 import { RefreshAccessTokenService } from './refresh-access-token/refresh-access-token.service';
 import { AppConfigService } from '../config/app/config.service';

@@ -1,4 +1,5 @@
-import { TaxRateType, TaxType } from '../enums';
+import { TaxRateType } from '../enums/tax-rate-type.enum';
+import { TaxType } from '../enums/tax-type.enum';
 
 export class PricingSnapshotTax {
   constructor(

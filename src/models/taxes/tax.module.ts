@@ -1,22 +1,20 @@
 import { Global, Module } from '@nestjs/common';
-import {
-  TaxRepository,
-  TaxRepositoryImpl,
-  EntityTaxConfigRepository,
-  EntityTaxConfigRepositoryImpl,
-  OrderTaxRepository,
-  OrderTaxRepositoryImpl,
-  PricingSnapshotTaxRepository,
-  PricingSnapshotTaxRepositoryImpl,
-} from './repositories';
+import { TaxRepository } from './repositories/tax-repository.abstract';
+import { TaxRepositoryImpl } from './repositories/tax-repository';
+import { EntityTaxConfigRepository } from './repositories/entity-tax-config-repository.abstract';
+import { EntityTaxConfigRepositoryImpl } from './repositories/entity-tax-config-repository';
+import { OrderTaxRepository } from './repositories/order-tax-repository.abstract';
+import { OrderTaxRepositoryImpl } from './repositories/order-tax-repository';
+import { PricingSnapshotTaxRepository } from './repositories/pricing-snapshot-tax-repository.abstract';
+import { PricingSnapshotTaxRepositoryImpl } from './repositories/pricing-snapshot-tax-repository';
 import { TaxController } from './tax.controller';
-import { GetTaxesModule } from './get-taxes';
-import { CreateTaxModule } from './create-tax';
-import { UpdateTaxModule } from './update-tax';
-import { DeleteTaxModule } from './delete-tax';
-import { AssociateEntityTaxModule } from './associate-entity-tax';
-import { GetEntityTaxAssociationsModule } from './get-entity-tax-associations';
-import { RemoveEntityTaxAssociationModule } from './remove-entity-tax-association';
+import { GetTaxesModule } from './get-taxes/get-taxes.module';
+import { CreateTaxModule } from './create-tax/create-tax.module';
+import { UpdateTaxModule } from './update-tax/update-tax.module';
+import { DeleteTaxModule } from './delete-tax/delete-tax.module';
+import { AssociateEntityTaxModule } from './associate-entity-tax/associate-entity-tax.module';
+import { GetEntityTaxAssociationsModule } from './get-entity-tax-associations/get-entity-tax-associations.module';
+import { RemoveEntityTaxAssociationModule } from './remove-entity-tax-association/remove-entity-tax-association.module';
 
 @Global()
 @Module({

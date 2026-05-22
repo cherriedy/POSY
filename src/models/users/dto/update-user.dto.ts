@@ -1,5 +1,6 @@
 import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
-import { IsValidPhoneNumber, IsValidRole } from '../../../common/decorators';
+import { IsValidPhoneNumber } from '../../../common/decorators/is-valid-phone-number.decorator';
+import { IsValidRole } from '../../../common/decorators/is-valid-role.decorator';
 
 export class UpdateUserDto {
   @IsOptional()

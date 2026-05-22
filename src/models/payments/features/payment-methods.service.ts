@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Page } from '../../../common/interfaces';
-import { PaymentMethod, PaymentMethodQueryParams } from '../shared';
+import { Page } from '../../../common/interfaces/page.interface';
+import { PaymentMethod } from '../shared/entities/payment-method';
+import { PaymentMethodQueryParams } from '../shared/interfaces/payment-method-query-params.interface';
 import { PaymentMethodRepository } from '../shared/repositories/payment-method-repository.abstract';
 
 @Injectable()

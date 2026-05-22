@@ -1,19 +1,15 @@
-import { TokenGeneratorsService } from '../../authentication/common/token-generators';
+import { TokenGeneratorsService } from '../../authentication/common/token-generators/token-generators.service';
 import {
   Logger,
   UnauthorizedException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { SocketIOMiddleware } from '../types';
-import { AuthenticatedGuestSocket } from '../interfaces';
-import {
-  AccessTokenHasExpiredException,
-  InvalidAccessTokenException,
-} from '../../authentication/exceptions';
-import {
-  TableSessionConfig,
-  TableSessionPayload,
-} from '../../models/table-sessions';
+import { SocketIOMiddleware } from '../types/socket-io-middleware.type';
+import { AuthenticatedGuestSocket } from '../interfaces/authenticated-guest-socket.interface';
+import { AccessTokenHasExpiredException } from '../../authentication/exceptions/AccessTokenHasExpiredException';
+import { InvalidAccessTokenException } from '../../authentication/exceptions/InvalidAccessTokenException';
+import { TableSessionConfig } from '../../models/table-sessions/table-session.config';
+import { TableSessionPayload } from '../../models/table-sessions/shared/interfaces/table-session-payload.interface';
 
 /**
  * Middleware for authenticating guest users connecting via WebSocket. It extracts the session token

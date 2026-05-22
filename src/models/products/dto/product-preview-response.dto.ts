@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
-import { ProductDiscountType } from '../enums';
+import { ProductDiscountType } from '../enums/product.enum';
 import { ProductCategoryResponseDto } from './product-category-response.dto';
 
 @Exclude()

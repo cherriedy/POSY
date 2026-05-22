@@ -26,20 +26,16 @@ import { CurrentSession } from 'src/models/table-sessions/shared/decorators/curr
 import { TableSession } from 'src/models/table-sessions/shared/entities/table-session';
 // ...existing code...
 import { plainToInstance } from 'class-transformer';
-import { GetProductsService } from './get-products';
-import {
-  ProductPublicDetailedResponseDto,
-  ProductPublicPreviewResponseDto,
-  ProductPublicQueryParamsDto,
-} from './dto';
-import { createPageResponseSchema } from '../../common/dto';
-import { ProductNotFoundException } from './exceptions';
-import {
-  CategoryPreviewResponseDto,
-  CategoryQueryParamsDto,
-  GetCategoriesService,
-} from '../categories';
-import { Page } from 'src/common/interfaces';
+import { GetProductsService } from './get-products/get-products.service';
+import { ProductPublicDetailedResponseDto } from './dto/product-public-detailed-response.dto';
+import { ProductPublicPreviewResponseDto } from './dto/product-public-preview-response.dto';
+import { ProductPublicQueryParamsDto } from './dto/product-public-query-params.dto';
+import { createPageResponseSchema } from '../../common/dto/page-response';
+import { ProductNotFoundException } from './exceptions/product-not-found.exception';
+import { CategoryPreviewResponseDto } from '../categories/shared/dto/category-preview-response.dto';
+import { CategoryQueryParamsDto } from '../categories/shared/dto/category-query-params.dto';
+import { GetCategoriesService } from '../categories/features/get-categories/get-categories.service';
+import { Page } from 'src/common/interfaces/page.interface';
 import { Response } from 'express';
 
 @ApiTags('(Public)')

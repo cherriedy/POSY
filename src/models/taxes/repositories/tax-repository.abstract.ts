@@ -1,7 +1,8 @@
-import { BaseRepository, Page } from '../../../common/interfaces';
-import { TaxConfig } from '../entities';
-import { TaxQueryParams } from '../interfaces';
-import { TaxType } from '../enums';
+import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { Page } from '../../../common/interfaces/page.interface';
+import { TaxConfig } from '../entities/tax-config';
+import { TaxQueryParams } from '../interfaces/tax-query-params';
+import { TaxType } from '../enums/tax-type.enum';
 
 export abstract class TaxRepository extends BaseRepository<TaxConfig> {
   /**

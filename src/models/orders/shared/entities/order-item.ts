@@ -1,7 +1,7 @@
-import { OrderItemStatus } from '../enums';
+import { OrderItemStatus } from '../enums/order-item-status.enum';
 import { Order } from './order';
-import { Product } from '../../../products';
-import { OrderTax } from '../../../taxes';
+import { Product } from '../../../products/entities/product.class';
+import { OrderTax } from '../../../taxes/entities/order-tax';
 
 export class OrderItem {
   constructor(

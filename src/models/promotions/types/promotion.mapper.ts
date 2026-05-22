@@ -1,10 +1,8 @@
-import { Promotion as DomainPromotion } from './index';
+import { Promotion as DomainPromotion } from './promotion.class';
 import { Prisma, Promotion as PrismaPromotion } from '@prisma/client';
-import {
-  PromotionApplicability as DomainPromotionApplicability,
-  PromotionDiscountType as DomainPromotionDiscountType,
-  PromotionStatus as DomainPromotionStatus,
-} from '../enums';
+import { PromotionApplicability as DomainPromotionApplicability } from '../enums/promotion-applicability.enum';
+import { PromotionDiscountType as DomainPromotionDiscountType } from '../enums/promotion-discount-type.enum';
+import { PromotionStatus as DomainPromotionStatus } from '../enums/promotion-status.enum';
 
 export class PromotionMapper {
   static toDomain(this: void, prisma: any): DomainPromotion {

@@ -19,12 +19,13 @@ import {
   ApiOkResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
-import { GuestSessionContextService } from './features';
+import { GuestSessionContextService } from './features/start-session/guest-session-context.service';
 import { EndSessionService } from './features/end-session/end-session.service';
-import { StartSessionRequestDto, TableSessionResponseDto } from './shared';
+import { StartSessionRequestDto } from './shared/dto/start-session-request.dto';
+import { TableSessionResponseDto } from './shared/dto/table-session-response.dto';
 import { TableSessionConfig } from './table-session.config';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { assertDevice, InvalidDeviceException } from '../../common/interfaces';
+import { assertDevice, InvalidDeviceException } from '../../common/interfaces/device-context.interface';
 
 @ApiTags('Sessions')
 @Controller('session')

@@ -1,5 +1,6 @@
-import { PaginationParams, OrderBy } from '../../../common/interfaces';
-import { VendorStatus } from '../enums';
+import { PaginationParams } from '../../../common/interfaces/pagination-params.interface';
+import { OrderBy } from '../../../common/interfaces/sort-field.interface';
+import { VendorStatus } from '../enums/vendor-status.enum';
 
 export type VendorSortField =
   | 'name'

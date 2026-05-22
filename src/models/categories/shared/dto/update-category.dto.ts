@@ -1,4 +1,5 @@
-import { IsValidCategoryDescription, IsValidCategoryName } from '../decorators';
+import { IsValidCategoryName } from '../decorators/is-valid-name.decorator';
+import { IsValidCategoryDescription } from '../decorators/is-valid-description.decorator';
 import { IsOptional } from 'class-validator';
 
 export class UpdateCategoryDto {

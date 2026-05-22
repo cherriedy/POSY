@@ -8,9 +8,9 @@ import {
   IsUUID,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { TableOrderBy, TableQueryParams, TableSortField } from '../interfaces';
-import { SortDirection } from '../../../common/interfaces';
-import { TableStatus } from '../enums';
+import { TableOrderBy, TableQueryParams, TableSortField } from '../interfaces/table-query-params.interface';
+import { SortDirection } from '../../../common/interfaces/sort-field.interface';
+import { TableStatus } from '../enums/table-status.enum';
 
 export class TableQueryParamsDto {
   @ApiPropertyOptional({

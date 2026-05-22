@@ -27,32 +27,24 @@ import {
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { plainToInstance } from 'class-transformer';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Roles } from '../../common/decorators';
-import { Role } from '../../common/enums';
-import {
-  DuplicateEntryException,
-  MissingRequireFieldsException,
-} from '../../common/exceptions';
-import {
-  VendorCreateRequestDto,
-  VendorPreviewResponseDto,
-  VendorDetailedResponseDto,
-  VendorUpdateRequestDto,
-  VendorQueryParamsDto,
-} from './dto';
-import {
-  CreateVendorService,
-  CreateVendorPayloadMapper,
-} from './create-vendor';
-import { GetVendorsService } from './get-vendors';
-import {
-  UpdateVendorService,
-  UpdateVendorPayloadMapper,
-} from './update-vendor';
-import { DeleteVendorService } from './delete-vendor';
-import { VendorNotFoundException } from './exceptions';
-import { Page } from '../../common/interfaces';
-import { createPageResponseSchema } from '../../common/dto';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '../../common/enums/role.enum';
+import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
+import { MissingRequireFieldsException } from '../../common/exceptions/MissingRequireFieldsException';
+import { VendorCreateRequestDto } from './dto/vendor-create-request.dto';
+import { VendorPreviewResponseDto } from './dto/vendor-preview-response.dto';
+import { VendorDetailedResponseDto } from './dto/vendor-detailed-response.dto';
+import { VendorUpdateRequestDto } from './dto/vendor-update-request.dto';
+import { VendorQueryParamsDto } from './dto/vendor-query-params.dto';
+import { CreateVendorService } from './create-vendor/create-vendor.service';
+import { CreateVendorPayloadMapper } from './create-vendor/create-vendor-payload.mapper';
+import { GetVendorsService } from './get-vendors/get-vendors.service';
+import { UpdateVendorService } from './update-vendor/update-vendor.service';
+import { UpdateVendorPayloadMapper } from './update-vendor/update-vendor-payload.mapper';
+import { DeleteVendorService } from './delete-vendor/delete-vendor.service';
+import { VendorNotFoundException } from './exceptions/vendor-not-found.exception';
+import { Page } from '../../common/interfaces/page.interface';
+import { createPageResponseSchema } from '../../common/dto/page-response';
 
 @ApiTags('Vendors')
 @ApiBearerAuth()

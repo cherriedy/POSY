@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../repositories';
+import { UserRepository } from '../repositories/user.repository-abstract';
 import { User } from '../types/user.class';
-import { UserNotFoundException } from '../exceptions';
-import { UserQueryParams } from '../interfaces';
-import { Page } from '../../../common/interfaces';
+import { UserNotFoundException } from '../exceptions/UserNotFoundException';
+import { UserQueryParams } from '../interfaces/user-query-params.interface';
+import { Page } from '../../../common/interfaces/page.interface';
 
 @Injectable()
 export class GetUsersService {

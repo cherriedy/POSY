@@ -19,26 +19,22 @@ import { UpdateZoneService } from './update-zone/update-zone.service';
 import { DeleteZoneService } from './delete-zone/delete-zone.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Role } from '../../common/enums';
-import { Roles } from '../../common/decorators';
+import { Role } from '../../common/enums/role.enum';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { GetZonesService } from './get-zones/get-zones.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { plainToInstance } from 'class-transformer';
-import {
-  ZoneDetailedResponseDto,
-  ZonePreviewResponseDto,
-  ZoneQueryParamsDto,
-  ZoneCreateRequestDto,
-  ZoneUpdateRequestDto,
-} from './dto';
-import { Page } from '../../common/interfaces';
-import { ZoneNotFoundException } from './exceptions';
-import { Zone } from './types';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-  RelatedRecordNotFoundException,
-} from '../../common/exceptions';
+import { ZoneDetailedResponseDto } from './dto/zone-detailed-response.dto';
+import { ZonePreviewResponseDto } from './dto/zone-preview-response.dto';
+import { ZoneQueryParamsDto } from './dto/zone-query-params.dto';
+import { ZoneCreateRequestDto } from './dto/zone-create-request.dto';
+import { ZoneUpdateRequestDto } from './dto/zone-update-request.dto';
+import { Page } from '../../common/interfaces/page.interface';
+import { ZoneNotFoundException } from './exceptions/zone-not-found.exception';
+import { Zone } from './types/zone.class';
+import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../common/exceptions/ForeignKeyViolationException';
+import { RelatedRecordNotFoundException } from '../../common/exceptions/RelatedRecordNotFoundException';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -48,7 +44,7 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto';
+import { createPageResponseSchema } from '../../common/dto/page-response';
 
 @ApiTags('Zones')
 @ApiBearerAuth()

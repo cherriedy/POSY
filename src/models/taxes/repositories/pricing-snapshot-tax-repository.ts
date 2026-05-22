@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PricingSnapshotTaxRepository } from './pricing-snapshot-tax-repository.abstract';
-import { PricingSnapshotTax, PricingSnapshotTaxMapper } from '../entities';
+import { PricingSnapshotTax } from '../entities/pricing-snapshot-tax';
+import { PricingSnapshotTaxMapper } from '../entities/pricing-snapshot-tax.mapper';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import {
-  DuplicateEntryException,
-  RelatedRecordNotFoundException,
-} from '../../../common/exceptions';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { RelatedRecordNotFoundException } from '../../../common/exceptions/RelatedRecordNotFoundException';
 
 @Injectable()
 export class PricingSnapshotTaxRepositoryImpl implements PricingSnapshotTaxRepository {

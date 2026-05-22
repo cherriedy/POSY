@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { VendorStatus } from '../enums';
+import { VendorStatus } from '../enums/vendor-status.enum';
 
 @Exclude()
 export class VendorPreviewResponseDto {

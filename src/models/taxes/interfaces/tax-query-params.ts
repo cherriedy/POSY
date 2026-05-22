@@ -1,5 +1,7 @@
-import { PaginationParams, OrderBy } from '../../../common/interfaces';
-import { TaxType, TaxRateType } from '../enums';
+import { PaginationParams } from '../../../common/interfaces/pagination-params.interface';
+import { OrderBy } from '../../../common/interfaces/sort-field.interface';
+import { TaxType } from '../enums/tax-type.enum';
+import { TaxRateType } from '../enums/tax-rate-type.enum';
 
 export type TaxSortField =
   | 'rate'

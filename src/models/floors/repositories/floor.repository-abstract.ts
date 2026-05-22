@@ -1,6 +1,7 @@
-import { Floor } from '../types';
-import { BaseRepository, Page } from '../../../common/interfaces';
-import { FloorQueryParams } from '../interfaces';
+import { Floor } from '../types/floor.class';
+import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { Page } from '../../../common/interfaces/page.interface';
+import { FloorQueryParams } from '../interfaces/floor-query-params.interface';
 
 export abstract class FloorRepository implements BaseRepository<Floor> {
   /**

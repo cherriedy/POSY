@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { TaxRepository } from '../repositories';
-import { TaxConfig } from '../entities';
+import { TaxRepository } from '../repositories/tax-repository.abstract';
+import { TaxConfig } from '../entities/tax-config';
 
 @Injectable()
 export class CreateTaxService {

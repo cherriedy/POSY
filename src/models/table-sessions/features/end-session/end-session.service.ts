@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TableSessionRepository } from '../../shared/repositories';
+import { TableSessionRepository } from '../../shared/repositories/table-session-repository.abstract';
 import { TableSessionNotFoundException } from '../../shared/exceptions/table-session-not-found.exception';
 
 @Injectable()

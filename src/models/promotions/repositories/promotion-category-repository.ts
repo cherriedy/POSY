@@ -1,9 +1,7 @@
 import { PromotionCategoryRepository } from './promotion-category-repository.abstract';
-import {
-  Promotion,
-  PromotionCategory,
-  PromotionCategoryMapper,
-} from '../types';
+import { Promotion } from '../types/promotion.class';
+import { PromotionCategory } from '../types/promotion-category.class';
+import { PromotionCategoryMapper } from '../types/promotion-category.mapper';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PromotionStatus } from '@prisma/client';

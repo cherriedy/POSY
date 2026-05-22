@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TokenGeneratorsService } from './token-generators.service';
 import { JwtConfigModule } from '../../../config';
 import { JwtModule } from '@nestjs/jwt';
-import { TableSessionModule } from '../../../models/table-sessions';
+import { TableSessionModule } from '../../../models/table-sessions/table-session.module';
 
 @Module({
   imports: [JwtConfigModule, JwtModule, TableSessionModule],

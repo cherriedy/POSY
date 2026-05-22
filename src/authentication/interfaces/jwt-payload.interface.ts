@@ -1,4 +1,4 @@
-import { Role } from 'src/common/enums';
+import { Role } from 'src/common/enums/role.enum';
 
 /**
  * Interface representing the structure of a JWT payload.
