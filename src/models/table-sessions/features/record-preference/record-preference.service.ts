@@ -1,8 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { OrderItem } from '../../../orders';
-import { MealSession, ProductAttribute } from '../../../products';
-import { SessionPreferenceRepository } from '../../shared';
-import { SessionPreference } from '../../shared';
+import { OrderItem } from '../../../orders/shared/entities/order-item';
+import { MealSession } from '../../../products/enums/product-attribute.enum';
+import { ProductAttribute } from '../../../products/entities/product-attribute.class';
+import { SessionPreferenceRepository } from '../../shared/repositories/session-preference-repository.abstract';
+import { SessionPreference } from '../../shared/entities/session-preference';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { TableSessionConfig } from '../../table-session.config';
 import * as math from 'mathjs';

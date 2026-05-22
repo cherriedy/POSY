@@ -1,4 +1,4 @@
-import { PaymentVerificationResult } from '../interfaces';
+import { PaymentVerificationResult } from '../interfaces/payment-verification-result.interface';
 
 export interface PaymentGateway {
   /**

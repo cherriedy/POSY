@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { VendorRepository } from '../repositories';
-import { Vendor } from '../entities';
-import { VendorNotFoundException } from '../exceptions';
-import { Page } from '../../../common/interfaces';
-import { VendorQueryParams } from '../interfaces';
+import { VendorRepository } from '../repositories/vendor-repository.abstract';
+import { Vendor } from '../entities/vendor.class';
+import { VendorNotFoundException } from '../exceptions/vendor-not-found.exception';
+import { Page } from '../../../common/interfaces/page.interface';
+import { VendorQueryParams } from '../interfaces/vendor-query-params.interface';
 
 @Injectable()
 export class GetVendorsService {

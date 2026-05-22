@@ -11,7 +11,6 @@ import { PaymentFacadeService } from './features/payment-facade.service';
 import { MomoPaymentGateway } from './shared/providers/momo-payment-gateway';
 import { MomoConfigModule } from '../../config/momo/config.module';
 import { PaymentRefundService } from './features/payment-refund.service';
-import { UpdateOrderStatusService } from '../orders/services/update-order-status.service';
 
 @Module({
   imports: [PaymentRepositoryModule, MomoConfigModule],
@@ -24,7 +23,6 @@ import { UpdateOrderStatusService } from '../orders/services/update-order-status
     PaymentRefundService,
     PaymentMiscellaneousService,
     MomoPaymentGateway,
-    UpdateOrderStatusService,
   ],
   controllers: [
     PublicPaymentMethodController,

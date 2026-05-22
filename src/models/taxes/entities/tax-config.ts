@@ -3,8 +3,9 @@ import {
   assertLarger,
   assertNonNegative,
 } from '../../../common/asserts/number.assert';
-import { TaxRateType, TaxType } from '../enums';
-import { UnsupportedValueException } from '../../../common/exceptions';
+import { TaxRateType } from '../enums/tax-rate-type.enum';
+import { TaxType } from '../enums/tax-type.enum';
+import { UnsupportedValueException } from '../../../common/exceptions/unsupported-value.exception';
 import { roundToCurrency } from '../../../common/utilities/number.util';
 
 export class TaxConfig {

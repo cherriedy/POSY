@@ -1,6 +1,6 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { UserRepository } from '../../models/users/repositories';
+import { UserRepository } from '../../models/users/repositories/user.repository-abstract';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()

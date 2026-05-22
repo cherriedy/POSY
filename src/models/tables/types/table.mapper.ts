@@ -1,8 +1,8 @@
 import { Table as PrismaTable } from '@prisma/client';
 import { Table as DomainTable } from './table.class';
-import { MissingRequireFieldsException } from '../../../common/exceptions';
-import { TableStatus } from '../enums';
-import { ZoneMapper } from '../../zones/types';
+import { MissingRequireFieldsException } from '../../../common/exceptions/MissingRequireFieldsException';
+import { TableStatus } from '../enums/table-status.enum';
+import { ZoneMapper } from '../../zones/types/zone.mapper';
 
 export class TableMapper {
   static toDomain(this: void, prismaTable: PrismaTable): DomainTable {

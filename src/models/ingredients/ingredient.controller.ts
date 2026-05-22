@@ -17,20 +17,16 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Roles } from '../../common/decorators';
-import { Role } from '../../common/enums';
-import {
-  IngredientCreateUpdateDto,
-  IngredientUpdateRequestDto,
-  IngredientResponseDto,
-  IngredientQueryParamsDto,
-} from './shared/dto';
-import {
-  UpdateIngredientService,
-  UpdateIngredientPayloadMapper,
-} from './features/update-ingredient';
-import { GetIngredientsService } from './features/get-ingredients';
-import { DeleteIngredientService } from './features/delete-ingredient';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '../../common/enums/role.enum';
+import { IngredientCreateUpdateDto } from './shared/dto/ingredient-create-update.dto';
+import { IngredientUpdateRequestDto } from './shared/dto/ingredient-update-request.dto';
+import { IngredientResponseDto } from './shared/dto/ingredient-response.dto';
+import { IngredientQueryParamsDto } from './shared/dto/ingredient-query-params.dto';
+import { UpdateIngredientService } from './features/update-ingredient/update-ingredient.service';
+import { UpdateIngredientPayloadMapper } from './features/update-ingredient/update-ingredient-payload.mapper';
+import { GetIngredientsService } from './features/get-ingredients/get-ingredients.service';
+import { DeleteIngredientService } from './features/delete-ingredient/delete-ingredient.service';
 import { plainToInstance } from 'class-transformer';
 import {
   ApiBearerAuth,
@@ -40,15 +36,11 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../common/exceptions';
-import { IngredientNotFoundException } from './shared/exceptions';
-import {
-  CreateIngredientPayloadMapper,
-  CreateIngredientService,
-} from './features/create-ingredient';
+import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../common/exceptions/ForeignKeyViolationException';
+import { IngredientNotFoundException } from './shared/exceptions/ingredient-not-found.exception';
+import { CreateIngredientPayloadMapper } from './features/create-ingredient/create-ingredient-payload.mapper';
+import { CreateIngredientService } from './features/create-ingredient/create-ingredient.service';
 
 @ApiTags('Ingredients')
 @ApiBearerAuth()

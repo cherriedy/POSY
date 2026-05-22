@@ -4,7 +4,7 @@ import {
   Prisma,
 } from '@prisma/client';
 import { ProductMapper } from './product.mapper';
-import { IngredientMapper } from '../../ingredients';
+import { IngredientMapper } from '../../ingredients/shared/entities/ingredient.mapper';
 
 export class ProductIngredientMapper {
   static toDomain(

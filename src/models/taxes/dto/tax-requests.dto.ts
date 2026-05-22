@@ -8,7 +8,8 @@ import {
   Min,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { TaxType, TaxRateType } from '../enums';
+import { TaxType } from '../enums/tax-type.enum';
+import { TaxRateType } from '../enums/tax-rate-type.enum';
 
 /**
  * Represents the request payload for creating a new tax configuration, including all necessary fields and validation rules.

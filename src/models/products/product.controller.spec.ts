@@ -12,35 +12,29 @@ import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 
 import { ProductController } from './product.controller';
-import { GetProductsService } from './get-products';
-import { CreateProductService } from './create-product';
-import { UpdateProductService } from './update-product';
-import { DeleteProductService } from './delete-product';
-import { GetAttributesService } from './get-attributes';
-import {
-  UpsertAttributesMapper,
-  UpsertAttributesService,
-} from './upsert-attributes';
-import { GetProductIngredientsService } from './get-product-ingredients';
-import { UpsertIngredientsService } from './upsert-ingredients';
-import { UpsertProductIngredientsMapper } from './upsert-ingredients';
-import { RemoveProductIngredientService } from './remove-product-ingredient';
-import { CreateProductMapper } from './create-product';
+import { GetProductsService } from './get-products/get-products.service';
+import { CreateProductService } from './create-product/create-product.service';
+import { UpdateProductService } from './update-product/update-product.service';
+import { DeleteProductService } from './delete-product/delete-product.service';
+import { GetAttributesService } from './get-attributes/get-attributes.service';
+import { UpsertAttributesMapper } from './upsert-attributes/upsert-attributes.mapper';
+import { UpsertAttributesService } from './upsert-attributes/upsert-attributes.service';
+import { GetProductIngredientsService } from './get-product-ingredients/get-product-ingredients.service';
+import { UpsertIngredientsService } from './upsert-ingredients/upsert-ingredients.service';
+import { UpsertProductIngredientsMapper } from './upsert-ingredients/upsert-ingredients.mapper';
+import { RemoveProductIngredientService } from './remove-product-ingredient/remove-product-ingredient.service';
+import { CreateProductMapper } from './create-product/create-product.mapper';
 
-import { ProductNotFoundException } from './exceptions';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../common/exceptions';
+import { ProductNotFoundException } from './exceptions/product-not-found.exception';
+import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../common/exceptions/ForeignKeyViolationException';
 
-import {
-  CreateProductDto,
-  UpdateProductDto,
-  ProductQueryParamsDto,
-  ProductAttributeUpsertRequestDto,
-  ProductIngredientBulkUpsertRequestDto,
-} from './dto';
-import { Role } from '../../common/enums';
+import { CreateProductDto } from './dto/product-create-request';
+import { UpdateProductDto } from './dto/product-update-request';
+import { ProductQueryParamsDto } from './dto/product-query-params.dto';
+import { ProductAttributeUpsertRequestDto } from './dto/product-attribute-upsert-request.dto';
+import { ProductIngredientBulkUpsertRequestDto } from './dto/product-ingredient-bulk-upsert-request.dto';
+import { Role } from '../../common/enums/role.enum';
 import { Request } from 'express';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -562,13 +556,13 @@ describe('ProductController', () => {
   describe('removeProductIngredients', () => {
     const productId = 'product-uuid';
     const dto = {
-      ingredientIds: ['ingredient-uuid-1', 'ingredient-uuid-2'],
+      associationIds: ['ingredient-uuid-1', 'ingredient-uuid-2'],
     };
 
     it('removes ingredients and returns formatted bulk delete response', async () => {
       const serviceResult = [
-        { ingredientId: 'ingredient-uuid-1', status: 'SUCCEED' },
-        { ingredientId: 'ingredient-uuid-2', status: 'SUCCEED' },
+        { id: 'ingredient-uuid-1', status: 'SUCCEED', error: null },
+        { id: 'ingredient-uuid-2', status: 'SUCCEED', error: null },
       ];
       mockRemoveProductIngredientService.bulkDelete.mockResolvedValue(
         serviceResult,
@@ -578,7 +572,7 @@ describe('ProductController', () => {
 
       expect(
         mockRemoveProductIngredientService.bulkDelete,
-      ).toHaveBeenCalledWith({ productId, ingredientIds: dto.ingredientIds });
+      ).toHaveBeenCalledWith({ productId, associationIds: dto.associationIds });
       expect(result.total).toBe(2);
       expect(result.succeeded).toBe(2);
       expect(result.failed).toBe(0);
@@ -591,9 +585,9 @@ describe('ProductController', () => {
 
     it('returns partial failure in formatted response when some ingredients not found', async () => {
       const serviceResult = [
-        { ingredientId: 'ingredient-uuid-1', status: 'SUCCEED' },
+        { id: 'ingredient-uuid-1', status: 'SUCCEED', error: null },
         {
-          ingredientId: 'ingredient-uuid-2',
+          id: 'ingredient-uuid-2',
           status: 'FAILED',
           error: `Ingredient with ID ingredient-uuid-2 is not associated with product ${productId}`,
         },

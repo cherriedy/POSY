@@ -10,7 +10,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ProductDiscountType } from '../enums';
+import { ProductDiscountType } from '../enums/product.enum';
 import { ProductAttributeUpsertRequestDto } from './product-attribute-upsert-request.dto';
 import { ProductIngredientBulkUpsertItemDto } from './product-ingredient-bulk-upsert-request.dto';
 import { Type } from 'class-transformer';

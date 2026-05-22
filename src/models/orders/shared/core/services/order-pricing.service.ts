@@ -1,13 +1,14 @@
 import { Injectable, LoggerService, Inject } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { Order } from '../../entities';
-import { OrderItem } from '../../entities';
+import { Order } from '../../entities/order';
+import { OrderItem } from '../../entities/order-item';
 import { OrderContextService } from './order-context.service';
 import { OrderTaxCalculatorService } from './order-tax-calculator.service';
-import { PricingSnapshot } from '../../../../promotions/types';
+import { PricingSnapshot } from '../../../../promotions/types/pricing-snapshot.class';
 import { PricingSnapshotRepository } from '../../repositories/pricing-snapshot-repository.abstract';
-import { PricingSnapshotTaxRepository } from '../../../../taxes';
-import { TaxType, OrderTax } from '../../../../taxes';
+import { PricingSnapshotTaxRepository } from '../../../../taxes/repositories/pricing-snapshot-tax-repository.abstract';
+import { TaxType } from '../../../../taxes/enums/tax-type.enum';
+import { OrderTax } from '../../../../taxes/entities/order-tax';
 
 @Injectable()
 export class OrderPricingService {

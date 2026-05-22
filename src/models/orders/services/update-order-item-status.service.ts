@@ -4,15 +4,15 @@ import { OrderItemStatusService } from '../shared/core/services/order-item-statu
 import { StaffOrderGateway } from '../handlers/staff-order.gateway';
 import { GuestOrderGateway } from '../handlers/guest-order.gateway';
 import { UpdateOrderItemStatusDto } from '../shared/dto/update-order-item-status.dto';
-import { Order, OrderItemStatus } from '../shared';
-import { UnsupportedValueException } from '../../../common/exceptions';
-import { Role } from '../../../common/enums';
-import { JwtPayload, UserIdentity } from '../../../authentication/interfaces';
-import {
-  TableSessionRepository,
-  TableSessionStatus,
-  TableSessionType,
-} from 'src/models/table-sessions';
+import { Order } from '../shared/entities/order';
+import { OrderItemStatus } from '../shared/enums/order-item-status.enum';
+import { UnsupportedValueException } from '../../../common/exceptions/unsupported-value.exception';
+import { Role } from '../../../common/enums/role.enum';
+import { JwtPayload } from '../../../authentication/interfaces/jwt-payload.interface';
+import { UserIdentity } from '../../../authentication/interfaces/user-identity.interface';
+import { TableSessionRepository } from 'src/models/table-sessions/shared/repositories/table-session-repository.abstract';
+import { TableSessionStatus } from 'src/models/table-sessions/shared/enums/table-session-status.enum';
+import { TableSessionType } from 'src/models/table-sessions/shared/enums/table-session-type.enum';
 
 @Injectable()
 export class UpdateOrderItemStatusService {

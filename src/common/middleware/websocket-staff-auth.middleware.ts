@@ -3,14 +3,12 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtPayload } from '../../authentication/interfaces';
-import { TokenGeneratorsService } from '../../authentication/common/token-generators';
-import {
-  AccessTokenHasExpiredException,
-  InvalidAccessTokenException,
-} from '../../authentication/exceptions';
-import { SocketIOMiddleware } from '../types';
-import { AuthenticatedStaffSocket } from '../interfaces';
+import { JwtPayload } from '../../authentication/interfaces/jwt-payload.interface';
+import { TokenGeneratorsService } from '../../authentication/common/token-generators/token-generators.service';
+import { AccessTokenHasExpiredException } from '../../authentication/exceptions/AccessTokenHasExpiredException';
+import { InvalidAccessTokenException } from '../../authentication/exceptions/InvalidAccessTokenException';
+import { SocketIOMiddleware } from '../types/socket-io-middleware.type';
+import { AuthenticatedStaffSocket } from '../interfaces/authenticated-staff-socket.interface';
 
 /**
  * Middleware for authenticating staff members connecting via WebSocket. It checks for the presence of an access token

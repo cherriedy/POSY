@@ -1,18 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ProductInteractionService } from './features/product-interaction.service';
-import { EventEmitterModule } from '@nestjs/event-emitter';
-import { RedisModule } from '../providers/redis';
+import { RedisModule } from '../providers/redis/redis.module';
 import { SpiRepositoryModule } from './shared/repositories/spi-repository.module';
 
 @Module({
-  imports: [
-    EventEmitterModule.forRoot({
-      wildcard: true,
-      delimiter: '.',
-    }),
-    RedisModule,
-    SpiRepositoryModule,
-  ],
+  imports: [RedisModule, SpiRepositoryModule],
   providers: [ProductInteractionService],
   exports: [ProductInteractionService],
 })

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PromotionRepository } from '../repositories';
-import { Promotion } from '../types';
-import { PromotionApplicability } from '../enums';
+import { PromotionRepository } from '../repositories/promotion-repository.abstract';
+import { Promotion } from '../types/promotion.class';
+import { PromotionApplicability } from '../enums/promotion-applicability.enum';
 
 @Injectable()
 export class UpdatePromotionService {

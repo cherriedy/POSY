@@ -1,13 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PaymentRepository } from '../shared/repositories/payment-repository.abstract';
 import { MomoPaymentGateway } from '../shared/providers/momo-payment-gateway';
-import { UnitOfWork } from 'src/common/unit-of-works';
-import {
-  Payment,
-  PaymentNotFoundException,
-  PaymentProvider,
-  PaymentStatus,
-} from '../shared';
+import { UnitOfWork } from 'src/common/unit-of-works/unit-of-work.abstract';
+import { Payment } from '../shared/entities/payment';
+import { PaymentNotFoundException } from '../shared/exceptions/payment-not-found.exception';
+import { PaymentProvider } from '../shared/enums/payment-provider.enum';
+import { PaymentStatus } from '../shared/enums/payment-status.enum';
 
 @Injectable()
 export class PaymentRefundService {

@@ -19,26 +19,22 @@ import { UpdateTableService } from './update-table/update-table.service';
 import { DeleteTableService } from './delete-table/delete-table.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Role } from '../../common/enums';
-import { Roles } from '../../common/decorators';
+import { Role } from '../../common/enums/role.enum';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { GetTablesService } from './get-tables/get-tables.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { plainToInstance } from 'class-transformer';
-import {
-  TableDetailedResponseDto,
-  TablePreviewResponseDto,
-  TableQueryParamsDto,
-  TableCreateRequestDto,
-  TableUpdateRequestDto,
-} from './dto';
-import { Page } from '../../common/interfaces';
-import { TableNotFoundException } from './exceptions';
-import { Table } from './types';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-  RelatedRecordNotFoundException,
-} from '../../common/exceptions';
+import { TableDetailedResponseDto } from './dto/table-detailed-response.dto';
+import { TablePreviewResponseDto } from './dto/table-preview-response.dto';
+import { TableQueryParamsDto } from './dto/table-query-params.dto';
+import { TableCreateRequestDto } from './dto/table-create-request.dto';
+import { TableUpdateRequestDto } from './dto/table-update-request.dto';
+import { Page } from '../../common/interfaces/page.interface';
+import { TableNotFoundException } from './exceptions/table-not-found.exception';
+import { Table } from './types/table.class';
+import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../common/exceptions/ForeignKeyViolationException';
+import { RelatedRecordNotFoundException } from '../../common/exceptions/RelatedRecordNotFoundException';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -48,8 +44,8 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto';
-import { ZoneNotFoundException } from '../zones/exceptions';
+import { createPageResponseSchema } from '../../common/dto/page-response';
+import { ZoneNotFoundException } from '../zones/exceptions/zone-not-found.exception';
 
 @ApiTags('Tables')
 @ApiBearerAuth()

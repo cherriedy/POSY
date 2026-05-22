@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { ZoneRepository } from '../repositories';
-import { Zone } from '../types';
-import { FloorRepository } from 'src/models/floors/repositories';
-import { RelatedRecordNotFoundException } from 'src/common/exceptions';
-import { ZoneNotFoundException } from '../exceptions';
+import { ZoneRepository } from '../repositories/zone.repository-abstract';
+import { Zone } from '../types/zone.class';
+import { FloorRepository } from 'src/models/floors/repositories/floor.repository-abstract';
+import { RelatedRecordNotFoundException } from 'src/common/exceptions/RelatedRecordNotFoundException';
+import { ZoneNotFoundException } from '../exceptions/zone-not-found.exception';
 
 @Injectable()
 export class UpdateZoneService {

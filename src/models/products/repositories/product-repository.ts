@@ -1,21 +1,20 @@
 import { ProductRepository } from './product-repository.abstract';
 import { Injectable } from '@nestjs/common';
-import { Product, ProductMapper } from '../entities';
-import { Page } from '../../../common/interfaces';
+import { Product } from '../entities/product.class';
+import { ProductMapper } from '../entities/product.mapper';
+import { Page } from '../../../common/interfaces/page.interface';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../../common/exceptions';
-import { ProductNotFoundException } from '../exceptions';
-import { paginationConfig } from '../../../common/config';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { ProductNotFoundException } from '../exceptions/product-not-found.exception';
+import { paginationConfig } from '../../../common/constants/pagination.config';
 import {
   ProductIncludeOptions,
   ProductOrderBy,
   ProductQueryFilter,
   ProductQueryParams,
-} from '../interfaces';
+} from '../interfaces/product-query-params';
 import { Prisma } from '@prisma/client';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 import { MeilisearchProductService } from '../../../providers/meilisearch/meilisearch-product.service';

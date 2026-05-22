@@ -1,22 +1,21 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { OrderItemStatus, OrderStatus } from '../../enums';
-import { Order } from '../../entities';
+import { OrderItemStatus } from '../../enums/order-item-status.enum';
+import { OrderStatus } from '../../enums/order-status.enum';
+import { Order } from '../../entities/order';
 import { OrderModificationPolicyService } from './order-modification-policy.service';
-import { computeOrderStatus } from '../../utilities';
+import { computeOrderStatus } from '../../utilities/order-status.util';
 import { OrderPricingService } from './order-pricing.service';
-import { UserIdentity } from '../../../../../authentication/interfaces';
-import {
-  OrderItemNotFoundException,
-  OrderModificationForbiddenException,
-} from '../../exceptions';
+import { UserIdentity } from '../../../../../authentication/interfaces/user-identity.interface';
+import { OrderItemNotFoundException } from '../../exceptions/order-item-not-found.exception';
+import { OrderModificationForbiddenException } from '../../exceptions/order-modification-forbidden.exception';
 import { ReserveIngredientsService } from './reserve-ingredients.service';
 import { OrderItemRepository } from '../../repositories/order-item-repository.abstract';
 import { OrderRepository } from '../../repositories/order-repository.abstract';
-import { UnitOfWork } from '../../../../../common/unit-of-works';
-import { TableSessionRepository } from 'src/models/table-sessions';
-import { TableRepository } from 'src/models/tables/repositories';
-import { TableStatus } from 'src/models/tables/enums';
+import { UnitOfWork } from '../../../../../common/unit-of-works/unit-of-work.abstract';
+import { TableSessionRepository } from 'src/models/table-sessions/shared/repositories/table-session-repository.abstract';
+import { TableRepository } from 'src/models/tables/repositories/table.repository-abstract';
+import { TableStatus } from 'src/models/tables/enums/table-status.enum';
 
 @Injectable()
 export class OrderItemStatusService {

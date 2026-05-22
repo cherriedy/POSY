@@ -18,33 +18,28 @@ import {
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Roles } from '../../common/decorators';
-import { Role } from '../../common/enums';
-import {
-  CreateProductDto,
-  ProductDetailedResponseDto,
-  ProductPreviewResponseDto,
-  ProductQueryParamsDto,
-  UpdateProductDto,
-  ProductAttributeUpsertRequestDto,
-  ProductAttributeResponseDto,
-  ProductIngredientResponseDto,
-  ProductIngredientBulkDeleteRequestDto,
-  ProductIngredientBulkDeleteItemResponseDto,
-  ProductIngredientBulkDeleteResponseDto,
-  ProductIngredientBulkUpsertRequestDto,
-} from './dto';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '../../common/enums/role.enum';
+import { CreateProductDto } from './dto/product-create-request';
+import { ProductDetailedResponseDto } from './dto/product-detailed-response.dto';
+import { ProductPreviewResponseDto } from './dto/product-preview-response.dto';
+import { ProductQueryParamsDto } from './dto/product-query-params.dto';
+import { UpdateProductDto } from './dto/product-update-request';
+import { ProductAttributeUpsertRequestDto } from './dto/product-attribute-upsert-request.dto';
+import { ProductAttributeResponseDto } from './dto/product-attribute-response.dto';
+import { ProductIngredientResponseDto } from './dto/product-ingredient-response.dto';
+import { ProductIngredientBulkDeleteRequestDto } from './dto/product-ingredient-bulk-delete-request.dto';
+import { ProductIngredientBulkDeleteItemResponseDto, ProductIngredientBulkDeleteResponseDto } from './dto/product-ingredient-bulk-delete-response.dto';
+import { ProductIngredientBulkUpsertRequestDto } from './dto/product-ingredient-bulk-upsert-request.dto';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../common/exceptions';
+import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../common/exceptions/ForeignKeyViolationException';
 import { plainToInstance } from 'class-transformer';
-import { CreateProductService } from './create-product';
-import { UpdateProductService } from './update-product';
-import { GetProductsService } from './get-products';
-import { DeleteProductService } from './delete-product';
-import { createPageResponseSchema } from '../../common/dto';
+import { CreateProductService } from './create-product/create-product.service';
+import { UpdateProductService } from './update-product/update-product.service';
+import { GetProductsService } from './get-products/get-products.service';
+import { DeleteProductService } from './delete-product/delete-product.service';
+import { createPageResponseSchema } from '../../common/dto/page-response';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -54,24 +49,18 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { ProductNotFoundException } from './exceptions';
-import { JwtPayload } from '../../authentication/interfaces';
-import { GetAttributesService } from './get-attributes';
-import {
-  UpsertAttributesMapper,
-  UpsertAttributesService,
-} from './upsert-attributes';
-import { CreateProductMapper } from './create-product';
-import { Product } from './entities';
-import { GetProductIngredientsService } from './get-product-ingredients';
-import {
-  UpsertIngredientsService,
-  UpsertProductIngredientsMapper,
-} from './upsert-ingredients';
-import {
-  RemoveProductIngredientMapper,
-  RemoveProductIngredientService,
-} from './remove-product-ingredient';
+import { ProductNotFoundException } from './exceptions/product-not-found.exception';
+import { JwtPayload } from '../../authentication/interfaces/jwt-payload.interface';
+import { GetAttributesService } from './get-attributes/get-attributes.service';
+import { UpsertAttributesMapper } from './upsert-attributes/upsert-attributes.mapper';
+import { UpsertAttributesService } from './upsert-attributes/upsert-attributes.service';
+import { CreateProductMapper } from './create-product/create-product.mapper';
+import { Product } from './entities/product.class';
+import { GetProductIngredientsService } from './get-product-ingredients/get-product-ingredients.service';
+import { UpsertIngredientsService } from './upsert-ingredients/upsert-ingredients.service';
+import { UpsertProductIngredientsMapper } from './upsert-ingredients/upsert-ingredients.mapper';
+import { RemoveProductIngredientMapper } from './remove-product-ingredient/remove-product-ingredient.mapper';
+import { RemoveProductIngredientService } from './remove-product-ingredient/remove-product-ingredient.service';
 
 @ApiTags('Products')
 @ApiBearerAuth()

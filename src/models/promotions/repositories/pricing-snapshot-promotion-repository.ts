@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PricingSnapshotPromotionRepository } from './pricing-snapshot-promotion-repository.abstract';
-import {
-  PricingSnapshotPromotion,
-  PricingSnapshotPromotionMapper,
-} from '../types';
+import { PricingSnapshotPromotion } from '../types/pricing-snapshot-promotion.class';
+import { PricingSnapshotPromotionMapper } from '../types/pricing-snapshot-promotion.mapper';
 
 @Injectable()
 export class PricingSnapshotPromotionRepositoryImpl implements PricingSnapshotPromotionRepository {

@@ -7,13 +7,13 @@ import {
   IsString,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { ProductDiscountType } from '../enums';
+import { ProductDiscountType } from '../enums/product.enum';
 import {
   ProductOrderBy,
   ProductQueryParams,
   ProductSortField,
-} from '../interfaces';
-import { SortDirection } from '../../../common/interfaces';
+} from '../interfaces/product-query-params';
+import { SortDirection } from '../../../common/interfaces/sort-field.interface';
 
 /**
  * DTO for public product listing query parameters.

@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import {
-  PromotionCategoryRepository,
-  PromotionProductRepository,
-  PromotionRepository,
-} from '../repositories';
-import { PromotionQueryParams } from '../interfaces';
-import { PromotionNotFoundException } from '../exceptions';
-import { Role } from '../../../common/enums';
-import { Promotion, PromotionCategory, PromotionProduct } from '../types';
+import { PromotionCategoryRepository } from '../repositories/promotion-category-repository.abstract';
+import { PromotionProductRepository } from '../repositories/promotion-product-repository.abstract';
+import { PromotionRepository } from '../repositories/promotion-repository.abstract';
+import { PromotionQueryParams } from '../interfaces/promotion-query-params.interface';
+import { PromotionNotFoundException } from '../exceptions/PromotionNotFoundException';
+import { Role } from '../../../common/enums/role.enum';
+import { Promotion } from '../types/promotion.class';
+import { PromotionCategory } from '../types/promotion-category.class';
+import { PromotionProduct } from '../types/promotion-product.class';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
-import { ProductNotFoundException } from '../../products/exceptions';
-import { Page } from '../../../common/interfaces';
-import { CategoryRepository } from 'src/models/categories/shared/repositories';
-import { CategoryNotFoundException } from 'src/models/categories/shared/exceptions';
+import { ProductNotFoundException } from '../../products/exceptions/product-not-found.exception';
+import { Page } from '../../../common/interfaces/page.interface';
+import { CategoryRepository } from 'src/models/categories/shared/repositories/category-repository.abstract';
+import { CategoryNotFoundException } from 'src/models/categories/shared/exceptions/category-not-found.exception';
 
 @Injectable()
 export class GetPromotionsService {

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { EntityTaxConfigRepository } from '../repositories';
-import { TaxAssociationNotFoundException } from '../exceptions';
+import { EntityTaxConfigRepository } from '../repositories/entity-tax-config-repository.abstract';
+import { TaxAssociationNotFoundException } from '../exceptions/tax-association-not-found.exception';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import {
   TaxAssociationBulkDeleteResultItem,

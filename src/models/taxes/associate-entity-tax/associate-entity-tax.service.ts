@@ -1,18 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { EntityTaxConfigRepository } from '../repositories';
-import { TaxRepository } from '../repositories';
-import { EntityTaxConfig } from '../entities';
-import {
-  TaxNotFoundException,
-  InvalidTaxEntityCombinationException,
-} from '../exceptions';
-import { EntityType, TaxType } from '../enums';
-import { ZoneRepository } from '../../zones/repositories';
+import { EntityTaxConfigRepository } from '../repositories/entity-tax-config-repository.abstract';
+import { TaxRepository } from '../repositories/tax-repository.abstract';
+import { EntityTaxConfig } from '../entities/entity-tax-config';
+import { TaxNotFoundException } from '../exceptions/tax-not-found.exception';
+import { InvalidTaxEntityCombinationException } from '../exceptions/invalid-tax-entity-combination.exception';
+import { EntityType } from '../enums/entity-type.enum';
+import { TaxType } from '../enums/tax-type.enum';
+import { ZoneRepository } from '../../zones/repositories/zone.repository-abstract';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
-import { CategoryRepository } from '../../categories';
-import { ZoneNotFoundException } from '../../zones/exceptions';
-import { ProductNotFoundException } from '../../products';
-import { CategoryNotFoundException } from '../../categories';
+import { CategoryRepository } from '../../categories/shared/repositories/category-repository.abstract';
+import { ZoneNotFoundException } from '../../zones/exceptions/zone-not-found.exception';
+import { ProductNotFoundException } from '../../products/exceptions/product-not-found.exception';
+import { CategoryNotFoundException } from '../../categories/shared/exceptions/category-not-found.exception';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import {
   TaxAssociationBulkUpsertPayload,

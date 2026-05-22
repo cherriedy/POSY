@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import {
-  OrderTax,
-  TaxConfig,
-  EntityTaxConfig,
-  TaxRateType,
-} from '../../../../taxes';
-import { OrderItem } from '../../entities';
+import { OrderTax } from '../../../../taxes/entities/order-tax';
+import { TaxConfig } from '../../../../taxes/entities/tax-config';
+import { EntityTaxConfig } from '../../../../taxes/entities/entity-tax-config';
+import { TaxRateType } from '../../../../taxes/enums/tax-rate-type.enum';
+import { OrderItem } from '../../entities/order-item';
 
 @Injectable()
 export class OrderTaxCalculatorService {

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PromotionRepository } from '../repositories';
+import { PromotionRepository } from '../repositories/promotion-repository.abstract';
 import { PrismaService } from 'src/providers/prisma/prisma.service';
 import { PricingSnapshotRepository } from 'src/models/orders/shared/repositories/pricing-snapshot-repository.abstract';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
-import { ProductNotFoundException } from 'src/models/products';
+import { ProductNotFoundException } from 'src/models/products/exceptions/product-not-found.exception';
 
 @Injectable()
 export class GetAvailablePromotionsService {

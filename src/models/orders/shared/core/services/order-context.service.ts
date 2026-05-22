@@ -1,16 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import {
-  EntityTaxConfigRepository,
-  TaxRepository,
-  EntityType,
-  TaxType,
-  OrderTax,
-  PricingSnapshotTax,
-} from '../../../../taxes';
-import { TableRepository } from '../../../../tables/repositories';
-import { TableNotFoundException } from '../../../../tables/exceptions';
-import { OrderItemPayload } from '../../interfaces';
-import { ProductNotFoundException } from 'src/models/products/exceptions';
+import { EntityTaxConfigRepository } from '../../../../taxes/repositories/entity-tax-config-repository.abstract';
+import { TaxRepository } from '../../../../taxes/repositories/tax-repository.abstract';
+import { EntityType } from '../../../../taxes/enums/entity-type.enum';
+import { TaxType } from '../../../../taxes/enums/tax-type.enum';
+import { OrderTax } from '../../../../taxes/entities/order-tax';
+import { PricingSnapshotTax } from '../../../../taxes/entities/pricing-snapshot-tax';
+import { TableRepository } from '../../../../tables/repositories/table.repository-abstract';
+import { TableNotFoundException } from '../../../../tables/exceptions/table-not-found.exception';
+import { OrderItemPayload } from '../../interfaces/order-item-payload.interface';
+import { ProductNotFoundException } from 'src/models/products/exceptions/product-not-found.exception';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 
 @Injectable()

@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import {
-  PromotionProductRepository,
-  PromotionRepository,
-} from '../repositories';
-import { Promotion, PromotionProduct } from '../types';
-import { PromotionApplicability } from '../enums';
-import { PromotionNotFoundException } from '../exceptions';
+import { PromotionProductRepository } from '../repositories/promotion-product-repository.abstract';
+import { PromotionRepository } from '../repositories/promotion-repository.abstract';
+import { Promotion } from '../types/promotion.class';
+import { PromotionProduct } from '../types/promotion-product.class';
+import { PromotionApplicability } from '../enums/promotion-applicability.enum';
+import { PromotionNotFoundException } from '../exceptions/PromotionNotFoundException';
 import { PromotionUnusableException } from '../exceptions/PromotionUnusableException';
-import { DuplicateEntryException } from 'src/common/exceptions';
-import { ProductsNotFoundException } from 'src/models/products/exceptions';
+import { DuplicateEntryException } from 'src/common/exceptions/DuplicateEntryException';
+import { ProductsNotFoundException } from 'src/models/products/exceptions/product-not-found.exception';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 
 @Injectable()

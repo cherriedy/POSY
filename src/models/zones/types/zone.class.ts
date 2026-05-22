@@ -1,5 +1,5 @@
-import { Floor } from 'src/models/floors/types';
-import { Table } from '../../tables/types';
+import { Floor } from 'src/models/floors/types/floor.class';
+import { Table } from '../../tables/types/table.class';
 
 export class Zone {
   constructor(

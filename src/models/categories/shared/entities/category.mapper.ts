@@ -1,6 +1,6 @@
 import { Category as PrismaCategory, Prisma } from '@prisma/client';
 import { Category } from './category';
-import { MissingRequireFieldsException } from '../../../../common/exceptions';
+import { MissingRequireFieldsException } from '../../../../common/exceptions/MissingRequireFieldsException';
 import { getSlug } from 'src/common/utilities/string.util';
 
 export class CategoryMapper {

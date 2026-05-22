@@ -1,12 +1,12 @@
 import { Injectable, Inject, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { GetProductsService } from './get-products';
+import { GetProductsService } from './get-products/get-products.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ProductInteractionPayload } from 'src/user-tracking/shared/interfaces/product-interaction-payload';
 import { ProductInteractionType } from 'src/user-tracking/shared/enums/product-interaction-type.enum';
 import { TableSession } from 'src/models/table-sessions/shared/entities/table-session';
-import { Product } from './entities';
-import { ProductNotFoundException } from './exceptions';
+import { Product } from './entities/product.class';
+import { ProductNotFoundException } from './exceptions/product-not-found.exception';
 
 @Injectable()
 export class ProductFacadeService {

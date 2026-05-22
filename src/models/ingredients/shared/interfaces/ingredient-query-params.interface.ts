@@ -1,4 +1,5 @@
-import { PaginationParams, OrderBy } from '../../../../common/interfaces';
+import { PaginationParams } from '../../../../common/interfaces/pagination-params.interface';
+import { OrderBy } from '../../../../common/interfaces/sort-field.interface';
 
 export type IngredientSortField =
   | 'name'

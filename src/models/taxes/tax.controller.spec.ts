@@ -13,25 +13,22 @@ import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 
 import { TaxController } from './tax.controller';
-import { GetTaxesService } from './get-taxes';
-import { CreateTaxService } from './create-tax';
-import { UpdateTaxService } from './update-tax';
-import { DeleteTaxService } from './delete-tax';
-import { AssociateEntityTaxService } from './associate-entity-tax';
-import { GetEntityTaxAssociationsService } from './get-entity-tax-associations';
-import { RemoveEntityTaxAssociationService } from './remove-entity-tax-association';
+import { GetTaxesService } from './get-taxes/get-taxes.service';
+import { CreateTaxService } from './create-tax/create-tax.service';
+import { UpdateTaxService } from './update-tax/update-tax.service';
+import { DeleteTaxService } from './delete-tax/delete-tax.service';
+import { AssociateEntityTaxService } from './associate-entity-tax/associate-entity-tax.service';
+import { GetEntityTaxAssociationsService } from './get-entity-tax-associations/get-entity-tax-associations.service';
+import { RemoveEntityTaxAssociationService } from './remove-entity-tax-association/remove-entity-tax-association.service';
 
-import { TaxNotFoundException } from './exceptions';
-import { DuplicateEntryException } from '../../common/exceptions';
+import { TaxNotFoundException } from './exceptions/tax-not-found.exception';
+import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
 
-import {
-  TaxCreateRequestDto,
-  TaxUpdateRequestDto,
-  TaxQueryParamsDto,
-} from './dto';
-import { TaxAssociationBulkUpsertRequestDto } from './dto';
-import { EntityType } from './enums';
-import { Role } from '../../common/enums';
+import { TaxCreateRequestDto, TaxUpdateRequestDto } from './dto/tax-requests.dto';
+import { TaxQueryParamsDto } from './dto/tax-query-params.dto';
+import { TaxAssociationBulkUpsertRequestDto } from './dto/tax-association-requests.dto';
+import { EntityType } from './enums/entity-type.enum';
+import { Role } from '../../common/enums/role.enum';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -475,7 +472,7 @@ describe('TaxController', () => {
       expect(
         mockGetEntityTaxAssociationsService.getByTaxId,
       ).toHaveBeenCalledWith(taxId);
-      expect(result).toHaveLength(2);
+      expect(result.items).toHaveLength(2);
     });
 
     it('throws InternalServerErrorException on unexpected error', async () => {

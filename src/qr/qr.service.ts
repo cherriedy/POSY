@@ -1,6 +1,6 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
-import { TableRepository } from '../models/tables/repositories';
-import { TableNotFoundException } from '../models/tables/exceptions';
+import { TableRepository } from '../models/tables/repositories/table.repository-abstract';
+import { TableNotFoundException } from '../models/tables/exceptions/table-not-found.exception';
 import { generateBase64UrlToken } from '../common/utilities/string.util';
 import { tableConfig } from '../models/tables/table.config';
 import { AppConfigService } from '../config/app/config.service';

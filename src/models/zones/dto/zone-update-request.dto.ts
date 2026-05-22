@@ -1,6 +1,7 @@
 import { IsBoolean, IsOptional, IsUUID } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsValidZoneDescription, IsValidZoneName } from '../decorators';
+import { IsValidZoneName } from '../decorators/is-valid-name.decorator';
+import { IsValidZoneDescription } from '../decorators/is-valid-description.decorator';
 
 export class ZoneUpdateRequestDto {
   @ApiPropertyOptional({

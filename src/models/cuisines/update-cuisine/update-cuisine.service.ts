@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CuisineRepository } from '../repositories';
-import { Cuisine } from '../types';
+import { CuisineRepository } from '../repositories/cuisine.repository-abstract';
+import { Cuisine } from '../types/cuisine.class';
 import { CuisineUpdatePayload } from '../interfaces/cuisine-payloads.interface';
-import { CuisineNotFoundException } from '../exceptions';
+import { CuisineNotFoundException } from '../exceptions/cuisine-not-found.exception';
 
 /**
  * Service responsible for updating existing cuisines.

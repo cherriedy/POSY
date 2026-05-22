@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { UnitRepository } from './unit-repository.abstract';
-import { Unit, UnitMapper } from '../entities';
+import { Unit } from '../entities/unit.class';
+import { UnitMapper } from '../entities/unit.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../../common/exceptions';
-import { UnitNotFoundException } from '../exceptions';
-import { Page } from '../../../common/interfaces';
-import { paginationConfig } from '../../../common/config';
-import { UnitOrderBy, UnitQueryFilter, UnitQueryParams } from '../interfaces';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { UnitNotFoundException } from '../exceptions/unit-not-found.exception';
+import { Page } from '../../../common/interfaces/page.interface';
+import { paginationConfig } from '../../../common/constants/pagination.config';
+import { UnitOrderBy, UnitQueryFilter, UnitQueryParams } from '../interfaces/unit-query-params.inerface';
 import { Prisma } from '@prisma/client';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 

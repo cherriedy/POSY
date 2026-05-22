@@ -2,16 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 import { ProductAttributeRepository } from 'src/models/products/repositories/product-attribute-repository.abstract';
 import { ProductIngredientRepository } from 'src/models/products/repositories/product-ingredient-repository.abstract';
-import { Product, ProductAttribute, ProductIngredient } from '../entities';
+import { Product } from '../entities/product.class';
+import { ProductAttribute } from '../entities/product-attribute.class';
+import { ProductIngredient } from '../entities/product-ingredient.class';
 import { getSlug } from '../../../common/utilities/string.util';
-import { ProductCreatePayload } from '../interfaces';
-import {
-  MealSession,
-  Taste,
-  DietaryTag,
-  Season,
-  ProductDiscountType,
-} from '../enums';
+import { ProductCreatePayload } from '../interfaces/product-payloads';
+import { MealSession, Taste, DietaryTag, Season } from '../enums/product-attribute.enum';
+import { ProductDiscountType } from '../enums/product.enum';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()

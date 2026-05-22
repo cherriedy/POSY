@@ -1,6 +1,7 @@
 import { User } from '../types/user.class';
-import { BaseRepository, Page } from '../../../common/interfaces';
-import { UserQueryParams } from '../interfaces';
+import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { Page } from '../../../common/interfaces/page.interface';
+import { UserQueryParams } from '../interfaces/user-query-params.interface';
 
 export abstract class UserRepository implements BaseRepository<User> {
   /**

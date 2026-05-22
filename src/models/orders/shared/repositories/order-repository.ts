@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../providers/prisma/prisma.service';
 import { OrderRepository } from './order-repository.abstract';
-import { Order, OrderMapper } from '../entities';
-import { Page } from '../../../../common/interfaces';
-import { OrderQueryParams } from '../interfaces';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../../../common/exceptions';
-import { OrderNotFoundException } from '../exceptions';
-import { paginationConfig } from '../../../../common/config';
+import { Order } from '../entities/order';
+import { OrderMapper } from '../entities/order.mapper';
+import { Page } from '../../../../common/interfaces/page.interface';
+import { OrderQueryParams } from '../interfaces/order-query-params.interface';
+import { DuplicateEntryException } from '../../../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../../../common/exceptions/ForeignKeyViolationException';
+import { OrderNotFoundException } from '../exceptions/order-not-found.exception';
+import { paginationConfig } from '../../../../common/constants/pagination.config';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 

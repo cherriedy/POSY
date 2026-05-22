@@ -1,6 +1,7 @@
-import { BaseRepository, Page } from '../../../../common/interfaces';
-import { PaymentMethod } from '../entities';
-import { PaymentMethodQueryParams } from '../interfaces';
+import { BaseRepository } from '../../../../common/interfaces/base-repository.interface';
+import { Page } from '../../../../common/interfaces/page.interface';
+import { PaymentMethod } from '../entities/payment-method';
+import { PaymentMethodQueryParams } from '../interfaces/payment-method-query-params.interface';
 
 export abstract class PaymentMethodRepository implements BaseRepository<PaymentMethod> {
   /**

@@ -1,10 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import {
-  PromotionApplicability,
-  PromotionDiscountType,
-  PromotionStatus,
-} from '../enums';
+import { PromotionApplicability } from '../enums/promotion-applicability.enum';
+import { PromotionDiscountType } from '../enums/promotion-discount-type.enum';
+import { PromotionStatus } from '../enums/promotion-status.enum';
 
 @Exclude()
 export class PromotionPreviewResponseDto {

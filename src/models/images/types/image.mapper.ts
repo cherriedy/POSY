@@ -1,6 +1,6 @@
 import { Image as PrismaImage } from '@prisma/client';
 import { Image as DomainImage } from './image.class';
-import { MissingRequireFieldsException } from '../../../common/exceptions';
+import { MissingRequireFieldsException } from '../../../common/exceptions/MissingRequireFieldsException';
 
 export class ImageMapper {
   static toDomain(this: void, prismaImage: PrismaImage): DomainImage {

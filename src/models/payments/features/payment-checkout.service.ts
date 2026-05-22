@@ -1,30 +1,28 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UnitOfWork } from '../../../common/unit-of-works';
-import {
-  OrderNotFoundException,
-  OrderSnapshotNotFoundException,
-  OrderStatus,
-} from '../../orders/shared';
+import { UnitOfWork } from '../../../common/unit-of-works/unit-of-work.abstract';
+import { OrderNotFoundException } from '../../orders/shared/exceptions/order-not-found.exception';
+import { OrderSnapshotNotFoundException } from '../../orders/shared/exceptions/order-snapshot-not-found.exception';
+import { OrderStatus } from '../../orders/shared/enums/order-status.enum';
 import { OrderRepository } from '../../orders/shared/repositories/order-repository.abstract';
 import { PricingSnapshotRepository } from '../../orders/shared/repositories/pricing-snapshot-repository.abstract';
-import { PaymentMethodNotFoundException } from '../shared';
+import { PaymentMethodNotFoundException } from '../shared/exceptions/payment-method-not-found.exception';
 import { PaymentMethodRepository } from '../shared/repositories/payment-method-repository.abstract';
-import { PaymentProvider, PaymentStatus } from '../shared';
-import { Payment } from '../shared';
-import { PricingSnapshotPromotion, Promotion } from '../../promotions/types';
-import {
-  PricingSnapshotPromotionRepository,
-  PromotionRepository,
-} from '../../promotions/repositories';
-import { PromotionNotFoundException } from '../../promotions/exceptions';
+import { PaymentProvider } from '../shared/enums/payment-provider.enum';
+import { PaymentStatus } from '../shared/enums/payment-status.enum';
+import { Payment } from '../shared/entities/payment';
+import { PricingSnapshotPromotion } from '../../promotions/types/pricing-snapshot-promotion.class';
+import { Promotion } from '../../promotions/types/promotion.class';
+import { PricingSnapshotPromotionRepository } from '../../promotions/repositories/pricing-snapshot-promotion-repository.abstract';
+import { PromotionRepository } from '../../promotions/repositories/promotion-repository.abstract';
+import { PromotionNotFoundException } from '../../promotions/exceptions/PromotionNotFoundException';
 import { PaymentCoreService } from './payment-core.service';
-import { CheckoutRequestDto } from '../shared';
+import { CheckoutRequestDto } from '../shared/dto/checkout.dto';
 import { MomoPaymentGateway } from '../shared/providers/momo-payment-gateway';
-import { UnsupportedValueException } from '../../../common/exceptions';
+import { UnsupportedValueException } from '../../../common/exceptions/unsupported-value.exception';
 import { UpdateOrderStatusService } from 'src/models/orders/services/update-order-status.service';
-import { Role } from 'src/common/enums';
+import { Role } from 'src/common/enums/role.enum';
 import { OrderNotReadyForCheckoutException } from 'src/models/orders/shared/exceptions/order-not-ready-for-checkout.exception';
-import { ProductNotFoundException } from 'src/models/products';
+import { ProductNotFoundException } from 'src/models/products/exceptions/product-not-found.exception';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 import { PaymentRepository } from '../shared/repositories/payment-repository.abstract';
 

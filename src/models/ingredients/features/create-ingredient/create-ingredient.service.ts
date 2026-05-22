@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { IngredientRepository } from '../../shared/repositories';
-import { Ingredient } from '../../shared/entities';
+import { IngredientRepository } from '../../shared/repositories/ingredient-repository.abstract';
+import { Ingredient } from '../../shared/entities/ingredient';
 import { CreateIngredientPayload } from './create-ingredient.payload';
 
 @Injectable()

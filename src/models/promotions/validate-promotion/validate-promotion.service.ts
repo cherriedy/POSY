@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import {
-  PromotionCategoryRepository,
-  PromotionProductRepository,
-  PromotionRepository,
-} from '../repositories';
-import { PromotionApplicability, PromotionStatus } from '../enums';
-import { ValidatePromotionDto, ValidatePromotionResultDto } from './dto';
+import { PromotionCategoryRepository } from '../repositories/promotion-category-repository.abstract';
+import { PromotionProductRepository } from '../repositories/promotion-product-repository.abstract';
+import { PromotionRepository } from '../repositories/promotion-repository.abstract';
+import { PromotionApplicability } from '../enums/promotion-applicability.enum';
+import { PromotionStatus } from '../enums/promotion-status.enum';
+import { ValidatePromotionDto, ValidatePromotionResultDto } from './dto/validate-promotion.dto';
 
 @Injectable()
 export class ValidatePromotionService {

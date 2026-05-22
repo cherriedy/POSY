@@ -1,11 +1,8 @@
 import fs from 'fs/promises';
 import Handlebars from 'handlebars';
 import path from 'path';
-import {
-  EmailAttachment,
-  TemplateEngine,
-  TemplateRenderResult,
-} from './interfaces';
+import { EmailAttachment } from './interfaces/email-sender.interface';
+import { TemplateEngine, TemplateRenderResult } from './interfaces/template-engine.interface';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

@@ -1,9 +1,7 @@
-import {
-  PromotionApplicability,
-  PromotionDiscountType,
-  PromotionStatus,
-} from '../enums';
-import { PromotionUnusableException } from '../exceptions';
+import { PromotionApplicability } from '../enums/promotion-applicability.enum';
+import { PromotionDiscountType } from '../enums/promotion-discount-type.enum';
+import { PromotionStatus } from '../enums/promotion-status.enum';
+import { PromotionUnusableException } from '../exceptions/PromotionUnusableException';
 
 export class Promotion {
   constructor(

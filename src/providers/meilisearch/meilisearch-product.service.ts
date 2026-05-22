@@ -1,11 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MeilisearchEngineTemplate } from './templates';
-import { MeiliSearchProduct } from './types';
+import { MeilisearchEngineTemplate } from './templates/meilisearch-engine-template';
+import { MeiliSearchProduct } from './types/meilisearch-product';
 import { MeilisearchService } from './meilisearch.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import type { Logger } from 'winston';
-import { Product, ProductQueryFilter } from '../../models/products';
-import { MeilisearchProductMapper } from './mappers';
+import { Product } from '../../models/products/entities/product.class';
+import { ProductQueryFilter } from '../../models/products/interfaces/product-query-params';
+import { MeilisearchProductMapper } from './mappers/meilisearch-product.mapper';
 
 @Injectable()
 export class MeilisearchProductService extends MeilisearchEngineTemplate<MeiliSearchProduct> {

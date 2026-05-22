@@ -1,21 +1,20 @@
 import { FloorRepository } from './floor.repository-abstract';
-import { Floor, FloorMapper } from '../types';
+import { Floor } from '../types/floor.class';
+import { FloorMapper } from '../types/floor.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../../common/exceptions';
-import { paginationConfig } from '../../../common/config';
-import { Page } from '../../../common/interfaces';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { paginationConfig } from '../../../common/constants/pagination.config';
+import { Page } from '../../../common/interfaces/page.interface';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 import { Injectable } from '@nestjs/common';
-import { FloorNotFoundException } from '../exceptions';
+import { FloorNotFoundException } from '../exceptions/floor-not-found.exception';
 import {
   FloorOrderBy,
   FloorQueryFilter,
   FloorQueryParams,
-} from '../interfaces';
+} from '../interfaces/floor-query-params.interface';
 import { Prisma } from '@prisma/client';
 
 @Injectable()

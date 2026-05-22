@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { TaxRepository } from '../repositories';
-import { TaxConfig } from '../entities';
-import { TaxUpdateRequestDto } from '../dto';
-import { TaxNotFoundException } from '../exceptions';
+import { TaxRepository } from '../repositories/tax-repository.abstract';
+import { TaxConfig } from '../entities/tax-config';
+import { TaxUpdateRequestDto } from '../dto/tax-requests.dto';
+import { TaxNotFoundException } from '../exceptions/tax-not-found.exception';
 
 @Injectable()
 export class UpdateTaxService {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CategoryRepository } from '../../shared';
-import { CategoryNotFoundException } from '../../shared';
+import { CategoryRepository } from '../../shared/repositories/category-repository.abstract';
+import { CategoryNotFoundException } from '../../shared/exceptions/category-not-found.exception';
 
 @Injectable()
 export class DeleteCategoryService {

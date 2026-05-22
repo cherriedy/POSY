@@ -1,19 +1,20 @@
 import {
   BadRequestException,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 import { UnitController } from './unit.controller';
-import { CreateUnitService } from './create-unit';
-import { GetUnitsService } from './get-units';
-import { UpdateUnitService } from './update-unit';
-import { DeleteUnitService } from './delete-unit';
-import { DuplicateEntryException } from '../../common/exceptions';
-import { UnitNotFoundException } from './exceptions';
-import { UnitCreateRequestDto } from './dto';
+import { CreateUnitService } from './create-unit/create-unit.service';
+import { GetUnitsService } from './get-units/get-units.service';
+import { UpdateUnitService } from './update-unit/update-unit.service';
+import { DeleteUnitService } from './delete-unit/delete-unit.service';
+import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
+import { UnitNotFoundException } from './exceptions/unit-not-found.exception';
+import { UnitCreateRequestDto } from './dto/unit-create-request.dto';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -137,13 +138,13 @@ describe('UnitController', () => {
       expect(result).toBeDefined();
     });
 
-    it('should throw BadRequestException when unit not found', async () => {
+    it('should throw NotFoundException when unit not found', async () => {
       mockGetUnitsService.getById.mockRejectedValue(
         new UnitNotFoundException(unitId),
       );
 
       await expect(controller.getById(unitId)).rejects.toThrow(
-        BadRequestException,
+        NotFoundException,
       );
     });
 
@@ -212,13 +213,13 @@ describe('UnitController', () => {
       expect(result).toBeDefined();
     });
 
-    it('should throw BadRequestException when unit not found', async () => {
+    it('should throw NotFoundException when unit not found', async () => {
       mockUpdateUnitService.update.mockRejectedValue(
         new UnitNotFoundException(unitId),
       );
 
       await expect(controller.update(unitId, dto)).rejects.toThrow(
-        BadRequestException,
+        NotFoundException,
       );
     });
 
@@ -256,13 +257,13 @@ describe('UnitController', () => {
       expect(result).toEqual({ message: 'Unit deleted successfully.' });
     });
 
-    it('should throw BadRequestException when unit not found', async () => {
+    it('should throw NotFoundException when unit not found', async () => {
       mockDeleteUnitService.delete.mockRejectedValue(
         new UnitNotFoundException(unitId),
       );
 
       await expect(controller.delete(unitId)).rejects.toThrow(
-        BadRequestException,
+        NotFoundException,
       );
     });
 

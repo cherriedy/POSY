@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { ProductIngredientRepository } from './product-ingredient-repository.abstract';
-import { ProductIngredient, ProductIngredientMapper } from '../entities';
+import { ProductIngredient } from '../entities/product-ingredient.class';
+import { ProductIngredientMapper } from '../entities/product-ingredient.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import {
-  DuplicateEntryException,
-  ForeignKeyViolationException,
-} from '../../../common/exceptions';
-import { ProductIngredientNotFoundException } from '../exceptions';
+import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { ProductIngredientNotFoundException } from '../exceptions/product-ingredient-not-found.exception';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
