@@ -1,4 +1,4 @@
-import { ProductInteractionType } from '../enums';
+import { ProductInteractionType } from '../enums/product-interaction-type.enum';
 
 /**
  * @description Interface representing the payload of a product interaction message.

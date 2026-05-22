@@ -6,17 +6,17 @@ import { execSync } from 'child_process';
 import { PrismaService } from '../../src/providers/prisma/prisma.service';
 import { applyValidationPipe } from '../integration/shared/core';
 import { AppModule } from '../../src/app.module';
-import { ProductRepository } from '../../src/models/products';
-import { Product } from '../../src/models/products';
-import { TableRepository } from '../../src/models/tables/repositories';
-import { FloorRepository } from '../../src/models/floors/repositories';
-import { ZoneRepository } from '../../src/models/zones/repositories';
-import { Floor } from '../../src/models/floors/types';
-import { Zone } from '../../src/models/zones/types';
-import { Table } from '../../src/models/tables/types';
-import { TableStatus } from '../../src/models/tables/enums';
-import { CategoryRepository } from '../../src/models/categories/shared/repositories';
-import { Category } from '../../src/models/categories/shared/entities';
+import { ProductRepository } from '../../src/models/products/repositories/product-repository.abstract';
+import { Product } from '../../src/models/products/entities/product.class';
+import { TableRepository } from '../../src/models/tables/repositories/table.repository-abstract';
+import { FloorRepository } from '../../src/models/floors/repositories/floor.repository-abstract';
+import { ZoneRepository } from '../../src/models/zones/repositories/zone.repository-abstract';
+import { Floor } from '../../src/models/floors/types/floor.class';
+import { Zone } from '../../src/models/zones/types/zone.class';
+import { Table } from '../../src/models/tables/types/table.class';
+import { TableStatus } from '../../src/models/tables/enums/table-status.enum';
+import { CategoryRepository } from '../../src/models/categories/shared/repositories/category-repository.abstract';
+import { Category } from '../../src/models/categories/shared/entities/category';
 
 describe('GuestOrder (e2e)', () => {
   let app: INestApplication;
@@ -149,6 +149,8 @@ describe('GuestOrder (e2e)', () => {
           null,
           zone.id,
           'Table 1',
+          '',
+          null,
           4,
           TableStatus.AVAILABLE,
           null,
