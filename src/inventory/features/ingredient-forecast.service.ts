@@ -3,7 +3,7 @@ import { IngredientNotFoundException } from '../../models/ingredients/shared/exc
 import { IngredientRepository } from '../../models/ingredients/shared/repositories/ingredient-repository.abstract';
 import { IngredientUsageRepository } from '../../models/ingredients/shared/repositories/ingredient-usage-repository.abstract';
 import { IngredientForecastRepository } from '../shared/repositories/ingredient-forecast-repository.abstract';
-import { IngredientOverview } from '../shared/entities';
+import { IngredientOverview } from '../shared/entities/ingredient-overview';
 import { HttpService } from '@nestjs/axios';
 import { PythonConfigService } from '../../config/python/config.service';
 import { Cron, CronExpression } from '@nestjs/schedule';

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { EmailAttachment, EmailSender } from './interfaces';
+import { EmailAttachment, EmailSender } from './interfaces/email-sender.interface';
 import { MailerSendConfigService } from '../config/mailersend/config.service';
 import {
   Attachment,

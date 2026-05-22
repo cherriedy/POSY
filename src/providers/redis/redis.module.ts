@@ -1,6 +1,6 @@
 import { LoggerService, Module } from '@nestjs/common';
 import { RedisConfigService } from '../../config/redis/config.service';
-import { RedisConfigModule } from '../../config';
+import { RedisConfigModule } from '../../config/redis/config.module';
 import Redis from 'ioredis';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { REDIS_INSTANCE_PROVIDER } from './redis.constant';

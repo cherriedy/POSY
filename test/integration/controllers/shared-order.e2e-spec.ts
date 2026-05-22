@@ -24,18 +24,13 @@ import {
   mockTableSessionRepository,
   mockPricingSnapshotRepository,
 } from '../shared/repositories';
-import { UnitOfWork } from '../../../src/common/unit-of-works';
-import {
-  OrderRepository,
-  OrderItemRepository,
-  PricingSnapshotRepository,
-} from '../../../src/models/orders/shared/repositories';
-import { OrderModule } from '../../../src/models/orders';
-import { SessionOrJwtGuard } from '../../../src/common/guards';
-import {
-  EntityTaxConfigRepository,
-  TaxRepository,
-} from '../../../src/models/taxes';
+import { UnitOfWork } from '../../../src/common/unit-of-works/unit-of-work.abstract';
+import { OrderRepository } from '../../../src/models/orders/shared/repositories/order-repository.abstract';
+import { OrderItemRepository } from '../../../src/models/orders/shared/repositories/order-item-repository.abstract';
+import { PricingSnapshotRepository } from '../../../src/models/orders/shared/repositories/pricing-snapshot-repository.abstract';
+import { OrderModule } from '../../../src/models/orders/order.module';
+import { EntityTaxConfigRepository } from '../../../src/models/taxes/repositories/entity-tax-config-repository.abstract';
+import { TaxRepository } from '../../../src/models/taxes/repositories/tax-repository.abstract';
 
 describe('SharedOrderController (e2e)', () => {
   let app: INestApplication;
@@ -66,8 +61,6 @@ describe('SharedOrderController (e2e)', () => {
       .overrideGuard(AuthGuard('jwt'))
       .useValue(passThroughGuard)
       .overrideGuard(RoleGuard)
-      .useValue(passThroughGuard)
-      .overrideGuard(SessionOrJwtGuard)
       .useValue(passThroughGuard)
       .compile();
 

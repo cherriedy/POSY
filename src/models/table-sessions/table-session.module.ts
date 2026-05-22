@@ -1,6 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { AppConfigModule, JwtConfigModule } from '../../config';
+import { AppConfigModule } from '../../config/app/config.module';
+import { JwtConfigModule } from '../../config/jwt/config.module';
 import { PrismaModule } from '../../providers/prisma/prisma.module';
 import { EndSessionModule } from './features/end-session/end-session.module';
 import { TableSessionGuard } from './shared/guards/table-session.guard';

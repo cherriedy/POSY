@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ProductInteractionService } from './features/product-interaction.service';
-import { RedisModule } from '../providers/redis';
+import { RedisModule } from '../providers/redis/redis.module';
 import { SpiRepositoryModule } from './shared/repositories/spi-repository.module';
 
 @Module({

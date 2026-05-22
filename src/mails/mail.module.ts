@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MailerSendService } from './mailersend.service';
-import { AppConfigModule, MailerSendConfigModule } from '../config';
+import { AppConfigModule } from '../config/app/config.module';
+import { MailerSendConfigModule } from '../config/mailersend/config.module';
 import { HandlebarsService } from './handlebars.service';
 
 @Module({
