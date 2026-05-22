@@ -3,7 +3,7 @@ import { ImageController } from './image.controller';
 import { ImageRepository } from './repositories/image.repository-abstract';
 import { ImageRepositoryImpl } from './repositories/image.repository-implementation';
 import { ImageService } from './image.service';
-import { AppConfigModule } from '../../config';
+import { AppConfigModule } from '../../config/app/config.module';
 import { ImageUrlTransformInterceptor } from './interceptors/image-url-transform.interceptor';
 
 @Global()

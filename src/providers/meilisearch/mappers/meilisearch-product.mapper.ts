@@ -1,5 +1,5 @@
 import { Product } from '../../../models/products/entities/product.class';
-import { MeiliSearchProduct } from '../types';
+import { MeiliSearchProduct } from '../types/meilisearch-product';
 
 /**
  * Mapper to convert Product domain entity to MeiliSearchProduct document.

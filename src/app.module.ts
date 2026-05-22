@@ -5,15 +5,13 @@ import { CuisineModule } from './models/cuisines/cuisine.module';
 import { AuthModule } from './authentication/auth.module';
 import { UserModule } from './models/users/user.module';
 import { MailModule } from './mails/mail.module';
-import {
-  AppConfigModule,
-  DatabaseConfigModule,
-  JwtConfigModule,
-  MailerSendConfigModule,
-  MeilisearchConfigModule,
-  MomoConfigModule,
-  RedisConfigModule,
-} from './config';
+import { AppConfigModule } from './config/app/config.module';
+import { DatabaseConfigModule } from './config/database/config.module';
+import { JwtConfigModule } from './config/jwt/config.module';
+import { MailerSendConfigModule } from './config/mailersend/config.module';
+import { MeilisearchConfigModule } from './config/meilisearch/config.module';
+import { MomoConfigModule } from './config/momo/config.module';
+import { RedisConfigModule } from './config/redis/config.module';
 import { LoggerModule } from './logger/logger.module';
 import { DeviceContextMiddleware } from './common/middleware/device-context.middleware';
 import { AuthorizationModule } from './authorization/authorization.module';
@@ -33,7 +31,7 @@ import { FloorModule } from './models/floors/floor.module';
 import { ZoneModule } from './models/zones/zone.module';
 import { TableSessionModule } from './models/table-sessions/table-session.module';
 import { UserTrackingModule } from './user-tracking/user-tracking.module';
-import { RedisModule } from './providers/redis';
+import { RedisModule } from './providers/redis/redis.module';
 import { VendorModule } from './models/vendors/vendor.module';
 import { UnitModule } from './models/units/unit.module';
 import { IngredientModule } from './models/ingredients/ingredient.module';

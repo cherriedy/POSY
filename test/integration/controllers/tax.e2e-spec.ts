@@ -9,12 +9,12 @@ import {
 import request from 'supertest';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../../src/authorization/guards/role.guard';
-import { TaxModule } from '../../../src/models/taxes';
+import { TaxModule } from '../../../src/models/taxes/tax.module';
 import { PrismaService } from '../../../src/providers/prisma/prisma.service';
 import { PrismaModule } from '../../../src/providers/prisma/prisma.module';
-import { ZoneRepository } from '../../../src/models/zones/repositories';
-import { ProductRepository } from '../../../src/models/products';
-import { CategoryRepository } from '../../../src/models/categories/shared/repositories';
+import { ZoneRepository } from '../../../src/models/zones/repositories/zone.repository-abstract';
+import { ProductRepository } from '../../../src/models/products/repositories/product-repository.abstract';
+import { CategoryRepository } from '../../../src/models/categories/shared/repositories/category-repository.abstract';
 import {
   passThroughGuard,
   createPrismaError,

@@ -4,10 +4,10 @@ import { INestApplication, Global, Module } from '@nestjs/common';
 import request from 'supertest';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../../src/authorization/guards/role.guard';
-import { TableSessionModule } from '../../../src/models/table-sessions';
+import { TableSessionModule } from '../../../src/models/table-sessions/table-session.module';
 import { PrismaService } from '../../../src/providers/prisma/prisma.service';
 import { PrismaModule } from '../../../src/providers/prisma/prisma.module';
-import { TableRepository } from '../../../src/models/tables/repositories';
+import { TableRepository } from '../../../src/models/tables/repositories/table.repository-abstract';
 import {
   passThroughGuard,
   GlobalMockModule,
