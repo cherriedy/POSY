@@ -8,7 +8,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 import { Page } from '../../../common/interfaces/page.interface';
-import { paginationConfig } from '../../../common/config/pagination.config';
+import { paginationConfig } from '../../../common/constants/pagination.config';
 import { UserOrderBy, UserQueryFilter, UserQueryParams } from '../interfaces/user-query-params.interface';
 import { Prisma } from '@prisma/client';
 import { Role } from '../../../common/enums/role.enum';

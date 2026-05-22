@@ -8,7 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { TaxNotFoundException } from '../exceptions/tax-not-found.exception';
 import { TaxOrderBy, TaxQueryFilters, TaxQueryParams } from '../interfaces/tax-query-params';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
-import { paginationConfig } from '../../../common/config/pagination.config';
+import { paginationConfig } from '../../../common/constants/pagination.config';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { Page } from '../../../common/interfaces/page.interface';
 import { TaxType } from '../enums/tax-type.enum';

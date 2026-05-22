@@ -8,7 +8,7 @@ import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEnt
 import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
 import { UnitNotFoundException } from '../exceptions/unit-not-found.exception';
 import { Page } from '../../../common/interfaces/page.interface';
-import { paginationConfig } from '../../../common/config/pagination.config';
+import { paginationConfig } from '../../../common/constants/pagination.config';
 import { UnitOrderBy, UnitQueryFilter, UnitQueryParams } from '../interfaces/unit-query-params.inerface';
 import { Prisma } from '@prisma/client';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';

@@ -8,7 +8,7 @@ import { OrderQueryParams } from '../interfaces/order-query-params.interface';
 import { DuplicateEntryException } from '../../../../common/exceptions/DuplicateEntryException';
 import { ForeignKeyViolationException } from '../../../../common/exceptions/ForeignKeyViolationException';
 import { OrderNotFoundException } from '../exceptions/order-not-found.exception';
-import { paginationConfig } from '../../../../common/config/pagination.config';
+import { paginationConfig } from '../../../../common/constants/pagination.config';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 
