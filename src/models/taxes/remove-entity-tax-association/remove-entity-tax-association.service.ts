@@ -5,7 +5,7 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import {
   TaxAssociationBulkDeleteResultItem,
   TaxAssociationBulkRemovePayload,
-} from './remove-entity-tax-association.interface';
+} from '../shared/interfaces/remove-entity-tax-association.interface';
 
 @Injectable()
 export class RemoveEntityTaxAssociationService {

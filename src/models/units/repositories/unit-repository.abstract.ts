@@ -1,7 +1,7 @@
 import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
 import { Page } from '../../../common/interfaces/page.interface';
 import { Unit } from '../entities/unit';
-import { UnitQueryParams } from '../interfaces/unit-query-params.inerface';
+import { UnitQueryParams } from '../interfaces/unit-query-params.interface';
 
 export abstract class UnitRepository implements BaseRepository<Unit> {
   abstract create(entity: Unit): Promise<Unit>;

@@ -2,7 +2,7 @@ import { ProductIngredientBulkUpsertRequestDto } from '../dto/product-ingredient
 import {
   ProductIngredientBulkUpsertItemPayload,
   ProductIngredientBulkUpsertPayload,
-} from '../interfaces/product-payloads';
+} from '../interfaces/product-payloads.interface';
 
 /**
  * Mapper for upserting product ingredients.

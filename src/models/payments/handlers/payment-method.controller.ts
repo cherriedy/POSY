@@ -20,7 +20,7 @@ import { plainToInstance } from 'class-transformer';
 import { RoleGuard } from '../../../authorization/guards/role.guard';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { Role } from '../../../common/enums/role.enum';
-import { createPageResponseSchema } from '../../../common/dto/page-response';
+import { createPageResponseSchema } from '../../../common/dto/page-response.dto';
 import { PaymentMethodsService } from '../features/payment-methods.service';
 import { PaymentMethodQueryParamsDto } from '../shared/dto/payment-method-query-params.dto';
 import { PaymentMethodResponseDto } from '../shared/dto/payment-method-responses.dto';

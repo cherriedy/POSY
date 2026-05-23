@@ -14,7 +14,7 @@ import {
   ProductOrderBy,
   ProductQueryFilter,
   ProductQueryParams,
-} from '../interfaces/product-query-params';
+} from '../interfaces/product-query-params.interface';
 import { Prisma } from '@prisma/client';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 import { MeilisearchProductService } from '../../../providers/meilisearch/meilisearch-product.service';

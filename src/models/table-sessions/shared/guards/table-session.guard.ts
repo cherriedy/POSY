@@ -13,7 +13,7 @@ import { Request } from 'express';
 import { TableSessionRepository } from '../repositories/table-session-repository.abstract';
 import { TableSessionConfig } from '../../table-session.config';
 import { TableSessionStatus } from '../enums/table-session-status.enum';
-import { DeviceFingerprintUtility } from '../utilities/device-fingerprint.utility';
+import { DeviceFingerprintUtility } from '../utilities/device-fingerprint.util';
 import { assertDevice, InvalidDeviceException } from '../../../../common/interfaces/device-context.interface';
 
 class InvalidSessionTokenException extends UnauthorizedException {

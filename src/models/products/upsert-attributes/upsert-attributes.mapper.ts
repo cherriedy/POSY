@@ -1,5 +1,5 @@
 import { ProductAttributeUpsertRequestDto } from '../dto/product-attribute-upsert-request.dto';
-import { ProductAttributesUpsertPayload } from '../interfaces/product-payloads';
+import { ProductAttributesUpsertPayload } from '../interfaces/product-payloads.interface';
 
 /**
  * Mapper for upserting product attributes.

@@ -16,11 +16,11 @@ import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { Role } from '../../common/enums/role.enum';
-import { CreateProductDto } from './dto/product-create-request';
+import { CreateProductDto } from './dto/product-create-request.dto';
 import { ProductDetailedResponseDto } from './dto/product-detailed-response.dto';
 import { ProductPreviewResponseDto } from './dto/product-preview-response.dto';
 import { ProductQueryParamsDto } from './dto/product-query-params.dto';
-import { UpdateProductDto } from './dto/product-update-request';
+import { UpdateProductDto } from './dto/product-update-request.dto';
 import { ProductAttributeUpsertRequestDto } from './dto/product-attribute-upsert-request.dto';
 import { ProductAttributeResponseDto } from './dto/product-attribute-response.dto';
 import { ProductIngredientResponseDto } from './dto/product-ingredient-response.dto';
@@ -32,7 +32,7 @@ import { CreateProductService } from './create-product/create-product.service';
 import { UpdateProductService } from './update-product/update-product.service';
 import { GetProductsService } from './get-products/get-products.service';
 import { DeleteProductService } from './delete-product/delete-product.service';
-import { createPageResponseSchema } from '../../common/dto/page-response';
+import { createPageResponseSchema } from '../../common/dto/page-response.dto';
 import {
   ApiBearerAuth,
   ApiTags,

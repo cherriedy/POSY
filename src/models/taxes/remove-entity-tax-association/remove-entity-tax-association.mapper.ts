@@ -1,5 +1,5 @@
 import { TaxAssociationDeleteRequestDto } from '../dto/tax-association-requests.dto';
-import { TaxAssociationBulkRemovePayload } from './remove-entity-tax-association.interface';
+import { TaxAssociationBulkRemovePayload } from '../shared/interfaces/remove-entity-tax-association.interface';
 
 /**
  * Mapper class to convert a TaxAssociationDeleteRequestDto into a TaxAssociationBulkRemovePayload.

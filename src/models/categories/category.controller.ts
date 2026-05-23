@@ -22,8 +22,8 @@ import { plainToInstance } from 'class-transformer';
 import { CategoryDetailedResponseDto } from './shared/dto/category-detailed-response.dto';
 import { CategoryPreviewResponseDto } from './shared/dto/category-preview-response.dto';
 import { CategoryQueryParamsDto } from './shared/dto/category-query-params.dto';
-import { CreateCategoryDto } from './shared/dto/create-category.dto';
-import { UpdateCategoryDto } from './shared/dto/update-category.dto';
+import { CreateCategoryDto } from './shared/dto/category-create-request.dto';
+import { UpdateCategoryDto } from './shared/dto/category-update-request.dto';
 import { Category } from './shared/entities/category';
 import { Page } from '../../common/interfaces/page.interface';
 import {
@@ -35,7 +35,7 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto/page-response';
+import { createPageResponseSchema } from '../../common/dto/page-response.dto';
 
 @ApiTags('Categories')
 @ApiBearerAuth()

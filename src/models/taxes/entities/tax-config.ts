@@ -2,7 +2,7 @@ import {
   assertFinite,
   assertLarger,
   assertNonNegative,
-} from '../../../common/asserts/number.assert';
+} from '../../../common/utilities/number-assertions.util';
 import { TaxRateType } from '../enums/tax-rate-type.enum';
 import { TaxType } from '../enums/tax-type.enum';
 import { UnsupportedValueException } from '../../../common/exceptions/unsupported-value.exception';

@@ -4,7 +4,7 @@ import { PaymentVerificationResult, PaymentVerificationStatus } from '../interfa
 import { MomoConfigService } from '../../../../config/momo/config.service';
 import * as crypto from 'crypto';
 import axios from 'axios';
-import { PaymentGateway } from './payment-gateway';
+import { PaymentGateway } from './payment-gateway.interface';
 
 @Injectable()
 export class MomoPaymentGateway implements PaymentGateway {

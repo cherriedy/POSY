@@ -36,7 +36,7 @@ import { UpdateVendorService } from './update-vendor/update-vendor.service';
 import { UpdateVendorPayloadMapper } from './update-vendor/update-vendor-payload.mapper';
 import { DeleteVendorService } from './delete-vendor/delete-vendor.service';
 import { Page } from '../../common/interfaces/page.interface';
-import { createPageResponseSchema } from '../../common/dto/page-response';
+import { createPageResponseSchema } from '../../common/dto/page-response.dto';
 
 @ApiTags('Vendors')
 @ApiBearerAuth()

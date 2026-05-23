@@ -1,5 +1,5 @@
 import { TaxAssociationBulkUpsertRequestDto } from '../dto/tax-association-requests.dto';
-import { TaxAssociationBulkUpsertPayload } from './associate-entity-tax.interface';
+import { TaxAssociationBulkUpsertPayload } from '../shared/interfaces/associate-entity-tax.interface';
 
 /**
  * Mapper class to convert between TaxAssociationBulkUpsertRequestDto and TaxAssociationBulkUpsertPayload.

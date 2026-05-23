@@ -15,9 +15,9 @@ import {
 import { CreateUserService } from './create-user/create-user.service';
 import { UpdateUserService } from './update-user/update-user.service';
 import { User } from './types/user';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from './dto/user-create-request.dto';
 import { UpdatePasswordDto } from './dto/update-password-request.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto } from './dto/user-update-request.dto';
 import { UserDetailedResponseDto } from './dto/user-detailed-response.dto';
 import { UserPreviewResponseDto } from './dto/user-preview-response.dto';
 import { UserQueryParamsDto } from './dto/user-query-params.dto';
@@ -43,7 +43,7 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto/page-response';
+import { createPageResponseSchema } from '../../common/dto/page-response.dto';
 
 @ApiTags('Users')
 @ApiBearerAuth()

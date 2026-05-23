@@ -2,7 +2,7 @@ import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { REDIS_INSTANCE_PROVIDER } from '../../providers/redis/redis.constant';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { SessionProductInteractionRepository } from '../shared/repositories/spi-repository.abstract';
+import { SessionProductInteractionRepository } from '../shared/repositories/session-product-interaction-repository.abstract';
 import { SessionProductInteraction } from '../shared/entities/session-product-interaction';
 import { ProductInteractionPayload } from '../shared/interfaces/product-interaction-payload';
 import Redis from 'ioredis';

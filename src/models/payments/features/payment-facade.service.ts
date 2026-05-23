@@ -6,7 +6,7 @@ import { PromotionRedemptionRepository } from '../../promotions/repositories/pro
 import { PaymentStatus } from '../shared/enums/payment-status.enum';
 import { PaymentRepository } from '../shared/repositories/payment-repository.abstract';
 import { OrderRepository } from '../../orders/shared/repositories/order-repository.abstract';
-import { MomoPaymentGateway } from '../shared/providers/momo-payment-gateway';
+import { MomoPaymentGateway } from '../shared/providers/momo-payment-gateway.service';
 import { PricingSnapshotRepository } from 'src/models/orders/shared/repositories/pricing-snapshot-repository.abstract';
 import { StaffOrderGateway } from 'src/models/orders/handlers/staff-order.gateway';
 import { UpdateOrderStatusService } from 'src/models/orders/services/update-order-status.service';

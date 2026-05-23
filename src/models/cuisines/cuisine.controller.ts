@@ -24,7 +24,7 @@ import {
   ApiBody,
   ApiExtraModels,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto/page-response';
+import { createPageResponseSchema } from '../../common/dto/page-response.dto';
 import { CuisineCreateRequestDto } from './dto/cuisine-create-request.dto';
 import { CuisineUpdateRequestDto } from './dto/cuisine-update-request.dto';
 import { CuisineResponseDto } from './dto/cuisine-response.dto';

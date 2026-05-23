@@ -17,7 +17,7 @@ import { PromotionRepository } from '../../promotions/repositories/promotion-rep
 import { PromotionNotFoundError } from '../../promotions/errors/promotion-not-found.error';
 import { PaymentCoreService } from './payment-core.service';
 import { CheckoutRequestDto } from '../shared/dto/checkout.dto';
-import { MomoPaymentGateway } from '../shared/providers/momo-payment-gateway';
+import { MomoPaymentGateway } from '../shared/providers/momo-payment-gateway.service';
 import { UnsupportedValueException } from '../../../common/exceptions/unsupported-value.exception';
 import { UpdateOrderStatusService } from 'src/models/orders/services/update-order-status.service';
 import { Role } from 'src/common/enums/role.enum';

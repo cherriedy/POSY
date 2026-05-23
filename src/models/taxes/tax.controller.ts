@@ -44,7 +44,7 @@ import {
   ApiNotFoundResponse,
   ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto/page-response';
+import { createPageResponseSchema } from '../../common/dto/page-response.dto';
 import { EntityType } from './enums/entity-type.enum';
 
 @ApiTags('Taxes')

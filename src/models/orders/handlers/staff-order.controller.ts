@@ -35,7 +35,7 @@ import { OrderQueryParamsDto } from '../shared/dto/order-query-params.dto';
 import { OrderUpdateRequestDto } from '../shared/dto/order-update-request.dto';
 import { StaffSessionContextService } from '../../table-sessions/features/start-session/staff-session-context.service';
 import { JwtPayload } from '../../../authentication/interfaces/jwt-payload.interface';
-import { createPageResponseSchema } from '../../../common/dto/page-response';
+import { createPageResponseSchema } from '../../../common/dto/page-response.dto';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { Role } from '../../../common/enums/role.enum';
 import {

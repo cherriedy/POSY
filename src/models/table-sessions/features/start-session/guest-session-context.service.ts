@@ -4,7 +4,7 @@ import { TableSessionRepository } from '../../shared/repositories/table-session-
 import { TableSession } from '../../shared/entities/table-session';
 import { TableSessionStatus } from '../../shared/enums/table-session-status.enum';
 import { TableSessionType } from '../../shared/enums/table-session-type.enum';
-import { DeviceFingerprintUtility } from '../../shared/utilities/device-fingerprint.utility';
+import { DeviceFingerprintUtility } from '../../shared/utilities/device-fingerprint.util';
 import { TableSessionPayload } from '../../shared/interfaces/table-session-payload.interface';
 import { UnavailableTableException } from '../../shared/exceptions/unavailable-table.exception';
 import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';

@@ -16,7 +16,7 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import {
   TaxAssociationBulkUpsertPayload,
   TaxAssociationBulkUpsertResultItem,
-} from './associate-entity-tax.interface';
+} from '../shared/interfaces/associate-entity-tax.interface';
 
 @Injectable()
 export class AssociateEntityTaxService {
