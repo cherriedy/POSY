@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 import { VendorController } from './vendor.controller';
@@ -12,15 +6,11 @@ import { CreateVendorService } from './create-vendor/create-vendor.service';
 import { GetVendorsService } from './get-vendors/get-vendors.service';
 import { UpdateVendorService } from './update-vendor/update-vendor.service';
 import { DeleteVendorService } from './delete-vendor/delete-vendor.service';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
+import { DuplicateEntryError } from '../../common/errors/duplicate-entry.error';
 import { VendorNotFoundException } from './exceptions/vendor-not-found.exception';
 import { VendorCreateRequestDto } from './dto/vendor-create-request.dto';
 import { VendorQueryParamsDto } from './dto/vendor-query-params.dto';
 import { VendorStatus } from './enums/vendor-status.enum';
-
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
-const mockLogger = { error: jest.fn(), log: jest.fn(), warn: jest.fn() };
 
 // ─── Guard mock ──────────────────────────────────────────────────────────────
 
@@ -46,7 +36,6 @@ describe('VendorController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [VendorController],
       providers: [
-        { provide: WINSTON_MODULE_NEST_PROVIDER, useValue: mockLogger },
         { provide: CreateVendorService, useValue: mockCreateVendorService },
         { provide: GetVendorsService, useValue: mockGetVendorsService },
         { provide: UpdateVendorService, useValue: mockUpdateVendorService },
@@ -88,14 +77,11 @@ describe('VendorController', () => {
       expect(result.total).toBe(2);
     });
 
-    it('should throw InternalServerErrorException on unexpected error', async () => {
+    it('should throw Error on unexpected error', async () => {
       mockGetVendorsService.getAll.mockRejectedValue(new Error('DB error'));
 
       const query = new VendorQueryParamsDto();
-      await expect(controller.getAll(query)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.getAll(query)).rejects.toThrow(Error);
     });
   });
 
@@ -118,23 +104,20 @@ describe('VendorController', () => {
       expect(result).toBeDefined();
     });
 
-    it('should throw NotFoundException when vendor not found', async () => {
+    it('should throw VendorNotFoundException when vendor not found', async () => {
       mockGetVendorsService.getById.mockRejectedValue(
         new VendorNotFoundException(vendorId),
       );
 
       await expect(controller.getById(vendorId)).rejects.toThrow(
-        NotFoundException,
+        VendorNotFoundException,
       );
     });
 
-    it('should throw InternalServerErrorException on unexpected error', async () => {
+    it('should throw Error on unexpected error', async () => {
       mockGetVendorsService.getById.mockRejectedValue(new Error('unexpected'));
 
-      await expect(controller.getById(vendorId)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.getById(vendorId)).rejects.toThrow(Error);
     });
   });
 
@@ -177,21 +160,18 @@ describe('VendorController', () => {
       expect(result).toBeDefined();
     });
 
-    it('should throw BadRequestException on DuplicateEntryException', async () => {
+    it('should throw DuplicateEntryError on DuplicateEntryError', async () => {
       mockCreateVendorService.create.mockRejectedValue(
-        new DuplicateEntryException('Vendor already exists'),
+        new DuplicateEntryError('Vendor already exists'),
       );
 
-      await expect(controller.create(dto)).rejects.toThrow(BadRequestException);
+      await expect(controller.create(dto)).rejects.toThrow(DuplicateEntryError);
     });
 
-    it('should throw InternalServerErrorException on unexpected error', async () => {
+    it('should throw Error on unexpected error', async () => {
       mockCreateVendorService.create.mockRejectedValue(new Error('unexpected'));
 
-      await expect(controller.create(dto)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.create(dto)).rejects.toThrow(Error);
     });
   });
 
@@ -237,33 +217,30 @@ describe('VendorController', () => {
       expect(result).toBeDefined();
     });
 
-    it('should throw NotFoundException when vendor not found', async () => {
+    it('should throw VendorNotFoundException when vendor not found', async () => {
       mockUpdateVendorService.update.mockRejectedValue(
         new VendorNotFoundException(vendorId),
       );
 
       await expect(controller.update(vendorId, dto)).rejects.toThrow(
-        NotFoundException,
+        VendorNotFoundException,
       );
     });
 
-    it('should throw BadRequestException on DuplicateEntryException', async () => {
+    it('should throw DuplicateEntryError on DuplicateEntryError', async () => {
       mockUpdateVendorService.update.mockRejectedValue(
-        new DuplicateEntryException('duplicate'),
+        new DuplicateEntryError('duplicate'),
       );
 
       await expect(controller.update(vendorId, dto)).rejects.toThrow(
-        BadRequestException,
+        DuplicateEntryError,
       );
     });
 
-    it('should throw InternalServerErrorException on unexpected error', async () => {
+    it('should throw Error on unexpected error', async () => {
       mockUpdateVendorService.update.mockRejectedValue(new Error('unexpected'));
 
-      await expect(controller.update(vendorId, dto)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.update(vendorId, dto)).rejects.toThrow(Error);
     });
   });
 
@@ -281,23 +258,20 @@ describe('VendorController', () => {
       expect(result).toEqual({ message: 'Vendor deleted successfully.' });
     });
 
-    it('should throw NotFoundException when vendor not found', async () => {
+    it('should throw VendorNotFoundException when vendor not found', async () => {
       mockDeleteVendorService.delete.mockRejectedValue(
         new VendorNotFoundException(vendorId),
       );
 
       await expect(controller.delete(vendorId)).rejects.toThrow(
-        NotFoundException,
+        VendorNotFoundException,
       );
     });
 
-    it('should throw InternalServerErrorException on unexpected error', async () => {
+    it('should throw Error on unexpected error', async () => {
       mockDeleteVendorService.delete.mockRejectedValue(new Error('unexpected'));
 
-      await expect(controller.delete(vendorId)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.delete(vendorId)).rejects.toThrow(Error);
     });
   });
 });

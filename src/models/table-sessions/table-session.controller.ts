@@ -7,8 +7,6 @@ import {
   HttpStatus,
   Req,
   BadRequestException,
-  Inject,
-  Logger,
   Get,
   Query,
 } from '@nestjs/common';
@@ -24,15 +22,11 @@ import { EndSessionService } from './features/end-session/end-session.service';
 import { StartSessionRequestDto } from './shared/dto/start-session-request.dto';
 import { TableSessionResponseDto } from './shared/dto/table-session-response.dto';
 import { TableSessionConfig } from './table-session.config';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { assertDevice, InvalidDeviceException } from '../../common/interfaces/device-context.interface';
+import { assertDevice } from '../../common/interfaces/device-context.interface';
 
 @ApiTags('Sessions')
 @Controller('session')
 export class TableSessionController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: Logger;
-
   constructor(
     private readonly guestSessionContextService: GuestSessionContextService,
     private readonly endSessionService: EndSessionService,
@@ -57,13 +51,7 @@ export class TableSessionController {
     }
 
     const userAgent = req['device'] as string;
-    try {
-      assertDevice(userAgent);
-    } catch (e) {
-      if (e instanceof InvalidDeviceException) {
-        throw new BadRequestException(e.message);
-      }
-    }
+    assertDevice(userAgent);
 
     const session = await this.guestSessionContextService.execute(
       userAgent,
@@ -143,13 +131,7 @@ export class TableSessionController {
     }
 
     const userAgent = req['device'] as string;
-    try {
-      assertDevice(userAgent);
-    } catch (e) {
-      if (e instanceof InvalidDeviceException) {
-        throw new BadRequestException(e.message);
-      }
-    }
+    assertDevice(userAgent);
 
     const result = await this.guestSessionContextService.execute(
       userAgent,

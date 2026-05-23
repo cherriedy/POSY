@@ -1,18 +1,13 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
-  Inject,
-  InternalServerErrorException,
-  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
   Put,
   Query,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CreatePromotionService } from './create-promotion/create-promotion.service';
@@ -27,22 +22,11 @@ import { PromotionPreviewResponseDto } from './dto/promotion-preview-response.dt
 import { PromotionQueryParamsDto } from './dto/promotion-query-params.dto';
 import { PromotionUpdateDto } from './dto/promotion-update-request.dto';
 import { Promotion } from './types/promotion.class';
-import { PromotionCategory } from './types/promotion-category.class';
-import { PromotionProduct } from './types/promotion-product.class';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
-import { RelatedRecordNotFoundException } from '../../common/exceptions/RelatedRecordNotFoundException';
 import { plainToInstance } from 'class-transformer';
 import { UpdatePromotionService } from './update-promotion/update-promotion.service';
-import { PromotionNotFoundException } from './exceptions/PromotionNotFoundException';
 import { GetPromotionsService } from './get-promotions/get-promotions.service';
 import { DeletePromotionService } from './delete-promotion/delete-promotion.service';
 import { ValidatePromotionService } from './validate-promotion/validate-promotion.service';
-import { PromotionUnusableException } from './exceptions/PromotionUnusableException';
-import {
-  CategoriesNotFoundException,
-  CategoryNotFoundException,
-} from '../categories/shared/exceptions/category-not-found.exception';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -53,7 +37,6 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { PromotionProductPreviewResponseDto } from './dto/promotion-product-response.dto';
-import { ProductNotFoundException, ProductsNotFoundException } from '../products/exceptions/product-not-found.exception';
 import { createPageResponseSchema } from '../../common/dto/page-response';
 import { ReplacePromotionProductService } from './replace-products/replace-products.service';
 import { ReplacePromotionCategoriesService } from './replace-categories/replace-categories.service';
@@ -69,9 +52,6 @@ import {
 @ApiBearerAuth()
 @Controller('promotions')
 export class PromotionController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: import('winston').Logger;
-
   constructor(
     private readonly getPromotionsService: GetPromotionsService,
     private readonly createPromotionService: CreatePromotionService,
@@ -88,8 +68,8 @@ export class PromotionController {
   @Roles(Role.ADMIN, Role.MANAGER)
   @ApiOperation({
     summary: 'Get all promotion categories',
-    description: `Returns a list of all promotion categories in the system. 
-    Accessible only by ADMIN and MANAGER roles. 
+    description: `Returns a list of all promotion categories in the system.
+    Accessible only by ADMIN and MANAGER roles.
     Used for management and assignment of promotions to categories.`,
   })
   @ApiResponse({
@@ -98,23 +78,16 @@ export class PromotionController {
     type: [PromotionCategoryPreviewResponseDto],
   })
   async getPromotionCategories() {
-    try {
-      const promotionCategories =
-        await this.getPromotionsService.getPromotionCategories();
-      return plainToInstance(
-        PromotionCategoryPreviewResponseDto,
-        promotionCategories,
-        {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        },
-      );
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const promotionCategories =
+      await this.getPromotionsService.getPromotionCategories();
+    return plainToInstance(
+      PromotionCategoryPreviewResponseDto,
+      promotionCategories,
+      {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      },
+    );
   }
 
   @Get(':id/categories')
@@ -132,26 +105,15 @@ export class PromotionController {
   async getPromotionCategoriesById(
     @Param('id', new ParseUUIDPipe()) promotionId: string,
   ) {
-    try {
-      const result =
-        await this.getPromotionsService.getPromotionCategoriesByPromotionId(
-          promotionId,
-        );
-
-      return plainToInstance(PromotionCategoryPreviewResponseDto, result, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-    } catch (e) {
-      if (e instanceof PromotionNotFoundException) {
-        throw new NotFoundException({ message: e.message });
-      }
-
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
+    const result =
+      await this.getPromotionsService.getPromotionCategoriesByPromotionId(
+        promotionId,
       );
-    }
+
+    return plainToInstance(PromotionCategoryPreviewResponseDto, result, {
+      excludeExtraneousValues: true,
+      enableImplicitConversion: true,
+    });
   }
 
   @Put(':id/categories')
@@ -166,36 +128,16 @@ export class PromotionController {
     @Param('id', new ParseUUIDPipe()) promotionId: string,
     @Body() dto: BulkReplacePromotionCategoryDto,
   ) {
-    try {
-      const result =
-        await this.replacePromotionCategoriesService.replacePromotionCategories(
-          promotionId,
-          dto.categoryIds,
-        );
-
-      return plainToInstance(PromotionCategoryPreviewResponseDto, result, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-    } catch (e) {
-      if (
-        e instanceof PromotionNotFoundException ||
-        e instanceof CategoriesNotFoundException ||
-        e instanceof DuplicateEntryException ||
-        e instanceof PromotionUnusableException
-      ) {
-        const response: any = { message: e.message };
-        if ((e as any).meta) {
-          response.meta = (e as any).meta;
-        }
-        throw new BadRequestException(response);
-      }
-
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
+    const result =
+      await this.replacePromotionCategoriesService.replacePromotionCategories(
+        promotionId,
+        dto.categoryIds,
       );
-    }
+
+    return plainToInstance(PromotionCategoryPreviewResponseDto, result, {
+      excludeExtraneousValues: true,
+      enableImplicitConversion: true,
+    });
   }
 
   @Get('products')
@@ -203,7 +145,7 @@ export class PromotionController {
   @Roles(Role.ADMIN, Role.MANAGER)
   @ApiOperation({
     summary: 'Get all promotion products',
-    description: `Returns a list of all products that have promotions assigned. 
+    description: `Returns a list of all products that have promotions assigned.
     Accessible only by ADMIN and MANAGER roles. Useful for managing product-level promotions.`,
   })
   @ApiResponse({
@@ -212,23 +154,16 @@ export class PromotionController {
     type: [PromotionProductPreviewResponseDto],
   })
   async getPromotionProducts() {
-    try {
-      const promotionProducts =
-        await this.getPromotionsService.getPromotionProducts();
-      return plainToInstance(
-        PromotionProductPreviewResponseDto,
-        promotionProducts,
-        {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        },
-      );
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const promotionProducts =
+      await this.getPromotionsService.getPromotionProducts();
+    return plainToInstance(
+      PromotionProductPreviewResponseDto,
+      promotionProducts,
+      {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      },
+    );
   }
 
   // @Get('applicable/:productId')
@@ -275,26 +210,15 @@ export class PromotionController {
   async getPromotionProductsById(
     @Param('id', new ParseUUIDPipe()) promotionId: string,
   ) {
-    try {
-      const result =
-        await this.getPromotionsService.getPromotionProductsByPromotionId(
-          promotionId,
-        );
-
-      return plainToInstance(PromotionProductPreviewResponseDto, result, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-    } catch (e) {
-      if (e instanceof PromotionNotFoundException) {
-        throw new NotFoundException({ message: e.message });
-      }
-
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
+    const result =
+      await this.getPromotionsService.getPromotionProductsByPromotionId(
+        promotionId,
       );
-    }
+
+    return plainToInstance(PromotionProductPreviewResponseDto, result, {
+      excludeExtraneousValues: true,
+      enableImplicitConversion: true,
+    });
   }
 
   @Put(':id/products')
@@ -314,39 +238,16 @@ export class PromotionController {
     @Param('id', new ParseUUIDPipe()) promotionId: string,
     @Body() dto: BulkReplacePromotionProductDto,
   ) {
-    try {
-      const result =
-        await this.replacePromotionProductsService.replacePromotionProducts(
-          promotionId,
-          dto.productIds,
-        );
-
-      return plainToInstance(PromotionProductPreviewResponseDto, result, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-    } catch (e) {
-      if (e instanceof PromotionNotFoundException) {
-        const response: any = { message: e.message };
-        throw new NotFoundException(response);
-      } else if (
-        e instanceof ProductsNotFoundException ||
-        e instanceof PromotionNotFoundException ||
-        e instanceof DuplicateEntryException ||
-        e instanceof PromotionUnusableException
-      ) {
-        const response: any = { message: e.message };
-        if ((e as any).meta) {
-          response.meta = (e as any).meta;
-        }
-        throw new BadRequestException(response);
-      }
-
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
+    const result =
+      await this.replacePromotionProductsService.replacePromotionProducts(
+        promotionId,
+        dto.productIds,
       );
-    }
+
+    return plainToInstance(PromotionProductPreviewResponseDto, result, {
+      excludeExtraneousValues: true,
+      enableImplicitConversion: true,
+    });
   }
 
   // @Get('/products/:id')
@@ -377,7 +278,7 @@ export class PromotionController {
   //       },
   //     );
   //   } catch (e) {
-  //     if (e instanceof PromotionProductNotFoundException) {
+  //     if (e instanceof PromotionProductNotFoundError) {
   //       throw new BadRequestException(e.message);
   //     }
   //     this.logger.error(e);
@@ -404,7 +305,7 @@ export class PromotionController {
   //     await this.deletePromotionService.deletePromotionProduct(id);
   //     return { message: 'Promotion product deleted successfully.' };
   //   } catch (e) {
-  //     if (e instanceof PromotionProductNotFoundException) {
+  //     if (e instanceof PromotionProductNotFoundError) {
   //       throw new BadRequestException(e.message);
   //     }
   //     this.logger.error(e);
@@ -418,7 +319,7 @@ export class PromotionController {
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
     summary: 'Get promotion by code',
-    description: `Fetches detailed information for a specific promotion by its unique code. 
+    description: `Fetches detailed information for a specific promotion by its unique code.
     Accessible by all authenticated users. Returns 400 if the promotion is not found.`,
   })
   @ApiParam({ name: 'code', type: String })
@@ -429,29 +330,19 @@ export class PromotionController {
   })
   @ApiResponse({ status: 400, description: 'Promotion not found' })
   async getByCode(@Param('code') code: string) {
-    try {
-      const promotion = await this.getPromotionsService.getByCode(code);
-      return plainToInstance(PromotionDetailedResponseDto, promotion, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof PromotionNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const promotion = await this.getPromotionsService.getByCode(code);
+    return plainToInstance(PromotionDetailedResponseDto, promotion, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
     summary: 'Get all promotions',
-    description: `Returns a paginated list of all promotions. 
-    Accessible by all authenticated users. 
-    Supports filtering by query parameters such as status, type, applicability, etc. 
+    description: `Returns a paginated list of all promotions.
+    Accessible by all authenticated users.
+    Supports filtering by query parameters such as status, type, applicability, etc.
     Used for listing and searching promotions.`,
   })
   @ApiQuery({ name: 'query', required: false, type: PromotionQueryParamsDto })
@@ -461,31 +352,24 @@ export class PromotionController {
     schema: createPageResponseSchema(PromotionPreviewResponseDto),
   })
   async getAll(@Query() query: PromotionQueryParamsDto) {
-    try {
-      const promotions = await this.getPromotionsService.getAll(
-        query.toQueryParams(),
-      );
-      const items = plainToInstance(
-        PromotionPreviewResponseDto,
-        promotions.items,
-        {
-          excludeExtraneousValues: true,
-        },
-      );
-      return { ...promotions, items };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const promotions = await this.getPromotionsService.getAll(
+      query.toQueryParams(),
+    );
+    const items = plainToInstance(
+      PromotionPreviewResponseDto,
+      promotions.items,
+      {
+        excludeExtraneousValues: true,
+      },
+    );
+    return { ...promotions, items };
   }
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
     summary: 'Get promotion by ID',
-    description: `Fetches detailed information for a specific promotion by its unique ID. 
+    description: `Fetches detailed information for a specific promotion by its unique ID.
     Accessible by all authenticated users. Returns 400 if the promotion is not found.`,
   })
   @ApiParam({ name: 'id', type: String })
@@ -496,20 +380,10 @@ export class PromotionController {
   })
   @ApiResponse({ status: 400, description: 'Promotion not found' })
   async getById(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      const promotion = await this.getPromotionsService.getById(id);
-      return plainToInstance(PromotionDetailedResponseDto, promotion, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof PromotionNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const promotion = await this.getPromotionsService.getById(id);
+    return plainToInstance(PromotionDetailedResponseDto, promotion, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Post()
@@ -517,8 +391,8 @@ export class PromotionController {
   @Roles(Role.ADMIN, Role.MANAGER)
   @ApiOperation({
     summary: 'Create a new promotion',
-    description: `Creates a new promotion with the provided details. 
-    Only accessible by ADMIN and MANAGER roles. Returns the created promotion preview. 
+    description: `Creates a new promotion with the provided details.
+    Only accessible by ADMIN and MANAGER roles. Returns the created promotion preview.
     Throws 400 for duplicate entries.`,
   })
   @ApiBody({ type: CreatePromotionDto })
@@ -529,22 +403,12 @@ export class PromotionController {
   })
   @ApiResponse({ status: 400, description: 'Duplicate entry' })
   async create(@Body() dto: CreatePromotionDto) {
-    try {
-      const promotion = await this.createPromotionService.create(
-        dto as unknown as Promotion,
-      );
-      return plainToInstance(PromotionPreviewResponseDto, promotion, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const promotion = await this.createPromotionService.create(
+      dto as unknown as Promotion,
+    );
+    return plainToInstance(PromotionPreviewResponseDto, promotion, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Put(':id')
@@ -552,9 +416,9 @@ export class PromotionController {
   @Roles(Role.ADMIN, Role.MANAGER)
   @ApiOperation({
     summary: 'Update a promotion',
-    description: `Updates an existing promotion by its ID. 
-    Only accessible by ADMIN and MANAGER roles. 
-    Returns the updated promotion preview. 
+    description: `Updates an existing promotion by its ID.
+    Only accessible by ADMIN and MANAGER roles.
+    Returns the updated promotion preview.
     Throws 400 for not found or duplicate entries.`,
   })
   @ApiParam({ name: 'id', type: String })
@@ -572,22 +436,10 @@ export class PromotionController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: PromotionUpdateDto,
   ) {
-    try {
-      const promotion = await this.updatePromotionService.update(id, dto);
-      return plainToInstance(PromotionPreviewResponseDto, promotion, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof PromotionNotFoundException) {
-        throw new BadRequestException(e.message);
-      } else if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const promotion = await this.updatePromotionService.update(id, dto);
+    return plainToInstance(PromotionPreviewResponseDto, promotion, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Delete(':id')
@@ -595,26 +447,16 @@ export class PromotionController {
   @Roles(Role.ADMIN, Role.MANAGER)
   @ApiOperation({
     summary: 'Delete a promotion',
-    description: `Deletes a promotion by its ID. 
-    Only accessible by ADMIN and MANAGER roles. 
+    description: `Deletes a promotion by its ID.
+    Only accessible by ADMIN and MANAGER roles.
     Returns a success message. Throws 400 if the promotion is not found.`,
   })
   @ApiParam({ name: 'id', type: String })
   @ApiResponse({ status: 200, description: 'Promotion deleted' })
   @ApiResponse({ status: 400, description: 'Promotion not found' })
   async delete(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      await this.deletePromotionService.delete(id);
-      return { message: 'Promotion deleted successfully.' };
-    } catch (e) {
-      if (e instanceof PromotionNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.deletePromotionService.delete(id);
+    return { message: 'Promotion deleted successfully.' };
   }
 
   // @Post('validate')
@@ -689,7 +531,7 @@ export class PromotionController {
   @Get('available/:orderId')
   @ApiOperation({
     summary: 'Get available promotions',
-    description: ` Returns all active promotions and evaluates their eligibility based on the given order data. 
+    description: ` Returns all active promotions and evaluates their eligibility based on the given order data.
     Includes both eligible and ineligible promotions. Each promotion contains: isEligible flag, ineligibleReasons list
 `,
   })
@@ -703,26 +545,16 @@ export class PromotionController {
     description: 'Internal server error',
   })
   async getAvailable(@Param('orderId') orderId: string) {
-    try {
-      const promotions =
-        await this.getAvailablePromotionsService.execute(orderId);
+    const promotions =
+      await this.getAvailablePromotionsService.execute(orderId);
 
-      const items = plainToInstance(PromotionAvailableResponseDto, promotions, {
-        excludeExtraneousValues: true,
-      });
+    const items = plainToInstance(PromotionAvailableResponseDto, promotions, {
+      excludeExtraneousValues: true,
+    });
 
-      return {
-        items,
-        total: items.length,
-      };
-    } catch (e) {
-      if (e instanceof ProductNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'Error fetching available promotions',
-      );
-    }
+    return {
+      items,
+      total: items.length,
+    };
   }
 }

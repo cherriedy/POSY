@@ -1,14 +1,7 @@
 import {
-  BadRequestException,
   Body,
-  ConflictException,
   Controller,
-  ForbiddenException,
   Get,
-  Inject,
-  InternalServerErrorException,
-  LoggerService,
-  NotFoundException,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -35,13 +28,8 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { InsufficientRequiredIngredientException } from '../shared/exceptions/insufficient-required-ingredient.exception';
 import { OrderCreateRequestDto } from '../shared/dto/order-create-request.dto';
 import { OrderDetailedResponseDto } from '../shared/dto/order-detailed-response.dto';
-import { OrderModificationForbiddenException } from '../shared/exceptions/order-modification-forbidden.exception';
-import { OrderNotFoundException } from '../shared/exceptions/order-not-found.exception';
-import { OrderNotFoundForSessionException } from '../shared/exceptions/order-not-found-for-session.exception';
 import { OrderPreviewResponseDto } from '../shared/dto/order-preview-response.dto';
 import { OrderQueryParamsDto } from '../shared/dto/order-query-params.dto';
 import { OrderUpdateRequestDto } from '../shared/dto/order-update-request.dto';
@@ -50,13 +38,6 @@ import { JwtPayload } from '../../../authentication/interfaces/jwt-payload.inter
 import { createPageResponseSchema } from '../../../common/dto/page-response';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { Role } from '../../../common/enums/role.enum';
-import { AtLeastOneItemRequiredException } from '../../../common/exceptions/at-least-one-item-required.exception';
-import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
-import { ProductNotFoundException } from '../../products/exceptions/product-not-found.exception';
-import { TableNotFoundException } from '../../tables/exceptions/table-not-found.exception';
-import { UpdateOrderStatusDto } from '../shared/dto/update-order-status.dto';
-import { UpdateOrderItemStatusDto } from '../shared/dto/update-order-item-status.dto';
 import {
   CreateOrderService,
   toPayload as toCreateOrderPayload,
@@ -71,6 +52,8 @@ import {
   toPayload as toPayloadUpdateOrderItemStatus,
   UpdateOrderItemStatusService,
 } from '../services/update-order-item-status.service';
+import { UpdateOrderStatusDto } from '../shared/dto/update-order-status.dto';
+import { UpdateOrderItemStatusDto } from '../shared/dto/update-order-item-status.dto';
 
 @ApiTags('Orders')
 @ApiExtraModels(OrderPreviewResponseDto, OrderDetailedResponseDto)
@@ -78,9 +61,6 @@ import {
 @ApiBearerAuth()
 @Controller('orders')
 export class StaffOrderController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: LoggerService;
-
   constructor(
     private readonly createOrderService: CreateOrderService,
     private readonly getOrdersService: GetOrdersService,
@@ -100,18 +80,11 @@ export class StaffOrderController {
     schema: createPageResponseSchema(OrderPreviewResponseDto),
   })
   async getAll(@Query() query: OrderQueryParamsDto) {
-    try {
-      const orders = await this.getOrdersService.getAll(query.toQueryParams());
-      const items = plainToInstance(OrderPreviewResponseDto, orders.items, {
-        excludeExtraneousValues: false,
-      });
-      return { ...orders, items };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const orders = await this.getOrdersService.getAll(query.toQueryParams());
+    const items = plainToInstance(OrderPreviewResponseDto, orders.items, {
+      excludeExtraneousValues: false,
+    });
+    return { ...orders, items };
   }
 
   @Get(':id')
@@ -126,26 +99,16 @@ export class StaffOrderController {
   })
   @ApiBadRequestResponse({ description: 'Invalid order ID' })
   async getById(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      const order = await this.getOrdersService.getById(id);
-      return plainToInstance(OrderDetailedResponseDto, order, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof OrderNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const order = await this.getOrdersService.getById(id);
+    return plainToInstance(OrderDetailedResponseDto, order, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Post(':tableId')
   @ApiOperation({
     summary: 'Create a new order (Staff)',
-    description: `Creates a new order for a table. Accessible by an authenticated staff member. 
+    description: `Creates a new order for a table. Accessible by an authenticated staff member.
     The tableId is provided as a path parameter and a staff session will be resolved/created for that table.`,
   })
   @ApiParam({ name: 'tableId', type: String })
@@ -164,40 +127,21 @@ export class StaffOrderController {
     @Body() dto: OrderCreateRequestDto,
   ) {
     const userId = (req.user as JwtPayload)?.sub;
-    try {
-      const staffTableContext =
-        await this.staffSessionContextService.createSessionForOrder(
-          tableId,
-          userId,
-        );
-      const sessionId = staffTableContext.sessionId;
-      console.log('CREATE SESSION:', sessionId);
-
-      const order = await this.createOrderService.execute(
-        toCreateOrderPayload(dto.items, tableId, sessionId, userId, dto.note),
+    const staffTableContext =
+      await this.staffSessionContextService.createSessionForOrder(
+        tableId,
+        userId,
       );
+    const sessionId = staffTableContext.sessionId;
+    console.log('CREATE SESSION:', sessionId);
 
-      return plainToInstance(OrderDetailedResponseDto, order, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (
-        e instanceof DuplicateEntryException ||
-        e instanceof ProductNotFoundException ||
-        e instanceof TableNotFoundException ||
-        e instanceof AtLeastOneItemRequiredException ||
-        e instanceof ForeignKeyViolationException
-      ) {
-        throw new BadRequestException(
-          e.message,
-          e instanceof ForeignKeyViolationException ? e.details : undefined,
-        );
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const order = await this.createOrderService.execute(
+      toCreateOrderPayload(dto.items, tableId, sessionId, userId, dto.note),
+    );
+
+    return plainToInstance(OrderDetailedResponseDto, order, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Patch(':orderId/status')
@@ -217,28 +161,18 @@ export class StaffOrderController {
     @Body() dto: UpdateOrderStatusDto,
   ) {
     const { sub, role } = req.user;
-    try {
-      const updated = await this.updateOrderStatusService.execute(
-        toPayloadUpdateOrderStatus({ sub, role }, orderId, dto),
-      );
-      return plainToInstance(OrderDetailedResponseDto, updated, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof OrderNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const updated = await this.updateOrderStatusService.execute(
+      toPayloadUpdateOrderStatus({ sub, role }, orderId, dto),
+    );
+    return plainToInstance(OrderDetailedResponseDto, updated, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Patch(':tableId')
   @ApiOperation({
     summary: 'Update an order for a table (Staff)',
-    description: `Updates an existing order for a table. Accessible by an authenticated staff member. 
+    description: `Updates an existing order for a table. Accessible by an authenticated staff member.
     The tableId is provided as a path parameter and a staff session will be resolved/created for that table.`,
   })
   @ApiParam({ name: 'tableId', type: String })
@@ -257,43 +191,20 @@ export class StaffOrderController {
     @Body() dto: OrderUpdateRequestDto,
   ) {
     const userId = (req.user as JwtPayload)?.sub;
-    try {
-      const staffTableContext =
-        await this.staffSessionContextService.getActiveSessionForOrder(tableId);
-      const sessionId = staffTableContext.sessionId;
-      console.log('UPDATE SESSION:', sessionId);
+    const staffTableContext =
+      await this.staffSessionContextService.getActiveSessionForOrder(tableId);
+    const sessionId = staffTableContext.sessionId;
+    console.log('UPDATE SESSION:', sessionId);
 
-      const userRole = (req.user as JwtPayload)?.role as Role;
-      const order = await this.updateOrderService.execute(sessionId, dto, {
-        id: userId,
-        role: userRole,
-      });
+    const userRole = (req.user as JwtPayload)?.role as Role;
+    const order = await this.updateOrderService.execute(sessionId, dto, {
+      id: userId,
+      role: userRole,
+    });
 
-      return plainToInstance(OrderDetailedResponseDto, order, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof OrderModificationForbiddenException) {
-        throw new ForbiddenException(e.message);
-      }
-      if (e instanceof OrderNotFoundForSessionException) {
-        throw new NotFoundException(e.message);
-      } else if (
-        e instanceof OrderNotFoundException ||
-        e instanceof ProductNotFoundException ||
-        e instanceof AtLeastOneItemRequiredException ||
-        e instanceof ForeignKeyViolationException
-      ) {
-        throw new BadRequestException(
-          e.message,
-          e instanceof ForeignKeyViolationException ? e.details : undefined,
-        );
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return plainToInstance(OrderDetailedResponseDto, order, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Patch(':orderId/items/:itemId/status')
@@ -318,29 +229,11 @@ export class StaffOrderController {
     @Param('itemId', new ParseUUIDPipe()) itemId: string,
     @Body() dto: UpdateOrderItemStatusDto,
   ) {
-    try {
-      const updated = await this.updateOrderItemStatusService.execute(
-        toPayloadUpdateOrderItemStatus(orderId, itemId, dto, req.user),
-      );
-      return plainToInstance(OrderDetailedResponseDto, updated, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (
-        e instanceof AtLeastOneItemRequiredException ||
-        e instanceof ProductNotFoundException ||
-        e instanceof TableNotFoundException
-      ) {
-        throw new BadRequestException(e.message);
-      } else if (e instanceof OrderModificationForbiddenException) {
-        throw new ForbiddenException(e.message);
-      } else if (e instanceof InsufficientRequiredIngredientException) {
-        throw new ConflictException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const updated = await this.updateOrderItemStatusService.execute(
+      toPayloadUpdateOrderItemStatus(orderId, itemId, dto, req.user),
+    );
+    return plainToInstance(OrderDetailedResponseDto, updated, {
+      excludeExtraneousValues: true,
+    });
   }
 }

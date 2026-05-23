@@ -1,9 +1,6 @@
 import {
   Controller,
   Get,
-  InternalServerErrorException,
-  LoggerService,
-  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -20,8 +17,6 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { Inject } from '@nestjs/common';
 import { RoleGuard } from '../../../authorization/guards/role.guard';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { Role } from '../../../common/enums/role.enum';
@@ -29,15 +24,11 @@ import { createPageResponseSchema } from '../../../common/dto/page-response';
 import { PaymentMethodsService } from '../features/payment-methods.service';
 import { PaymentMethodQueryParamsDto } from '../shared/dto/payment-method-query-params.dto';
 import { PaymentMethodResponseDto } from '../shared/dto/payment-method-responses.dto';
-import { PaymentMethodNotFoundException } from '../shared/exceptions/payment-method-not-found.exception';
 
 @ApiTags('Payment Methods')
 @ApiBearerAuth()
 @Controller('payment-methods')
 export class PaymentMethodController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: LoggerService;
-
   constructor(
     private readonly getPaymentMethodsService: PaymentMethodsService,
   ) {}
@@ -59,24 +50,17 @@ export class PaymentMethodController {
     schema: createPageResponseSchema(PaymentMethodResponseDto),
   })
   async getAll(@Query() query: PaymentMethodQueryParamsDto) {
-    try {
-      const paymentMethods =
-        await this.getPaymentMethodsService.getPaymentMethods(
-          query.toQueryParams(),
-        );
-
-      return {
-        ...paymentMethods,
-        items: plainToInstance(PaymentMethodResponseDto, paymentMethods.items, {
-          excludeExtraneousValues: true,
-        }),
-      };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
+    const paymentMethods =
+      await this.getPaymentMethodsService.getPaymentMethods(
+        query.toQueryParams(),
       );
-    }
+
+    return {
+      ...paymentMethods,
+      items: plainToInstance(PaymentMethodResponseDto, paymentMethods.items, {
+        excludeExtraneousValues: true,
+      }),
+    };
   }
 
   // ────────────────────────────────
@@ -97,20 +81,9 @@ export class PaymentMethodController {
   })
   @ApiResponse({ status: 404, description: 'Payment method not found' })
   async toggleStatus(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      const updated = await this.getPaymentMethodsService.toggleStatus(id);
-      return plainToInstance(PaymentMethodResponseDto, updated, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof PaymentMethodNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const updated = await this.getPaymentMethodsService.toggleStatus(id);
+    return plainToInstance(PaymentMethodResponseDto, updated, {
+      excludeExtraneousValues: true,
+    });
   }
 }

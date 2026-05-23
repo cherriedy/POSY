@@ -1,14 +1,10 @@
 /* eslint-disable */
 import 'reflect-metadata';
 import {
-  BadRequestException,
   CanActivate,
   ExecutionContext,
-  InternalServerErrorException,
-  NotFoundException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 
@@ -22,17 +18,13 @@ import { GetEntityTaxAssociationsService } from './get-entity-tax-associations/g
 import { RemoveEntityTaxAssociationService } from './remove-entity-tax-association/remove-entity-tax-association.service';
 
 import { TaxNotFoundException } from './exceptions/tax-not-found.exception';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
+import { DuplicateEntryError } from '../../common/errors/duplicate-entry.error';
 
 import { TaxCreateRequestDto, TaxUpdateRequestDto } from './dto/tax-requests.dto';
 import { TaxQueryParamsDto } from './dto/tax-query-params.dto';
 import { TaxAssociationBulkUpsertRequestDto } from './dto/tax-association-requests.dto';
 import { EntityType } from './enums/entity-type.enum';
 import { Role } from '../../common/enums/role.enum';
-
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
-const mockLogger = { error: jest.fn(), log: jest.fn(), warn: jest.fn() };
 
 // ─── Guard mock ──────────────────────────────────────────────────────────────
 
@@ -68,7 +60,6 @@ describe('TaxController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TaxController],
       providers: [
-        { provide: WINSTON_MODULE_NEST_PROVIDER, useValue: mockLogger },
         { provide: GetTaxesService, useValue: mockGetTaxesService },
         { provide: CreateTaxService, useValue: mockCreateTaxService },
         { provide: UpdateTaxService, useValue: mockUpdateTaxService },
@@ -122,13 +113,10 @@ describe('TaxController', () => {
       expect(result.items).toHaveLength(2);
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockGetTaxesService.getAll.mockRejectedValue(new Error('DB error'));
 
-      await expect(controller.getAll(query)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.getAll(query)).rejects.toThrow(Error);
     });
   });
 
@@ -150,13 +138,10 @@ describe('TaxController', () => {
       expect(result).toHaveLength(2);
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockGetTaxesService.getAllActive.mockRejectedValue(new Error('DB error'));
 
-      await expect(controller.getAllActive()).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.getAllActive()).rejects.toThrow(Error);
     });
   });
 
@@ -177,23 +162,20 @@ describe('TaxController', () => {
       expect(result).toBeDefined();
     });
 
-    it('throws NotFoundException when tax not found', async () => {
+    it('throws TaxNotFoundException when tax not found', async () => {
       mockGetTaxesService.getById.mockRejectedValue(
         new TaxNotFoundException({ id: taxId }),
       );
 
       await expect(controller.getById(taxId)).rejects.toThrow(
-        NotFoundException,
+        TaxNotFoundException,
       );
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockGetTaxesService.getById.mockRejectedValue(new Error('DB error'));
 
-      await expect(controller.getById(taxId)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.getById(taxId)).rejects.toThrow(Error);
     });
   });
 
@@ -218,21 +200,18 @@ describe('TaxController', () => {
       expect(result).toBeDefined();
     });
 
-    it('throws BadRequestException on DuplicateEntryException', async () => {
+    it('throws DuplicateEntryError on DuplicateEntryError', async () => {
       mockCreateTaxService.create.mockRejectedValue(
-        new DuplicateEntryException('Tax with this name already exists'),
+        new DuplicateEntryError('Tax with this name already exists'),
       );
 
-      await expect(controller.create(dto)).rejects.toThrow(BadRequestException);
+      await expect(controller.create(dto)).rejects.toThrow(DuplicateEntryError);
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockCreateTaxService.create.mockRejectedValue(new Error('DB error'));
 
-      await expect(controller.create(dto)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.create(dto)).rejects.toThrow(Error);
     });
   });
 
@@ -257,31 +236,28 @@ describe('TaxController', () => {
       expect(result).toBeDefined();
     });
 
-    it('throws NotFoundException when tax not found', async () => {
+    it('throws TaxNotFoundException when tax not found', async () => {
       mockDeleteTaxService.delete.mockRejectedValue(
         new TaxNotFoundException({ id: taxId }),
       );
 
-      await expect(controller.delete(taxId)).rejects.toThrow(NotFoundException);
+      await expect(controller.delete(taxId)).rejects.toThrow(TaxNotFoundException);
     });
 
-    it('throws BadRequestException on DuplicateEntryException', async () => {
+    it('throws DuplicateEntryError on DuplicateEntryError', async () => {
       mockUpdateTaxService.update.mockRejectedValue(
-        new DuplicateEntryException('Tax with this name already exists'),
+        new DuplicateEntryError('Tax with this name already exists'),
       );
 
       await expect(controller.update(taxId, dto)).rejects.toThrow(
-        BadRequestException,
+        DuplicateEntryError,
       );
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockUpdateTaxService.update.mockRejectedValue(new Error('DB error'));
 
-      await expect(controller.update(taxId, dto)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.update(taxId, dto)).rejects.toThrow(Error);
     });
   });
 
@@ -301,23 +277,20 @@ describe('TaxController', () => {
       expect(result.message).toBe('Tax deleted successfully.');
     });
 
-    it('throws NotFoundException when tax not found', async () => {
+    it('throws TaxNotFoundException when tax not found', async () => {
       mockDeleteTaxService.delete.mockRejectedValue(
         new TaxNotFoundException({
           id: taxId,
         }),
       );
 
-      await expect(controller.delete(taxId)).rejects.toThrow(NotFoundException);
+      await expect(controller.delete(taxId)).rejects.toThrow(TaxNotFoundException);
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockDeleteTaxService.delete.mockRejectedValue(new Error('DB error'));
 
-      await expect(controller.delete(taxId)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.delete(taxId)).rejects.toThrow(Error);
     });
   });
 
@@ -416,25 +389,24 @@ describe('TaxController', () => {
       expect(result.items[1].error).toBeDefined();
     });
 
-    it('throws NotFoundException when tax not found', async () => {
+    it('throws TaxNotFoundException when tax not found', async () => {
       mockAssociateEntityTaxService.bulkUpsert.mockRejectedValue(
         new TaxNotFoundException({ id: taxId }),
       );
 
       await expect(
         controller.upsertEntityTaxAssociations(taxId, dto),
-      ).rejects.toThrow(NotFoundException);
+      ).rejects.toThrow(TaxNotFoundException);
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockAssociateEntityTaxService.bulkUpsert.mockRejectedValue(
         new Error('DB error'),
       );
 
       await expect(
         controller.upsertEntityTaxAssociations(taxId, dto),
-      ).rejects.toThrow(InternalServerErrorException);
-      expect(mockLogger.error).toHaveBeenCalled();
+      ).rejects.toThrow(Error);
     });
   });
 
@@ -475,15 +447,12 @@ describe('TaxController', () => {
       expect(result.items).toHaveLength(2);
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockGetEntityTaxAssociationsService.getByTaxId.mockRejectedValue(
         new Error('DB error'),
       );
 
-      await expect(controller.getEntitiesForTax(taxId)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.getEntitiesForTax(taxId)).rejects.toThrow(Error);
     });
   });
 
@@ -525,15 +494,14 @@ describe('TaxController', () => {
       expect(result).toHaveLength(2);
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockGetEntityTaxAssociationsService.getByEntity.mockRejectedValue(
         new Error('DB error'),
       );
 
       await expect(
         controller.getTaxesForEntity(entityId, entityType),
-      ).rejects.toThrow(InternalServerErrorException);
-      expect(mockLogger.error).toHaveBeenCalled();
+      ).rejects.toThrow(Error);
     });
   });
 
@@ -605,15 +573,14 @@ describe('TaxController', () => {
       expect(result.items.every((i) => i.status === 'FAILED')).toBe(true);
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockRemoveEntityTaxAssociationService.bulkRemove.mockRejectedValue(
         new Error('DB error'),
       );
 
       await expect(
         controller.removeEntityTaxAssociations(taxId, dto),
-      ).rejects.toThrow(InternalServerErrorException);
-      expect(mockLogger.error).toHaveBeenCalled();
+      ).rejects.toThrow(Error);
     });
   });
 

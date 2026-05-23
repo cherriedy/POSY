@@ -2,17 +2,12 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
-  Inject,
-  InternalServerErrorException,
-  LoggerService,
   Query,
   Req,
   Post,
   UseGuards,
   NotFoundException,
   Param,
-  BadRequestException,
   Res,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -26,7 +21,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Request, Response } from 'express';
 import { JwtPayload } from '../../../authentication/interfaces/jwt-payload.interface';
 import { RoleGuard } from '../../../authorization/guards/role.guard';
@@ -43,24 +37,13 @@ import { PaymentQueryParamsDto } from '../shared/dto/payment-query-params.dto';
 import { PaymentResponseDto } from '../shared/dto/payment-response.dto';
 import { CheckoutRequestDto } from '../shared/dto/checkout.dto';
 import { MomoCallbackPayload } from '../shared/interfaces/payment-callback-payload.interface';
-import { PaymentNotFoundException } from '../shared/exceptions/payment-not-found.exception';
-import { PaymentMethodNotFoundException } from '../shared/exceptions/payment-method-not-found.exception';
 import { PaymentRefundService } from '../features/payment-refund.service';
-import { OrderNotFoundException } from 'src/models/orders/shared/exceptions/order-not-found.exception';
-import { OrderSnapshotNotFoundException } from 'src/models/orders/shared/exceptions/order-snapshot-not-found.exception';
-import { PromotionNotFoundException } from 'src/models/promotions/exceptions/PromotionNotFoundException';
-import { PromotionUnusableException } from 'src/models/promotions/exceptions/PromotionUnusableException';
-import { OrderNotReadyForCheckoutException } from 'src/models/orders/shared/exceptions/order-not-ready-for-checkout.exception';
-import { UnsupportedValueException } from 'src/common/exceptions/unsupported-value.exception';
 
 @ApiTags('Payments')
 @ApiBearerAuth()
 @ApiExtraModels(PaymentResponseDto)
 @Controller('payments')
 export class PaymentController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: LoggerService;
-
   constructor(
     private readonly paymentService: PaymentCoreService,
     private readonly checkoutFacadeService: PaymentCheckoutService,
@@ -68,9 +51,6 @@ export class PaymentController {
     private readonly paymentFacadeService: PaymentFacadeService,
   ) {}
 
-  /**
-   * Returns a paginated list of payments for MANAGER and ADMIN users.
-   */
   @Get()
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -84,27 +64,16 @@ export class PaymentController {
     schema: createPageResponseSchema(PaymentResponseDto),
   })
   async getAll(@Query() query: PaymentQueryParamsDto) {
-    try {
-      const payments = await this.paymentService.getPayments(
-        query.toQueryParams(),
-      );
+    const payments = await this.paymentService.getPayments(
+      query.toQueryParams(),
+    );
 
-      return {
-        ...payments,
-        items: plainToInstance(PaymentResponseDto, payments.items, {
-          excludeExtraneousValues: true,
-        }),
-      };
-    } catch (e: unknown) {
-      if (e instanceof HttpException) {
-        throw e;
-      }
-
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return {
+      ...payments,
+      items: plainToInstance(PaymentResponseDto, payments.items, {
+        excludeExtraneousValues: true,
+      }),
+    };
   }
 
   @Get(':id')
@@ -124,23 +93,13 @@ export class PaymentController {
     @Req() req: Request & { user: JwtPayload },
     @Param('id') id: string,
   ) {
-    try {
-      const payment = await this.paymentService.getPaymentById(id);
-      if (!payment) {
-        throw new NotFoundException('Payment not found');
-      }
-      return plainToInstance(PaymentResponseDto, payment, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e: unknown) {
-      if (e instanceof NotFoundException) {
-        throw e;
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
+    const payment = await this.paymentService.getPaymentById(id);
+    if (!payment) {
+      throw new NotFoundException('Payment not found');
     }
+    return plainToInstance(PaymentResponseDto, payment, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Post('checkout')
@@ -163,33 +122,13 @@ export class PaymentController {
     @Req() req: Request & { user: JwtPayload },
     @Body() dto: CheckoutRequestDto,
   ) {
-    try {
-      const payment = await this.checkoutFacadeService.execute(
-        PaymentCheckoutPayloadMapper.fromDto(req.user, dto),
-      );
+    const payment = await this.checkoutFacadeService.execute(
+      PaymentCheckoutPayloadMapper.fromDto(req.user, dto),
+    );
 
-      return plainToInstance(PaymentResponseDto, payment, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (
-        e instanceof OrderNotFoundException ||
-        e instanceof PaymentMethodNotFoundException ||
-        e instanceof OrderSnapshotNotFoundException ||
-        e instanceof PromotionNotFoundException ||
-        e instanceof OrderNotReadyForCheckoutException ||
-        e instanceof UnsupportedValueException ||
-        e instanceof PromotionUnusableException
-      ) {
-        throw new BadRequestException(e.message || e.toString());
-      } else if (e instanceof HttpException) {
-        throw e;
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return plainToInstance(PaymentResponseDto, payment, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Post('callback/momo')
@@ -202,18 +141,8 @@ export class PaymentController {
   @ApiBadRequestResponse({ description: 'Invalid MoMo callback payload' })
   @ApiNotFoundResponse({ description: 'Payment record not found' })
   async momoCallback(@Body() payload: MomoCallbackPayload) {
-    try {
-      await this.paymentFacadeService.handleMomoCallback(payload);
-      return { message: 'Callback processed successfully' };
-    } catch (e: unknown) {
-      if (e instanceof PaymentNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.paymentFacadeService.handleMomoCallback(payload);
+    return { message: 'Callback processed successfully' };
   }
 
   @Post(':id/refund')
@@ -233,23 +162,10 @@ export class PaymentController {
   })
   @ApiNotFoundResponse({ description: 'Payment not found' })
   async refundPayment(@Param('id') id: string) {
-    try {
-      const payment = await this.paymentRefundService.execute(id);
+    const payment = await this.paymentRefundService.execute(id);
 
-      return plainToInstance(PaymentResponseDto, payment, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof PaymentNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof BadRequestException) {
-        throw e;
-      }
-
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return plainToInstance(PaymentResponseDto, payment, {
+      excludeExtraneousValues: true,
+    });
   }
 }

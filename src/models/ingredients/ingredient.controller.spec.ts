@@ -1,12 +1,5 @@
 /* eslint-disable */
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  BadRequestException,
-  ConflictException,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AuthGuard } from '@nestjs/passport';
 import { IngredientController } from './ingredient.controller';
 import { CreateIngredientService } from './features/create-ingredient/create-ingredient.service';
@@ -18,8 +11,8 @@ import { Ingredient } from './shared/entities/ingredient';
 import { IngredientCreateUpdateDto } from './shared/dto/ingredient-create-update.dto';
 import { IngredientUpdateRequestDto } from './shared/dto/ingredient-update-request.dto';
 import { IngredientQueryParamsDto } from './shared/dto/ingredient-query-params.dto';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../common/exceptions/ForeignKeyViolationException';
+import { DuplicateEntryError } from '../../common/errors/duplicate-entry.error';
+import { ForeignKeyViolationError } from '../../common/errors/foreign-key-violation.error';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 
 const mockIngredient = (): Ingredient =>
@@ -43,7 +36,6 @@ const mockPage = () => ({
   pageSize: 10,
 });
 
-const mockLogger = { error: jest.fn(), warn: jest.fn(), log: jest.fn() };
 const noOpGuard = { canActivate: () => true };
 
 describe('IngredientController', () => {
@@ -64,7 +56,6 @@ describe('IngredientController', () => {
           useValue: { getAll: jest.fn(), getById: jest.fn() },
         },
         { provide: DeleteIngredientService, useValue: { delete: jest.fn() } },
-        { provide: WINSTON_MODULE_NEST_PROVIDER, useValue: mockLogger },
       ],
     })
       .overrideGuard(AuthGuard('jwt'))
@@ -158,13 +149,12 @@ describe('IngredientController', () => {
       );
     });
 
-    it('should throw InternalServerErrorException on unexpected error', async () => {
+    it('should throw Error on unexpected error', async () => {
       getService.getAll.mockRejectedValue(new Error('DB error'));
 
       await expect(
         controller.getAll(new IngredientQueryParamsDto()),
-      ).rejects.toThrow(InternalServerErrorException);
-      expect(mockLogger.error).toHaveBeenCalled();
+      ).rejects.toThrow(Error);
     });
   });
 
@@ -180,23 +170,22 @@ describe('IngredientController', () => {
       expect(result).toBeDefined();
     });
 
-    it('should throw NotFoundException when ingredient is not found', async () => {
+    it('should throw IngredientNotFoundException when ingredient is not found', async () => {
       getService.getById.mockRejectedValue(
         new IngredientNotFoundException('ingredient-id-1'),
       );
 
       await expect(controller.getById('ingredient-id-1')).rejects.toThrow(
-        NotFoundException,
+        IngredientNotFoundException,
       );
     });
 
-    it('should throw InternalServerErrorException on unexpected error', async () => {
+    it('should throw Error on unexpected error', async () => {
       getService.getById.mockRejectedValue(new Error('DB error'));
 
       await expect(controller.getById('ingredient-id-1')).rejects.toThrow(
-        InternalServerErrorException,
+        Error,
       );
-      expect(mockLogger.error).toHaveBeenCalled();
     });
   });
 
@@ -246,29 +235,26 @@ describe('IngredientController', () => {
       );
     });
 
-    it('should throw BadRequestException on DuplicateEntryException', async () => {
+    it('should throw DuplicateEntryError on DuplicateEntryError', async () => {
       createService.create.mockRejectedValue(
-        new DuplicateEntryException('Ingredient already exists'),
+        new DuplicateEntryError('Ingredient already exists'),
       );
 
-      await expect(controller.create(dto)).rejects.toThrow(BadRequestException);
+      await expect(controller.create(dto)).rejects.toThrow(DuplicateEntryError);
     });
 
-    it('should throw ConflictException on ForeignKeyViolationException', async () => {
+    it('should throw ForeignKeyViolationError on ForeignKeyViolationError', async () => {
       createService.create.mockRejectedValue(
-        new ForeignKeyViolationException({}),
+        new ForeignKeyViolationError({}),
       );
 
-      await expect(controller.create(dto)).rejects.toThrow(ConflictException);
+      await expect(controller.create(dto)).rejects.toThrow(ForeignKeyViolationError);
     });
 
-    it('should throw InternalServerErrorException on unexpected error', async () => {
+    it('should throw Error on unexpected error', async () => {
       createService.create.mockRejectedValue(new Error('DB error'));
 
-      await expect(controller.create(dto)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.create(dto)).rejects.toThrow(Error);
     });
   });
 
@@ -318,43 +304,42 @@ describe('IngredientController', () => {
       );
     });
 
-    it('should throw NotFoundException when ingredient not found', async () => {
+    it('should throw IngredientNotFoundException when ingredient not found', async () => {
       updateService.update.mockRejectedValue(
         new IngredientNotFoundException('ingredient-id-1'),
       );
 
       await expect(controller.update('ingredient-id-1', dto)).rejects.toThrow(
-        NotFoundException,
+        IngredientNotFoundException,
       );
     });
 
-    it('should throw BadRequestException on DuplicateEntryException', async () => {
+    it('should throw DuplicateEntryError on DuplicateEntryError', async () => {
       updateService.update.mockRejectedValue(
-        new DuplicateEntryException('Duplicate'),
+        new DuplicateEntryError('Duplicate'),
       );
 
       await expect(controller.update('ingredient-id-1', dto)).rejects.toThrow(
-        BadRequestException,
+        DuplicateEntryError,
       );
     });
 
-    it('should throw ConflictException on ForeignKeyViolationException', async () => {
+    it('should throw ForeignKeyViolationError on ForeignKeyViolationError', async () => {
       updateService.update.mockRejectedValue(
-        new ForeignKeyViolationException({}),
+        new ForeignKeyViolationError({}),
       );
 
       await expect(controller.update('ingredient-id-1', dto)).rejects.toThrow(
-        ConflictException,
+        ForeignKeyViolationError,
       );
     });
 
-    it('should throw InternalServerErrorException on unexpected error', async () => {
+    it('should throw Error on unexpected error', async () => {
       updateService.update.mockRejectedValue(new Error('DB error'));
 
       await expect(controller.update('ingredient-id-1', dto)).rejects.toThrow(
-        InternalServerErrorException,
+        Error,
       );
-      expect(mockLogger.error).toHaveBeenCalled();
     });
   });
 
@@ -370,23 +355,22 @@ describe('IngredientController', () => {
       expect(result).toEqual({ message: 'Ingredient deleted successfully' });
     });
 
-    it('should throw NotFoundException when ingredient not found', async () => {
+    it('should throw IngredientNotFoundException when ingredient not found', async () => {
       deleteService.delete.mockRejectedValue(
         new IngredientNotFoundException('ingredient-id-1'),
       );
 
       await expect(controller.delete('ingredient-id-1')).rejects.toThrow(
-        NotFoundException,
+        IngredientNotFoundException,
       );
     });
 
-    it('should throw InternalServerErrorException on unexpected error', async () => {
+    it('should throw Error on unexpected error', async () => {
       deleteService.delete.mockRejectedValue(new Error('DB error'));
 
       await expect(controller.delete('ingredient-id-1')).rejects.toThrow(
-        InternalServerErrorException,
+        Error,
       );
-      expect(mockLogger.error).toHaveBeenCalled();
     });
   });
 });

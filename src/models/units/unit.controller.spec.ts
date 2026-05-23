@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 import { UnitController } from './unit.controller';
@@ -12,13 +6,9 @@ import { CreateUnitService } from './create-unit/create-unit.service';
 import { GetUnitsService } from './get-units/get-units.service';
 import { UpdateUnitService } from './update-unit/update-unit.service';
 import { DeleteUnitService } from './delete-unit/delete-unit.service';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
+import { DuplicateEntryError } from '../../common/errors/duplicate-entry.error';
 import { UnitNotFoundException } from './exceptions/unit-not-found.exception';
 import { UnitCreateRequestDto } from './dto/unit-create-request.dto';
-
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
-const mockLogger = { error: jest.fn(), log: jest.fn(), warn: jest.fn() };
 
 // ─── Guard mock ──────────────────────────────────────────────────────────────
 
@@ -44,7 +34,6 @@ describe('UnitController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UnitController],
       providers: [
-        { provide: WINSTON_MODULE_NEST_PROVIDER, useValue: mockLogger },
         { provide: CreateUnitService, useValue: mockCreateUnitService },
         { provide: GetUnitsService, useValue: mockGetUnitsService },
         { provide: UpdateUnitService, useValue: mockUpdateUnitService },
@@ -102,7 +91,7 @@ describe('UnitController', () => {
       expect(result).toHaveProperty('totalPages', 1);
     });
 
-    it('should throw InternalServerErrorException on unexpected error', async () => {
+    it('should throw Error on unexpected error', async () => {
       mockGetUnitsService.getAllPaged.mockRejectedValue(new Error('DB error'));
       const queryDto = {
         page: 1,
@@ -116,10 +105,7 @@ describe('UnitController', () => {
           };
         },
       };
-      await expect(controller.getAll(queryDto)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.getAll(queryDto)).rejects.toThrow(Error);
     });
   });
 
@@ -138,23 +124,20 @@ describe('UnitController', () => {
       expect(result).toBeDefined();
     });
 
-    it('should throw NotFoundException when unit not found', async () => {
+    it('should throw UnitNotFoundException when unit not found', async () => {
       mockGetUnitsService.getById.mockRejectedValue(
         new UnitNotFoundException(unitId),
       );
 
       await expect(controller.getById(unitId)).rejects.toThrow(
-        NotFoundException,
+        UnitNotFoundException,
       );
     });
 
-    it('should throw InternalServerErrorException on unexpected error', async () => {
+    it('should throw Error on unexpected error', async () => {
       mockGetUnitsService.getById.mockRejectedValue(new Error('unexpected'));
 
-      await expect(controller.getById(unitId)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.getById(unitId)).rejects.toThrow(Error);
     });
   });
 
@@ -176,21 +159,18 @@ describe('UnitController', () => {
       expect(result).toBeDefined();
     });
 
-    it('should throw BadRequestException on DuplicateEntryException', async () => {
+    it('should throw DuplicateEntryError on DuplicateEntryError', async () => {
       mockCreateUnitService.create.mockRejectedValue(
-        new DuplicateEntryException('Unit name or abbreviation already exists'),
+        new DuplicateEntryError('Unit name or abbreviation already exists'),
       );
 
-      await expect(controller.create(dto)).rejects.toThrow(BadRequestException);
+      await expect(controller.create(dto)).rejects.toThrow(DuplicateEntryError);
     });
 
-    it('should throw InternalServerErrorException on unexpected error', async () => {
+    it('should throw Error on unexpected error', async () => {
       mockCreateUnitService.create.mockRejectedValue(new Error('unexpected'));
 
-      await expect(controller.create(dto)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.create(dto)).rejects.toThrow(Error);
     });
   });
 
@@ -213,33 +193,30 @@ describe('UnitController', () => {
       expect(result).toBeDefined();
     });
 
-    it('should throw NotFoundException when unit not found', async () => {
+    it('should throw UnitNotFoundException when unit not found', async () => {
       mockUpdateUnitService.update.mockRejectedValue(
         new UnitNotFoundException(unitId),
       );
 
       await expect(controller.update(unitId, dto)).rejects.toThrow(
-        NotFoundException,
+        UnitNotFoundException,
       );
     });
 
-    it('should throw BadRequestException on DuplicateEntryException', async () => {
+    it('should throw DuplicateEntryError on DuplicateEntryError', async () => {
       mockUpdateUnitService.update.mockRejectedValue(
-        new DuplicateEntryException('duplicate'),
+        new DuplicateEntryError('duplicate'),
       );
 
       await expect(controller.update(unitId, dto)).rejects.toThrow(
-        BadRequestException,
+        DuplicateEntryError,
       );
     });
 
-    it('should throw InternalServerErrorException on unexpected error', async () => {
+    it('should throw Error on unexpected error', async () => {
       mockUpdateUnitService.update.mockRejectedValue(new Error('unexpected'));
 
-      await expect(controller.update(unitId, dto)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.update(unitId, dto)).rejects.toThrow(Error);
     });
   });
 
@@ -257,23 +234,20 @@ describe('UnitController', () => {
       expect(result).toEqual({ message: 'Unit deleted successfully.' });
     });
 
-    it('should throw NotFoundException when unit not found', async () => {
+    it('should throw UnitNotFoundException when unit not found', async () => {
       mockDeleteUnitService.delete.mockRejectedValue(
         new UnitNotFoundException(unitId),
       );
 
       await expect(controller.delete(unitId)).rejects.toThrow(
-        NotFoundException,
+        UnitNotFoundException,
       );
     });
 
-    it('should throw InternalServerErrorException on unexpected error', async () => {
+    it('should throw Error on unexpected error', async () => {
       mockDeleteUnitService.delete.mockRejectedValue(new Error('unexpected'));
 
-      await expect(controller.delete(unitId)).rejects.toThrow(
-        InternalServerErrorException,
-      );
-      expect(mockLogger.error).toHaveBeenCalled();
+      await expect(controller.delete(unitId)).rejects.toThrow(Error);
     });
   });
 });
