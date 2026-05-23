@@ -11,8 +11,8 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { WsException } from '@nestjs/websockets';
 import { JwtPayload } from '../../authentication/interfaces/jwt-payload.interface';
 import { AuthenticatedStaffSocket } from '../interfaces/authenticated-staff-socket.interface';
-import { AccessTokenHasExpiredException } from '../../authentication/exceptions/AccessTokenHasExpiredException';
-import { InvalidAccessTokenException } from '../../authentication/exceptions/InvalidAccessTokenException';
+import { AccessTokenExpiredError } from '../../authentication/errors/access-token-expired.error';
+import { InvalidAccessTokenError } from '../../authentication/errors/invalid-access-token.error';
 
 /**
  * @description A WebSocket guard that verifies the presence and validity of an access token for staff members.
@@ -54,8 +54,8 @@ export class WsStaffAuthGuard implements CanActivate {
       return true;
     } catch (e) {
       if (
-        e instanceof InvalidAccessTokenException ||
-        e instanceof AccessTokenHasExpiredException
+        e instanceof InvalidAccessTokenError ||
+        e instanceof AccessTokenExpiredError
       ) {
         this.logger.warn(
           `Unauthorized WebSocket connection attempt from client ${client.id}: ${e.message}`,

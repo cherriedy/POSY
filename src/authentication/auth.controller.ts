@@ -2,12 +2,9 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Inject,
-  InternalServerErrorException,
   Post,
   Req,
   Res,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
@@ -16,20 +13,11 @@ import { SignInDto } from './dto/sign-in.dto';
 import { ValidateResetCodeDto } from './dto/validate-reset-code.dto';
 import { Request, Response } from 'express';
 import { DeviceContext } from '../common/interfaces/device-context.interface';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { AccountLockedException } from './exceptions/AccountLockedException';
-import { InvalidCredentialsException } from './exceptions/InvalidCredentialsException';
-import { InvalidRefreshTokenException } from './exceptions/InvalidRefreshTokenException';
-import { InvalidResetCodeException } from './exceptions/InvalidResetCodeException';
-import { InvalidResetTokenException } from './exceptions/InvalidResetTokenException';
-import { ResetCodeHasExpiredException } from './exceptions/ResetCodeHasExpiredException';
-import { ResetTokenHasExpiredException } from './exceptions/ResetTokenHasExpiredException';
 import { SignInService } from './sign-in/sign-in.service';
 import { ForgetPasswordService } from './forget-password/forget-password.service';
 import { ValidateResetCodeService } from './validate-reset-code/validate-reset-code.service';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { ResetTokenSchema } from './interfaces/reset-token-schema.interface';
-import { UserNotFoundException } from '../models/users/exceptions/UserNotFoundException';
 import { ResetPasswordService } from './reset-password/reset-password.service';
 import { RefreshAccessTokenService } from './refresh-access-token/refresh-access-token.service';
 import { AppConfigService } from '../config/app/config.service';
@@ -51,9 +39,6 @@ const { limit, ttl } = authConfig.throttle;
 @ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: import('winston').Logger;
-
   constructor(
     private appConfigService: AppConfigService,
     private signInService: SignInService,
@@ -79,39 +64,24 @@ export class AuthController {
       example: { access_token: 'jwt', expires_in: 3600 },
     },
   })
-  @ApiResponse({ status: 400, description: 'Invalid credentials' })
-  @ApiResponse({ status: 401, description: 'Account locked' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  @ApiResponse({ status: 403, description: 'Account locked' })
   async signin(
     @Body() dto: SignInDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    try {
-      const { access_token, refresh_token, expires_in } =
-        await this.signInService.signin(dto);
+    const { access_token, refresh_token, expires_in } =
+      await this.signInService.signin(dto);
 
-      const env = this.appConfigService.env;
-      // Set the refresh token as an HttpOnly cookie
-      res.cookie('refresh_token', refresh_token, {
-        httpOnly: true,
-        secure: env === 'production',
-        sameSite: 'lax',
-        path: '/auth/refresh',
-      });
+    const env = this.appConfigService.env;
+    res.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      secure: env === 'production',
+      sameSite: 'lax',
+      path: '/auth/refresh',
+    });
 
-      return { access_token, expires_in };
-    } catch (e) {
-      if (e instanceof InvalidCredentialsException) {
-        throw new BadRequestException(e.message);
-      } else if (e instanceof AccountLockedException) {
-        throw new UnauthorizedException(e.message);
-      } else {
-        this.logger.error(e); // Log the error for debugging
-        throw new InternalServerErrorException(
-          'An error occurred while processing your request.',
-        );
-      }
-    }
+    return { access_token, expires_in };
   }
 
   @Post('forgot-password')
@@ -130,7 +100,6 @@ export class AuthController {
       },
     },
   })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
   async forgotPassword(@Body() dto: ForgotPasswordDto, @Req() req: Request) {
     const deviceContext: DeviceContext = {
       date: req['date'] as string,
@@ -138,21 +107,14 @@ export class AuthController {
       location: req['location'] as string,
     };
 
-    try {
-      await this.forgetPasswordService.forgotPassword(
-        dto.email,
-        'Password Reset Request',
-        deviceContext,
-      );
-      return {
-        message: 'If the email exists, a password reset link has been sent.',
-      };
-    } catch (e) {
-      this.logger.error(e); // Log the error for debugging
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.forgetPasswordService.forgotPassword(
+      dto.email,
+      'Password Reset Request',
+      deviceContext,
+    );
+    return {
+      message: 'If the email exists, a password reset link has been sent.',
+    };
   }
 
   @Post('validate-reset-code')
@@ -169,29 +131,12 @@ export class AuthController {
       example: { reset_token: 'token' },
     },
   })
-  @ApiResponse({ status: 400, description: 'Invalid or expired reset code' })
-  @ApiResponse({ status: 401, description: 'User not found' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
+  @ApiResponse({ status: 401, description: 'Invalid or expired reset code' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   async validateResetCode(
     @Body() dto: ValidateResetCodeDto,
   ): Promise<ResetTokenSchema> {
-    try {
-      // Return the reset token if the reset code is valid
-      return await this.validateResetCodeService.validateResetCode(dto);
-    } catch (e) {
-      if (e instanceof UserNotFoundException) {
-        throw new UnauthorizedException(e.message);
-      } else if (
-        e instanceof InvalidResetCodeException ||
-        e instanceof ResetCodeHasExpiredException
-      ) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e); // Log the error for debugging
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return await this.validateResetCodeService.validateResetCode(dto);
   }
 
   @Post('reset-password')
@@ -208,27 +153,11 @@ export class AuthController {
       example: { message: 'The password has been successfully reset.' },
     },
   })
-  @ApiResponse({ status: 400, description: 'Invalid or expired reset token' })
-  @ApiResponse({ status: 401, description: 'User not found' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
+  @ApiResponse({ status: 401, description: 'Invalid or expired reset token' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   async resetPassword(@Body() dto: ResetPasswordDto) {
-    try {
-      await this.resetPasswordService.resetPassword(dto);
-      return { message: 'The password has been successfully reset.' };
-    } catch (e) {
-      if (e instanceof UserNotFoundException) {
-        throw new UnauthorizedException(e.message);
-      } else if (
-        e instanceof InvalidResetTokenException ||
-        e instanceof ResetTokenHasExpiredException
-      ) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e); // Log the error for debugging
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.resetPasswordService.resetPassword(dto);
+    return { message: 'The password has been successfully reset.' };
   }
 
   @Post('refresh')
@@ -245,50 +174,34 @@ export class AuthController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Refresh token not found or invalid',
+    description: 'Refresh token not found in cookies',
   })
-  @ApiResponse({ status: 401, description: 'User not found' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
+  @ApiResponse({ status: 401, description: 'Invalid refresh token' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   async refreshAccessToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    // Read refresh token from HttpOnly cookie
     const refresh_token = req.cookies?.refresh_token as string;
     if (!refresh_token) {
       throw new BadRequestException('Refresh token not found in cookies.');
     }
 
-    try {
-      const {
-        access_token,
-        refresh_token: new_refresh_token,
-        expires_in,
-      } = await this.refreshAccessTokenService.refreshAccessToken(
-        refresh_token,
-      );
+    const {
+      access_token,
+      refresh_token: new_refresh_token,
+      expires_in,
+    } = await this.refreshAccessTokenService.refreshAccessToken(refresh_token);
 
-      const env = this.appConfigService.env;
-      // Set the new refresh token as an HttpOnly cookie
-      res.cookie('refresh_token', new_refresh_token, {
-        httpOnly: true,
-        secure: env === 'production',
-        sameSite: 'lax',
-        path: '/auth/refresh',
-      });
+    const env = this.appConfigService.env;
+    res.cookie('refresh_token', new_refresh_token, {
+      httpOnly: true,
+      secure: env === 'production',
+      sameSite: 'lax',
+      path: '/auth/refresh',
+    });
 
-      return { access_token, expires_in };
-    } catch (e) {
-      if (e instanceof UserNotFoundException) {
-        throw new UnauthorizedException(e.message);
-      } else if (e instanceof InvalidRefreshTokenException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e); // Log the error for debugging
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return { access_token, expires_in };
   }
 
   @Post('logout')
@@ -304,32 +217,19 @@ export class AuthController {
       example: { success: true },
     },
   })
-  @ApiResponse({ status: 400, description: 'User not found' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const userId = (req.user as JwtPayload).sub;
-    try {
-      // Remove the refresh token in database
-      await this.logoutService.logout(userId);
+    await this.logoutService.logout(userId);
 
-      // Clear the refresh token cookie
-      const env = this.appConfigService.env;
-      res.clearCookie('refresh_token', {
-        httpOnly: true,
-        secure: env === 'production',
-        sameSite: 'lax',
-        path: '/auth/refresh',
-      });
+    const env = this.appConfigService.env;
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure: env === 'production',
+      sameSite: 'lax',
+      path: '/auth/refresh',
+    });
 
-      return { success: true };
-    } catch (e) {
-      if (e instanceof UserNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e); // Log the error for debugging
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return { success: true };
   }
 }

@@ -15,7 +15,7 @@ export class DeleteCategoryService {
    * @param id - The unique identifier of the category to delete.
    * @returns A promise that resolves when the category is successfully deleted.
    * @throws CategoryNotFoundException if the category does not exist (from repository layer).
-   * @throws ForeignKeyViolationException if the category is referenced by another record (from repository layer).
+   * @throws ForeignKeyViolationError if the category is referenced by another record (from repository layer).
    */
   async deleteCategoryById(id: string) {
     const category = await this.categoryRepository.findById(id);

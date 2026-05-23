@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { authConfig } from '../auth.config';
 import { DeviceContext } from '../../common/interfaces/device-context.interface';
 import crypto from 'crypto';
-import { UserNotFoundException } from '../../models/users/exceptions/UserNotFoundException';
+import { UserNotFoundError } from '../../models/users/errors/user-not-found.error';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import winston from 'winston';
 import { UserRepository } from '../../models/users/repositories/user.repository-abstract';
@@ -40,7 +40,7 @@ export class ForgetPasswordService {
       await this.saveResetCode(email, code, expiresIn);
     } catch (e) {
       // If user not found, log and exit silently to avoid email enumeration
-      if (e instanceof UserNotFoundException) {
+      if (e instanceof UserNotFoundError) {
         this.logger.debug(e.message);
         return;
       } else {
@@ -77,7 +77,7 @@ export class ForgetPasswordService {
    * @param email - The user's email address to identify the account.
    * @param code - The generated password reset code to store.
    * @param expiresIn - The expiration date/time for the reset code.
-   * @throws UserNotFoundException - If the user is not found in the database.
+   * @throws UserNotFoundError - If the user is not found in the database.
    */
   private async saveResetCode(email: string, code: string, expiresIn: Date) {
     return await this.userRepository.updateUserByEmail(email, {

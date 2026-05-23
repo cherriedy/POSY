@@ -1,12 +1,8 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
-  Inject,
-  InternalServerErrorException,
-  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -24,13 +20,10 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { plainToInstance } from 'class-transformer';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { Role } from '../../common/enums/role.enum';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
-import { MissingRequireFieldsException } from '../../common/exceptions/MissingRequireFieldsException';
 import { VendorCreateRequestDto } from './dto/vendor-create-request.dto';
 import { VendorPreviewResponseDto } from './dto/vendor-preview-response.dto';
 import { VendorDetailedResponseDto } from './dto/vendor-detailed-response.dto';
@@ -42,7 +35,6 @@ import { GetVendorsService } from './get-vendors/get-vendors.service';
 import { UpdateVendorService } from './update-vendor/update-vendor.service';
 import { UpdateVendorPayloadMapper } from './update-vendor/update-vendor-payload.mapper';
 import { DeleteVendorService } from './delete-vendor/delete-vendor.service';
-import { VendorNotFoundException } from './exceptions/vendor-not-found.exception';
 import { Page } from '../../common/interfaces/page.interface';
 import { createPageResponseSchema } from '../../common/dto/page-response';
 
@@ -50,9 +42,6 @@ import { createPageResponseSchema } from '../../common/dto/page-response';
 @ApiBearerAuth()
 @Controller('vendors')
 export class VendorController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: import('winston').Logger;
-
   constructor(
     private readonly createVendorService: CreateVendorService,
     private readonly getVendorsService: GetVendorsService,
@@ -79,26 +68,19 @@ export class VendorController {
   async getAll(
     @Query() query: VendorQueryParamsDto,
   ): Promise<Page<VendorPreviewResponseDto>> {
-    try {
-      const queryParams = query.toQueryParams();
-      const vendorPage = await this.getVendorsService.getAll(queryParams);
+    const queryParams = query.toQueryParams();
+    const vendorPage = await this.getVendorsService.getAll(queryParams);
 
-      const vendorPreviewItems = plainToInstance(
-        VendorPreviewResponseDto,
-        vendorPage.items,
-        { excludeExtraneousValues: true },
-      );
+    const vendorPreviewItems = plainToInstance(
+      VendorPreviewResponseDto,
+      vendorPage.items,
+      { excludeExtraneousValues: true },
+    );
 
-      return {
-        ...vendorPage,
-        items: vendorPreviewItems,
-      };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return {
+      ...vendorPage,
+      items: vendorPreviewItems,
+    };
   }
 
   @Get(':id')
@@ -116,20 +98,10 @@ export class VendorController {
   async getById(
     @Param('id', new ParseUUIDPipe()) id: string,
   ): Promise<VendorDetailedResponseDto> {
-    try {
-      const vendor = await this.getVendorsService.getById(id);
-      return plainToInstance(VendorDetailedResponseDto, vendor, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof VendorNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const vendor = await this.getVendorsService.getById(id);
+    return plainToInstance(VendorDetailedResponseDto, vendor, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Post()
@@ -148,24 +120,11 @@ export class VendorController {
   async create(
     @Body() dto: VendorCreateRequestDto,
   ): Promise<VendorDetailedResponseDto> {
-    try {
-      const payload = CreateVendorPayloadMapper.fromDto(dto);
-      const vendor = await this.createVendorService.create(payload);
-      return plainToInstance(VendorDetailedResponseDto, vendor, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (
-        e instanceof DuplicateEntryException ||
-        e instanceof MissingRequireFieldsException
-      ) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const payload = CreateVendorPayloadMapper.fromDto(dto);
+    const vendor = await this.createVendorService.create(payload);
+    return plainToInstance(VendorDetailedResponseDto, vendor, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Put(':id')
@@ -188,24 +147,11 @@ export class VendorController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: VendorUpdateRequestDto,
   ): Promise<VendorDetailedResponseDto> {
-    try {
-      const payload = UpdateVendorPayloadMapper.fromDto(dto);
-      const vendor = await this.updateVendorService.update(id, payload);
-      return plainToInstance(VendorDetailedResponseDto, vendor, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      }
-      if (e instanceof VendorNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const payload = UpdateVendorPayloadMapper.fromDto(dto);
+    const vendor = await this.updateVendorService.update(id, payload);
+    return plainToInstance(VendorDetailedResponseDto, vendor, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Delete(':id')
@@ -219,17 +165,7 @@ export class VendorController {
   async delete(
     @Param('id', new ParseUUIDPipe()) id: string,
   ): Promise<{ message: string }> {
-    try {
-      await this.deleteVendorService.delete(id);
-      return { message: 'Vendor deleted successfully.' };
-    } catch (e) {
-      if (e instanceof VendorNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.deleteVendorService.delete(id);
+    return { message: 'Vendor deleted successfully.' };
   }
 }

@@ -3,8 +3,8 @@ import { Zone } from '../types/zone.class';
 import { ZoneMapper } from '../types/zone.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
+import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
 import { paginationConfig } from '../../../common/constants/pagination.config';
 import { Page } from '../../../common/interfaces/page.interface';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
@@ -24,7 +24,7 @@ export class ZoneRepositoryImpl implements ZoneRepository {
    * Creates a new zone in the database.
    * @param entity - The zone entity to create.
    * @returns A promise that resolves to the created zone.
-   * @throws DuplicateEntryException if a zone with a unique field already exists.
+   * @throws DuplicateEntryError if a zone with a unique field already exists.
    */
   async create(entity: Zone): Promise<Zone> {
     const prismaZone = ZoneMapper.toPrisma(entity);
@@ -35,7 +35,7 @@ export class ZoneRepositoryImpl implements ZoneRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Zone with provided unique field already exists',
           );
         }
@@ -49,7 +49,7 @@ export class ZoneRepositoryImpl implements ZoneRepository {
    * @param id - The unique identifier of the zone to delete.
    * @returns A promise that resolves when the zone is deleted.
    * @throws ZoneNotFoundException if the zone does not exist.
-   * @throws ForeignKeyViolationException if the zone is referenced by another record.
+   * @throws ForeignKeyViolationError if the zone is referenced by another record.
    */
   async delete(id: string): Promise<void> {
     try {
@@ -60,7 +60,7 @@ export class ZoneRepositoryImpl implements ZoneRepository {
           throw new ZoneNotFoundException(id);
         } else if (e.code === 'P2003') {
           const fields = e.meta?.field_name as string[];
-          throw new ForeignKeyViolationException(fields);
+          throw new ForeignKeyViolationError(fields);
         }
       }
       throw e;
@@ -102,7 +102,7 @@ export class ZoneRepositoryImpl implements ZoneRepository {
    * @param entity - Partial data to update the zone with.
    * @returns A promise that resolves to the updated zone.
    * @throws ZoneNotFoundException if the zone does not exist.
-   * @throws DuplicateEntryException if a zone with a unique field already exists.
+   * @throws DuplicateEntryError if a zone with a unique field already exists.
    */
   async update(id: string, entity: Partial<Zone>): Promise<Zone> {
     const dataSnakeCase = Object.entries(entity).reduce(
@@ -119,7 +119,7 @@ export class ZoneRepositoryImpl implements ZoneRepository {
         where: { name: dataSnakeCase.name },
       });
       if (existing && existing.id !== id) {
-        throw new DuplicateEntryException('Zone name already exists.');
+        throw new DuplicateEntryError('Zone name already exists.');
       }
     }
 
@@ -134,7 +134,7 @@ export class ZoneRepositoryImpl implements ZoneRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(e.message);
+          throw new DuplicateEntryError(e.message);
         }
       }
       throw e;

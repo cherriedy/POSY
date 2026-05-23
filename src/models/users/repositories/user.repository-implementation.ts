@@ -3,9 +3,9 @@ import { User } from '../types/user.class';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { UserMapper } from '../types/user.mapper';
 import { UserRepository } from './user.repository-abstract';
-import { UserNotFoundException } from '../exceptions/UserNotFoundException';
+import { UserNotFoundError } from '../errors/user-not-found.error';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 import { Page } from '../../../common/interfaces/page.interface';
 import { paginationConfig } from '../../../common/constants/pagination.config';
@@ -64,7 +64,7 @@ export class UserRepositoryImpl implements UserRepository {
 
   /**
    * Updates a user's information by their email address.
-   * Throws UserNotFoundException if the user does not exist.
+   * Throws UserNotFoundError if the user does not exist.
    * @param email - The email address of the user to update.
    * @param updateData - Partial user data to update.
    * @returns The updated user domain object.
@@ -74,7 +74,7 @@ export class UserRepositoryImpl implements UserRepository {
     updateData: Partial<User>,
   ): Promise<User> {
     const user = await this.findByEmail(email);
-    if (!user) throw new UserNotFoundException({ email });
+    if (!user) throw new UserNotFoundError({ email });
     // Remove 'id' from updateData if present
     const dataWithoutId = { ...updateData };
     delete dataWithoutId.id;
@@ -99,18 +99,18 @@ export class UserRepositoryImpl implements UserRepository {
 
   /**
    * Updates a user's information by their unique ID.
-   * Throws UserNotFoundException if the user does not exist.
+   * Throws UserNotFoundError if the user does not exist.
    *
    * @param {string} id - The unique identifier of the user to update.
    * @param {Partial<User>} entity - Partial user data to update. The 'id' field will be ignored if present.
    * @returns {Promise<User>} The updated user domain object.
-   * @throws {UserNotFoundException} If the user with the given ID does not exist.
-   * @throws {DuplicateEntryException} If a user with a unique field already exists.
+   * @throws {UserNotFoundError} If the user with the given ID does not exist.
+   * @throws {DuplicateEntryError} If a user with a unique field already exists.
    * @throws {Error} If the update operation fails for other reasons.
    */
   async update(id: string, entity: Partial<User>): Promise<User> {
     const user = await this.findById(id);
-    if (!user) throw new UserNotFoundException({ id });
+    if (!user) throw new UserNotFoundError({ id });
     // Remove 'id' from entity if present
     const dataWithoutId = { ...entity };
     delete dataWithoutId.id;
@@ -135,7 +135,7 @@ export class UserRepositoryImpl implements UserRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'User with provided unique field already exists',
           );
         }
@@ -149,7 +149,7 @@ export class UserRepositoryImpl implements UserRepository {
    *
    * @param {User} entity - The user domain object to create.
    * @returns {Promise<User>} The created user domain object.
-   * @throws {DuplicateEntryException} If a user with a unique field already exists.
+   * @throws {DuplicateEntryError} If a user with a unique field already exists.
    * @throws {Error} If the creation operation fails for other reasons.
    */
   async create(entity: User): Promise<User> {
@@ -161,7 +161,7 @@ export class UserRepositoryImpl implements UserRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'User with provided unique field already exists',
           );
         }
@@ -175,7 +175,7 @@ export class UserRepositoryImpl implements UserRepository {
    *
    * @param {string} id - The unique identifier of the user to delete.
    * @returns {Promise<void>} Resolves when the user has been soft deleted.
-   * @throws {UserNotFoundException} If the user with the specified ID does not exist.
+   * @throws {UserNotFoundError} If the user with the specified ID does not exist.
    *
    * @remarks
    * This method performs a soft delete, meaning the user record remains in the database
@@ -185,7 +185,7 @@ export class UserRepositoryImpl implements UserRepository {
   async delete(id: string): Promise<void> {
     // Implement soft delete by setting is_deleted to true
     const user = await this.findById(id);
-    if (!user) throw new UserNotFoundException({ id });
+    if (!user) throw new UserNotFoundError({ id });
     await this.update(id, { isDeleted: true, deletedAt: new Date() });
   }
 

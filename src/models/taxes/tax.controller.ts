@@ -1,12 +1,8 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
-  Inject,
-  InternalServerErrorException,
-  NotFoundException,
   Param,
   ParseEnumPipe,
   ParseUUIDPipe,
@@ -25,8 +21,6 @@ import { TaxQueryParamsDto } from './dto/tax-query-params.dto';
 import { TaxAssociationResponseDto, TaxAssociationBulkUpsertItemResponseDto, TaxAssociationBulkUpsertResponseDto, TaxAssociationBulkRemoveItemResponseDto, TaxAssociationBulkRemoveResponseDto } from './dto/tax-association-responses.dto';
 import { TaxAssociationBulkUpsertRequestDto, TaxAssociationDeleteRequestDto } from './dto/tax-association-requests.dto';
 import { TaxConfig } from './entities/tax-config';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
 import { plainToInstance } from 'class-transformer';
 import { GetTaxesService } from './get-taxes/get-taxes.service';
 import { CreateTaxService } from './create-tax/create-tax.service';
@@ -37,7 +31,6 @@ import { AssociateEntityTaxMapper } from './associate-entity-tax/associate-entit
 import { GetEntityTaxAssociationsService } from './get-entity-tax-associations/get-entity-tax-associations.service';
 import { RemoveEntityTaxAssociationService } from './remove-entity-tax-association/remove-entity-tax-association.service';
 import { RemoveEntityTaxAssociationMapper } from './remove-entity-tax-association/remove-entity-tax-association.mapper';
-import { TaxNotFoundException } from './exceptions/tax-not-found.exception';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -58,9 +51,6 @@ import { EntityType } from './enums/entity-type.enum';
 @ApiBearerAuth()
 @Controller('taxes')
 export class TaxController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: import('winston').Logger;
-
   constructor(
     private readonly getTaxesService: GetTaxesService,
     private readonly createTaxService: CreateTaxService,
@@ -93,18 +83,11 @@ export class TaxController {
     description: 'Unexpected failure.',
   })
   async getAll(@Query() query: TaxQueryParamsDto) {
-    try {
-      const taxes = await this.getTaxesService.getAll(query.toQueryParams());
-      const items = plainToInstance(TaxPreviewResponseDto, taxes.items, {
-        excludeExtraneousValues: true,
-      });
-      return { ...taxes, items };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const taxes = await this.getTaxesService.getAll(query.toQueryParams());
+    const items = plainToInstance(TaxPreviewResponseDto, taxes.items, {
+      excludeExtraneousValues: true,
+    });
+    return { ...taxes, items };
   }
 
   // ────────────────────────────────
@@ -125,17 +108,10 @@ export class TaxController {
   })
   @ApiInternalServerErrorResponse({ description: 'Unexpected failure.' })
   async getAllActive() {
-    try {
-      const taxes = await this.getTaxesService.getAllActive();
-      return plainToInstance(TaxPreviewResponseDto, taxes, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const taxes = await this.getTaxesService.getAllActive();
+    return plainToInstance(TaxPreviewResponseDto, taxes, {
+      excludeExtraneousValues: true,
+    });
   }
 
   // ────────────────────────────────
@@ -159,20 +135,10 @@ export class TaxController {
   @ApiNotFoundResponse({ description: 'Resource does not exist.' })
   @ApiInternalServerErrorResponse({ description: 'Unexpected failure.' })
   async getById(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      const tax = await this.getTaxesService.getById(id);
-      return plainToInstance(TaxDetailedResponseDto, tax, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof TaxNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const tax = await this.getTaxesService.getById(id);
+    return plainToInstance(TaxDetailedResponseDto, tax, {
+      excludeExtraneousValues: true,
+    });
   }
 
   // ────────────────────────────────
@@ -195,22 +161,12 @@ export class TaxController {
   })
   @ApiInternalServerErrorResponse({ description: 'Unexpected failure.' })
   async create(@Body() dto: TaxCreateRequestDto) {
-    try {
-      const tax = await this.createTaxService.create(
-        dto as unknown as TaxConfig,
-      );
-      return plainToInstance(TaxPreviewResponseDto, tax, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const tax = await this.createTaxService.create(
+      dto as unknown as TaxConfig,
+    );
+    return plainToInstance(TaxPreviewResponseDto, tax, {
+      excludeExtraneousValues: true,
+    });
   }
 
   // ────────────────────────────────
@@ -235,22 +191,10 @@ export class TaxController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: TaxUpdateRequestDto,
   ) {
-    try {
-      const tax = await this.updateTaxService.update(id, dto);
-      return plainToInstance(TaxPreviewResponseDto, tax, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof TaxNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const tax = await this.updateTaxService.update(id, dto);
+    return plainToInstance(TaxPreviewResponseDto, tax, {
+      excludeExtraneousValues: true,
+    });
   }
 
   // ────────────────────────────────
@@ -269,18 +213,8 @@ export class TaxController {
   @ApiNotFoundResponse({ description: 'Resource does not exist.' })
   @ApiInternalServerErrorResponse({ description: 'Unexpected failure.' })
   async delete(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      await this.deleteTaxService.delete(id);
-      return { message: 'Tax deleted successfully.' };
-    } catch (e) {
-      if (e instanceof TaxNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.deleteTaxService.delete(id);
+    return { message: 'Tax deleted successfully.' };
   }
 
   // ==================== Entity-Tax Association Endpoints ====================
@@ -311,54 +245,44 @@ export class TaxController {
     @Param('id', new ParseUUIDPipe()) taxId: string,
     @Body() dto: TaxAssociationBulkUpsertRequestDto,
   ): Promise<TaxAssociationBulkUpsertResponseDto> {
-    try {
-      const results = await this.associateEntityTaxService.bulkUpsert(
-        AssociateEntityTaxMapper.toPayload(taxId, dto),
-      );
+    const results = await this.associateEntityTaxService.bulkUpsert(
+      AssociateEntityTaxMapper.toPayload(taxId, dto),
+    );
 
-      const items = plainToInstance(
-        TaxAssociationBulkUpsertItemResponseDto,
-        results.map((r) => {
-          const association = plainToInstance(
-            TaxAssociationResponseDto,
-            r.config,
-            { excludeExtraneousValues: true },
-          );
-          if (r.entityRef && r.status === 'SUCCEED') {
-            ['entityId', 'entityType'].forEach((k) => delete association[k]);
-          }
-          return {
-            entityRef: {
-              id: r.entityRef.id,
-              type: r.entityRef.type,
-            },
-            status: r.status,
-            association,
-            error: r.error,
-          };
-        }),
-        { excludeExtraneousValues: true },
-      );
+    const items = plainToInstance(
+      TaxAssociationBulkUpsertItemResponseDto,
+      results.map((r) => {
+        const association = plainToInstance(
+          TaxAssociationResponseDto,
+          r.config,
+          { excludeExtraneousValues: true },
+        );
+        if (r.entityRef && r.status === 'SUCCEED') {
+          ['entityId', 'entityType'].forEach((k) => delete association[k]);
+        }
+        return {
+          entityRef: {
+            id: r.entityRef.id,
+            type: r.entityRef.type,
+          },
+          status: r.status,
+          association,
+          error: r.error,
+        };
+      }),
+      { excludeExtraneousValues: true },
+    );
 
-      return plainToInstance(
-        TaxAssociationBulkUpsertResponseDto,
-        {
-          items,
-          total: items.length,
-          succeeded: items.filter((i) => i.status === 'SUCCEED').length,
-          failed: items.filter((i) => i.status === 'FAILED').length,
-        } as TaxAssociationBulkUpsertRequestDto,
-        { excludeExtraneousValues: true },
-      );
-    } catch (e) {
-      if (e instanceof TaxNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return plainToInstance(
+      TaxAssociationBulkUpsertResponseDto,
+      {
+        items,
+        total: items.length,
+        succeeded: items.filter((i) => i.status === 'SUCCEED').length,
+        failed: items.filter((i) => i.status === 'FAILED').length,
+      } as TaxAssociationBulkUpsertRequestDto,
+      { excludeExtraneousValues: true },
+    );
   }
 
   // ────────────────────────────────
@@ -386,36 +310,29 @@ export class TaxController {
   @ApiNotFoundResponse({ description: 'Resource does not exist.' })
   @ApiInternalServerErrorResponse({ description: 'Unexpected failure.' })
   async getEntitiesForTax(@Param('id', new ParseUUIDPipe()) taxId: string) {
-    try {
-      const associations =
-        await this.getEntityTaxAssociationsService.getByTaxId(taxId);
+    const associations =
+      await this.getEntityTaxAssociationsService.getByTaxId(taxId);
 
-      const items = associations.map((a) => {
-        const association = plainToInstance(TaxAssociationResponseDto, a, {
-          excludeExtraneousValues: true,
-        });
-
-        ['entityId', 'entityType'].forEach((k) => delete association[k]);
-
-        return {
-          entityRef: {
-            id: a.entityId,
-            type: a.entityType,
-          },
-          association,
-        };
+    const items = associations.map((a) => {
+      const association = plainToInstance(TaxAssociationResponseDto, a, {
+        excludeExtraneousValues: true,
       });
 
+      ['entityId', 'entityType'].forEach((k) => delete association[k]);
+
       return {
-        items,
-        total: items.length,
+        entityRef: {
+          id: a.entityId,
+          type: a.entityType,
+        },
+        association,
       };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    });
+
+    return {
+      items,
+      total: items.length,
+    };
   }
 
   // ────────────────────────────────
@@ -446,36 +363,29 @@ export class TaxController {
     @Param('id', new ParseUUIDPipe()) taxId: string,
     @Body() dto: TaxAssociationDeleteRequestDto,
   ): Promise<TaxAssociationBulkRemoveResponseDto> {
-    try {
-      const results = await this.removeEntityTaxAssociationService.bulkRemove(
-        RemoveEntityTaxAssociationMapper.toPayload(taxId, dto),
-      );
-      const items = plainToInstance(
-        TaxAssociationBulkRemoveItemResponseDto,
-        results.map((r) => ({
-          id: r.id,
-          status: r.status,
-          error: r.error,
-        })),
-        { excludeExtraneousValues: true },
-      );
+    const results = await this.removeEntityTaxAssociationService.bulkRemove(
+      RemoveEntityTaxAssociationMapper.toPayload(taxId, dto),
+    );
+    const items = plainToInstance(
+      TaxAssociationBulkRemoveItemResponseDto,
+      results.map((r) => ({
+        id: r.id,
+        status: r.status,
+        error: r.error,
+      })),
+      { excludeExtraneousValues: true },
+    );
 
-      return plainToInstance(
-        TaxAssociationBulkRemoveResponseDto,
-        {
-          items,
-          total: dto.associationIds.length,
-          succeeded: items.filter((i) => i.status === 'SUCCEED').length,
-          failed: items.filter((i) => i.status === 'FAILED').length,
-        },
-        { excludeExtraneousValues: true },
-      );
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return plainToInstance(
+      TaxAssociationBulkRemoveResponseDto,
+      {
+        items,
+        total: dto.associationIds.length,
+        succeeded: items.filter((i) => i.status === 'SUCCEED').length,
+        failed: items.filter((i) => i.status === 'FAILED').length,
+      },
+      { excludeExtraneousValues: true },
+    );
   }
 
   // ────────────────────────────────
@@ -508,20 +418,13 @@ export class TaxController {
     @Param('id', new ParseUUIDPipe()) entityId: string,
     @Param('type', new ParseEnumPipe(EntityType)) entityType: EntityType,
   ) {
-    try {
-      const associations =
-        await this.getEntityTaxAssociationsService.getByEntity(
-          entityType,
-          entityId,
-        );
-      return plainToInstance(TaxAssociationResponseDto, associations, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
+    const associations =
+      await this.getEntityTaxAssociationsService.getByEntity(
+        entityType,
+        entityId,
       );
-    }
+    return plainToInstance(TaxAssociationResponseDto, associations, {
+      excludeExtraneousValues: true,
+    });
   }
 }

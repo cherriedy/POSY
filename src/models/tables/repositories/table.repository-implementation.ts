@@ -3,8 +3,8 @@ import { Table } from '../types/table.class';
 import { TableMapper } from '../types/table.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
+import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
 import { paginationConfig } from '../../../common/constants/pagination.config';
 import { Page } from '../../../common/interfaces/page.interface';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
@@ -23,7 +23,7 @@ export class TableRepositoryImpl implements TableRepository {
    * Creates a new table in the database.
    * @param entity - The table entity to create.
    * @returns A promise that resolves to the created table.
-   * @throws DuplicateEntryException if a table with a unique field already exists.
+   * @throws DuplicateEntryError if a table with a unique field already exists.
    */
   async create(entity: Table): Promise<Table> {
     const prismaTable = TableMapper.toPrisma(entity);
@@ -43,7 +43,7 @@ export class TableRepositoryImpl implements TableRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Table with provided unique field already exists',
           );
         }
@@ -57,7 +57,7 @@ export class TableRepositoryImpl implements TableRepository {
    * @param id - The unique identifier of the table to delete.
    * @returns A promise that resolves when the table is deleted.
    * @throws TableNotFoundException if the table does not exist.
-   * @throws ForeignKeyViolationException if the table is referenced by another record.
+   * @throws ForeignKeyViolationError if the table is referenced by another record.
    */
   async delete(id: string): Promise<void> {
     try {
@@ -68,7 +68,7 @@ export class TableRepositoryImpl implements TableRepository {
           throw new TableNotFoundException(id);
         } else if (e.code === 'P2003') {
           const fields = e.meta?.field_name as string[];
-          throw new ForeignKeyViolationException(fields);
+          throw new ForeignKeyViolationError(fields);
         }
       }
       throw e;
@@ -107,7 +107,7 @@ export class TableRepositoryImpl implements TableRepository {
    * @param id - The unique identifier of the table to update.
    * @param entity - Partial data to update the table with.
    * @returns A promise that resolves to the updated table.
-   * @throws DuplicateEntryException if a table with a unique field already exists.
+   * @throws DuplicateEntryError if a table with a unique field already exists.
    */
   async update(id: string, entity: Partial<Table>): Promise<Table> {
     const dataSnakeCase = Object.entries(entity).reduce(
@@ -136,7 +136,7 @@ export class TableRepositoryImpl implements TableRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Table name already exists in this zone.',
           );
         }

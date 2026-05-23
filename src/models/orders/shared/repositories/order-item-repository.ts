@@ -4,8 +4,8 @@ import { OrderItemRepository } from './order-item-repository.abstract';
 import { OrderItem } from '../entities/order-item';
 import { OrderItemMapper } from '../entities/order-item.mapper';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../../../common/exceptions/ForeignKeyViolationException';
+import { DuplicateEntryError } from '../../../../common/errors/duplicate-entry.error';
+import { ForeignKeyViolationError } from '../../../../common/errors/foreign-key-violation.error';
 
 const orderItemInclude = {
   product: true,
@@ -25,12 +25,12 @@ export class OrderItemRepositoryImpl implements OrderItemRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Order item with provided data already exists',
           );
         }
         if (e.code === 'P2003') {
-          throw new ForeignKeyViolationException(entity);
+          throw new ForeignKeyViolationError(entity);
         }
       }
       throw e;
@@ -55,12 +55,12 @@ export class OrderItemRepositoryImpl implements OrderItemRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'One or more order items already exist',
           );
         }
         if (e.code === 'P2003') {
-          throw new ForeignKeyViolationException({ items: entities });
+          throw new ForeignKeyViolationError({ items: entities });
         }
       }
       throw e;

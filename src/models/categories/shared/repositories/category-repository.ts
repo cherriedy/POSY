@@ -3,7 +3,7 @@ import { Category } from '../entities/category';
 import { CategoryMapper } from '../entities/category.mapper';
 import { PrismaService } from '../../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../../common/exceptions/DuplicateEntryException';
+import { DuplicateEntryError } from '../../../../common/errors/duplicate-entry.error';
 import { paginationConfig } from '../../../../common/constants/pagination.config';
 import { Page } from '../../../../common/interfaces/page.interface';
 import { Injectable } from '@nestjs/common';
@@ -22,7 +22,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
    * Creates a new category in the database.
    * @param entity - The category entity to create.
    * @returns A promise that resolves to the created category.
-   * @throws DuplicateEntryException if a category with a unique field already exists.
+   * @throws DuplicateEntryError if a category with a unique field already exists.
    */
   async create(entity: Category): Promise<Category> {
     const prismaCategory = CategoryMapper.toPrismaCreateInput(entity);
@@ -34,7 +34,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Category with provided unique field already exists',
           );
         }
@@ -85,7 +85,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
    * @param entity - Partial data to update the category with.
    * @returns A promise that resolves to the updated category.
    * @throws CategoryNotFoundException if the category does not exist.
-   * @throws DuplicateEntryException if a category with a unique field already exists.
+   * @throws DuplicateEntryError if a category with a unique field already exists.
    */
   async update(id: string, entity: Partial<Category>): Promise<Category> {
     const category = await this.findById(id);
@@ -97,7 +97,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
         where: { slug: data.slug },
       });
       if (existing && existing.id !== id) {
-        throw new DuplicateEntryException('Slug already exists.');
+        throw new DuplicateEntryError('Slug already exists.');
       }
     }
     try {
@@ -115,7 +115,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(e.message);
+          throw new DuplicateEntryError(e.message);
         }
       }
       throw e;

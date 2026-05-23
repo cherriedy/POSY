@@ -1,6 +1,6 @@
 import { Category as PrismaCategory, Prisma } from '@prisma/client';
 import { Category } from './category';
-import { MissingRequireFieldsException } from '../../../../common/exceptions/MissingRequireFieldsException';
+import { MissingRequiredFieldsError } from '../../../../common/errors/missing-required-fields.error';
 import { getSlug } from 'src/common/utilities/string.util';
 
 export class CategoryMapper {
@@ -22,7 +22,7 @@ export class CategoryMapper {
     this: void,
     domain: Category,
   ): Prisma.CategoryCreateInput {
-    if (!domain.name) throw new MissingRequireFieldsException(['name']);
+    if (!domain.name) throw new MissingRequiredFieldsError(['name']);
     if (!domain.slug) domain.slug = getSlug(domain.name);
     return {
       name: domain.name,

@@ -1,6 +1,6 @@
 import { Table as PrismaTable } from '@prisma/client';
 import { Table as DomainTable } from './table.class';
-import { MissingRequireFieldsException } from '../../../common/exceptions/MissingRequireFieldsException';
+import { MissingRequiredFieldsError } from '../../../common/errors/missing-required-fields.error';
 import { TableStatus } from '../enums/table-status.enum';
 import { ZoneMapper } from '../../zones/types/zone.mapper';
 
@@ -29,11 +29,11 @@ export class TableMapper {
 
   static toPrisma(this: void, domainTable: DomainTable) {
     if (!domainTable.name) {
-      throw new MissingRequireFieldsException();
+      throw new MissingRequiredFieldsError();
     }
 
     if (domainTable.capacity === null || domainTable.capacity === undefined) {
-      throw new MissingRequireFieldsException();
+      throw new MissingRequiredFieldsError();
     }
 
     return {

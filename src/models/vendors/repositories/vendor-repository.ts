@@ -4,9 +4,9 @@ import { Vendor } from '../entities/vendor.class';
 import { VendorMapper } from '../entities/vendor.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
-import { MissingRequireFieldsException } from '../../../common/exceptions/MissingRequireFieldsException';
+import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
+import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
+import { MissingRequiredFieldsError } from '../../../common/errors/missing-required-fields.error';
 import { VendorNotFoundException } from '../exceptions/vendor-not-found.exception';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 import { Page } from '../../../common/interfaces/page.interface';
@@ -25,18 +25,18 @@ export class VendorRepositoryImpl implements VendorRepository {
    * Creates a new vendor in the database.
    *
    * Converts the domain vendor entity to a Prisma-compatible object and attempts to create it in the database.
-   * Throws a DuplicateEntryException if a vendor with the same unique data already exists.
+   * Throws a DuplicateEntryError if a vendor with the same unique data already exists.
    *
    * @param {Vendor} entity - The vendor domain entity to create.
    * @returns {Promise<Vendor>} A promise that resolves to the created vendor domain object.
-   * @throws {DuplicateEntryException} If a vendor with the provided data already exists.
-   * @throws {ForeignKeyViolationException} If a foreign key constraint is violated.
-   * @throws {MissingRequireFieldsException} If required fields are missing from the entity.
+   * @throws {DuplicateEntryError} If a vendor with the provided data already exists.
+   * @throws {ForeignKeyViolationError} If a foreign key constraint is violated.
+   * @throws {MissingRequiredFieldsError} If required fields are missing from the entity.
    * @throws {Error} For other database or mapping errors.
    */
   async create(entity: Vendor): Promise<Vendor> {
     const { name, ...data } = VendorMapper.toPrisma(entity);
-    if (!name) throw new MissingRequireFieldsException(['name']);
+    if (!name) throw new MissingRequiredFieldsError(['name']);
     try {
       const record = await this.prisma.vendor.create({
         data: { name, ...data },
@@ -45,11 +45,11 @@ export class VendorRepositoryImpl implements VendorRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Vendor with provided data already exists',
           );
         } else if (e.code === 'P2003') {
-          throw new ForeignKeyViolationException(entity);
+          throw new ForeignKeyViolationError(entity);
         }
       }
       throw e;
@@ -87,13 +87,13 @@ export class VendorRepositoryImpl implements VendorRepository {
    *
    * Converts the domain vendor entity to a Prisma-compatible object and attempts to update it in the database.
    * Throws a VendorNotFoundException if the vendor is not found.
-   * Throws a DuplicateEntryException if the new name conflicts with an existing vendor.
+   * Throws a DuplicateEntryError if the new name conflicts with an existing vendor.
    *
    * @param {string} id - The UUID of the vendor to update.
    * @param {Partial<Vendor>} entity - The partial vendor data to apply.
    * @returns {Promise<Vendor>} A promise that resolves to the updated vendor domain object.
    * @throws {VendorNotFoundException} If no vendor with the given ID exists.
-   * @throws {DuplicateEntryException} If the new name conflicts with an existing vendor.
+   * @throws {DuplicateEntryError} If the new name conflicts with an existing vendor.
    */
   async update(id: string, entity: Partial<Vendor>): Promise<Vendor> {
     try {
@@ -128,7 +128,7 @@ export class VendorRepositoryImpl implements VendorRepository {
       return VendorMapper.toDomain(record);
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError && e.code === 'P2002') {
-        throw new DuplicateEntryException(
+        throw new DuplicateEntryError(
           'Vendor with provided data already exists',
         );
       }

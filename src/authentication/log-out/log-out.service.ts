@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../../models/users/repositories/user.repository-abstract';
-import { UserNotFoundException } from '../../models/users/exceptions/UserNotFoundException';
+import { UserNotFoundError } from '../../models/users/errors/user-not-found.error';
 
 @Injectable()
 export class LogOutService {
@@ -11,15 +11,15 @@ export class LogOutService {
    *
    * This method finds the user by their unique identifier. If the user exists, it sets the user's
    * refreshTokenHash to null in the database, effectively invalidating any existing refresh tokens
-   * and logging the user out from all sessions. If the user does not exist, a UserNotFoundException is thrown.
+   * and logging the user out from all sessions. If the user does not exist, a UserNotFoundError is thrown.
    *
    * @param {string} userId - The unique identifier of the user to log out.
    * @returns {Promise<void>} Resolves when the logout operation is complete.
-   * @throws {UserNotFoundException} If the user with the given ID does not exist in the database.
+   * @throws {UserNotFoundError} If the user with the given ID does not exist in the database.
    */
   async logout(userId: string) {
     const user = await this.userRepository.findById(userId);
-    if (!user) throw new UserNotFoundException();
+    if (!user) throw new UserNotFoundError();
     await this.userRepository.updateUserByEmail(user.email, {
       refreshTokenHash: null,
     });

@@ -4,7 +4,7 @@ import { TableSessionStatus } from '../enums/table-session-status.enum';
 import { TableSessionType } from '../enums/table-session-type.enum';
 import { TableMapper } from '../../../tables/types/table.mapper';
 import { UserMapper } from '../../../users/types/user.mapper';
-import { MissingRequireFieldsException } from '../../../../common/exceptions/MissingRequireFieldsException';
+import { MissingRequiredFieldsError } from '../../../../common/errors/missing-required-fields.error';
 
 export class TableSessionMapper {
   /**
@@ -50,7 +50,7 @@ export class TableSessionMapper {
    *
    * @param domain - The domain entity to convert.
    * @returns The Prisma create-input payload.
-   * @throws {MissingRequireFieldsException} If any required fields are missing in the domain entity.
+   * @throws {MissingRequiredFieldsError} If any required fields are missing in the domain entity.
    * @remarks Required fields for creation include: `tableId`, `status`, and `sessionType`.
    */
   static toPrismaCreateInput(
@@ -58,7 +58,7 @@ export class TableSessionMapper {
     domain: TableSession,
   ): Prisma.TableSessionUncheckedCreateInput {
     if (!domain.tableId || !domain.status || !domain.sessionType) {
-      throw new MissingRequireFieldsException([
+      throw new MissingRequiredFieldsError([
         'tableId',
         'status',
         'sessionType',

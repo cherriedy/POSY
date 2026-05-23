@@ -1,6 +1,6 @@
 import { Floor as PrismaFloor } from '@prisma/client';
 import { Floor as DomainFloor } from './floor.class';
-import { MissingRequireFieldsException } from '../../../common/exceptions/MissingRequireFieldsException';
+import { MissingRequiredFieldsError } from '../../../common/errors/missing-required-fields.error';
 import { ZoneMapper } from 'src/models/zones/types/zone.mapper';
 
 export class FloorMapper {
@@ -25,11 +25,11 @@ export class FloorMapper {
 
   static toPrisma(this: void, domainFloor: DomainFloor) {
     if (!domainFloor.name) {
-      throw new MissingRequireFieldsException();
+      throw new MissingRequiredFieldsError();
     }
 
     if (domainFloor.order === null || domainFloor.order === undefined) {
-      throw new MissingRequireFieldsException();
+      throw new MissingRequiredFieldsError();
     }
 
     return {

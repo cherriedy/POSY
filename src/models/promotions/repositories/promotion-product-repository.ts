@@ -68,11 +68,11 @@ export class PromotionProductRepositoryImpl implements PromotionProductRepositor
 
   /**
    * Deletes a PromotionProduct entity by its unique identifier.
-   * Throws PromotionProductNotFoundException if the entity does not exist.
+   * Throws PromotionProductNotFoundError if the entity does not exist.
    *
    * @param {string} id - The unique identifier of the PromotionProduct to delete.
    * @returns {Promise<void>} Resolves when deletion is successful.
-   * @throws {PromotionProductNotFoundException} If the PromotionProduct does not exist.
+   * @throws {PromotionProductNotFoundError} If the PromotionProduct does not exist.
    * @throws {PrismaClientKnownRequestError} For other Prisma client errors.
    */
   // async delete(id: string): Promise<void> {
@@ -83,7 +83,7 @@ export class PromotionProductRepositoryImpl implements PromotionProductRepositor
   //   } catch (e) {
   //     if (e instanceof PrismaClientKnownRequestError) {
   //       if (e.code === 'P2025') {
-  //         throw new PromotionProductNotFoundException(id);
+  //         throw new PromotionProductNotFoundError(id);
   //       }
   //     }
   //     throw e;

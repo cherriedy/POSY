@@ -1,6 +1,6 @@
 import { Cuisine as PrismaCuisine } from '@prisma/client';
 import { Cuisine } from './cuisine.class';
-import { MissingRequireFieldsException } from '../../../common/exceptions/MissingRequireFieldsException';
+import { MissingRequiredFieldsError } from '../../../common/errors/missing-required-fields.error';
 
 /**
  * Mapper for converting between Prisma and domain Cuisine entities.
@@ -28,7 +28,7 @@ export class CuisineMapper {
     domain: Cuisine,
   ): Omit<PrismaCuisine, 'id' | 'created_at' | 'updated_at'> {
     if (!domain.name) {
-      throw new MissingRequireFieldsException(['name']);
+      throw new MissingRequiredFieldsError(['name']);
     }
 
     return {

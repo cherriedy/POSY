@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../../common/exceptions/DuplicateEntryException';
+import { DuplicateEntryError } from '../../../../common/errors/duplicate-entry.error';
 import { PrismaService } from '../../../../providers/prisma/prisma.service';
 import { SessionPreferenceNotFoundException } from '../exceptions/session-preference-not-found.exception';
 import { SessionPreference } from '../entities/session-preference';
@@ -16,7 +16,7 @@ export class SessionPreferenceRepositoryImpl implements SessionPreferenceReposit
    *
    * @param entity - The domain entity to be created.
    * @returns A promise that resolves to the created domain entity.
-   * @throws {DuplicateEntryException} If a session preference with the same session ID already exists.
+   * @throws {DuplicateEntryError} If a session preference with the same session ID already exists.
    */
   async create(entity: SessionPreference): Promise<SessionPreference> {
     const prismaEntity = SessionPreferenceMapper.toPrismaCreateInput(entity);
@@ -28,7 +28,7 @@ export class SessionPreferenceRepositoryImpl implements SessionPreferenceReposit
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Session preference with provided session ID already exists',
           );
         }
@@ -79,7 +79,7 @@ export class SessionPreferenceRepositoryImpl implements SessionPreferenceReposit
    * @param entity - A partial domain entity with the fields to update.
    * @returns A promise that resolves to the updated domain entity.
    * @throws {SessionPreferenceNotFoundException} If the record to be updated is not found.
-   * @throws {DuplicateEntryException} If the update would result in a duplicate session ID.
+   * @throws {DuplicateEntryError} If the update would result in a duplicate session ID.
    */
   async update(
     id: string,
@@ -97,7 +97,7 @@ export class SessionPreferenceRepositoryImpl implements SessionPreferenceReposit
         if (e.code === 'P2025') {
           throw new SessionPreferenceNotFoundException();
         } else if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Session preference with provided session ID already exists',
           );
         }
@@ -126,7 +126,7 @@ export class SessionPreferenceRepositoryImpl implements SessionPreferenceReposit
    * @param entity - A partial domain entity with the fields to update.
    * @returns A promise that resolves to the updated domain entity.
    * @throws {SessionPreferenceNotFoundException} If the record to be updated is not found.
-   * @throws {DuplicateEntryException} If the update would result in a duplicate session ID.
+   * @throws {DuplicateEntryError} If the update would result in a duplicate session ID.
    */
   async updateBySessionId(
     sessionId: string,
@@ -144,7 +144,7 @@ export class SessionPreferenceRepositoryImpl implements SessionPreferenceReposit
         if (e.code === 'P2025') {
           throw new SessionPreferenceNotFoundException();
         } else if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Session preference with provided session ID already exists',
           );
         }

@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { AuthTokensSchema } from '../interfaces/auth-tokens-schema.interface';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { UserRepository } from '../../models/users/repositories/user.repository-abstract';
-import { UserNotFoundException } from '../../models/users/exceptions/UserNotFoundException';
+import { UserNotFoundError } from '../../models/users/errors/user-not-found.error';
 import { hash, verifyHash } from '../../common/utilities/hash.util';
-import { InvalidRefreshTokenException } from '../exceptions/InvalidRefreshTokenException';
+import { InvalidRefreshTokenError } from '../errors/invalid-refresh-token.error';
 import { TokenGeneratorsService } from '../common/token-generators/token-generators.service';
 import { authConfig } from '../auth.config';
 
@@ -24,8 +24,8 @@ export class RefreshAccessTokenService {
    *
    * @param refresh_token - The JWT refresh token to be validated and used for issuing new tokens.
    * @returns A promise that resolves to an object containing the newly generated access token, refresh token, and the access token's expiration time in seconds.
-   * @throws {UserNotFoundException} If the user associated with the refresh token does not exist in the database.
-   * @throws {InvalidRefreshTokenException} If the refresh token is invalid, expired, or does not match the stored hash.
+   * @throws {UserNotFoundError} If the user associated with the refresh token does not exist in the database.
+   * @throws {InvalidRefreshTokenError} If the refresh token is invalid, expired, or does not match the stored hash.
    * @throws {Error} For unexpected internal errors during token verification or user update.
    */
   async refreshAccessToken(refresh_token: string): Promise<AuthTokensSchema> {
@@ -39,13 +39,13 @@ export class RefreshAccessTokenService {
     delete jwtPayload.iat;
 
     const user = await this.userRepository.findById(jwtPayload.sub);
-    if (!user) throw new UserNotFoundException();
+    if (!user) throw new UserNotFoundError();
 
     if (
       !user.refreshTokenHash ||
       !(await verifyHash(user.refreshTokenHash, refresh_token))
     ) {
-      throw new InvalidRefreshTokenException();
+      throw new InvalidRefreshTokenError();
     }
 
     const newAccessToken =

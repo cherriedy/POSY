@@ -4,9 +4,6 @@ import {
   Controller,
   Delete,
   Get,
-  Inject,
-  InternalServerErrorException,
-  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -18,9 +15,6 @@ import {
 import { CreateUserService } from './create-user/create-user.service';
 import { UpdateUserService } from './update-user/update-user.service';
 import { User } from './types/user.class';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
-import { UnnecessaryOperationException } from '../../common/exceptions/UnnecessaryOperationException';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password-request.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -29,7 +23,6 @@ import { UserPreviewResponseDto } from './dto/user-preview-response.dto';
 import { UserQueryParamsDto } from './dto/user-query-params.dto';
 import { hash } from '../../common/utilities/hash.util';
 import { AuthGuard } from '@nestjs/passport';
-import { UserNotFoundException } from './exceptions/UserNotFoundException';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 import { PreventManagerAdminAccessGuard } from '../../authorization/guards/prevent-manager-admin-access.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -56,9 +49,6 @@ import { createPageResponseSchema } from '../../common/dto/page-response';
 @ApiBearerAuth()
 @Controller('users')
 export class UserController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: import('winston').Logger;
-
   constructor(
     private readonly createUserService: CreateUserService,
     private readonly updateUserService: UpdateUserService,
@@ -72,7 +62,7 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'), RoleGuard, PreventManagerAdminAccessGuard)
   @ApiOperation({
     summary: 'Get user by ID',
-    description: `Fetches detailed information for a specific user by their unique ID. Accessible by 
+    description: `Fetches detailed information for a specific user by their unique ID. Accessible by
     ADMIN and MANAGER roles. Managers cannot access admin user details. Returns 400 if the user is not found.`,
   })
   @ApiParam({ name: 'id', type: String })
@@ -81,24 +71,14 @@ export class UserController {
     description: 'User details',
     type: UserDetailedResponseDto,
   })
-  @ApiResponse({ status: 400, description: 'User not found' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   async getUserById(
     @Param('id', new ParseUUIDPipe()) userId: string,
   ): Promise<UserDetailedResponseDto> {
-    try {
-      const user = await this.getUsersService.getUserById(userId);
-      return plainToInstance(UserDetailedResponseDto, user, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof UserNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const user = await this.getUsersService.getUserById(userId);
+    return plainToInstance(UserDetailedResponseDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Get()
@@ -106,9 +86,9 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @ApiOperation({
     summary: 'Get all users',
-    description: `Returns a paginated list of all users. Accessible by ADMIN and MANAGER roles. 
+    description: `Returns a paginated list of all users. Accessible by ADMIN and MANAGER roles.
     Managers cannot see admin users. The currently authenticated user is excluded from the results.
-    Supports filtering by query parameters such as search query (by name, email, username), role, 
+    Supports filtering by query parameters such as search query (by name, email, username), role,
     active status, etc. Used for listing and searching users.`,
   })
   @ApiQuery({ name: 'query', required: false, type: UserQueryParamsDto })
@@ -121,34 +101,27 @@ export class UserController {
     @Query() query: UserQueryParamsDto,
     @Req() req: Request,
   ): Promise<Page<UserPreviewResponseDto>> {
-    try {
-      const user = req.user as JwtPayload;
-      const requesterRole = user.role;
-      const requesterId = user.sub;
-      const queryParams = query.toQueryParams();
+    const user = req.user as JwtPayload;
+    const requesterRole = user.role;
+    const requesterId = user.sub;
+    const queryParams = query.toQueryParams();
 
-      const userPage = await this.getUsersService.getAll(
-        queryParams,
-        requesterRole,
-        requesterId,
-      );
+    const userPage = await this.getUsersService.getAll(
+      queryParams,
+      requesterRole,
+      requesterId,
+    );
 
-      const userPreviewItems = plainToInstance(
-        UserPreviewResponseDto,
-        userPage.items,
-        { excludeExtraneousValues: true },
-      );
+    const userPreviewItems = plainToInstance(
+      UserPreviewResponseDto,
+      userPage.items,
+      { excludeExtraneousValues: true },
+    );
 
-      return {
-        ...userPage,
-        items: userPreviewItems,
-      };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return {
+      ...userPage,
+      items: userPreviewItems,
+    };
   }
 
   @Post('')
@@ -156,7 +129,7 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @ApiOperation({
     summary: 'Create a new user',
-    description: `Creates a new user with the provided details. Only accessible by ADMIN and MANAGER roles. 
+    description: `Creates a new user with the provided details. Only accessible by ADMIN and MANAGER roles.
     Managers cannot create admin users. Returns the created user preview. Throws 400 for duplicate entries.`,
   })
   @ApiBody({ type: CreateUserDto })
@@ -176,36 +149,21 @@ export class UserController {
       );
     }
 
-    try {
-      const user = {
-        email: dto.email,
-        username: dto.username,
-        fullName: dto.fullName,
-        passwordHash: await hash(dto.password),
-        phone: dto.phone,
-        role: dto.role,
-        isActive: dto.isActive,
-      } as User;
+    const user = {
+      email: dto.email,
+      username: dto.username,
+      fullName: dto.fullName,
+      passwordHash: await hash(dto.password),
+      phone: dto.phone,
+      role: dto.role,
+      isActive: dto.isActive,
+    } as User;
 
-      return plainToInstance(
-        UserPreviewResponseDto,
-        await this.createUserService.createUser(user),
-        {
-          excludeExtraneousValues: true,
-        },
-      );
-    } catch (e) {
-      if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException({
-          message: e.message,
-          details: e.details,
-        });
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return plainToInstance(
+      UserPreviewResponseDto,
+      await this.createUserService.createUser(user),
+      { excludeExtraneousValues: true },
+    );
   }
 
   @Put(':id')
@@ -214,7 +172,7 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'), RoleGuard, PreventManagerAdminAccessGuard)
   @ApiOperation({
     summary: 'Update a user',
-    description: `Updates an existing user by their ID. Only accessible by ADMIN and MANAGER roles. 
+    description: `Updates an existing user by their ID. Only accessible by ADMIN and MANAGER roles.
     Managers cannot update admin users. Returns the updated user. Throws 400 for not found or duplicate entries.`,
   })
   @ApiParam({ name: 'id', type: String })
@@ -232,24 +190,7 @@ export class UserController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: UpdateUserDto,
   ) {
-    try {
-      return this.updateUserService.updateUser(id, dto as any);
-    } catch (e) {
-      if (e instanceof UserNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException({
-          message: e.message,
-          details: e.details,
-        });
-      } else if (e instanceof BadRequestException) {
-        throw e;
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return this.updateUserService.updateUser(id, dto as any);
   }
 
   @Post(':id/toggle-active')
@@ -258,7 +199,7 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'), RoleGuard, PreventManagerAdminAccessGuard)
   @ApiOperation({
     summary: 'Toggle user active status',
-    description: `Toggles the active status of a user by their ID. Only accessible by ADMIN and MANAGER roles. 
+    description: `Toggles the active status of a user by their ID. Only accessible by ADMIN and MANAGER roles.
     Managers cannot toggle admin user status. Returns a success message. Throws 400 if the user is not found.`,
   })
   @ApiParam({ name: 'id', type: String })
@@ -266,22 +207,10 @@ export class UserController {
     status: 200,
     description: 'User active status toggled',
   })
-  @ApiResponse({ status: 400, description: 'User not found' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   async toggleUserActive(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      await this.updateUserService.toggleUserActive(id);
-      return { message: 'User active status has been successfully toggled.' };
-    } catch (e) {
-      if (e instanceof UserNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof BadRequestException) {
-        throw e;
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.updateUserService.toggleUserActive(id);
+    return { message: 'User active status has been successfully toggled.' };
   }
 
   @Put('update-password/:id')
@@ -290,7 +219,7 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'), RoleGuard, PreventManagerAdminAccessGuard)
   @ApiOperation({
     summary: 'Update user password',
-    description: `Updates the password for a user. Only accessible by ADMIN and MANAGER roles. 
+    description: `Updates the password for a user. Only accessible by ADMIN and MANAGER roles.
     Managers cannot update admin user passwords. Returns a success message. Throws 400 if the user is not found.`,
   })
   @ApiBody({ type: UpdatePasswordDto })
@@ -298,25 +227,13 @@ export class UserController {
     status: 200,
     description: 'User password updated',
   })
-  @ApiResponse({ status: 400, description: 'User not found' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   async updateUserPassword(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: UpdatePasswordDto,
   ) {
-    try {
-      await this.updateUserService.updatePassword(id, dto.newPassword);
-      return { message: 'User password has been successfully updated.' };
-    } catch (e) {
-      if (e instanceof UserNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof BadRequestException) {
-        throw e;
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.updateUserService.updatePassword(id, dto.newPassword);
+    return { message: 'User password has been successfully updated.' };
   }
 
   @Delete(':id')
@@ -325,27 +242,15 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'), RoleGuard, PreventManagerAdminAccessGuard)
   @ApiOperation({
     summary: 'Delete a user',
-    description: `Soft deletes a user by their ID. Only accessible by ADMIN and MANAGER roles. 
+    description: `Soft deletes a user by their ID. Only accessible by ADMIN and MANAGER roles.
     Managers cannot delete admin users. Returns a success message. Throws 400 if the user is not found.`,
   })
   @ApiParam({ name: 'id', type: String })
   @ApiResponse({ status: 200, description: 'User deleted' })
-  @ApiResponse({ status: 400, description: 'User not found' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   async deleteUser(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      await this.deleteUserService.deleteUserById(id);
-      return { message: 'User has been successfully deleted.' };
-    } catch (e) {
-      if (e instanceof UserNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof BadRequestException) {
-        throw e;
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.deleteUserService.deleteUserById(id);
+    return { message: 'User has been successfully deleted.' };
   }
 
   @Post(':id/unlock')
@@ -354,8 +259,8 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'), RoleGuard, PreventManagerAdminAccessGuard)
   @ApiOperation({
     summary: 'Unlock user account',
-    description: `Unlocks a locked user account by resetting failed login attempts and lockout expiration. 
-    Only accessible by ADMIN and MANAGER roles. Managers cannot unlock admin users. Returns a success message. 
+    description: `Unlocks a locked user account by resetting failed login attempts and lockout expiration.
+    Only accessible by ADMIN and MANAGER roles. Managers cannot unlock admin users. Returns a success message.
     Throws 400 if the user is not found or if the account is not locked.`,
   })
   @ApiParam({ name: 'id', type: String })
@@ -365,22 +270,7 @@ export class UserController {
     description: 'User not found or account not locked',
   })
   async unlockUser(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      await this.updateUserService.unlockUser(id);
-      return { message: 'User account has been successfully unlocked.' };
-    } catch (e) {
-      if (
-        e instanceof UserNotFoundException ||
-        e instanceof UnnecessaryOperationException
-      ) {
-        throw new BadRequestException(e.message);
-      } else if (e instanceof BadRequestException) {
-        throw e;
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.updateUserService.unlockUser(id);
+    return { message: 'User account has been successfully unlocked.' };
   }
 }

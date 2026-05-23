@@ -1,12 +1,8 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
-  Inject,
-  InternalServerErrorException,
-  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -22,7 +18,6 @@ import { RoleGuard } from '../../authorization/guards/role.guard';
 import { Role } from '../../common/enums/role.enum';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { GetTablesService } from './get-tables/get-tables.service';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { plainToInstance } from 'class-transformer';
 import { TableDetailedResponseDto } from './dto/table-detailed-response.dto';
 import { TablePreviewResponseDto } from './dto/table-preview-response.dto';
@@ -30,11 +25,7 @@ import { TableQueryParamsDto } from './dto/table-query-params.dto';
 import { TableCreateRequestDto } from './dto/table-create-request.dto';
 import { TableUpdateRequestDto } from './dto/table-update-request.dto';
 import { Page } from '../../common/interfaces/page.interface';
-import { TableNotFoundException } from './exceptions/table-not-found.exception';
 import { Table } from './types/table.class';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../common/exceptions/ForeignKeyViolationException';
-import { RelatedRecordNotFoundException } from '../../common/exceptions/RelatedRecordNotFoundException';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -45,15 +36,11 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { createPageResponseSchema } from '../../common/dto/page-response';
-import { ZoneNotFoundException } from '../zones/exceptions/zone-not-found.exception';
 
 @ApiTags('Tables')
 @ApiBearerAuth()
 @Controller('tables')
 export class TableController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: import('winston').Logger;
-
   constructor(
     private readonly getTablesService: GetTablesService,
     private readonly createTableService: CreateTableService,
@@ -77,24 +64,17 @@ export class TableController {
   async getTables(
     @Query() query: TableQueryParamsDto,
   ): Promise<Page<TablePreviewResponseDto>> {
-    try {
-      const queryParams = query.toQueryParams();
-      const tablePage = await this.getTablesService.getAll(queryParams);
-      const tablePreviewItems = plainToInstance(
-        TablePreviewResponseDto,
-        tablePage.items,
-        { excludeExtraneousValues: true },
-      );
-      return {
-        ...tablePage,
-        items: tablePreviewItems,
-      };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const queryParams = query.toQueryParams();
+    const tablePage = await this.getTablesService.getAll(queryParams);
+    const tablePreviewItems = plainToInstance(
+      TablePreviewResponseDto,
+      tablePage.items,
+      { excludeExtraneousValues: true },
+    );
+    return {
+      ...tablePage,
+      items: tablePreviewItems,
+    };
   }
 
   @Get(':id')
@@ -115,20 +95,10 @@ export class TableController {
   async getTableById(
     @Param('id', new ParseUUIDPipe()) id: string,
   ): Promise<TableDetailedResponseDto> {
-    try {
-      const table = await this.getTablesService.getTableById(id);
-      return plainToInstance(TableDetailedResponseDto, table, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof TableNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const table = await this.getTablesService.getTableById(id);
+    return plainToInstance(TableDetailedResponseDto, table, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Post()
@@ -149,22 +119,10 @@ export class TableController {
     description: 'Duplicate entry or related record not found',
   })
   async createTable(@Body() dto: TableCreateRequestDto) {
-    try {
-      const table = await this.createTableService.createTable(dto as Table);
-      return plainToInstance(TablePreviewResponseDto, table, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      } else if (e instanceof RelatedRecordNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const table = await this.createTableService.createTable(dto as Table);
+    return plainToInstance(TablePreviewResponseDto, table, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Put(':id')
@@ -190,27 +148,13 @@ export class TableController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: TableUpdateRequestDto,
   ) {
-    try {
-      const table = await this.updateTableService.updateTable(
-        id,
-        dto as Partial<Table>,
-      );
-      return plainToInstance(TableDetailedResponseDto, table, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof TableNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof ZoneNotFoundException) {
-        throw new BadRequestException(e.message);
-      } else if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const table = await this.updateTableService.updateTable(
+      id,
+      dto as Partial<Table>,
+    );
+    return plainToInstance(TableDetailedResponseDto, table, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Delete(':id')
@@ -228,19 +172,7 @@ export class TableController {
     description: 'Table not found or foreign key violation',
   })
   async deleteTable(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      await this.deleteTableService.deleteTable(id);
-      return { message: 'Table has been successfully deleted.' };
-    } catch (e) {
-      if (e instanceof TableNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof ForeignKeyViolationException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.deleteTableService.deleteTable(id);
+    return { message: 'Table has been successfully deleted.' };
   }
 }

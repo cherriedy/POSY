@@ -3,9 +3,9 @@ import { Promotion } from '../types/promotion.class';
 import { PromotionMapper } from '../types/promotion.mapper';
 import { Prisma, PromotionStatus } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
 import { Injectable } from '@nestjs/common';
-import { PromotionNotFoundException } from '../exceptions/PromotionNotFoundException';
+import { PromotionNotFoundError } from '../errors/promotion-not-found.error';
 import { PromotionQueryFilters, PromotionQueryParams } from '../interfaces/promotion-query-params.interface';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 import { paginationConfig } from '../../../common/constants/pagination.config';
@@ -23,7 +23,7 @@ export class PromotionRepositoryImpl implements PromotionRepository {
    * Creates a new promotion in the database.
    * @param promotion - The promotion domain object to create.
    * @returns The created promotion domain object.
-   * @throws {DuplicateEntryException} If a promotion with a unique field already exists.
+   * @throws {DuplicateEntryError} If a promotion with a unique field already exists.
    * @throws {PrismaClientKnownRequestError} For other Prisma errors.
    */
   async create(promotion: Promotion): Promise<Promotion> {
@@ -37,7 +37,7 @@ export class PromotionRepositoryImpl implements PromotionRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Promotion with provided unique field already exists',
           );
         }
@@ -49,12 +49,12 @@ export class PromotionRepositoryImpl implements PromotionRepository {
   /**
    * Soft deletes a promotion by setting is_deleted to true and updating deleted_at.
    * @param id - The ID of the promotion to delete.
-   * @throws {PromotionNotFoundException} If the promotion does not exist.
+   * @throws {PromotionNotFoundError} If the promotion does not exist.
    */
   async delete(id: string): Promise<void> {
     const existingPromotion = await this.findById(id);
     if (!existingPromotion) {
-      throw new PromotionNotFoundException({ id });
+      throw new PromotionNotFoundError({ id });
     }
 
     await this.prismaService.promotion.update({
@@ -153,8 +153,8 @@ export class PromotionRepositoryImpl implements PromotionRepository {
    * @param id - The ID of the promotion to update.
    * @param promotion - Partial promotion data to update.
    * @returns The updated promotion domain object.
-   * @throws {PromotionNotFoundException} If the promotion does not exist.
-   * @throws {DuplicateEntryException} If a promotion with a unique field already exists.
+   * @throws {PromotionNotFoundError} If the promotion does not exist.
+   * @throws {DuplicateEntryError} If a promotion with a unique field already exists.
    * @throws {PrismaClientKnownRequestError} For other Prisma errors.
    */
   async update(id: string, promotion: Partial<Promotion>): Promise<Promotion> {
@@ -180,9 +180,9 @@ export class PromotionRepositoryImpl implements PromotionRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new PromotionNotFoundException({ id });
+          throw new PromotionNotFoundError({ id });
         } else if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Promotion with provided unique field already exists',
           );
         }

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ImageRepository } from './repositories/image.repository-abstract';
 import { Image } from './types/image.class';
 import { ImageMapper } from './types/image.mapper';
-import { ImageNotFoundException } from './exceptions/ImageNotFoundException';
+import { ImageNotFoundError } from './errors/image-not-found.error';
 import * as fs from 'fs/promises';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
@@ -91,7 +91,7 @@ export class ImageService {
 
   /**
    * Deletes images by their IDs.
-   * Throws ImageNotFoundException if any image is not found.
+   * Throws ImageNotFoundError if any image is not found.
    * Deletes both the image files from storage and their metadata from the repository.
    *
    * @param ids - An array of image IDs to delete.
@@ -100,7 +100,7 @@ export class ImageService {
     const images = await this.imageRepository.findByIds(ids);
 
     if (images.length !== ids.length) {
-      throw new ImageNotFoundException('One or more images not found');
+      throw new ImageNotFoundError('One or more images not found');
     }
 
     // delete DB first
@@ -112,15 +112,15 @@ export class ImageService {
 
   /**
    * Retrieves an image by its ID.
-   * Throws ImageNotFoundException if the image does not exist.
+   * Throws ImageNotFoundError if the image does not exist.
    *
    * @param id - The ID of the image to retrieve.
    * @returns The Image domain object.
-   * @throws ImageNotFoundException if the image is not found.
+   * @throws ImageNotFoundError if the image is not found.
    */
   async getImageById(id: string): Promise<Image> {
     const image = await this.imageRepository.findById(id);
-    if (!image) throw new ImageNotFoundException(id);
+    if (!image) throw new ImageNotFoundError(id);
     return image;
   }
 

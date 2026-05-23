@@ -3,9 +3,9 @@ import { Image } from '../types/image.class';
 import { ImageMapper } from '../types/image.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
 import { Injectable } from '@nestjs/common';
-import { ImageNotFoundException } from '../exceptions/ImageNotFoundException';
+import { ImageNotFoundError } from '../errors/image-not-found.error';
 
 @Injectable()
 export class ImageRepositoryImpl implements ImageRepository {
@@ -15,7 +15,7 @@ export class ImageRepositoryImpl implements ImageRepository {
    * Creates a new image in the database.
    * @param entity - The image entity to create.
    * @returns A promise that resolves to the created image.
-   * @throws DuplicateEntryException if an image with a unique field already exists.
+   * @throws DuplicateEntryError if an image with a unique field already exists.
    */
   async create(entity: Image): Promise<Image> {
     const prismaImage = ImageMapper.toPrisma(entity);
@@ -26,7 +26,7 @@ export class ImageRepositoryImpl implements ImageRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Image with provided unique field already exists',
           );
         }

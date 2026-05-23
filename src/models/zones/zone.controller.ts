@@ -1,12 +1,8 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
-  Inject,
-  InternalServerErrorException,
-  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -22,7 +18,6 @@ import { RoleGuard } from '../../authorization/guards/role.guard';
 import { Role } from '../../common/enums/role.enum';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { GetZonesService } from './get-zones/get-zones.service';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { plainToInstance } from 'class-transformer';
 import { ZoneDetailedResponseDto } from './dto/zone-detailed-response.dto';
 import { ZonePreviewResponseDto } from './dto/zone-preview-response.dto';
@@ -30,11 +25,7 @@ import { ZoneQueryParamsDto } from './dto/zone-query-params.dto';
 import { ZoneCreateRequestDto } from './dto/zone-create-request.dto';
 import { ZoneUpdateRequestDto } from './dto/zone-update-request.dto';
 import { Page } from '../../common/interfaces/page.interface';
-import { ZoneNotFoundException } from './exceptions/zone-not-found.exception';
 import { Zone } from './types/zone.class';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../common/exceptions/ForeignKeyViolationException';
-import { RelatedRecordNotFoundException } from '../../common/exceptions/RelatedRecordNotFoundException';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -50,9 +41,6 @@ import { createPageResponseSchema } from '../../common/dto/page-response';
 @ApiBearerAuth()
 @Controller('zones')
 export class ZoneController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: import('winston').Logger;
-
   constructor(
     private readonly getZonesService: GetZonesService,
     private readonly createZoneService: CreateZoneService,
@@ -76,24 +64,17 @@ export class ZoneController {
   async getZones(
     @Query() query: ZoneQueryParamsDto,
   ): Promise<Page<ZonePreviewResponseDto>> {
-    try {
-      const queryParams = query.toQueryParams();
-      const zonePage = await this.getZonesService.getAll(queryParams);
-      const zonePreviewItems = plainToInstance(
-        ZonePreviewResponseDto,
-        zonePage.items,
-        { excludeExtraneousValues: true },
-      );
-      return {
-        ...zonePage,
-        items: zonePreviewItems,
-      };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const queryParams = query.toQueryParams();
+    const zonePage = await this.getZonesService.getAll(queryParams);
+    const zonePreviewItems = plainToInstance(
+      ZonePreviewResponseDto,
+      zonePage.items,
+      { excludeExtraneousValues: true },
+    );
+    return {
+      ...zonePage,
+      items: zonePreviewItems,
+    };
   }
 
   @Get(':id')
@@ -114,20 +95,10 @@ export class ZoneController {
   async getZoneById(
     @Param('id', new ParseUUIDPipe()) id: string,
   ): Promise<ZoneDetailedResponseDto> {
-    try {
-      const zone = await this.getZonesService.getZoneById(id);
-      return plainToInstance(ZoneDetailedResponseDto, zone, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof ZoneNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const zone = await this.getZonesService.getZoneById(id);
+    return plainToInstance(ZoneDetailedResponseDto, zone, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Post()
@@ -148,32 +119,20 @@ export class ZoneController {
     description: 'Duplicate entry or related record not found',
   })
   async createZone(@Body() dto: ZoneCreateRequestDto) {
-    try {
-      const zone = new Zone(
-        null,
-        dto.name,
-        dto.description ?? null,
-        dto.isActive ?? true,
-        dto.floorId,
-        null,
-        null,
-      );
+    const zone = new Zone(
+      null,
+      dto.name,
+      dto.description ?? null,
+      dto.isActive ?? true,
+      dto.floorId,
+      null,
+      null,
+    );
 
-      const created = await this.createZoneService.createZone(zone);
-      return plainToInstance(ZonePreviewResponseDto, created, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      } else if (e instanceof RelatedRecordNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const created = await this.createZoneService.createZone(zone);
+    return plainToInstance(ZonePreviewResponseDto, created, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Put(':id')
@@ -199,27 +158,13 @@ export class ZoneController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: ZoneUpdateRequestDto,
   ) {
-    try {
-      const zone = await this.updateZoneService.updateZone(
-        id,
-        dto as Partial<Zone>,
-      );
-      return plainToInstance(ZoneDetailedResponseDto, zone, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof ZoneNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof RelatedRecordNotFoundException) {
-        throw new BadRequestException(e.message);
-      } else if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const zone = await this.updateZoneService.updateZone(
+      id,
+      dto as Partial<Zone>,
+    );
+    return plainToInstance(ZoneDetailedResponseDto, zone, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Delete(':id')
@@ -237,19 +182,7 @@ export class ZoneController {
     description: 'Zone not found or foreign key violation',
   })
   async deleteZone(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      await this.deleteZoneService.deleteZone(id);
-      return { message: 'Zone has been successfully deleted.' };
-    } catch (e) {
-      if (e instanceof ZoneNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof ForeignKeyViolationException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.deleteZoneService.deleteZone(id);
+    return { message: 'Zone has been successfully deleted.' };
   }
 }

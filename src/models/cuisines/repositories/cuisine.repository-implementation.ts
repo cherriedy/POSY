@@ -6,8 +6,8 @@ import { CuisineMapper } from '../types/cuisine.mapper';
 import { Page } from '../../../common/interfaces/page.interface';
 import { CuisineOrderBy, CuisineQueryParams } from '../interfaces/cuisine-query-params.interface';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
+import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
 import { CuisineNotFoundException } from '../exceptions/cuisine-not-found.exception';
 import { paginationConfig } from '../../../common/constants/pagination.config';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
@@ -30,12 +30,12 @@ export class CuisineRepositoryImpl implements CuisineRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Cuisine with this name already exists',
           );
         }
         if (e.code === 'P2003') {
-          throw new ForeignKeyViolationException(entity);
+          throw new ForeignKeyViolationError(entity);
         }
       }
       throw e;
@@ -80,7 +80,7 @@ export class CuisineRepositoryImpl implements CuisineRepository {
           throw new CuisineNotFoundException(id);
         }
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Cuisine with this name already exists',
           );
         }

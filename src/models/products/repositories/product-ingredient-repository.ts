@@ -4,8 +4,8 @@ import { ProductIngredient } from '../entities/product-ingredient.class';
 import { ProductIngredientMapper } from '../entities/product-ingredient.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
+import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
 import { ProductIngredientNotFoundException } from '../exceptions/product-ingredient-not-found.exception';
 import { Prisma } from '@prisma/client';
 
@@ -63,11 +63,11 @@ export class ProductIngredientRepositoryImpl implements ProductIngredientReposit
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Product ingredient relationship already exists',
           );
         } else if (e.code === 'P2003') {
-          throw new ForeignKeyViolationException(entity);
+          throw new ForeignKeyViolationError(entity);
         }
       }
       throw e;

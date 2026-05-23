@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { SocketIOMiddleware } from '../types/socket-io-middleware.type';
 import { AuthenticatedGuestSocket } from '../interfaces/authenticated-guest-socket.interface';
-import { AccessTokenHasExpiredException } from '../../authentication/exceptions/AccessTokenHasExpiredException';
-import { InvalidAccessTokenException } from '../../authentication/exceptions/InvalidAccessTokenException';
+import { AccessTokenExpiredError } from '../../authentication/errors/access-token-expired.error';
+import { InvalidAccessTokenError } from '../../authentication/errors/invalid-access-token.error';
 import { TableSessionConfig } from '../../models/table-sessions/table-session.config';
 import { TableSessionPayload } from '../../models/table-sessions/shared/interfaces/table-session-payload.interface';
 
@@ -86,8 +86,8 @@ async function verifyToken(
     return await service.verifyTableSessionToken(token);
   } catch (e) {
     if (
-      e instanceof InvalidAccessTokenException ||
-      e instanceof AccessTokenHasExpiredException
+      e instanceof InvalidAccessTokenError ||
+      e instanceof AccessTokenExpiredError
     ) {
       throw new UnauthorizedException(e.message);
     }

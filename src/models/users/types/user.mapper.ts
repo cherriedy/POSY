@@ -1,6 +1,6 @@
 import { User as PrismaUser } from '@prisma/client';
 import { User as DomainUser } from './user.class';
-import { MissingRequireFieldsException } from '../../../common/exceptions/MissingRequireFieldsException';
+import { MissingRequiredFieldsError } from '../../../common/errors/missing-required-fields.error';
 import { mapRole } from './role.mapper';
 
 export class UserMapper {
@@ -37,7 +37,7 @@ export class UserMapper {
       !domainUser.fullName ||
       !domainUser.role
     ) {
-      throw new MissingRequireFieldsException();
+      throw new MissingRequiredFieldsError();
     }
     return {
       username: domainUser.username,

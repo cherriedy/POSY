@@ -4,7 +4,7 @@ import {
 } from '@prisma/client';
 import { DietaryTag, MealSession, Taste } from '../../../products/enums/product-attribute.enum';
 import { SessionPreference } from './session-preference';
-import { MissingRequireFieldsException } from '../../../../common/exceptions/MissingRequireFieldsException';
+import { MissingRequiredFieldsError } from '../../../../common/errors/missing-required-fields.error';
 
 export class SessionPreferenceMapper {
   /**
@@ -46,7 +46,7 @@ export class SessionPreferenceMapper {
    *
    * @param domain - The domain entity to convert.
    * @returns The Prisma create-input payload.
-   * @throws {MissingRequireFieldsException} If any required fields are missing in the domain entity.
+   * @throws {MissingRequiredFieldsError} If any required fields are missing in the domain entity.
    * @remarks Required fields for creation include: `sessionId`, `favoriteCuisines`, `favoriteMealSessions`,
    * `favoriteTasteProfile`, `dietaryRestrictions`, `avgSpicePreference`, `avgPriceRange`, and `orderCount`.
    */
@@ -63,7 +63,7 @@ export class SessionPreferenceMapper {
       !domain.avgPriceRange ||
       !domain.orderCount
     ) {
-      throw new MissingRequireFieldsException([
+      throw new MissingRequiredFieldsError([
         'sessionId',
         'favoriteCuisines',
         'favoriteMealSessions',

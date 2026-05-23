@@ -14,7 +14,7 @@ import { PricingSnapshotPromotion } from '../../promotions/types/pricing-snapsho
 import { Promotion } from '../../promotions/types/promotion.class';
 import { PricingSnapshotPromotionRepository } from '../../promotions/repositories/pricing-snapshot-promotion-repository.abstract';
 import { PromotionRepository } from '../../promotions/repositories/promotion-repository.abstract';
-import { PromotionNotFoundException } from '../../promotions/exceptions/PromotionNotFoundException';
+import { PromotionNotFoundError } from '../../promotions/errors/promotion-not-found.error';
 import { PaymentCoreService } from './payment-core.service';
 import { CheckoutRequestDto } from '../shared/dto/checkout.dto';
 import { MomoPaymentGateway } from '../shared/providers/momo-payment-gateway';
@@ -53,7 +53,7 @@ export class PaymentCheckoutService {
    * @throws OrderNotFoundException if the order does not exist.
    * @throws PaymentMethodNotFoundException if the payment method is not found or inactive.
    * @throws OrderSnapshotNotFoundException if the pricing snapshot for the order is not found.
-   * @throws PromotionNotFoundException if any of the provided promotion IDs do not exist.
+   * @throws PromotionNotFoundError if any of the provided promotion IDs do not exist.
    */
   async execute(payload: PaymentCheckoutPayload): Promise<Payment> {
     const promotionIds: string[] = [...new Set(payload.promotionIds ?? [])];
@@ -103,7 +103,7 @@ export class PaymentCheckoutService {
       if (promotionIds.length > 0) {
         for (const pId of promotionIds) {
           const promotion = await this.promotionRepository.findById(pId);
-          if (!promotion) throw new PromotionNotFoundException({ id: pId });
+          if (!promotion) throw new PromotionNotFoundError({ id: pId });
 
           const usageCount = await this.promotionRepository.getUsageCount(pId);
           promotion.assertUsable(usageCount);
