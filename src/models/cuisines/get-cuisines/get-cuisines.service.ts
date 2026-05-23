@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CuisineRepository } from '../repositories/cuisine.repository-abstract';
+import { CuisineRepository } from '../repositories/cuisine-repository.abstract';
 import { Cuisine } from '../types/cuisine.class';
 import { CuisineQueryParams } from '../interfaces/cuisine-query-params.interface';
 import { Page } from '../../../common/interfaces/page.interface';

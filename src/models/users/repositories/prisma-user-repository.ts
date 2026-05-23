@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from '../types/user.class';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { UserMapper } from '../types/user.mapper';
-import { UserRepository } from './user.repository-abstract';
+import { UserRepository } from './user-repository.abstract';
 import { UserNotFoundError } from '../errors/user-not-found.error';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
@@ -14,7 +14,7 @@ import { Prisma } from '@prisma/client';
 import { Role } from '../../../common/enums/role.enum';
 
 @Injectable()
-export class UserRepositoryImpl implements UserRepository {
+export class PrismaUserRepository implements UserRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 

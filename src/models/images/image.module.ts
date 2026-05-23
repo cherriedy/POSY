@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { ImageController } from './image.controller';
-import { ImageRepository } from './repositories/image.repository-abstract';
-import { ImageRepositoryImpl } from './repositories/image.repository-implementation';
+import { ImageRepository } from './repositories/image-repository.abstract';
+import { PrismaImageRepository } from './repositories/prisma-image-repository';
 import { ImageService } from './image.service';
 import { AppConfigModule } from '../../config/app/config.module';
 import { ImageUrlTransformInterceptor } from './interceptors/image-url-transform.interceptor';
@@ -12,7 +12,7 @@ import { ImageUrlTransformInterceptor } from './interceptors/image-url-transform
   providers: [
     {
       provide: ImageRepository,
-      useClass: ImageRepositoryImpl,
+      useClass: PrismaImageRepository,
     },
     ImageService,
     ImageUrlTransformInterceptor,

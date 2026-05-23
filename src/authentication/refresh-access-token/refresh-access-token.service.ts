@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AuthTokensSchema } from '../interfaces/auth-tokens-schema.interface';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
-import { UserRepository } from '../../models/users/repositories/user.repository-abstract';
+import { UserRepository } from '../../models/users/repositories/user-repository.abstract';
 import { UserNotFoundError } from '../../models/users/errors/user-not-found.error';
 import { hash, verifyHash } from '../../common/utilities/hash.util';
 import { InvalidRefreshTokenError } from '../errors/invalid-refresh-token.error';

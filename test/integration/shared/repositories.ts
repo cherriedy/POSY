@@ -5,7 +5,7 @@ import { SessionPreferenceRepository } from '../../../src/models/table-sessions/
 import { TableSessionRepository } from '../../../src/models/table-sessions/shared/repositories/table-session-repository.abstract';
 import { ProductRepository } from '../../../src/models/products/repositories/product-repository.abstract';
 import { ProductAttributeRepository } from '../../../src/models/products/repositories/product-attribute-repository.abstract';
-import { TableRepository } from '../../../src/models/tables/repositories/table.repository-abstract';
+import { TableRepository } from '../../../src/models/tables/repositories/table-repository.abstract';
 import { OrderRepository } from '../../../src/models/orders/shared/repositories/order-repository.abstract';
 import { OrderItemRepository } from '../../../src/models/orders/shared/repositories/order-item-repository.abstract';
 import { PricingSnapshotRepository } from '../../../src/models/orders/shared/repositories/pricing-snapshot-repository.abstract';
@@ -13,7 +13,7 @@ import { EntityTaxConfigRepository } from '../../../src/models/taxes/repositorie
 import { TaxRepository } from '../../../src/models/taxes/repositories/tax-repository.abstract';
 import { OrderTaxRepository } from '../../../src/models/taxes/repositories/order-tax-repository.abstract';
 import { PromotionRedemptionRepository } from '../../../src/models/promotions/repositories/promotion-redemption-repository.abstract';
-import { ZoneRepository } from '../../../src/models/zones/repositories/zone.repository-abstract';
+import { ZoneRepository } from '../../../src/models/zones/repositories/zone-repository.abstract';
 import { CategoryRepository } from '../../../src/models/categories/shared/repositories/category-repository.abstract';
 import { UnitOfWork } from '../../../src/common/unit-of-works/unit-of-work.abstract';
 

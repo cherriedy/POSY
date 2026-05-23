@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CuisineRepository } from '../repositories/cuisine.repository-abstract';
+import { CuisineRepository } from '../repositories/cuisine-repository.abstract';
 import { Cuisine } from '../types/cuisine.class';
 import { CuisineUpdatePayload } from '../interfaces/cuisine-payloads.interface';
 import { CuisineNotFoundException } from '../exceptions/cuisine-not-found.exception';

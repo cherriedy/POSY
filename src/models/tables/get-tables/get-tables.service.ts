@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TableRepository } from '../repositories/table.repository-abstract';
+import { TableRepository } from '../repositories/table-repository.abstract';
 import { Page } from '../../../common/interfaces/page.interface';
 import { Table } from '../types/table.class';
 import { TableNotFoundException } from '../exceptions/table-not-found.exception';

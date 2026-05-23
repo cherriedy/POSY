@@ -5,7 +5,7 @@ import { EntityType } from '../../../../taxes/enums/entity-type.enum';
 import { TaxType } from '../../../../taxes/enums/tax-type.enum';
 import { OrderTax } from '../../../../taxes/entities/order-tax';
 import { PricingSnapshotTax } from '../../../../taxes/entities/pricing-snapshot-tax';
-import { TableRepository } from '../../../../tables/repositories/table.repository-abstract';
+import { TableRepository } from '../../../../tables/repositories/table-repository.abstract';
 import { TableNotFoundException } from '../../../../tables/exceptions/table-not-found.exception';
 import { OrderItemPayload } from '../../interfaces/order-item-payload.interface';
 import { ProductNotFoundException } from 'src/models/products/exceptions/product-not-found.exception';

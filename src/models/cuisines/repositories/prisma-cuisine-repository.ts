@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
-import { CuisineRepository } from './cuisine.repository-abstract';
+import { CuisineRepository } from './cuisine-repository.abstract';
 import { Cuisine } from '../types/cuisine.class';
 import { CuisineMapper } from '../types/cuisine.mapper';
 import { Page } from '../../../common/interfaces/page.interface';
@@ -14,7 +14,7 @@ import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
-export class CuisineRepositoryImpl implements CuisineRepository {
+export class PrismaCuisineRepository implements CuisineRepository {
   private readonly defaultPage = paginationConfig.default.page;
   private readonly defaultPageSize = paginationConfig.default.pageSize;
 

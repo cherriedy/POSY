@@ -1,4 +1,4 @@
-import { TableRepository } from './table.repository-abstract';
+import { TableRepository } from './table-repository.abstract';
 import { Table } from '../types/table.class';
 import { TableMapper } from '../types/table.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
@@ -14,7 +14,7 @@ import { TableOrderBy, TableQueryFilter, TableQueryParams } from '../interfaces/
 import { Prisma } from '@prisma/client';
 
 @Injectable()
-export class TableRepositoryImpl implements TableRepository {
+export class PrismaTableRepository implements TableRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 

@@ -1,4 +1,4 @@
-import { ZoneRepository } from './zone.repository-abstract';
+import { ZoneRepository } from './zone-repository.abstract';
 import { Zone } from '../types/zone.class';
 import { ZoneMapper } from '../types/zone.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
@@ -14,7 +14,7 @@ import { ZoneOrderBy, ZoneQueryFilter, ZoneQueryParams } from '../interfaces/zon
 import { Prisma } from '@prisma/client';
 
 @Injectable()
-export class ZoneRepositoryImpl implements ZoneRepository {
+export class PrismaZoneRepository implements ZoneRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 

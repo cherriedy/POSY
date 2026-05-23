@@ -5,7 +5,7 @@ import { TableSessionStatus } from '../../shared/enums/table-session-status.enum
 import { TableSessionType } from '../../shared/enums/table-session-type.enum';
 import { UnavailableTableException } from '../../shared/exceptions/unavailable-table.exception';
 import { TableSessionNotFoundException } from '../../shared/exceptions/table-session-not-found.exception';
-import { TableRepository } from 'src/models/tables/repositories/table.repository-abstract';
+import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';
 import { TableNotFoundException } from 'src/models/tables/exceptions/table-not-found.exception';
 import { DuplicateEntryError } from 'src/common/errors/duplicate-entry.error';
 

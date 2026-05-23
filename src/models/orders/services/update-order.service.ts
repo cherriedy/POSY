@@ -22,7 +22,7 @@ import { TableSessionStatus } from 'src/models/table-sessions/shared/enums/table
 import { TableSessionType } from 'src/models/table-sessions/shared/enums/table-session-type.enum';
 import { StaffOrderGateway } from '../handlers/staff-order.gateway';
 import { TableStatus } from 'src/models/tables/enums/table-status.enum';
-import { TableRepository } from 'src/models/tables/repositories/table.repository-abstract';
+import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';
 @Injectable()
 export class UpdateOrderService {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)

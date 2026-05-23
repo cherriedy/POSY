@@ -4,7 +4,7 @@ import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { InvalidResetTokenError } from '../errors/invalid-reset-token.error';
 import { ResetTokenExpiredError } from '../errors/reset-token-expired.error';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
-import { UserRepository } from '../../models/users/repositories/user.repository-abstract';
+import { UserRepository } from '../../models/users/repositories/user-repository.abstract';
 import { hash } from '../../common/utilities/hash.util';
 
 @Injectable()

@@ -4,8 +4,8 @@ import { PrismaModule } from 'src/providers/prisma/prisma.module';
 import { CreateFloorModule } from './create-floor/create-floor.module';
 import { UpdateFloorModule } from './update-floor/update-floor.module';
 import { DeleteFloorModule } from './delete-floor/delete-floor.module';
-import { FloorRepository } from './repositories/floor.repository-abstract';
-import { FloorRepositoryImpl } from './repositories/floor.repository-implementation';
+import { FloorRepository } from './repositories/floor-repository.abstract';
+import { PrismaFloorRepository } from './repositories/prisma-floor-repository';
 import { GetFloorsModule } from './get-floors/get-floors.module';
 
 @Global()
@@ -13,7 +13,7 @@ import { GetFloorsModule } from './get-floors/get-floors.module';
   providers: [
     {
       provide: FloorRepository,
-      useClass: FloorRepositoryImpl,
+      useClass: PrismaFloorRepository,
     },
   ],
   imports: [
