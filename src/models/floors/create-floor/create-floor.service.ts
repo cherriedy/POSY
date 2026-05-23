@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FloorRepository } from '../repositories/floor.repository-abstract';
+import { FloorRepository } from '../repositories/floor-repository.abstract';
 import { Floor } from '../types/floor.class';
 
 @Injectable()

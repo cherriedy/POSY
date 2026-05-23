@@ -1,4 +1,4 @@
-import { FloorRepository } from './floor.repository-abstract';
+import { FloorRepository } from './floor-repository.abstract';
 import { Floor } from '../types/floor.class';
 import { FloorMapper } from '../types/floor.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
@@ -18,7 +18,7 @@ import {
 import { Prisma } from '@prisma/client';
 
 @Injectable()
-export class FloorRepositoryImpl implements FloorRepository {
+export class PrismaFloorRepository implements FloorRepository {
   private readonly pageDefault = paginationConfig.default.page;
   private readonly pageSizeDefault = paginationConfig.default.pageSize;
 

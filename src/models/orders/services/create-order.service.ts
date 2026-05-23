@@ -21,7 +21,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ProductInteractionPayload } from 'src/user-tracking/shared/interfaces/product-interaction-payload';
 import { ProductInteractionType } from 'src/user-tracking/shared/enums/product-interaction-type.enum';
-import { TableRepository } from 'src/models/tables/repositories/table.repository-abstract';
+import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';
 import { TableStatus } from 'src/models/tables/enums/table-status.enum';
 import { UpdateOrderService } from './update-order.service';
 

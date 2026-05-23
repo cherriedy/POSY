@@ -12,7 +12,7 @@ import { RoleGuard } from '../../../src/authorization/guards/role.guard';
 import { TaxModule } from '../../../src/models/taxes/tax.module';
 import { PrismaService } from '../../../src/providers/prisma/prisma.service';
 import { PrismaModule } from '../../../src/providers/prisma/prisma.module';
-import { ZoneRepository } from '../../../src/models/zones/repositories/zone.repository-abstract';
+import { ZoneRepository } from '../../../src/models/zones/repositories/zone-repository.abstract';
 import { ProductRepository } from '../../../src/models/products/repositories/product-repository.abstract';
 import { CategoryRepository } from '../../../src/models/categories/shared/repositories/category-repository.abstract';
 import {

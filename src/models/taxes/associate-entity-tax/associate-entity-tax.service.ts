@@ -6,7 +6,7 @@ import { TaxNotFoundException } from '../exceptions/tax-not-found.exception';
 import { InvalidTaxEntityCombinationException } from '../exceptions/invalid-tax-entity-combination.exception';
 import { EntityType } from '../enums/entity-type.enum';
 import { TaxType } from '../enums/tax-type.enum';
-import { ZoneRepository } from '../../zones/repositories/zone.repository-abstract';
+import { ZoneRepository } from '../../zones/repositories/zone-repository.abstract';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 import { CategoryRepository } from '../../categories/shared/repositories/category-repository.abstract';
 import { ZoneNotFoundException } from '../../zones/exceptions/zone-not-found.exception';

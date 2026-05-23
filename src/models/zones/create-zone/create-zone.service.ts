@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { ZoneRepository } from '../repositories/zone.repository-abstract';
+import { ZoneRepository } from '../repositories/zone-repository.abstract';
 import { Zone } from '../types/zone.class';
-import { FloorRepository } from 'src/models/floors/repositories/floor.repository-abstract';
+import { FloorRepository } from 'src/models/floors/repositories/floor-repository.abstract';
 import { RelatedRecordNotFoundError } from 'src/common/errors/related-record-not-found.error';
 
 @Injectable()

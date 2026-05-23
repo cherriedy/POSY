@@ -7,7 +7,7 @@ import { TableSessionType } from '../../shared/enums/table-session-type.enum';
 import { DeviceFingerprintUtility } from '../../shared/utilities/device-fingerprint.utility';
 import { TableSessionPayload } from '../../shared/interfaces/table-session-payload.interface';
 import { UnavailableTableException } from '../../shared/exceptions/unavailable-table.exception';
-import { TableRepository } from 'src/models/tables/repositories/table.repository-abstract';
+import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';
 import { TableSessionConfig } from '../../table-session.config';
 import { TableNotFoundException } from 'src/models/tables/exceptions/table-not-found.exception';
 import { TableTokenInvalidException } from 'src/models/tables/exceptions/table-token-invalid.exception';

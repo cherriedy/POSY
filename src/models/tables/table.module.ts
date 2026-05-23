@@ -4,8 +4,8 @@ import { PrismaModule } from 'src/providers/prisma/prisma.module';
 import { CreateTableModule } from './create-table/create-table.module';
 import { UpdateTableModule } from './update-table/update-table.module';
 import { DeleteTableModule } from './delete-table/delete-table.module';
-import { TableRepository } from './repositories/table.repository-abstract';
-import { TableRepositoryImpl } from './repositories/table.repository-implementation';
+import { TableRepository } from './repositories/table-repository.abstract';
+import { PrismaTableRepository } from './repositories/prisma-table-repository';
 import { GetTablesModule } from './get-tables/get-tables.module';
 
 @Global()
@@ -13,7 +13,7 @@ import { GetTablesModule } from './get-tables/get-tables.module';
   providers: [
     {
       provide: TableRepository,
-      useClass: TableRepositoryImpl,
+      useClass: PrismaTableRepository,
     },
   ],
   imports: [

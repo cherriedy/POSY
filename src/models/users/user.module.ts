@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
-import { UserRepository } from './repositories/user.repository-abstract';
-import { UserRepositoryImpl } from './repositories/user.repository-implementation';
+import { UserRepository } from './repositories/user-repository.abstract';
+import { PrismaUserRepository } from './repositories/prisma-user-repository';
 import { CreateUserModule } from './create-user/create-user.module';
 import { UserController } from './user.controller';
 import { UpdateUserModule } from './update-user/update-user.module';
@@ -13,7 +13,7 @@ import { PreventManagerAdminAccessGuard } from '../../authorization/guards/preve
   providers: [
     {
       provide: UserRepository,
-      useClass: UserRepositoryImpl,
+      useClass: PrismaUserRepository,
     },
     PreventManagerAdminAccessGuard,
   ],

@@ -4,8 +4,8 @@ import { PrismaModule } from 'src/providers/prisma/prisma.module';
 import { CreateZoneModule } from './create-zone/create-zone.module';
 import { UpdateZoneModule } from './update-zone/update-zone.module';
 import { DeleteZoneModule } from './delete-zone/delete-zone.module';
-import { ZoneRepository } from './repositories/zone.repository-abstract';
-import { ZoneRepositoryImpl } from './repositories/zone.repository-implementation';
+import { ZoneRepository } from './repositories/zone-repository.abstract';
+import { PrismaZoneRepository } from './repositories/prisma-zone-repository';
 import { GetZonesModule } from './get-zones/get-zones.module';
 
 @Global()
@@ -13,7 +13,7 @@ import { GetZonesModule } from './get-zones/get-zones.module';
   providers: [
     {
       provide: ZoneRepository,
-      useClass: ZoneRepositoryImpl,
+      useClass: PrismaZoneRepository,
     },
   ],
   imports: [

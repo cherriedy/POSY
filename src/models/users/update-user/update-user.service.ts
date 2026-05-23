@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../repositories/user.repository-abstract';
+import { UserRepository } from '../repositories/user-repository.abstract';
 import { UserNotFoundError } from '../errors/user-not-found.error';
 import { hash } from '../../../common/utilities/hash.util';
 import { UnnecessaryOperationError } from '../../../common/errors/unnecessary-operation.error';

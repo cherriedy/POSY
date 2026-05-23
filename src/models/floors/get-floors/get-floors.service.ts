@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FloorRepository } from '../repositories/floor.repository-abstract';
+import { FloorRepository } from '../repositories/floor-repository.abstract';
 import { Page } from '../../../common/interfaces/page.interface';
 import { Floor } from '../types/floor.class';
 import { FloorNotFoundException } from '../exceptions/floor-not-found.exception';

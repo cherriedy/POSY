@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../repositories/user.repository-abstract';
+import { UserRepository } from '../repositories/user-repository.abstract';
 import { User } from '../types/user.class';
 import { UserNotFoundError } from '../errors/user-not-found.error';
 import { UserQueryParams } from '../interfaces/user-query-params.interface';

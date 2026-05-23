@@ -13,7 +13,7 @@ import { OrderRepository } from '../shared/repositories/order-repository.abstrac
 import { UserIdentity } from '../../../authentication/interfaces/user-identity.interface';
 import { UpdateOrderStatusDto } from '../shared/dto/update-order-status.dto';
 import { UnsupportedValueException } from '../../../common/exceptions/unsupported-value.exception';
-import { TableRepository } from 'src/models/tables/repositories/table.repository-abstract';
+import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';
 import { TableStatus } from 'src/models/tables/enums/table-status.enum';
 
 @Injectable()

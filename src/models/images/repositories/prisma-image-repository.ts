@@ -1,4 +1,4 @@
-import { ImageRepository } from './image.repository-abstract';
+import { ImageRepository } from './image-repository.abstract';
 import { Image } from '../types/image.class';
 import { ImageMapper } from '../types/image.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
@@ -8,7 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { ImageNotFoundError } from '../errors/image-not-found.error';
 
 @Injectable()
-export class ImageRepositoryImpl implements ImageRepository {
+export class PrismaImageRepository implements ImageRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   /**

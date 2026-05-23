@@ -14,7 +14,7 @@ import { OrderItemRepository } from '../../repositories/order-item-repository.ab
 import { OrderRepository } from '../../repositories/order-repository.abstract';
 import { UnitOfWork } from '../../../../../common/unit-of-works/unit-of-work.abstract';
 import { TableSessionRepository } from 'src/models/table-sessions/shared/repositories/table-session-repository.abstract';
-import { TableRepository } from 'src/models/tables/repositories/table.repository-abstract';
+import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';
 import { TableStatus } from 'src/models/tables/enums/table-status.enum';
 
 @Injectable()

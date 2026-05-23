@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../../models/users/repositories/user.repository-abstract';
+import { UserRepository } from '../../models/users/repositories/user-repository.abstract';
 import { SignInDto } from '../dto/sign-in.dto';
 import { AccountLockedError } from '../errors/account-locked.error';
 import { InvalidCredentialsError } from '../errors/invalid-credentials.error';
