@@ -1,12 +1,8 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
-  Inject,
-  InternalServerErrorException,
-  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -31,9 +27,6 @@ import { ProductIngredientResponseDto } from './dto/product-ingredient-response.
 import { ProductIngredientBulkDeleteRequestDto } from './dto/product-ingredient-bulk-delete-request.dto';
 import { ProductIngredientBulkDeleteItemResponseDto, ProductIngredientBulkDeleteResponseDto } from './dto/product-ingredient-bulk-delete-response.dto';
 import { ProductIngredientBulkUpsertRequestDto } from './dto/product-ingredient-bulk-upsert-request.dto';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../common/exceptions/ForeignKeyViolationException';
 import { plainToInstance } from 'class-transformer';
 import { CreateProductService } from './create-product/create-product.service';
 import { UpdateProductService } from './update-product/update-product.service';
@@ -66,9 +59,6 @@ import { RemoveProductIngredientService } from './remove-product-ingredient/remo
 @ApiBearerAuth()
 @Controller('products')
 export class ProductController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: import('winston').Logger;
-
   constructor(
     private readonly getProductsService: GetProductsService,
     private readonly createProductService: CreateProductService,
@@ -88,9 +78,9 @@ export class ProductController {
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
     summary: 'Get all products',
-    description: `Returns a paginated list of all products. Accessible by all authenticated users. 
-    Non-admin users can only see non-deleted products. Admin users can see all products including 
-    deleted ones by setting isDeleted filter. Supports filtering by query parameters such as price, 
+    description: `Returns a paginated list of all products. Accessible by all authenticated users.
+    Non-admin users can only see non-deleted products. Admin users can see all products including
+    deleted ones by setting isDeleted filter. Supports filtering by query parameters such as price,
     category, discount type, stock, etc. Used for listing and searching products.`,
   })
   @ApiQuery({ name: 'query', required: false, type: ProductQueryParamsDto })
@@ -100,27 +90,20 @@ export class ProductController {
     schema: createPageResponseSchema(ProductPreviewResponseDto),
   })
   async getAll(@Query() query: ProductQueryParamsDto, @Req() req: Request) {
-    try {
-      const role = (req.user as JwtPayload).role;
-      const queryParams = query.toQueryParams();
+    const role = (req.user as JwtPayload).role;
+    const queryParams = query.toQueryParams();
 
-      // Non-admin users cannot see deleted products
-      if (role !== Role.ADMIN.toString()) {
-        if (!queryParams.filter) queryParams.filter = {};
-        queryParams.filter.isDeleted = false;
-      }
-
-      const products = await this.getProductsService.getAll(queryParams);
-      const items = plainToInstance(ProductPreviewResponseDto, products.items, {
-        excludeExtraneousValues: true,
-      });
-      return { ...products, items };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
+    // Non-admin users cannot see deleted products
+    if (role !== Role.ADMIN.toString()) {
+      if (!queryParams.filter) queryParams.filter = {};
+      queryParams.filter.isDeleted = false;
     }
+
+    const products = await this.getProductsService.getAll(queryParams);
+    const items = plainToInstance(ProductPreviewResponseDto, products.items, {
+      excludeExtraneousValues: true,
+    });
+    return { ...products, items };
   }
 
   // ────────────────────────────────
@@ -134,25 +117,18 @@ export class ProductController {
     description: 'Returns available and non-deleted products',
   })
   async getAvailableProducts(): Promise<ProductPreviewResponseDto[]> {
-    try {
-      const productPage = await this.getProductsService.getAll({
-        filter: {
-          isAvailable: true,
-          isDeleted: false,
-        },
-        page: 1,
-        pageSize: 1000,
-      });
+    const productPage = await this.getProductsService.getAll({
+      filter: {
+        isAvailable: true,
+        isDeleted: false,
+      },
+      page: 1,
+      pageSize: 1000,
+    });
 
-      return plainToInstance(ProductPreviewResponseDto, productPage.items, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return plainToInstance(ProductPreviewResponseDto, productPage.items, {
+      excludeExtraneousValues: true,
+    });
   }
 
   // ────────────────────────────────
@@ -162,7 +138,7 @@ export class ProductController {
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
     summary: 'Get product by ID',
-    description: `Fetches detailed information for a specific product by its unique ID. Accessible by 
+    description: `Fetches detailed information for a specific product by its unique ID. Accessible by
     all authenticated users. Non-admin users cannot access deleted products. Returns 400 if the product
     is not found or if a non-admin user tries to access a deleted product.`,
   })
@@ -177,28 +153,17 @@ export class ProductController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Req() req: Request,
   ) {
-    try {
-      const userRole = (req.user as JwtPayload).role;
-      const product = await this.getProductsService.getById(id);
+    const userRole = (req.user as JwtPayload).role;
+    const product = await this.getProductsService.getById(id);
 
-      // Non-admin users cannot access deleted products
-      if (userRole !== Role.ADMIN.toString() && product.isDeleted) {
-        // noinspection ExceptionCaughtLocallyJS
-        throw new ProductNotFoundException(id);
-      }
-
-      return plainToInstance(ProductDetailedResponseDto, product, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof ProductNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
+    // Non-admin users cannot access deleted products
+    if (userRole !== Role.ADMIN.toString() && product.isDeleted) {
+      throw new ProductNotFoundException(id);
     }
+
+    return plainToInstance(ProductDetailedResponseDto, product, {
+      excludeExtraneousValues: true,
+    });
   }
 
   // ────────────────────────────────
@@ -209,7 +174,7 @@ export class ProductController {
   @Roles(Role.ADMIN)
   @ApiOperation({
     summary: 'Create a new product',
-    description: `Creates a new product with the provided details. Optionally create product attributes 
+    description: `Creates a new product with the provided details. Optionally create product attributes
     along with the product by providing an 'attributes' field in the request body. Only accessible by
     ADMIN role. Returns the created product preview. Throws 400 for duplicate entries.`,
   })
@@ -221,27 +186,11 @@ export class ProductController {
   })
   @ApiResponse({ status: 400, description: 'Duplicate entry' })
   async create(@Body() dto: CreateProductDto) {
-    try {
-      const payload = CreateProductMapper.toPayload(dto);
-      const product = await this.createProductService.create(payload);
-      return plainToInstance(ProductPreviewResponseDto, product, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      } else if (e instanceof ForeignKeyViolationException) {
-        const message = {
-          message: e.message,
-          details: e.details,
-        };
-        throw new BadRequestException(message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const payload = CreateProductMapper.toPayload(dto);
+    const product = await this.createProductService.create(payload);
+    return plainToInstance(ProductPreviewResponseDto, product, {
+      excludeExtraneousValues: true,
+    });
   }
 
   // ────────────────────────────────
@@ -270,25 +219,13 @@ export class ProductController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: UpdateProductDto,
   ) {
-    try {
-      const product = await this.updateProductService.update(
-        id,
-        dto as unknown as Partial<Product>,
-      );
-      return plainToInstance(ProductPreviewResponseDto, product, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof ProductNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const product = await this.updateProductService.update(
+      id,
+      dto as unknown as Partial<Product>,
+    );
+    return plainToInstance(ProductPreviewResponseDto, product, {
+      excludeExtraneousValues: true,
+    });
   }
 
   // ────────────────────────────────
@@ -299,25 +236,15 @@ export class ProductController {
   @Roles(Role.ADMIN)
   @ApiOperation({
     summary: 'Delete a product',
-    description: `Deletes a product by its ID. Only accessible by ADMIN role. 
+    description: `Deletes a product by its ID. Only accessible by ADMIN role.
     Returns a success message. Throws 400 if the product is not found.`,
   })
   @ApiParam({ name: 'id', type: String })
   @ApiResponse({ status: 200, description: 'Product deleted' })
   @ApiResponse({ status: 400, description: 'Product not found' })
   async delete(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      await this.deleteProductService.delete(id);
-      return { message: 'Product deleted successfully.' };
-    } catch (e) {
-      if (e instanceof ProductNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.deleteProductService.delete(id);
+    return { message: 'Product deleted successfully.' };
   }
 
   // ────────────────────────────────
@@ -340,24 +267,14 @@ export class ProductController {
   async getProductAttributes(
     @Param('id', new ParseUUIDPipe()) id: string,
   ): Promise<ProductAttributeResponseDto | null> {
-    try {
-      const attributes =
-        await this.getProductAttributesService.getByProductId(id);
-      if (!attributes) {
-        return null;
-      }
-      return plainToInstance(ProductAttributeResponseDto, attributes, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof ProductNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
+    const attributes =
+      await this.getProductAttributesService.getByProductId(id);
+    if (!attributes) {
+      return null;
     }
+    return plainToInstance(ProductAttributeResponseDto, attributes, {
+      excludeExtraneousValues: true,
+    });
   }
 
   // ────────────────────────────────
@@ -386,26 +303,11 @@ export class ProductController {
     @Param('id', new ParseUUIDPipe()) productId: string,
     @Body() dto: ProductAttributeUpsertRequestDto,
   ): Promise<ProductAttributeResponseDto> {
-    try {
-      const payload = UpsertAttributesMapper.toPayload(productId, dto);
-      const attrs = await this.upsertProductAttributesService.upsert(payload);
-      return plainToInstance(ProductAttributeResponseDto, attrs, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof ProductNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (
-        e instanceof DuplicateEntryException ||
-        e instanceof ForeignKeyViolationException
-      ) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const payload = UpsertAttributesMapper.toPayload(productId, dto);
+    const attrs = await this.upsertProductAttributesService.upsert(payload);
+    return plainToInstance(ProductAttributeResponseDto, attrs, {
+      excludeExtraneousValues: true,
+    });
   }
 
   // ────────────────────────────────
@@ -427,22 +329,12 @@ export class ProductController {
   async getProductIngredients(
     @Param('id', new ParseUUIDPipe()) productId: string,
   ): Promise<ProductIngredientResponseDto[]> {
-    try {
-      const ingredients =
-        await this.getProductIngredientsService.getByProductId(productId);
+    const ingredients =
+      await this.getProductIngredientsService.getByProductId(productId);
 
-      return plainToInstance(ProductIngredientResponseDto, ingredients, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof ProductNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return plainToInstance(ProductIngredientResponseDto, ingredients, {
+      excludeExtraneousValues: true,
+    });
   }
 
   // ────────────────────────────────
@@ -471,26 +363,11 @@ export class ProductController {
     @Param('id', new ParseUUIDPipe()) productId: string,
     @Body() dto: ProductIngredientBulkUpsertRequestDto,
   ): Promise<ProductIngredientResponseDto[]> {
-    try {
-      const payload = UpsertProductIngredientsMapper.toPayload(productId, dto);
-      const result = await this.upsertProductIngredientsService.upsert(payload);
-      return plainToInstance(ProductIngredientResponseDto, result, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof ProductNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (
-        e instanceof DuplicateEntryException ||
-        e instanceof ForeignKeyViolationException
-      ) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const payload = UpsertProductIngredientsMapper.toPayload(productId, dto);
+    const result = await this.upsertProductIngredientsService.upsert(payload);
+    return plainToInstance(ProductIngredientResponseDto, result, {
+      excludeExtraneousValues: true,
+    });
   }
 
   // ────────────────────────────────
@@ -501,8 +378,8 @@ export class ProductController {
   @Roles(Role.MANAGER, Role.ADMIN)
   @ApiOperation({
     summary: 'Remove ingredients from product',
-    description: `Bulk-removes ingredients from a product using the Per-Item Result pattern. 
-    Provide an array of ingredient IDs to remove. Each ingredient is processed independently 
+    description: `Bulk-removes ingredients from a product using the Per-Item Result pattern.
+    Provide an array of ingredient IDs to remove. Each ingredient is processed independently
     within its own transaction.`,
   })
   @ApiParam({ name: 'id', type: String, description: 'Product ID' })
@@ -516,35 +393,28 @@ export class ProductController {
     @Param('id', new ParseUUIDPipe()) productId: string,
     @Body() dto: ProductIngredientBulkDeleteRequestDto,
   ): Promise<ProductIngredientBulkDeleteResponseDto> {
-    try {
-      const results = await this.removeProductIngredientService.bulkDelete(
-        RemoveProductIngredientMapper.toPayload(productId, dto),
-      );
-      const items = plainToInstance(
-        ProductIngredientBulkDeleteItemResponseDto,
-        results.map((r) => ({
-          id: r.id,
-          status: r.status,
-          error: r.error,
-        })),
-        { excludeExtraneousValues: true },
-      );
+    const results = await this.removeProductIngredientService.bulkDelete(
+      RemoveProductIngredientMapper.toPayload(productId, dto),
+    );
+    const items = plainToInstance(
+      ProductIngredientBulkDeleteItemResponseDto,
+      results.map((r) => ({
+        id: r.id,
+        status: r.status,
+        error: r.error,
+      })),
+      { excludeExtraneousValues: true },
+    );
 
-      return plainToInstance(
-        ProductIngredientBulkDeleteResponseDto,
-        {
-          items,
-          total: items.length,
-          succeeded: items.filter((i) => i.status === 'SUCCEED').length,
-          failed: items.filter((i) => i.status === 'FAILED').length,
-        },
-        { excludeExtraneousValues: true },
-      );
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return plainToInstance(
+      ProductIngredientBulkDeleteResponseDto,
+      {
+        items,
+        total: items.length,
+        succeeded: items.filter((i) => i.status === 'SUCCEED').length,
+        failed: items.filter((i) => i.status === 'FAILED').length,
+      },
+      { excludeExtraneousValues: true },
+    );
   }
 }

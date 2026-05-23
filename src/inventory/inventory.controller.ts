@@ -1,8 +1,6 @@
 import {
   Controller,
   Get,
-  InternalServerErrorException,
-  NotFoundException,
   Post,
   Query,
   UseGuards,
@@ -52,61 +50,57 @@ export class InventoryController {
   async getOverview(
     @Query('target_date') target?: string,
   ): Promise<IngredientOverviewResponseDto> {
-    try {
-      const formatDateLocal = (date: Date) => {
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-      };
+    const formatDateLocal = (date: Date) => {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    };
 
-      let targetDate: Date;
-      if (!target) {
-        targetDate = new Date();
-        targetDate.setDate(targetDate.getDate() + 1);
-      } else {
-        const [y, m, d] = target.split('-').map(Number);
-        targetDate = new Date(y, m - 1, d); // local time
-      }
-      console.log('target:', target);
-      console.log('targetDate:', targetDate);
-
-      const { overview } =
-        await this.ingredientForecastService.getOverview(targetDate);
-
-      const items = overview.map((item) => ({
-        ingredient_id: item.ingredientId,
-        name: item.name,
-        unit: item.unit,
-        current_stock: item.currentStock,
-        predicted_usage: item.predictedUsage,
-        upper_bound: item.upperBound,
-        stock_status: item.stockStatus,
-      }));
-
-      const meta = {
-        target_date: formatDateLocal(targetDate),
-        total_ingredients: items.length,
-        danger_count: items.filter((a) => {
-          return a.stock_status === StockStatus.DANGER;
-        }).length,
-        warning_count: items.filter((a) => {
-          return a.stock_status === StockStatus.WARNING;
-        }).length,
-      };
-
-      console.log('targetDate local:', formatDateLocal(targetDate));
-
-      return plainToInstance(
-        IngredientOverviewResponseDto,
-        {
-          meta,
-          items,
-        },
-        {
-          excludeExtraneousValues: true,
-        },
-      );
-    } catch {
-      throw new InternalServerErrorException('Failed to fetch overview');
+    let targetDate: Date;
+    if (!target) {
+      targetDate = new Date();
+      targetDate.setDate(targetDate.getDate() + 1);
+    } else {
+      const [y, m, d] = target.split('-').map(Number);
+      targetDate = new Date(y, m - 1, d); // local time
     }
+    console.log('target:', target);
+    console.log('targetDate:', targetDate);
+
+    const { overview } =
+      await this.ingredientForecastService.getOverview(targetDate);
+
+    const items = overview.map((item) => ({
+      ingredient_id: item.ingredientId,
+      name: item.name,
+      unit: item.unit,
+      current_stock: item.currentStock,
+      predicted_usage: item.predictedUsage,
+      upper_bound: item.upperBound,
+      stock_status: item.stockStatus,
+    }));
+
+    const meta = {
+      target_date: formatDateLocal(targetDate),
+      total_ingredients: items.length,
+      danger_count: items.filter((a) => {
+        return a.stock_status === StockStatus.DANGER;
+      }).length,
+      warning_count: items.filter((a) => {
+        return a.stock_status === StockStatus.WARNING;
+      }).length,
+    };
+
+    console.log('targetDate local:', formatDateLocal(targetDate));
+
+    return plainToInstance(
+      IngredientOverviewResponseDto,
+      {
+        meta,
+        items,
+      },
+      {
+        excludeExtraneousValues: true,
+      },
+    );
   }
 
   @Get('chart')
@@ -126,43 +120,36 @@ export class InventoryController {
   async getIngredientForecastChart(
     @Query() query: ForecastChartQueryParamsDto,
   ): Promise<ForecastChartResponseDto> {
-    try {
-      const { history, forecast, ingredientInfo } =
-        await this.ingredientForecastService.getIngredientForecastChart(
-          query.ingredientId,
-          query.historyDays,
-          query.forecastDays,
-        );
+    const { history, forecast, ingredientInfo } =
+      await this.ingredientForecastService.getIngredientForecastChart(
+        query.ingredientId,
+        query.historyDays,
+        query.forecastDays,
+      );
 
-      return plainToInstance(
-        ForecastChartResponseDto,
-        {
-          items: {
-            ingredient_info: ingredientInfo,
-            chart_data: {
-              // d = date, y = quantity used
-              history: history.map((h) => ({
-                d: h.usageDate.toISOString().split('T')[0],
-                y: h.quantityUsed,
-              })),
-              // d = date, y = predicted, l = lower bound, u = upper bound
-              forecast: forecast.map((f) => ({
-                d: f.forecast_date.toISOString().split('T')[0],
-                y: Number(f.predicted_usage),
-                l: Number(f.lower_bound),
-                u: Number(f.upper_bound),
-              })),
-            },
+    return plainToInstance(
+      ForecastChartResponseDto,
+      {
+        items: {
+          ingredient_info: ingredientInfo,
+          chart_data: {
+            // d = date, y = quantity used
+            history: history.map((h) => ({
+              d: h.usageDate.toISOString().split('T')[0],
+              y: h.quantityUsed,
+            })),
+            // d = date, y = predicted, l = lower bound, u = upper bound
+            forecast: forecast.map((f) => ({
+              d: f.forecast_date.toISOString().split('T')[0],
+              y: Number(f.predicted_usage),
+              l: Number(f.lower_bound),
+              u: Number(f.upper_bound),
+            })),
           },
         },
-        { excludeExtraneousValues: true },
-      );
-    } catch (e) {
-      if (e instanceof NotFoundException) throw e;
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+      },
+      { excludeExtraneousValues: true },
+    );
   }
 
   @Post('trigger')
@@ -186,13 +173,7 @@ export class InventoryController {
     description: 'Failed to trigger forecast recalculation',
   })
   async triggerRecalculation(@Query('forecast_days') forecastDays?: number) {
-    try {
-      await this.ingredientForecastService.triggerForecastUpdate(forecastDays);
-      return { message: 'Forecast recalculation triggered successfully' };
-    } catch {
-      throw new InternalServerErrorException(
-        'Failed to trigger forecast recalculation',
-      );
-    }
+    await this.ingredientForecastService.triggerForecastUpdate(forecastDays);
+    return { message: 'Forecast recalculation triggered successfully' };
   }
 }

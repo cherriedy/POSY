@@ -1,13 +1,9 @@
 /* eslint-disable */
 import {
-  BadRequestException,
   CanActivate,
   ExecutionContext,
-  InternalServerErrorException,
-  NotFoundException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 
@@ -26,8 +22,8 @@ import { RemoveProductIngredientService } from './remove-product-ingredient/remo
 import { CreateProductMapper } from './create-product/create-product.mapper';
 
 import { ProductNotFoundException } from './exceptions/product-not-found.exception';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../common/exceptions/ForeignKeyViolationException';
+import { DuplicateEntryError } from '../../common/errors/duplicate-entry.error';
+import { ForeignKeyViolationError } from '../../common/errors/foreign-key-violation.error';
 
 import { CreateProductDto } from './dto/product-create-request';
 import { UpdateProductDto } from './dto/product-update-request';
@@ -38,8 +34,6 @@ import { Role } from '../../common/enums/role.enum';
 import { Request } from 'express';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
-
-const mockLogger = { error: jest.fn(), log: jest.fn(), warn: jest.fn() };
 
 const mockRequest = (role: string): Partial<Request> => ({
   user: { role, sub: 'user-id' },
@@ -79,7 +73,6 @@ describe('ProductController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ProductController],
       providers: [
-        { provide: WINSTON_MODULE_NEST_PROVIDER, useValue: mockLogger },
         { provide: GetProductsService, useValue: mockGetProductsService },
         { provide: CreateProductService, useValue: mockCreateProductService },
         { provide: UpdateProductService, useValue: mockUpdateProductService },
@@ -145,12 +138,12 @@ describe('ProductController', () => {
       );
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockGetProductsService.getAll.mockRejectedValue(new Error('DB error'));
 
       await expect(
         controller.getAll(query, mockRequest(Role.ADMIN) as Request),
-      ).rejects.toThrow(InternalServerErrorException);
+      ).rejects.toThrow(Error);
     });
   });
 
@@ -171,12 +164,10 @@ describe('ProductController', () => {
       expect(result).toBeInstanceOf(Array);
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockGetProductsService.getAll.mockRejectedValue(new Error('fail'));
 
-      await expect(controller.getAvailableProducts()).rejects.toThrow(
-        InternalServerErrorException,
-      );
+      await expect(controller.getAvailableProducts()).rejects.toThrow(Error);
     });
   });
 
@@ -198,7 +189,7 @@ describe('ProductController', () => {
       expect(result).toBeDefined();
     });
 
-    it('throws NotFoundException when non-admin accesses a deleted product', async () => {
+    it('throws ProductNotFoundException when non-admin accesses a deleted product', async () => {
       mockGetProductsService.getById.mockResolvedValue({
         id: productId,
         isDeleted: true,
@@ -206,7 +197,7 @@ describe('ProductController', () => {
 
       await expect(
         controller.getById(productId, mockRequest(Role.MANAGER) as Request),
-      ).rejects.toThrow(NotFoundException);
+      ).rejects.toThrow(ProductNotFoundException);
     });
 
     it('allows admin to access deleted product', async () => {
@@ -221,22 +212,22 @@ describe('ProductController', () => {
       expect(result).toBeDefined();
     });
 
-    it('throws NotFoundException when product not found', async () => {
+    it('throws ProductNotFoundException when product not found', async () => {
       mockGetProductsService.getById.mockRejectedValue(
         new ProductNotFoundException(productId),
       );
 
       await expect(
         controller.getById(productId, mockRequest(Role.ADMIN) as Request),
-      ).rejects.toThrow(NotFoundException);
+      ).rejects.toThrow(ProductNotFoundException);
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockGetProductsService.getById.mockRejectedValue(new Error('unexpected'));
 
       await expect(
         controller.getById(productId, mockRequest(Role.ADMIN) as Request),
-      ).rejects.toThrow(InternalServerErrorException);
+      ).rejects.toThrow(Error);
     });
   });
 
@@ -256,33 +247,31 @@ describe('ProductController', () => {
       expect(result).toBeDefined();
     });
 
-    it('throws BadRequestException on DuplicateEntryException', async () => {
+    it('throws DuplicateEntryError on DuplicateEntryError', async () => {
       jest.spyOn(CreateProductMapper, 'toPayload').mockReturnValue({} as any);
       mockCreateProductService.create.mockRejectedValue(
-        new DuplicateEntryException('duplicate'),
+        new DuplicateEntryError('duplicate'),
       );
 
-      await expect(controller.create(dto)).rejects.toThrow(BadRequestException);
+      await expect(controller.create(dto)).rejects.toThrow(DuplicateEntryError);
     });
 
-    it('throws BadRequestException on ForeignKeyViolationException', async () => {
+    it('throws ForeignKeyViolationError on ForeignKeyViolationError', async () => {
       jest.spyOn(CreateProductMapper, 'toPayload').mockReturnValue({} as any);
       mockCreateProductService.create.mockRejectedValue(
-        new ForeignKeyViolationException({}),
+        new ForeignKeyViolationError({}),
       );
 
-      await expect(controller.create(dto)).rejects.toThrow(BadRequestException);
+      await expect(controller.create(dto)).rejects.toThrow(ForeignKeyViolationError);
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       jest.spyOn(CreateProductMapper, 'toPayload').mockReturnValue({} as any);
       mockCreateProductService.create.mockRejectedValue(
         new Error('unexpected'),
       );
 
-      await expect(controller.create(dto)).rejects.toThrow(
-        InternalServerErrorException,
-      );
+      await expect(controller.create(dto)).rejects.toThrow(Error);
     });
   });
 
@@ -305,34 +294,32 @@ describe('ProductController', () => {
       expect(result).toBeDefined();
     });
 
-    it('throws NotFoundException when product not found', async () => {
+    it('throws ProductNotFoundException when product not found', async () => {
       mockUpdateProductService.update.mockRejectedValue(
         new ProductNotFoundException(productId),
       );
 
       await expect(controller.update(productId, dto)).rejects.toThrow(
-        NotFoundException,
+        ProductNotFoundException,
       );
     });
 
-    it('throws BadRequestException on DuplicateEntryException', async () => {
+    it('throws DuplicateEntryError on DuplicateEntryError', async () => {
       mockUpdateProductService.update.mockRejectedValue(
-        new DuplicateEntryException('duplicate'),
+        new DuplicateEntryError('duplicate'),
       );
 
       await expect(controller.update(productId, dto)).rejects.toThrow(
-        BadRequestException,
+        DuplicateEntryError,
       );
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockUpdateProductService.update.mockRejectedValue(
         new Error('unexpected'),
       );
 
-      await expect(controller.update(productId, dto)).rejects.toThrow(
-        InternalServerErrorException,
-      );
+      await expect(controller.update(productId, dto)).rejects.toThrow(Error);
     });
   });
 
@@ -350,24 +337,22 @@ describe('ProductController', () => {
       expect(result).toEqual({ message: 'Product deleted successfully.' });
     });
 
-    it('throws NotFoundException when product not found', async () => {
+    it('throws ProductNotFoundException when product not found', async () => {
       mockDeleteProductService.delete.mockRejectedValue(
         new ProductNotFoundException(productId),
       );
 
       await expect(controller.delete(productId)).rejects.toThrow(
-        NotFoundException,
+        ProductNotFoundException,
       );
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockDeleteProductService.delete.mockRejectedValue(
         new Error('unexpected'),
       );
 
-      await expect(controller.delete(productId)).rejects.toThrow(
-        InternalServerErrorException,
-      );
+      await expect(controller.delete(productId)).rejects.toThrow(Error);
     });
   });
 
@@ -396,13 +381,13 @@ describe('ProductController', () => {
       expect(result).toBeNull();
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockGetAttributesService.getByProductId.mockRejectedValue(
         new Error('unexpected'),
       );
 
       await expect(controller.getProductAttributes(productId)).rejects.toThrow(
-        InternalServerErrorException,
+        Error,
       );
     });
   });
@@ -425,34 +410,34 @@ describe('ProductController', () => {
       expect(result).toBeDefined();
     });
 
-    it('throws BadRequestException on DuplicateEntryException', async () => {
+    it('throws DuplicateEntryError on DuplicateEntryError', async () => {
       mockUpsertAttributesService.upsert.mockRejectedValue(
-        new DuplicateEntryException('duplicate'),
+        new DuplicateEntryError('duplicate'),
       );
 
       await expect(
         controller.upsertProductAttributes(productId, dto),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow(DuplicateEntryError);
     });
 
-    it('throws BadRequestException on ForeignKeyViolationException', async () => {
+    it('throws ForeignKeyViolationError on ForeignKeyViolationError', async () => {
       mockUpsertAttributesService.upsert.mockRejectedValue(
-        new ForeignKeyViolationException({}),
+        new ForeignKeyViolationError({}),
       );
 
       await expect(
         controller.upsertProductAttributes(productId, dto),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow(ForeignKeyViolationError);
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockUpsertAttributesService.upsert.mockRejectedValue(
         new Error('unexpected'),
       );
 
       await expect(
         controller.upsertProductAttributes(productId, dto),
-      ).rejects.toThrow(InternalServerErrorException);
+      ).rejects.toThrow(Error);
     });
   });
 
@@ -475,13 +460,13 @@ describe('ProductController', () => {
       expect(result).toBeInstanceOf(Array);
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockGetProductIngredientsService.getByProductId.mockRejectedValue(
         new Error('unexpected'),
       );
 
       await expect(controller.getProductIngredients(productId)).rejects.toThrow(
-        InternalServerErrorException,
+        Error,
       );
     });
   });
@@ -511,33 +496,33 @@ describe('ProductController', () => {
       expect(result).toBeInstanceOf(Array);
     });
 
-    it('throws BadRequestException on DuplicateEntryException', async () => {
+    it('throws DuplicateEntryError on DuplicateEntryError', async () => {
       jest
         .spyOn(UpsertProductIngredientsMapper, 'toPayload')
         .mockReturnValue({} as any);
       mockUpsertProductIngredientsService.upsert.mockRejectedValue(
-        new DuplicateEntryException('duplicate'),
+        new DuplicateEntryError('duplicate'),
       );
 
       await expect(
         controller.upsertProductIngredients(productId, dto),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow(DuplicateEntryError);
     });
 
-    it('throws BadRequestException on ForeignKeyViolationException', async () => {
+    it('throws ForeignKeyViolationError on ForeignKeyViolationError', async () => {
       jest
         .spyOn(UpsertProductIngredientsMapper, 'toPayload')
         .mockReturnValue({} as any);
       mockUpsertProductIngredientsService.upsert.mockRejectedValue(
-        new ForeignKeyViolationException({}),
+        new ForeignKeyViolationError({}),
       );
 
       await expect(
         controller.upsertProductIngredients(productId, dto),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow(ForeignKeyViolationError);
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       jest
         .spyOn(UpsertProductIngredientsMapper, 'toPayload')
         .mockReturnValue({} as any);
@@ -547,7 +532,7 @@ describe('ProductController', () => {
 
       await expect(
         controller.upsertProductIngredients(productId, dto),
-      ).rejects.toThrow(InternalServerErrorException);
+      ).rejects.toThrow(Error);
     });
   });
 
@@ -607,14 +592,14 @@ describe('ProductController', () => {
       });
     });
 
-    it('throws InternalServerErrorException on unexpected error', async () => {
+    it('throws Error on unexpected error', async () => {
       mockRemoveProductIngredientService.bulkDelete.mockRejectedValue(
         new Error('unexpected'),
       );
 
       await expect(
         controller.DeleteProductIngredients(productId, dto),
-      ).rejects.toThrow(InternalServerErrorException);
+      ).rejects.toThrow(Error);
     });
   });
 });
