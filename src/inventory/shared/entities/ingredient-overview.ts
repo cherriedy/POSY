@@ -1,4 +1,4 @@
-import { StockStatus } from '../enum/stock-status.enum';
+import { StockStatus } from '../enums/stock-status.enum';
 
 /**
  * Represents a combined view of an ingredient's forecast and current stock

@@ -37,7 +37,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { PromotionProductPreviewResponseDto } from './dto/promotion-product-response.dto';
-import { createPageResponseSchema } from '../../common/dto/page-response';
+import { createPageResponseSchema } from '../../common/dto/page-response.dto';
 import { ReplacePromotionProductService } from './replace-products/replace-products.service';
 import { ReplacePromotionCategoriesService } from './replace-categories/replace-categories.service';
 import { BulkReplacePromotionCategoryDto } from './dto/promotion-category-replace.dto';
@@ -46,7 +46,7 @@ import { GetAvailablePromotionsService } from './get-available-promotions/get-av
 import {
   PromotionAvailableListResponseDto,
   PromotionAvailableResponseDto,
-} from './dto/promotion-available.response';
+} from './dto/promotion-available-response.dto';
 
 @ApiTags('Promotions')
 @ApiBearerAuth()

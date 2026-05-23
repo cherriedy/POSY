@@ -1,4 +1,4 @@
-import { SessionProductInteractionRepository } from './spi-repository.abstract';
+import { SessionProductInteractionRepository } from './session-product-interaction-repository.abstract';
 import { SessionProductInteraction } from '../entities/session-product-interaction';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 

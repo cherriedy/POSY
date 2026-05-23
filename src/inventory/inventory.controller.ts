@@ -19,7 +19,7 @@ import { IngredientForecastService } from './features/ingredient-forecast.servic
 import { ForecastChartQueryParamsDto } from './shared/dto/forecast-chart-query-params.dto';
 import { ForecastChartResponseDto } from './shared/dto/forecast-chart-response.dto';
 import { IngredientOverviewResponseDto } from './shared/dto/ingredient-overview-response.dto';
-import { StockStatus } from './shared/enum/stock-status.enum';
+import { StockStatus } from './shared/enums/stock-status.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../authorization/guards/role.guard';
 import { Role } from '../common/enums/role.enum';

@@ -1,6 +1,6 @@
-import { TaxableEntityReference } from '../interfaces/taxable-entity-reference';
-import { BulkOperationStatus } from '../../../common/types/bulk-operation.type';
-import { EntityTaxConfig } from '../entities/entity-tax-config';
+import { TaxableEntityReference } from '../../interfaces/taxable-entity-reference';
+import { BulkOperationStatus } from '../../../../common/types/bulk-operation.type';
+import { EntityTaxConfig } from '../../entities/entity-tax-config';
 
 /**
  * Represents an individual item in a bulk tax association upsert operation, including the entity reference,

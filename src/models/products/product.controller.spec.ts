@@ -25,8 +25,8 @@ import { ProductNotFoundException } from './exceptions/product-not-found.excepti
 import { DuplicateEntryError } from '../../common/errors/duplicate-entry.error';
 import { ForeignKeyViolationError } from '../../common/errors/foreign-key-violation.error';
 
-import { CreateProductDto } from './dto/product-create-request';
-import { UpdateProductDto } from './dto/product-update-request';
+import { CreateProductDto } from './dto/product-create-request.dto';
+import { UpdateProductDto } from './dto/product-update-request.dto';
 import { ProductQueryParamsDto } from './dto/product-query-params.dto';
 import { ProductAttributeUpsertRequestDto } from './dto/product-attribute-upsert-request.dto';
 import { ProductIngredientBulkUpsertRequestDto } from './dto/product-ingredient-bulk-upsert-request.dto';

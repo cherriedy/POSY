@@ -1,9 +1,9 @@
-import { CreateProductDto } from '../dto/product-create-request';
+import { CreateProductDto } from '../dto/product-create-request.dto';
 import {
   ProductAttributesUpsertPayload,
   ProductCreatePayload,
   ProductIngredientBulkUpsertItemPayload,
-} from '../interfaces/product-payloads';
+} from '../interfaces/product-payloads.interface';
 
 /**
  * Transformer to convert CreateProductDto to CreateProductPayload.

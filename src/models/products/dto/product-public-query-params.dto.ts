@@ -12,7 +12,7 @@ import {
   ProductOrderBy,
   ProductQueryParams,
   ProductSortField,
-} from '../interfaces/product-query-params';
+} from '../interfaces/product-query-params.interface';
 import { SortDirection } from '../../../common/interfaces/sort-field.interface';
 
 /**

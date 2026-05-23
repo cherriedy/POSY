@@ -2,7 +2,7 @@ import { BaseRepository } from '../../../common/interfaces/base-repository.inter
 import { Page } from '../../../common/interfaces/page.interface';
 import { PaginationParams } from '../../../common/interfaces/pagination-params.interface';
 import { Product } from '../entities/product';
-import { ProductIncludeOptions } from '../interfaces/product-query-params';
+import { ProductIncludeOptions } from '../interfaces/product-query-params.interface';
 
 export abstract class ProductRepository implements BaseRepository<Product> {
   abstract create(entity: Product): Promise<Product>;

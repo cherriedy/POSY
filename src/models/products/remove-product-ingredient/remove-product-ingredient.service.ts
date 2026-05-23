@@ -3,7 +3,7 @@ import { ProductIngredientRepository } from 'src/models/products/repositories/pr
 import {
   ProductIngredientBulkRemovePayload,
   ProductIngredientBulkDeleteResultItem,
-} from '../interfaces/product-payloads';
+} from '../interfaces/product-payloads.interface';
 import { ProductIngredientNotFoundException } from '../exceptions/product-ingredient-not-found.exception';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 

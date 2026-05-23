@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
-import { StockStatus } from '../enum/stock-status.enum';
+import { StockStatus } from '../enums/stock-status.enum';
 
 @Exclude()
 class IngredientOverviewMetaDto {

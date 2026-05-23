@@ -6,7 +6,7 @@ import { Product } from '../entities/product';
 import { ProductAttribute } from '../entities/product-attribute';
 import { ProductIngredient } from '../entities/product-ingredient';
 import { getSlug } from '../../../common/utilities/string.util';
-import { ProductCreatePayload } from '../interfaces/product-payloads';
+import { ProductCreatePayload } from '../interfaces/product-payloads.interface';
 import { MealSession, Taste, DietaryTag, Season } from '../enums/product-attribute.enum';
 import { ProductDiscountType } from '../enums/product.enum';
 import { EventEmitter2 } from '@nestjs/event-emitter';

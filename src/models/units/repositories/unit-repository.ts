@@ -9,7 +9,7 @@ import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-vio
 import { UnitNotFoundException } from '../exceptions/unit-not-found.exception';
 import { Page } from '../../../common/interfaces/page.interface';
 import { paginationConfig } from '../../../common/constants/pagination.config';
-import { UnitOrderBy, UnitQueryFilter, UnitQueryParams } from '../interfaces/unit-query-params.inerface';
+import { UnitOrderBy, UnitQueryFilter, UnitQueryParams } from '../interfaces/unit-query-params.interface';
 import { Prisma } from '@prisma/client';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 
