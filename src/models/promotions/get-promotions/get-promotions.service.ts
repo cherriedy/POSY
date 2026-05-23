@@ -5,9 +5,9 @@ import { PromotionRepository } from '../repositories/promotion-repository.abstra
 import { PromotionQueryParams } from '../interfaces/promotion-query-params.interface';
 import { PromotionNotFoundError } from '../errors/promotion-not-found.error';
 import { Role } from '../../../common/enums/role.enum';
-import { Promotion } from '../types/promotion.class';
-import { PromotionCategory } from '../types/promotion-category.class';
-import { PromotionProduct } from '../types/promotion-product.class';
+import { Promotion } from '../types/promotion';
+import { PromotionCategory } from '../types/promotion-category';
+import { PromotionProduct } from '../types/promotion-product';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 import { ProductNotFoundException } from '../../products/exceptions/product-not-found.exception';
 import { Page } from '../../../common/interfaces/page.interface';

@@ -25,7 +25,7 @@ import { ZoneQueryParamsDto } from './dto/zone-query-params.dto';
 import { ZoneCreateRequestDto } from './dto/zone-create-request.dto';
 import { ZoneUpdateRequestDto } from './dto/zone-update-request.dto';
 import { Page } from '../../common/interfaces/page.interface';
-import { Zone } from './types/zone.class';
+import { Zone } from './types/zone';
 import {
   ApiBearerAuth,
   ApiTags,

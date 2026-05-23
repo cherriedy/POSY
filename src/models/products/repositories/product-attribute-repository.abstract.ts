@@ -1,4 +1,4 @@
-import { ProductAttribute } from '../entities/product-attribute.class';
+import { ProductAttribute } from '../entities/product-attribute';
 
 /**
  * Abstract repository defining the contract for product attribute data access.

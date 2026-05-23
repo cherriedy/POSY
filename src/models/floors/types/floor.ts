@@ -1,4 +1,4 @@
-import { Zone } from 'src/models/zones/types/zone.class';
+import { Zone } from 'src/models/zones/types/zone';
 
 export class Floor {
   constructor(

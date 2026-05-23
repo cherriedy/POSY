@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FloorRepository } from '../repositories/floor-repository.abstract';
 import { Page } from '../../../common/interfaces/page.interface';
-import { Floor } from '../types/floor.class';
+import { Floor } from '../types/floor';
 import { FloorNotFoundException } from '../exceptions/floor-not-found.exception';
 import { FloorQueryParams } from '../interfaces/floor-query-params.interface';
 

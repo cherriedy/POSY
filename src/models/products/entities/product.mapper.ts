@@ -1,5 +1,5 @@
 import { Prisma, Product as PrismaProduct } from '@prisma/client';
-import { Product as DomainProduct } from './product.class';
+import { Product as DomainProduct } from './product';
 import { ProductDiscountType } from '../enums/product.enum';
 import { CategoryMapper } from '../../categories/shared/entities/category.mapper';
 import { ProductAttributeMapper } from './product-attribute.mapper';

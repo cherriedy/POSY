@@ -5,7 +5,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ProductInteractionPayload } from 'src/user-tracking/shared/interfaces/product-interaction-payload';
 import { ProductInteractionType } from 'src/user-tracking/shared/enums/product-interaction-type.enum';
 import { TableSession } from 'src/models/table-sessions/shared/entities/table-session';
-import { Product } from './entities/product.class';
+import { Product } from './entities/product';
 import { ProductNotFoundException } from './exceptions/product-not-found.exception';
 
 @Injectable()

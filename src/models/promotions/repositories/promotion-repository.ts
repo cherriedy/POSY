@@ -1,5 +1,5 @@
 import { PromotionRepository } from './promotion-repository.abstract';
-import { Promotion } from '../types/promotion.class';
+import { Promotion } from '../types/promotion';
 import { PromotionMapper } from '../types/promotion.mapper';
 import { Prisma, PromotionStatus } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';

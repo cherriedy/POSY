@@ -1,4 +1,4 @@
-import { Promotion } from './promotion.class';
+import { Promotion } from './promotion';
 import { Category } from '../../categories/shared/entities/category';
 
 export class PromotionCategory {

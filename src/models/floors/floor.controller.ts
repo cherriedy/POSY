@@ -25,7 +25,7 @@ import { FloorQueryParamsDto } from './dto/floor-query-params.dto';
 import { FloorCreateRequestDto } from './dto/floor-create-request.dto';
 import { FloorUpdateRequestDto } from './dto/floor-update-request.dto';
 import { Page } from '../../common/interfaces/page.interface';
-import { Floor } from './types/floor.class';
+import { Floor } from './types/floor';
 import {
   ApiBearerAuth,
   ApiTags,

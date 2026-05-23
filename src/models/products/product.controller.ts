@@ -48,7 +48,7 @@ import { GetAttributesService } from './get-attributes/get-attributes.service';
 import { UpsertAttributesMapper } from './upsert-attributes/upsert-attributes.mapper';
 import { UpsertAttributesService } from './upsert-attributes/upsert-attributes.service';
 import { CreateProductMapper } from './create-product/create-product.mapper';
-import { Product } from './entities/product.class';
+import { Product } from './entities/product';
 import { GetProductIngredientsService } from './get-product-ingredients/get-product-ingredients.service';
 import { UpsertIngredientsService } from './upsert-ingredients/upsert-ingredients.service';
 import { UpsertProductIngredientsMapper } from './upsert-ingredients/upsert-ingredients.mapper';

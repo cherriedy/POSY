@@ -1,4 +1,4 @@
-import { PricingSnapshotPromotion } from './pricing-snapshot-promotion.class';
+import { PricingSnapshotPromotion } from './pricing-snapshot-promotion';
 import { PricingSnapshotTax } from '../../taxes/entities/pricing-snapshot-tax';
 import { PromotionRedemption } from './promotion-redemption';
 import { Order } from '../../orders/shared/entities/order';

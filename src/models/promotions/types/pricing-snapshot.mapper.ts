@@ -1,4 +1,4 @@
-import { PricingSnapshot as DomainPricingSnapshot } from './pricing-snapshot.class';
+import { PricingSnapshot as DomainPricingSnapshot } from './pricing-snapshot';
 import {
   Prisma,
   PricingSnapshot as PrismaPricingSnapshot,

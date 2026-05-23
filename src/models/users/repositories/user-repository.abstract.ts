@@ -1,4 +1,4 @@
-import { User } from '../types/user.class';
+import { User } from '../types/user';
 import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
 import { Page } from '../../../common/interfaces/page.interface';
 import { UserQueryParams } from '../interfaces/user-query-params.interface';

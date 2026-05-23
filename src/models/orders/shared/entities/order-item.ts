@@ -1,6 +1,6 @@
 import { OrderItemStatus } from '../enums/order-item-status.enum';
 import { Order } from './order';
-import { Product } from '../../../products/entities/product.class';
+import { Product } from '../../../products/entities/product';
 import { OrderTax } from '../../../taxes/entities/order-tax';
 
 export class OrderItem {

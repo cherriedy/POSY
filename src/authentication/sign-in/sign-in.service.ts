@@ -6,7 +6,7 @@ import { InvalidCredentialsError } from '../errors/invalid-credentials.error';
 import { hash, verifyHash } from '../../common/utilities/hash.util';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { AuthTokensSchema } from '../interfaces/auth-tokens-schema.interface';
-import { User } from '../../models/users/types/user.class';
+import { User } from '../../models/users/types/user';
 import { TokenGeneratorsService } from '../common/token-generators/token-generators.service';
 import { authConfig } from '../auth.config';
 

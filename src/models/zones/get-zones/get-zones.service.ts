@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ZoneRepository } from '../repositories/zone-repository.abstract';
 import { Page } from '../../../common/interfaces/page.interface';
-import { Zone } from '../types/zone.class';
+import { Zone } from '../types/zone';
 import { ZoneNotFoundException } from '../exceptions/zone-not-found.exception';
 import { ZoneQueryParams } from '../interfaces/zone-query-params.interface';
 @Injectable()

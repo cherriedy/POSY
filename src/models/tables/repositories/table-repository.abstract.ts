@@ -1,4 +1,4 @@
-import { Table } from '../types/table.class';
+import { Table } from '../types/table';
 import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
 import { Page } from '../../../common/interfaces/page.interface';
 import { TableQueryParams } from '../interfaces/table-query-params.interface';

@@ -25,7 +25,7 @@ import { TableQueryParamsDto } from './dto/table-query-params.dto';
 import { TableCreateRequestDto } from './dto/table-create-request.dto';
 import { TableUpdateRequestDto } from './dto/table-update-request.dto';
 import { Page } from '../../common/interfaces/page.interface';
-import { Table } from './types/table.class';
+import { Table } from './types/table';
 import {
   ApiBearerAuth,
   ApiTags,

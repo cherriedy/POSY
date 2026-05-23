@@ -1,7 +1,7 @@
 import { TableSessionStatus } from '../enums/table-session-status.enum';
 import { TableSessionType } from '../enums/table-session-type.enum';
-import { Table } from '../../../tables/types/table.class';
-import { User } from '../../../users/types/user.class';
+import { Table } from '../../../tables/types/table';
+import { User } from '../../../users/types/user';
 
 /**
  * @description

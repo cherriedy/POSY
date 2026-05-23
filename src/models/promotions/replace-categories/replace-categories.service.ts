@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PromotionCategoryRepository } from '../repositories/promotion-category-repository.abstract';
 import { PromotionRepository } from '../repositories/promotion-repository.abstract';
-import { Promotion } from '../types/promotion.class';
-import { PromotionCategory } from '../types/promotion-category.class';
+import { Promotion } from '../types/promotion';
+import { PromotionCategory } from '../types/promotion-category';
 import { PromotionApplicability } from '../enums/promotion-applicability.enum';
 import { PromotionNotFoundError } from '../errors/promotion-not-found.error';
 import { PromotionUnusableError } from '../errors/promotion-unusable.error';

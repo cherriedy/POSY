@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TableRepository } from '../repositories/table-repository.abstract';
-import { Table } from '../types/table.class';
+import { Table } from '../types/table';
 import { ZoneRepository } from 'src/models/zones/repositories/zone-repository.abstract';
 import { TableNotFoundException } from '../exceptions/table-not-found.exception';
 import { ZoneNotFoundException } from 'src/models/zones/exceptions/zone-not-found.exception';

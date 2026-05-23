@@ -1,5 +1,5 @@
 import { ImageRepository } from './image-repository.abstract';
-import { Image } from '../types/image.class';
+import { Image } from '../types/image';
 import { ImageMapper } from '../types/image.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';

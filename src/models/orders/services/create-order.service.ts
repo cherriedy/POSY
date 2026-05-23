@@ -6,7 +6,7 @@ import { OrderStatus } from '../shared/enums/order-status.enum';
 import { UnitOfWork } from '../../../common/unit-of-works/unit-of-work.abstract';
 import { AtLeastOneItemRequiredException } from '../../../common/exceptions/at-least-one-item-required.exception';
 import { OrderItemPayload } from '../shared/interfaces/order-item-payload.interface';
-import { PricingSnapshot } from '../../promotions/types/pricing-snapshot.class';
+import { PricingSnapshot } from '../../promotions/types/pricing-snapshot';
 import { OrderTax } from '../../taxes/entities/order-tax';
 import { PricingSnapshotTaxRepository } from '../../taxes/repositories/pricing-snapshot-tax-repository.abstract';
 import { TaxType } from '../../taxes/enums/tax-type.enum';

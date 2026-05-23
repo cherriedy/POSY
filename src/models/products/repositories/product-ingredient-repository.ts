@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ProductIngredientRepository } from './product-ingredient-repository.abstract';
-import { ProductIngredient } from '../entities/product-ingredient.class';
+import { ProductIngredient } from '../entities/product-ingredient';
 import { ProductIngredientMapper } from '../entities/product-ingredient.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';

@@ -1,5 +1,5 @@
 import { PromotionCategory as PrismaPromotionCategory } from '@prisma/client';
-import { PromotionCategory as DomainPromotionCategory } from './promotion-category.class';
+import { PromotionCategory as DomainPromotionCategory } from './promotion-category';
 import { PromotionMapper } from './promotion.mapper';
 import { CategoryMapper } from '../../categories/shared/entities/category.mapper';
 

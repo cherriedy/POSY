@@ -10,8 +10,8 @@ import { PaymentMethodRepository } from '../shared/repositories/payment-method-r
 import { PaymentProvider } from '../shared/enums/payment-provider.enum';
 import { PaymentStatus } from '../shared/enums/payment-status.enum';
 import { Payment } from '../shared/entities/payment';
-import { PricingSnapshotPromotion } from '../../promotions/types/pricing-snapshot-promotion.class';
-import { Promotion } from '../../promotions/types/promotion.class';
+import { PricingSnapshotPromotion } from '../../promotions/types/pricing-snapshot-promotion';
+import { Promotion } from '../../promotions/types/promotion';
 import { PricingSnapshotPromotionRepository } from '../../promotions/repositories/pricing-snapshot-promotion-repository.abstract';
 import { PromotionRepository } from '../../promotions/repositories/promotion-repository.abstract';
 import { PromotionNotFoundError } from '../../promotions/errors/promotion-not-found.error';

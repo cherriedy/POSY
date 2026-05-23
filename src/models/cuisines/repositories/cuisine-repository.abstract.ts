@@ -1,6 +1,6 @@
 import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
 import { Page } from '../../../common/interfaces/page.interface';
-import { Cuisine } from '../types/cuisine.class';
+import { Cuisine } from '../types/cuisine';
 import { CuisineQueryParams } from '../interfaces/cuisine-query-params.interface';
 
 /**

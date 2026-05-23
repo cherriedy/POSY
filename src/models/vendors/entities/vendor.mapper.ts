@@ -1,4 +1,4 @@
-import { Vendor } from './vendor.class';
+import { Vendor } from './vendor';
 import {
   Vendor as PrismaVendor,
   VendorStatus as PrismaVendorStatus,

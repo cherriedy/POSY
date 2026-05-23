@@ -1,4 +1,4 @@
-import { Promotion } from '../types/promotion.class';
+import { Promotion } from '../types/promotion';
 import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
 import { Page } from '../../../common/interfaces/page.interface';
 import { PromotionQueryParams } from '../interfaces/promotion-query-params.interface';

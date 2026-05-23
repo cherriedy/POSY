@@ -1,5 +1,5 @@
 import { ZoneRepository } from './zone-repository.abstract';
-import { Zone } from '../types/zone.class';
+import { Zone } from '../types/zone';
 import { ZoneMapper } from '../types/zone.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';

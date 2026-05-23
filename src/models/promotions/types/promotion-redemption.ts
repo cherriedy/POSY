@@ -1,5 +1,5 @@
-import { Promotion } from './promotion.class';
-import { PricingSnapshot } from './pricing-snapshot.class';
+import { Promotion } from './promotion';
+import { PricingSnapshot } from './pricing-snapshot';
 import { Order } from '../../orders/shared/entities/order';
 
 export class PromotionRedemption {

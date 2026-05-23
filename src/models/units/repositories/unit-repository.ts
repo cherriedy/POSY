@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UnitRepository } from './unit-repository.abstract';
-import { Unit } from '../entities/unit.class';
+import { Unit } from '../entities/unit';
 import { UnitMapper } from '../entities/unit.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';

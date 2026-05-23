@@ -1,4 +1,4 @@
-import { Zone } from '../types/zone.class';
+import { Zone } from '../types/zone';
 import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
 import { Page } from '../../../common/interfaces/page.interface';
 import { ZoneQueryParams } from '../interfaces/zone-query-params.interface';

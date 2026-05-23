@@ -1,4 +1,4 @@
-import { PricingSnapshotPromotion } from './pricing-snapshot-promotion.class';
+import { PricingSnapshotPromotion } from './pricing-snapshot-promotion';
 import {
   Prisma,
   PricingSnapshotPromotion as PrismaPricingSnapshotPromotion,

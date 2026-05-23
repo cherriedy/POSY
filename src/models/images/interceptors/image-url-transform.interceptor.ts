@@ -7,7 +7,7 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConfigService } from '../../../config/app/config.service';
-import { Image } from '../types/image.class';
+import { Image } from '../types/image';
 
 /**
  * Interceptor that transforms image paths to full URLs in all responses from the Image controller.

@@ -1,5 +1,5 @@
 import { FloorRepository } from './floor-repository.abstract';
-import { Floor } from '../types/floor.class';
+import { Floor } from '../types/floor';
 import { FloorMapper } from '../types/floor.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';

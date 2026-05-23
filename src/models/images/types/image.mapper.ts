@@ -1,5 +1,5 @@
 import { Image as PrismaImage } from '@prisma/client';
-import { Image as DomainImage } from './image.class';
+import { Image as DomainImage } from './image';
 import { MissingRequiredFieldsError } from '../../../common/errors/missing-required-fields.error';
 
 export class ImageMapper {
