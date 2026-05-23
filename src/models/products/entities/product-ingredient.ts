@@ -1,4 +1,4 @@
-import { Product } from './product.class';
+import { Product } from './product';
 import { Ingredient } from '../../ingredients/shared/entities/ingredient';
 
 export class ProductIngredient {

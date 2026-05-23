@@ -1,6 +1,6 @@
 import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
 import { Page } from '../../../common/interfaces/page.interface';
-import { Vendor } from '../entities/vendor.class';
+import { Vendor } from '../entities/vendor';
 import { VendorQueryParams } from '../interfaces/vendor-query-params.interface';
 
 export abstract class VendorRepository implements BaseRepository<Vendor> {

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 import { ProductIncludeOptions, ProductQueryParams } from '../interfaces/product-query-params';
 import { Page } from '../../../common/interfaces/page.interface';
-import { Product } from '../entities/product.class';
+import { Product } from '../entities/product';
 import { ProductNotFoundException } from '../exceptions/product-not-found.exception';
 
 @Injectable()

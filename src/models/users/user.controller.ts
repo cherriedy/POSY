@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserService } from './create-user/create-user.service';
 import { UpdateUserService } from './update-user/update-user.service';
-import { User } from './types/user.class';
+import { User } from './types/user';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password-request.dto';
 import { UpdateUserDto } from './dto/update-user.dto';

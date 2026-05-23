@@ -1,4 +1,4 @@
-import { ProductIngredient } from './product-ingredient.class';
+import { ProductIngredient } from './product-ingredient';
 import {
   ProductIngredient as PrismaProductIngredient,
   Prisma,

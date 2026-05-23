@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UnitRepository } from '../repositories/unit-repository.abstract';
-import { Unit } from '../entities/unit.class';
+import { Unit } from '../entities/unit';
 import { UnitNotFoundException } from '../exceptions/unit-not-found.exception';
 import { Page } from '../../../common/interfaces/page.interface';
 import { UnitQueryParams } from '../interfaces/unit-query-params.inerface';

@@ -21,7 +21,7 @@ import { PromotionDetailedResponseDto } from './dto/promotion-detailed-response.
 import { PromotionPreviewResponseDto } from './dto/promotion-preview-response.dto';
 import { PromotionQueryParamsDto } from './dto/promotion-query-params.dto';
 import { PromotionUpdateDto } from './dto/promotion-update-request.dto';
-import { Promotion } from './types/promotion.class';
+import { Promotion } from './types/promotion';
 import { plainToInstance } from 'class-transformer';
 import { UpdatePromotionService } from './update-promotion/update-promotion.service';
 import { GetPromotionsService } from './get-promotions/get-promotions.service';

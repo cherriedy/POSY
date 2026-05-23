@@ -1,4 +1,4 @@
-import { Promotion as DomainPromotion } from './promotion.class';
+import { Promotion as DomainPromotion } from './promotion';
 import { Prisma, Promotion as PrismaPromotion } from '@prisma/client';
 import { PromotionApplicability as DomainPromotionApplicability } from '../enums/promotion-applicability.enum';
 import { PromotionDiscountType as DomainPromotionDiscountType } from '../enums/promotion-discount-type.enum';

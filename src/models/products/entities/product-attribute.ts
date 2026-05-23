@@ -1,5 +1,5 @@
 import { MealSession, Taste, DietaryTag, Season } from '../enums/product-attribute.enum';
-import { Cuisine } from '../../cuisines/types/cuisine.class';
+import { Cuisine } from '../../cuisines/types/cuisine';
 
 /**
  * ProductAttribute domain entity for content-based filtering in recommendations.

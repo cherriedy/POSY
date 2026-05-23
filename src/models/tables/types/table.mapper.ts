@@ -1,5 +1,5 @@
 import { Table as PrismaTable } from '@prisma/client';
-import { Table as DomainTable } from './table.class';
+import { Table as DomainTable } from './table';
 import { MissingRequiredFieldsError } from '../../../common/errors/missing-required-fields.error';
 import { TableStatus } from '../enums/table-status.enum';
 import { ZoneMapper } from '../../zones/types/zone.mapper';

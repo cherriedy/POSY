@@ -1,5 +1,5 @@
 import { ProductAttribute as PrismaProductAttribute } from '@prisma/client';
-import { ProductAttribute } from './product-attribute.class';
+import { ProductAttribute } from './product-attribute';
 import { MealSession, Taste, DietaryTag, Season } from '../enums/product-attribute.enum';
 import { CuisineMapper } from '../../cuisines/types/cuisine.mapper';
 

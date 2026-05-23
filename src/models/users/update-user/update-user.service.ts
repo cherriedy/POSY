@@ -4,7 +4,7 @@ import { UserNotFoundError } from '../errors/user-not-found.error';
 import { hash } from '../../../common/utilities/hash.util';
 import { UnnecessaryOperationError } from '../../../common/errors/unnecessary-operation.error';
 import { mapRole } from '../types/role.mapper';
-import { User } from '../types/user.class';
+import { User } from '../types/user';
 
 @Injectable()
 export class UpdateUserService {

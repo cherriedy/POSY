@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PromotionRepository } from '../repositories/promotion-repository.abstract';
-import { Promotion } from '../types/promotion.class';
+import { Promotion } from '../types/promotion';
 import { PromotionApplicability } from '../enums/promotion-applicability.enum';
 
 @Injectable()

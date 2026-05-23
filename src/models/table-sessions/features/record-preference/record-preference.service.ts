@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { OrderItem } from '../../../orders/shared/entities/order-item';
 import { MealSession } from '../../../products/enums/product-attribute.enum';
-import { ProductAttribute } from '../../../products/entities/product-attribute.class';
+import { ProductAttribute } from '../../../products/entities/product-attribute';
 import { SessionPreferenceRepository } from '../../shared/repositories/session-preference-repository.abstract';
 import { SessionPreference } from '../../shared/entities/session-preference';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';

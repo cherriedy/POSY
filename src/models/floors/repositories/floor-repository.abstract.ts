@@ -1,4 +1,4 @@
-import { Floor } from '../types/floor.class';
+import { Floor } from '../types/floor';
 import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
 import { Page } from '../../../common/interfaces/page.interface';
 import { FloorQueryParams } from '../interfaces/floor-query-params.interface';

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ImageRepository } from './repositories/image-repository.abstract';
-import { Image } from './types/image.class';
+import { Image } from './types/image';
 import { ImageMapper } from './types/image.mapper';
 import { ImageNotFoundError } from './errors/image-not-found.error';
 import * as fs from 'fs/promises';

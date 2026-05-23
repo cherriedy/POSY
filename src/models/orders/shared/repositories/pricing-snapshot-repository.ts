@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../providers/prisma/prisma.service';
 import { PricingSnapshotRepository } from './pricing-snapshot-repository.abstract';
-import { PricingSnapshot } from '../../../promotions/types/pricing-snapshot.class';
+import { PricingSnapshot } from '../../../promotions/types/pricing-snapshot';
 import { PricingSnapshotMapper } from '../../../promotions/types/pricing-snapshot.mapper';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { OrderSnapshotNotFoundException } from '../exceptions/order-snapshot-not-found.exception';

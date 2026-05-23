@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { VendorRepository } from './vendor-repository.abstract';
-import { Vendor } from '../entities/vendor.class';
+import { Vendor } from '../entities/vendor';
 import { VendorMapper } from '../entities/vendor.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';

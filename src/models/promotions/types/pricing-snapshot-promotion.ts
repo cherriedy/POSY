@@ -1,5 +1,5 @@
-import { PricingSnapshot } from './pricing-snapshot.class';
-import { Promotion } from './promotion.class';
+import { PricingSnapshot } from './pricing-snapshot';
+import { Promotion } from './promotion';
 
 export class PricingSnapshotPromotion {
   constructor(

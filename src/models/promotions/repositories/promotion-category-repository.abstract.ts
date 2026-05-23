@@ -1,6 +1,6 @@
 import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
-import { Promotion } from '../types/promotion.class';
-import { PromotionCategory } from '../types/promotion-category.class';
+import { Promotion } from '../types/promotion';
+import { PromotionCategory } from '../types/promotion-category';
 
 export abstract class PromotionCategoryRepository implements BaseRepository<PromotionCategory> {
   abstract replaceByCategoryIds(

@@ -1,4 +1,4 @@
-import { Unit } from './unit.class';
+import { Unit } from './unit';
 import { Unit as PrismaUnit } from '@prisma/client';
 
 export class UnitMapper {

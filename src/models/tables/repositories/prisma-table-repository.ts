@@ -1,5 +1,5 @@
 import { TableRepository } from './table-repository.abstract';
-import { Table } from '../types/table.class';
+import { Table } from '../types/table';
 import { TableMapper } from '../types/table.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';

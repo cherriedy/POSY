@@ -1,5 +1,5 @@
 import { Cuisine as PrismaCuisine } from '@prisma/client';
-import { Cuisine } from './cuisine.class';
+import { Cuisine } from './cuisine';
 import { MissingRequiredFieldsError } from '../../../common/errors/missing-required-fields.error';
 
 /**

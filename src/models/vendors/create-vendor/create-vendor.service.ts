@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { VendorRepository } from '../repositories/vendor-repository.abstract';
-import { Vendor } from '../entities/vendor.class';
+import { Vendor } from '../entities/vendor';
 import { VendorCreatePayload } from '../interfaces/vendor-payloads.interface';
 
 @Injectable()

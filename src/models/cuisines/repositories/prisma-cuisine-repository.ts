@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { CuisineRepository } from './cuisine-repository.abstract';
-import { Cuisine } from '../types/cuisine.class';
+import { Cuisine } from '../types/cuisine';
 import { CuisineMapper } from '../types/cuisine.mapper';
 import { Page } from '../../../common/interfaces/page.interface';
 import { CuisineOrderBy, CuisineQueryParams } from '../interfaces/cuisine-query-params.interface';

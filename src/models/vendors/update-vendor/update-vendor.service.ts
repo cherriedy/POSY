@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { VendorRepository } from '../repositories/vendor-repository.abstract';
-import { Vendor } from '../entities/vendor.class';
+import { Vendor } from '../entities/vendor';
 import { VendorUpdatePayload } from '../interfaces/vendor-payloads.interface';
 import { VendorNotFoundException } from '../exceptions/vendor-not-found.exception';
 

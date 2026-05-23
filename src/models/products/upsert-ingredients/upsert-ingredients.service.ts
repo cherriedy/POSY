@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ProductIngredientRepository } from 'src/models/products/repositories/product-ingredient-repository.abstract';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
-import { ProductIngredient } from '../entities/product-ingredient.class';
+import { ProductIngredient } from '../entities/product-ingredient';
 import { ProductIngredientBulkUpsertPayload } from '../interfaces/product-payloads';
 import { ProductNotFoundException } from '../exceptions/product-not-found.exception';
 
