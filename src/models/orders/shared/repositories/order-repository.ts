@@ -5,8 +5,8 @@ import { Order } from '../entities/order';
 import { OrderMapper } from '../entities/order.mapper';
 import { Page } from '../../../../common/interfaces/page.interface';
 import { OrderQueryParams } from '../interfaces/order-query-params.interface';
-import { DuplicateEntryException } from '../../../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../../../common/exceptions/ForeignKeyViolationException';
+import { DuplicateEntryError } from '../../../../common/errors/duplicate-entry.error';
+import { ForeignKeyViolationError } from '../../../../common/errors/foreign-key-violation.error';
 import { OrderNotFoundException } from '../exceptions/order-not-found.exception';
 import { paginationConfig } from '../../../../common/constants/pagination.config';
 import { Prisma } from '@prisma/client';
@@ -60,13 +60,13 @@ export class OrderRepositoryImpl implements OrderRepository {
    * Persists a new Order.
    *
    * ### Error Translation
-   * - `P2002` → DuplicateEntryException
-   * - `P2003` → ForeignKeyViolationException
+   * - `P2002` → DuplicateEntryError
+   * - `P2003` → ForeignKeyViolationError
    *
    * @param entity - Order aggregate to persist
    * @returns Created Order domain entity
-   * @throws DuplicateEntryException
-   * @throws ForeignKeyViolationException
+   * @throws DuplicateEntryError
+   * @throws ForeignKeyViolationError
    */
   async create(entity: Order): Promise<Order> {
     try {
@@ -96,12 +96,12 @@ export class OrderRepositoryImpl implements OrderRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Order with provided data already exists',
           );
         }
         if (e.code === 'P2003') {
-          throw new ForeignKeyViolationException(entity);
+          throw new ForeignKeyViolationError(entity);
         }
       }
       throw e;

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ZoneRepository } from '../repositories/zone.repository-abstract';
 import { Zone } from '../types/zone.class';
 import { FloorRepository } from 'src/models/floors/repositories/floor.repository-abstract';
-import { RelatedRecordNotFoundException } from 'src/common/exceptions/RelatedRecordNotFoundException';
+import { RelatedRecordNotFoundError } from 'src/common/errors/related-record-not-found.error';
 import { ZoneNotFoundException } from '../exceptions/zone-not-found.exception';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class UpdateZoneService {
       const floor = await this.floorRepository.findById(zone.floorId);
 
       if (!floor) {
-        throw new RelatedRecordNotFoundException(
+        throw new RelatedRecordNotFoundError(
           `Floor with id ${zone.floorId} not found`,
         );
       }

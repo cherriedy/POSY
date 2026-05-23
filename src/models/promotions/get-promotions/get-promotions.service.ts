@@ -3,7 +3,7 @@ import { PromotionCategoryRepository } from '../repositories/promotion-category-
 import { PromotionProductRepository } from '../repositories/promotion-product-repository.abstract';
 import { PromotionRepository } from '../repositories/promotion-repository.abstract';
 import { PromotionQueryParams } from '../interfaces/promotion-query-params.interface';
-import { PromotionNotFoundException } from '../exceptions/PromotionNotFoundException';
+import { PromotionNotFoundError } from '../errors/promotion-not-found.error';
 import { Role } from '../../../common/enums/role.enum';
 import { Promotion } from '../types/promotion.class';
 import { PromotionCategory } from '../types/promotion-category.class';
@@ -35,14 +35,14 @@ export class GetPromotionsService {
 
   /**
    * Retrieves a promotion by its unique identifier.
-   * Throws PromotionNotFoundException if the promotion does not exist.
+   * Throws PromotionNotFoundError if the promotion does not exist.
    * @param {string} id - The unique identifier of the promotion.
    * @returns {Promise<Promotion>} A promise that resolves to the promotion object.
-   * @throws {PromotionNotFoundException} If the promotion is not found.
+   * @throws {PromotionNotFoundError} If the promotion is not found.
    */
   async getById(id: string): Promise<Promotion | null> {
     const promotion = await this.promotionRepository.findById(id);
-    if (!promotion) throw new PromotionNotFoundException({ id });
+    if (!promotion) throw new PromotionNotFoundError({ id });
     const usageCount = await this.promotionRepository.getUsageCount(id);
     promotion.usageCount = usageCount;
 
@@ -51,14 +51,14 @@ export class GetPromotionsService {
 
   /**
    * Retrieves a promotion by its unique code.
-   * Throws PromotionNotFoundException if the promotion does not exist.
+   * Throws PromotionNotFoundError if the promotion does not exist.
    * @param {string} code - The unique code of the promotion.
    * @returns {Promise<Promotion>} A promise that resolves to the promotion object.
-   * @throws {PromotionNotFoundException} If the promotion is not found.
+   * @throws {PromotionNotFoundError} If the promotion is not found.
    */
   async getByCode(code: string): Promise<Promotion | null> {
     const promotion = await this.promotionRepository.findByCode(code);
-    if (!promotion) throw new PromotionNotFoundException({ code });
+    if (!promotion) throw new PromotionNotFoundError({ code });
     return promotion;
   }
 
@@ -72,10 +72,10 @@ export class GetPromotionsService {
 
   /**
    * Retrieves all promotion categories associated with a given promotion ID.
-   * Throws PromotionNotFoundException if the promotion does not exist or is deleted.
+   * Throws PromotionNotFoundError if the promotion does not exist or is deleted.
    * @param {string} promotionId - The unique identifier of the promotion.
    * @returns {Promise<PromotionCategory[]>} A promise that resolves to an array of promotion categories.
-   * @throws {PromotionNotFoundException} If the promotion is not found or is deleted.
+   * @throws {PromotionNotFoundError} If the promotion is not found or is deleted.
    */
   async getPromotionCategoriesByPromotionId(
     promotionId: string,
@@ -83,7 +83,7 @@ export class GetPromotionsService {
     const promotion = await this.promotionRepository.findById(promotionId);
 
     if (!promotion || promotion.isDeleted) {
-      throw new PromotionNotFoundException({ id: promotionId });
+      throw new PromotionNotFoundError({ id: promotionId });
     }
 
     return this.promotionCategoryRepository.findByPromotionId(promotionId);
@@ -99,10 +99,10 @@ export class GetPromotionsService {
 
   /**
    * Retrieves all promotion products associated with a given promotion ID.
-   * Throws PromotionNotFoundException if the promotion does not exist or is deleted.
+   * Throws PromotionNotFoundError if the promotion does not exist or is deleted.
    * @param {string} promotionId - The unique identifier of the promotion.
    * @returns {Promise<PromotionProduct[]>} A promise that resolves to an array of promotion products.
-   * @throws {PromotionNotFoundException} If the promotion is not found or is deleted.
+   * @throws {PromotionNotFoundError} If the promotion is not found or is deleted.
    */
   async getPromotionProductsByPromotionId(
     promotionId: string,
@@ -110,7 +110,7 @@ export class GetPromotionsService {
     const promotion = await this.promotionRepository.findById(promotionId);
 
     if (!promotion || promotion.isDeleted) {
-      throw new PromotionNotFoundException({ id: promotionId });
+      throw new PromotionNotFoundError({ id: promotionId });
     }
 
     return this.promotionProductRepository.findByPromotionId(promotionId);
@@ -118,14 +118,14 @@ export class GetPromotionsService {
 
   /**
    * Retrieves a promotion product by its unique identifier.
-   * Throws PromotionProductNotFoundException if the product does not exist.
+   * Throws PromotionProductNotFoundError if the product does not exist.
    * @param {string} id - The unique identifier of the promotion product.
    * @returns {Promise<PromotionProduct>} A promise that resolves to the promotion product object.
-   * @throws {PromotionProductNotFoundException} If the product is not found.
+   * @throws {PromotionProductNotFoundError} If the product is not found.
    */
   // async getPromotionProductById(id: string): Promise<PromotionProduct | null> {
   //   const result = await this.promotionProductRepository.findById(id);
-  //   if (!result) throw new PromotionProductNotFoundException(id);
+  //   if (!result) throw new PromotionProductNotFoundError(id);
   //   return result;
   // }
 

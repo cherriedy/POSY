@@ -4,9 +4,9 @@ import { PromotionRepository } from '../repositories/promotion-repository.abstra
 import { Promotion } from '../types/promotion.class';
 import { PromotionProduct } from '../types/promotion-product.class';
 import { PromotionApplicability } from '../enums/promotion-applicability.enum';
-import { PromotionNotFoundException } from '../exceptions/PromotionNotFoundException';
-import { PromotionUnusableException } from '../exceptions/PromotionUnusableException';
-import { DuplicateEntryException } from 'src/common/exceptions/DuplicateEntryException';
+import { PromotionNotFoundError } from '../errors/promotion-not-found.error';
+import { PromotionUnusableError } from '../errors/promotion-unusable.error';
+import { DuplicateEntryError } from 'src/common/errors/duplicate-entry.error';
 import { ProductsNotFoundException } from 'src/models/products/exceptions/product-not-found.exception';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 
@@ -25,11 +25,11 @@ export class ReplacePromotionProductService {
     const promotion = await this.promotionRepository.findById(promotionId);
 
     if (!promotion || promotion.isDeleted) {
-      throw new PromotionNotFoundException({ id: promotionId });
+      throw new PromotionNotFoundError({ id: promotionId });
     }
 
     if (promotion.applicability !== PromotionApplicability.SPECIFIC_ITEMS) {
-      throw new PromotionUnusableException(
+      throw new PromotionUnusableError(
         promotionId,
         'Promotion applicability does not allow products.',
         { applicability: promotion.applicability },
@@ -41,7 +41,7 @@ export class ReplacePromotionProductService {
     );
 
     if (duplicateProductIds.length > 0) {
-      throw new DuplicateEntryException('Duplicate productIds in request.', {
+      throw new DuplicateEntryError('Duplicate productIds in request.', {
         duplicateProductIds: [...new Set(duplicateProductIds)],
       });
     }

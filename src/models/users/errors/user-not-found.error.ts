@@ -1,9 +1,6 @@
-/**
- * Exception thrown when a user with a specified ID is not found. This exception
- * can be used in user-related common and repositories to indicate that a
- * requested user does not exist in the database.
- */
-export class UserNotFoundException extends Error {
+export class UserNotFoundError extends Error {
+  override readonly name = 'UserNotFoundError';
+
   constructor(details?: { email?: string; id?: string }) {
     const placeholder = details && (details.id || details.email) ? 'with ' : '';
     let message = `User ${placeholder}`;

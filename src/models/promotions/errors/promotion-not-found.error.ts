@@ -1,4 +1,6 @@
-export class PromotionNotFoundException extends Error {
+export class PromotionNotFoundError extends Error {
+  override readonly name = 'PromotionNotFoundError';
+
   constructor(details?: { id?: string; code?: string }) {
     const placeholder = details && (details.id || details.code) ? 'with ' : '';
     let message = `Promotion ${placeholder}`;
@@ -6,6 +8,5 @@ export class PromotionNotFoundException extends Error {
     if (details?.code) message += `Code: ${details.code} `;
     message += 'not found.';
     super(message);
-    this.name = 'PromotionNotFoundException';
   }
 }

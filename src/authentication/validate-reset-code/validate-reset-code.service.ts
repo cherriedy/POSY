@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../../models/users/repositories/user.repository-abstract';
-import { UserNotFoundException } from '../../models/users/exceptions/UserNotFoundException';
-import { InvalidResetCodeException } from '../exceptions/InvalidResetCodeException';
-import { ResetCodeHasExpiredException } from '../exceptions/ResetCodeHasExpiredException';
+import { UserNotFoundError } from '../../models/users/errors/user-not-found.error';
+import { InvalidResetCodeError } from '../errors/invalid-reset-code.error';
+import { ResetCodeExpiredError } from '../errors/reset-code-expired.error';
 import { JwtConfigService } from '../../config/jwt/config.service';
 import { authConfig } from '../auth.config';
 import { JwtService } from '@nestjs/jwt';
@@ -29,9 +29,9 @@ export class ValidateResetCodeService {
    * @param {string} dto.email - The email address of the user requesting a password reset.
    * @param {string} dto.resetCode - The reset code provided by the user.
    * @returns {Promise<ResetTokenSchema>} An object containing the generated reset token.
-   * @throws {UserNotFoundException} If no user is found with the given email.
-   * @throws {InvalidResetCodeException} If the reset code is missing or does not match.
-   * @throws {ResetCodeHasExpiredException} If the reset code has expired.
+   * @throws {UserNotFoundError} If no user is found with the given email.
+   * @throws {InvalidResetCodeError} If the reset code is missing or does not match.
+   * @throws {ResetCodeExpiredError} If the reset code has expired.
    */
   async validateResetCode({
     email,
@@ -84,23 +84,23 @@ export class ValidateResetCodeService {
    *
    * @param {string} email - The email address of the user requesting password reset.
    * @param {string} code - The reset code provided by the user.
-   * @throws {UserNotFoundException} If no user is found with the given email.
-   * @throws {InvalidResetCodeException} If the reset code is missing or does not match.
-   * @throws {ResetCodeHasExpiredException} If the reset code has expired.
+   * @throws {UserNotFoundError} If no user is found with the given email.
+   * @throws {InvalidResetCodeError} If the reset code is missing or does not match.
+   * @throws {ResetCodeExpiredError} If the reset code has expired.
    * @returns {Promise<void>} Resolves if the reset code is valid and not expired.
    */
   private async verifyResetCode(email: string, code: string): Promise<void> {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
-      throw new UserNotFoundException({ email });
+      throw new UserNotFoundError({ email });
     }
     // The reset code is invalid
     if (!user.resetCode || user.resetCode !== code) {
-      throw new InvalidResetCodeException();
+      throw new InvalidResetCodeError();
     }
     // The reset code has expired
     if (user.resetCodeExp && user.resetCodeExp < new Date()) {
-      throw new ResetCodeHasExpiredException();
+      throw new ResetCodeExpiredError();
     }
   }
 }

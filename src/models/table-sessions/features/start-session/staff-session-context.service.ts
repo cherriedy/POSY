@@ -7,7 +7,7 @@ import { UnavailableTableException } from '../../shared/exceptions/unavailable-t
 import { TableSessionNotFoundException } from '../../shared/exceptions/table-session-not-found.exception';
 import { TableRepository } from 'src/models/tables/repositories/table.repository-abstract';
 import { TableNotFoundException } from 'src/models/tables/exceptions/table-not-found.exception';
-import { DuplicateEntryException } from 'src/common/exceptions/DuplicateEntryException';
+import { DuplicateEntryError } from 'src/common/errors/duplicate-entry.error';
 
 @Injectable()
 export class StaffSessionContextService {
@@ -77,7 +77,7 @@ export class StaffSessionContextService {
       await this.tableSessionRepository.findActiveByTableId(tableId);
 
     if (session) {
-      throw new DuplicateEntryException(
+      throw new DuplicateEntryError(
         'Table already has an active session. Cannot create new order.',
       );
     }

@@ -2,8 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  Inject,
-  InternalServerErrorException,
   Put,
   Req,
   UseGuards,
@@ -17,8 +15,6 @@ import { UserDetailedResponseDto } from '../models/users/dto/user-detailed-respo
 import { JwtPayload } from '../authentication/interfaces/jwt-payload.interface';
 import { Request } from 'express';
 import { plainToInstance } from 'class-transformer';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { Logger } from 'winston';
 import {
   ApiTags,
   ApiBearerAuth,
@@ -35,8 +31,6 @@ export class MyProfileController {
   constructor(
     private readonly getUsersService: GetUsersService,
     private readonly updateUserService: UpdateUserService,
-    @Inject(WINSTON_MODULE_NEST_PROVIDER)
-    private readonly logger: Logger,
   ) {}
 
   @Get()
@@ -50,21 +44,12 @@ export class MyProfileController {
     description: 'User profile details',
     type: UserDetailedResponseDto,
   })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
   async getProfile(@Req() req: Request): Promise<UserDetailedResponseDto> {
     const userId = (req.user as JwtPayload).sub;
-
-    try {
-      const user = await this.getUsersService.getUserById(userId);
-      return plainToInstance(UserDetailedResponseDto, user, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while retrieving your profile.',
-      );
-    }
+    const user = await this.getUsersService.getUserById(userId);
+    return plainToInstance(UserDetailedResponseDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Put()
@@ -79,24 +64,15 @@ export class MyProfileController {
     description: 'Updated user profile',
     type: UserDetailedResponseDto,
   })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
   async updateProfile(
     @Body() dto: UpdateUserDto,
     @Req() req: Request,
   ): Promise<UserDetailedResponseDto> {
     const userId = (req.user as JwtPayload).sub;
-
-    try {
-      const updatedUser = await this.updateUserService.updateUser(userId, dto);
-      return plainToInstance(UserDetailedResponseDto, updatedUser, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while updating your profile.',
-      );
-    }
+    const updatedUser = await this.updateUserService.updateUser(userId, dto);
+    return plainToInstance(UserDetailedResponseDto, updatedUser, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Put('change-password')
@@ -111,21 +87,12 @@ export class MyProfileController {
     description: 'Password changed successfully',
     schema: { example: { message: 'Password changed successfully' } },
   })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
   async changePassword(
     @Body() dto: UpdatePasswordDto,
     @Req() req: Request,
   ): Promise<{ message: string }> {
     const userId = (req.user as JwtPayload).sub;
-
-    try {
-      await this.updateUserService.updatePassword(userId, dto.newPassword);
-      return { message: 'Password changed successfully' };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while changing your password.',
-      );
-    }
+    await this.updateUserService.updatePassword(userId, dto.newPassword);
+    return { message: 'Password changed successfully' };
   }
 }

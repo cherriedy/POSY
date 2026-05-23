@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../repositories/user.repository-abstract';
-import { UserNotFoundException } from '../exceptions/UserNotFoundException';
+import { UserNotFoundError } from '../errors/user-not-found.error';
 import { hash } from '../../../common/utilities/hash.util';
-import { UnnecessaryOperationException } from '../../../common/exceptions/UnnecessaryOperationException';
+import { UnnecessaryOperationError } from '../../../common/errors/unnecessary-operation.error';
 import { mapRole } from '../types/role.mapper';
 import { User } from '../types/user.class';
 
@@ -27,11 +27,11 @@ export class UpdateUserService {
    *
    * @param {string} userId - The unique identifier of the user whose active status will be toggled.
    * @returns {Promise<void>} Resolves when the operation is complete.
-   * @throws {UserNotFoundException} If the user with the given ID does not exist.
+   * @throws {UserNotFoundError} If the user with the given ID does not exist.
    */
   async toggleUserActive(userId: string): Promise<void> {
     const user = await this.userRepository.findById(userId);
-    if (!user) throw new UserNotFoundException();
+    if (!user) throw new UserNotFoundError();
 
     user.isActive = !user.isActive;
     await this.userRepository.update(userId, {
@@ -44,19 +44,19 @@ export class UpdateUserService {
    *
    * This method finds the user by their unique identifier. If the user exists, it resets the `failedLoginAttempts`
    * to 0 and sets `lockoutExpiresAt` to `null`, effectively unlocking the account and allowing the user to attempt
-   * to log in again. If the user does not exist, a `UserNotFoundException` is thrown.
+   * to log in again. If the user does not exist, a `UserNotFoundError` is thrown.
    *
    * @param {string} userId - The unique identifier of the user to unlock.
    * @returns {Promise<void>} Resolves when the user's account has been unlocked.
-   * @throws {UserNotFoundException} If no user is found with the provided ID.
-   * @throws {UnnecessaryOperationException} If the user account is not locked.
+   * @throws {UserNotFoundError} If no user is found with the provided ID.
+   * @throws {UnnecessaryOperationError} If the user account is not locked.
    */
   async unlockUser(userId: string): Promise<void> {
     const user = await this.userRepository.findById(userId);
-    if (!user) throw new UserNotFoundException();
+    if (!user) throw new UserNotFoundError();
 
     if (user.failedLoginAttempts === 0 && !user.lockoutExpiresAt) {
-      throw new UnnecessaryOperationException('User account is not locked.');
+      throw new UnnecessaryOperationError('User account is not locked.');
     }
 
     await this.userRepository.update(userId, {

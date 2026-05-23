@@ -4,8 +4,8 @@ import { Ingredient } from '../entities/ingredient';
 import { IngredientMapper } from '../entities/ingredient.mapper';
 import { Page } from '../../../../common/interfaces/page.interface';
 import { PrismaService } from '../../../../providers/prisma/prisma.service';
-import { DuplicateEntryException } from '../../../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../../../common/exceptions/ForeignKeyViolationException';
+import { DuplicateEntryError } from '../../../../common/errors/duplicate-entry.error';
+import { ForeignKeyViolationError } from '../../../../common/errors/foreign-key-violation.error';
 import { paginationConfig } from '../../../../common/constants/pagination.config';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { Prisma } from '@prisma/client';
@@ -31,11 +31,11 @@ export class IngredientRepositoryImpl implements IngredientRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Ingredient with provided data already exists',
           );
         } else if (e.code === 'P2003') {
-          throw new ForeignKeyViolationException(entity);
+          throw new ForeignKeyViolationError(entity);
         }
       }
       throw e;
@@ -49,7 +49,7 @@ export class IngredientRepositoryImpl implements IngredientRepository {
       });
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError && e.code === 'P2003') {
-        throw new ForeignKeyViolationException();
+        throw new ForeignKeyViolationError();
       }
 
       throw e;
@@ -151,11 +151,11 @@ export class IngredientRepositoryImpl implements IngredientRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Ingredient with provided data already exists',
           );
         } else if (e.code === 'P2003') {
-          throw new ForeignKeyViolationException(entity);
+          throw new ForeignKeyViolationError(entity);
         }
       }
       throw e;

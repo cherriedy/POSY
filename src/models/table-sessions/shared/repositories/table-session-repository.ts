@@ -4,8 +4,8 @@ import { TableSession } from '../entities/table-session';
 import { TableSessionMapper } from '../entities/table-session.mapper';
 import { TableSessionStatus } from '../enums/table-session-status.enum';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../../../common/exceptions/ForeignKeyViolationException';
+import { DuplicateEntryError } from '../../../../common/errors/duplicate-entry.error';
+import { ForeignKeyViolationError } from '../../../../common/errors/foreign-key-violation.error';
 import { TableSessionNotFoundException } from '../exceptions/table-session-not-found.exception';
 import { TableSessionRepository } from './table-session-repository.abstract';
 
@@ -18,8 +18,8 @@ export class TableSessionRepositoryImpl implements TableSessionRepository {
    *
    * @param entity - The table session entity to create.
    * @returns A promise that resolves to the created table session.
-   * @throws DuplicateEntryException if a session with the same token already exists.
-   * @throws ForeignKeyViolationException if the table or user reference is invalid.
+   * @throws DuplicateEntryError if a session with the same token already exists.
+   * @throws ForeignKeyViolationError if the table or user reference is invalid.
    */
   async create(entity: TableSession): Promise<TableSession> {
     const prismaTableSession = TableSessionMapper.toPrismaCreateInput(entity);
@@ -33,12 +33,12 @@ export class TableSessionRepositoryImpl implements TableSessionRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Session with provided token already exists',
           );
         }
         if (e.code === 'P2003') {
-          throw new ForeignKeyViolationException({
+          throw new ForeignKeyViolationError({
             message: 'Table or user reference is invalid',
           });
         }

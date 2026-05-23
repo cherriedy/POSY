@@ -1,7 +1,7 @@
 import { PromotionApplicability } from '../enums/promotion-applicability.enum';
 import { PromotionDiscountType } from '../enums/promotion-discount-type.enum';
 import { PromotionStatus } from '../enums/promotion-status.enum';
-import { PromotionUnusableException } from '../exceptions/PromotionUnusableException';
+import { PromotionUnusableError } from '../errors/promotion-unusable.error';
 
 export class Promotion {
   constructor(
@@ -59,11 +59,11 @@ export class Promotion {
    * Asserts if the promotion is usable based on status, validity window and usage limit.
    *
    * @param usageCount Current number of redemptions already reserved/confirmed.
-   * @throws {PromotionUnusableException} If the promotion is not usable.
+   * @throws {PromotionUnusableError} If the promotion is not usable.
    */
   public assertUsable(usageCount?: number): void {
     if (this.isDeleted || this.status !== PromotionStatus.ACTIVE) {
-      throw new PromotionUnusableException(
+      throw new PromotionUnusableError(
         this.id ?? this.code,
         `Promotion "${this.code}" is not active`,
       );
@@ -71,7 +71,7 @@ export class Promotion {
 
     const now = new Date();
     if (this.startAt > now || this.endAt < now) {
-      throw new PromotionUnusableException(
+      throw new PromotionUnusableError(
         this.id ?? this.code,
         `Promotion "${this.code}" is outside its validity period`,
       );
@@ -82,7 +82,7 @@ export class Promotion {
       usageCount != null &&
       usageCount >= this.usageLimit
     ) {
-      throw new PromotionUnusableException(
+      throw new PromotionUnusableError(
         this.id ?? this.code,
         `Promotion "${this.code}" has reached usage limit`,
         { usageCount, usageLimit: this.usageLimit },

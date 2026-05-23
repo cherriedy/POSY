@@ -4,8 +4,8 @@ import { ProductAttributeRepository } from './product-attribute-repository.abstr
 import { ProductAttribute } from '../entities/product-attribute.class';
 import { ProductAttributeMapper } from '../entities/product-attribute.mapper';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
+import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
 
 @Injectable()
@@ -51,12 +51,12 @@ export class ProductAttributeRepositoryImpl implements ProductAttributeRepositor
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Product attributes already exist for this product',
           );
         }
         if (e.code === 'P2003') {
-          throw new ForeignKeyViolationException(entity);
+          throw new ForeignKeyViolationError(entity);
         }
       }
       throw e;

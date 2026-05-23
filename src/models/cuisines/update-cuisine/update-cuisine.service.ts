@@ -19,7 +19,7 @@ export class UpdateCuisineService {
    *
    * @returns The updated cuisine
    * @throws CuisineNotFoundException - If the cuisine does not exist
-   * @throws DuplicateEntryException - If the new name conflicts with another cuisine
+   * @throws DuplicateEntryError - If the new name conflicts with another cuisine
    */
   async update(id: string, payload: CuisineUpdatePayload): Promise<Cuisine> {
     const cuisine = await this.cuisineRepository.findById(id);

@@ -9,8 +9,8 @@ import {
 import { TokenGeneratorsService } from '../../authentication/common/token-generators/token-generators.service';
 import { AuthenticatedGuestSocket } from '../interfaces/authenticated-guest-socket.interface';
 import { WsException } from '@nestjs/websockets';
-import { AccessTokenHasExpiredException } from '../../authentication/exceptions/AccessTokenHasExpiredException';
-import { InvalidAccessTokenException } from '../../authentication/exceptions/InvalidAccessTokenException';
+import { AccessTokenExpiredError } from '../../authentication/errors/access-token-expired.error';
+import { InvalidAccessTokenError } from '../../authentication/errors/invalid-access-token.error';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
@@ -41,8 +41,8 @@ export class WsGuestAuthGuard implements CanActivate {
       return true;
     } catch (e) {
       if (
-        e instanceof InvalidAccessTokenException ||
-        e instanceof AccessTokenHasExpiredException
+        e instanceof InvalidAccessTokenError ||
+        e instanceof AccessTokenExpiredError
       ) {
         this.logger.warn(
           `Unauthorized WebSocket connection attempt from client ${client.id}: ${e.message}`,

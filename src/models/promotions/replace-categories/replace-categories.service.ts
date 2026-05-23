@@ -4,9 +4,9 @@ import { PromotionRepository } from '../repositories/promotion-repository.abstra
 import { Promotion } from '../types/promotion.class';
 import { PromotionCategory } from '../types/promotion-category.class';
 import { PromotionApplicability } from '../enums/promotion-applicability.enum';
-import { PromotionNotFoundException } from '../exceptions/PromotionNotFoundException';
-import { PromotionUnusableException } from '../exceptions/PromotionUnusableException';
-import { DuplicateEntryException } from 'src/common/exceptions/DuplicateEntryException';
+import { PromotionNotFoundError } from '../errors/promotion-not-found.error';
+import { PromotionUnusableError } from '../errors/promotion-unusable.error';
+import { DuplicateEntryError } from 'src/common/errors/duplicate-entry.error';
 import { CategoriesNotFoundException } from 'src/models/categories/shared/exceptions/category-not-found.exception';
 import { CategoryRepository } from 'src/models/categories/shared/repositories/category-repository.abstract';
 
@@ -25,13 +25,13 @@ export class ReplacePromotionCategoriesService {
     const promotion = await this.promotionRepository.findById(promotionId);
 
     if (!promotion || promotion.isDeleted) {
-      throw new PromotionNotFoundException({ id: promotionId });
+      throw new PromotionNotFoundError({ id: promotionId });
     }
 
     if (
       promotion.applicability !== PromotionApplicability.SPECIFIC_CATEGORIES
     ) {
-      throw new PromotionUnusableException(
+      throw new PromotionUnusableError(
         promotionId,
         'Promotion applicability does not allow categories.',
         { applicability: promotion.applicability },
@@ -43,7 +43,7 @@ export class ReplacePromotionCategoriesService {
     );
 
     if (duplicateCategoryIds.length > 0) {
-      throw new DuplicateEntryException('Duplicate categoryIds in request.', {
+      throw new DuplicateEntryError('Duplicate categoryIds in request.', {
         duplicateCategoryIds: [...new Set(duplicateCategoryIds)],
       });
     }

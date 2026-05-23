@@ -1,11 +1,8 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
-  Inject,
-  InternalServerErrorException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -34,9 +31,6 @@ import { RoleGuard } from '../../authorization/guards/role.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { Role } from '../../common/enums/role.enum';
 import { FileValidationPipe } from './pipes/file-validation.pipe';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { ImageNotFoundException } from './exceptions/ImageNotFoundException';
 import { ImageUrlTransformInterceptor } from './interceptors/image-url-transform.interceptor';
 import { UploadImageDto } from './dto/upload-image.dto';
 import { DeleteImagesDto } from './dto/delete-images.dto';
@@ -47,9 +41,6 @@ import { DeleteImagesDto } from './dto/delete-images.dto';
 @UseInterceptors(ImageUrlTransformInterceptor)
 @Controller('images')
 export class ImageController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: import('winston').Logger;
-
   constructor(private readonly imageService: ImageService) {}
 
   // ======== GET IMAGES BY ENTITY =========
@@ -248,22 +239,12 @@ export class ImageController {
     @Body() dto: UploadImageDto,
     @UploadedFiles(new FileValidationPipe()) files: Express.Multer.File[],
   ) {
-    try {
-      return await this.imageService.uploadImages(
-        files,
-        dto.sessionId,
-        dto.entityType,
-        dto.entityId,
-      );
-    } catch (e) {
-      if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return await this.imageService.uploadImages(
+      files,
+      dto.sessionId,
+      dto.entityType,
+      dto.entityId,
+    );
   }
 
   // ======== CONFIRM SESSION =========
@@ -335,21 +316,7 @@ export class ImageController {
   })
   @ApiResponse({ status: 200, description: 'Images deleted successfully.' })
   async deleteImages(@Body() dto: DeleteImagesDto) {
-    try {
-      await this.imageService.deleteImages(dto.ids);
-
-      return {
-        message: 'Images deleted successfully.',
-      };
-    } catch (e) {
-      if (e instanceof ImageNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.imageService.deleteImages(dto.ids);
+    return { message: 'Images deleted successfully.' };
   }
 }

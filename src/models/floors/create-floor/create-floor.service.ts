@@ -13,8 +13,8 @@ export class CreateFloorService {
    *
    * @param floor - The floor entity to be created. Should contain all required fields for creation.
    * @returns A promise that resolves to the created Floor object.
-   * @throws DuplicateEntryException if a floor with a unique field already exists (from repository layer).
-   * @throws RelatedRecordNotFoundException if a related record is not found (from repository layer).
+   * @throws DuplicateEntryError if a floor with a unique field already exists (from repository layer).
+   * @throws RelatedRecordNotFoundError if a related record is not found (from repository layer).
    */
   async createFloor(floor: Floor): Promise<Floor> {
     return await this.floorRepository.create(floor);

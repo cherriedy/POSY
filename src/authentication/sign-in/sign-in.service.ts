@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../../models/users/repositories/user.repository-abstract';
 import { SignInDto } from '../dto/sign-in.dto';
-import { AccountLockedException } from '../exceptions/AccountLockedException';
-import { InvalidCredentialsException } from '../exceptions/InvalidCredentialsException';
+import { AccountLockedError } from '../errors/account-locked.error';
+import { InvalidCredentialsError } from '../errors/invalid-credentials.error';
 import { hash, verifyHash } from '../../common/utilities/hash.util';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { AuthTokensSchema } from '../interfaces/auth-tokens-schema.interface';
@@ -33,12 +33,12 @@ export class SignInService {
 
     // If user not found or has been deleted/disabled, throw invalid credentials exception
     if (!user || user.isDeleted || !user.isActive) {
-      throw new InvalidCredentialsException();
+      throw new InvalidCredentialsError();
     }
 
     // Check if the account is locked due to too many failed login attempts
     if (user.lockoutExpiresAt && user.lockoutExpiresAt > new Date()) {
-      throw new AccountLockedException(
+      throw new AccountLockedError(
         'Account is temporarily locked due to multiple failed sign-in attempts. Please try again later.',
       );
     }
@@ -57,7 +57,7 @@ export class SignInService {
         failedLoginAttempts: user.failedLoginAttempts,
         lockoutExpiresAt: user.lockoutExpiresAt,
       });
-      throw new InvalidCredentialsException();
+      throw new InvalidCredentialsError();
     }
 
     // Generate signed JWT access and refresh tokens

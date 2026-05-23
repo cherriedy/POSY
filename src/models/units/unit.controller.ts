@@ -1,13 +1,8 @@
 import {
-  BadRequestException,
   Body,
-  ConflictException,
   Controller,
   Delete,
   Get,
-  Inject,
-  InternalServerErrorException,
-  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -24,13 +19,10 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { plainToInstance } from 'class-transformer';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { Role } from '../../common/enums/role.enum';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../common/exceptions/ForeignKeyViolationException';
 import { UnitCreateRequestDto } from './dto/unit-create-request.dto';
 import { UnitQueryParamsDto } from './dto/unit-query-params.dto';
 import { UnitResponseDto } from './dto/unit-response.dto';
@@ -40,16 +32,12 @@ import { GetUnitsService } from './get-units/get-units.service';
 import { UpdateUnitService } from './update-unit/update-unit.service';
 import { UpdateUnitPayloadMapper } from './update-unit/update-unit-payload.mapper';
 import { DeleteUnitService } from './delete-unit/delete-unit.service';
-import { UnitNotFoundException } from './exceptions/unit-not-found.exception';
 import { Page } from '../../common/interfaces/page.interface';
 
 @ApiTags('Units')
 @ApiBearerAuth()
 @Controller('units')
 export class UnitController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: import('winston').Logger;
-
   constructor(
     private readonly createUnitService: CreateUnitService,
     private readonly getUnitsService: GetUnitsService,
@@ -69,21 +57,14 @@ export class UnitController {
   async getAll(
     @Query() query: UnitQueryParamsDto,
   ): Promise<Page<UnitResponseDto>> {
-    try {
-      const params = query.toQueryParams();
-      const result = await this.getUnitsService.getAllPaged(params);
-      return {
-        ...result,
-        items: plainToInstance(UnitResponseDto, result.items, {
-          excludeExtraneousValues: true,
-        }),
-      };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const params = query.toQueryParams();
+    const result = await this.getUnitsService.getAllPaged(params);
+    return {
+      ...result,
+      items: plainToInstance(UnitResponseDto, result.items, {
+        excludeExtraneousValues: true,
+      }),
+    };
   }
 
   @Get(':id')
@@ -101,20 +82,10 @@ export class UnitController {
   async getById(
     @Param('id', new ParseUUIDPipe()) id: string,
   ): Promise<UnitResponseDto> {
-    try {
-      const unit = await this.getUnitsService.getById(id);
-      return plainToInstance(UnitResponseDto, unit, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof UnitNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const unit = await this.getUnitsService.getById(id);
+    return plainToInstance(UnitResponseDto, unit, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Post()
@@ -130,21 +101,11 @@ export class UnitController {
   @ApiResponse({ status: 400, description: 'Duplicate name or abbreviation.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
   async create(@Body() dto: UnitCreateRequestDto): Promise<UnitResponseDto> {
-    try {
-      const payload = CreateUnitPayloadMapper.fromDto(dto);
-      const unit = await this.createUnitService.create(payload);
-      return plainToInstance(UnitResponseDto, unit, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const payload = CreateUnitPayloadMapper.fromDto(dto);
+    const unit = await this.createUnitService.create(payload);
+    return plainToInstance(UnitResponseDto, unit, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Put(':id')
@@ -167,23 +128,11 @@ export class UnitController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: UnitCreateRequestDto,
   ): Promise<UnitResponseDto> {
-    try {
-      const payload = UpdateUnitPayloadMapper.fromDto(dto);
-      const unit = await this.updateUnitService.update(id, payload);
-      return plainToInstance(UnitResponseDto, unit, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      } else if (e instanceof UnitNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const payload = UpdateUnitPayloadMapper.fromDto(dto);
+    const unit = await this.updateUnitService.update(id, payload);
+    return plainToInstance(UnitResponseDto, unit, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Delete(':id')
@@ -197,19 +146,7 @@ export class UnitController {
   async delete(
     @Param('id', new ParseUUIDPipe()) id: string,
   ): Promise<{ message: string }> {
-    try {
-      await this.deleteUnitService.delete(id);
-      return { message: 'Unit deleted successfully.' };
-    } catch (e) {
-      if (e instanceof UnitNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof ForeignKeyViolationException) {
-        throw new ConflictException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.deleteUnitService.delete(id);
+    return { message: 'Unit deleted successfully.' };
   }
 }

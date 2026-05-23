@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ZoneRepository } from '../repositories/zone.repository-abstract';
 import { Zone } from '../types/zone.class';
 import { FloorRepository } from 'src/models/floors/repositories/floor.repository-abstract';
-import { RelatedRecordNotFoundException } from 'src/common/exceptions/RelatedRecordNotFoundException';
+import { RelatedRecordNotFoundError } from 'src/common/errors/related-record-not-found.error';
 
 @Injectable()
 export class CreateZoneService {
@@ -18,14 +18,14 @@ export class CreateZoneService {
    *
    * @param zone - The zone entity to be created. Should contain all required fields for creation.
    * @returns A promise that resolves to the created Zone object.
-   * @throws DuplicateEntryException if a zone with a unique field already exists (from repository layer).
-   * @throws RelatedRecordNotFoundException if a related record is not found (from repository layer).
+   * @throws DuplicateEntryError if a zone with a unique field already exists (from repository layer).
+   * @throws RelatedRecordNotFoundError if a related record is not found (from repository layer).
    */
   async createZone(zone: Zone): Promise<Zone> {
     const floor = await this.floorRepository.findById(zone.floorId);
 
     if (!floor) {
-      throw new RelatedRecordNotFoundException(
+      throw new RelatedRecordNotFoundError(
         `Floor with id ${zone.floorId} not found`,
       );
     }

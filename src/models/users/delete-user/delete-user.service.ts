@@ -13,7 +13,7 @@ export class DeleteUserService {
    *
    * @param userId - The unique identifier of the user to delete.
    * @returns A promise that resolves when the user has been softly deleted.
-   * @throws UserNotFoundException if the user with the specified ID does not exist (from repository layer).
+   * @throws UserNotFoundError if the user with the specified ID does not exist (from repository layer).
    */
   async deleteUserById(userId: string): Promise<void> {
     await this.userRepository.delete(userId);

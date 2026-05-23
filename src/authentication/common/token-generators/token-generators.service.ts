@@ -3,10 +3,10 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtConfigService } from '../../../config/jwt/config.service';
 import { authConfig } from '../../auth.config';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
-import { AccessTokenHasExpiredException } from '../../exceptions/AccessTokenHasExpiredException';
-import { InvalidAccessTokenException } from '../../exceptions/InvalidAccessTokenException';
-import { InvalidRefreshTokenException } from '../../exceptions/InvalidRefreshTokenException';
-import { RefreshTokenHasExpiredException } from '../../exceptions/RefreshTokenHasExpiredException';
+import { AccessTokenExpiredError } from '../../errors/access-token-expired.error';
+import { InvalidAccessTokenError } from '../../errors/invalid-access-token.error';
+import { InvalidRefreshTokenError } from '../../errors/invalid-refresh-token.error';
+import { RefreshTokenExpiredError } from '../../errors/refresh-token-expired.error';
 import { TableSessionConfig } from '../../../models/table-sessions/table-session.config';
 import { TableSessionPayload } from '../../../models/table-sessions/shared/interfaces/table-session-payload.interface';
 import { TableSessionRepository } from '../../../models/table-sessions/shared/repositories/table-session-repository.abstract';
@@ -75,14 +75,14 @@ export class TokenGeneratorsService {
    *
    * This method checks the validity and integrity of the provided JWT refresh token using the configured refresh token secret.
    * If the token is valid and not expired, it returns the decoded payload (claims). If the token is invalid, expired, or has been tampered with,
-   * it throws a custom exception: InvalidRefreshTokenException for invalid tokens, and RefreshTokenHasExpiredException for expired tokens.
+   * it throws a custom exception: InvalidRefreshTokenError for invalid tokens, and RefreshTokenExpiredError for expired tokens.
    * This is typically used to issue new access tokens during the refresh flow.
    *
    * @template T - The expected shape of the decoded payload (defaults to any object).
    * @param {string} token - The JWT refresh token to verify and decode.
    * @returns {Promise<T>} The decoded payload of the refresh token if verification is successful.
-   * @throws {InvalidRefreshTokenException} If the token is invalid, malformed, or has been tampered with.
-   * @throws {RefreshTokenHasExpiredException} If the token is expired.
+   * @throws {InvalidRefreshTokenError} If the token is invalid, malformed, or has been tampered with.
+   * @throws {RefreshTokenExpiredError} If the token is expired.
    * @throws {Error} For unexpected internal errors during token verification.
    */
   async verifyRefreshToken<T extends object = any>(token: string): Promise<T> {
@@ -92,9 +92,9 @@ export class TokenGeneratorsService {
       });
     } catch (e) {
       if (e instanceof JsonWebTokenError) {
-        throw new InvalidRefreshTokenException();
+        throw new InvalidRefreshTokenError();
       } else if (e instanceof TokenExpiredError) {
-        throw new RefreshTokenHasExpiredException();
+        throw new RefreshTokenExpiredError();
       }
       throw e;
     }
@@ -105,14 +105,14 @@ export class TokenGeneratorsService {
    *
    * This method checks the validity and integrity of the provided JWT access token using the configured access token secret.
    * If the token is valid and not expired, it returns the decoded payload (claims). If the token is invalid, expired, or has been tampered with,
-   * it throws a custom exception: InvalidAccessTokenException for invalid tokens, and AccessTokenHasExpiredException for expired tokens.
+   * it throws a custom exception: InvalidAccessTokenError for invalid tokens, and AccessTokenExpiredError for expired tokens.
    * This is typically used to authenticate requests and authorize access to protected resources.
    *
    * @template T - The expected shape of the decoded payload (defaults to any object).
    * @param {string} token - The JWT access token to verify and decode.
    * @returns {Promise<T>} The decoded payload of the access token if verification is successful.
-   * @throws {InvalidAccessTokenException} If the token is invalid, malformed, or has been tampered with.
-   * @throws {AccessTokenHasExpiredException} If the token is expired.
+   * @throws {InvalidAccessTokenError} If the token is invalid, malformed, or has been tampered with.
+   * @throws {AccessTokenExpiredError} If the token is expired.
    * @throws {Error} For unexpected internal errors during token verification.
    */
   async verifyAccessToken<T extends object = any>(token: string): Promise<T> {
@@ -122,9 +122,9 @@ export class TokenGeneratorsService {
       });
     } catch (e) {
       if (e instanceof JsonWebTokenError) {
-        throw new InvalidAccessTokenException();
+        throw new InvalidAccessTokenError();
       } else if (e instanceof TokenExpiredError) {
-        throw new AccessTokenHasExpiredException();
+        throw new AccessTokenExpiredError();
       }
       throw e;
     }
@@ -135,13 +135,13 @@ export class TokenGeneratorsService {
    *
    * This method checks the validity and integrity of the provided JWT table session token using the configured table session token secret.
    * If the token is valid and not expired, it returns the decoded payload (claims). If the token is invalid, expired, or has been tampered with,
-   * it throws a custom exception: InvalidAccessTokenException for invalid tokens, and AccessTokenHasExpiredException for expired tokens.
+   * it throws a custom exception: InvalidAccessTokenError for invalid tokens, and AccessTokenExpiredError for expired tokens.
    * This is typically used to authenticate table sessions and authorize access to table-specific resources.
    *
    * @param {string} token - The JWT table session token to verify and decode.
    * @return {Promise<TableSessionPayload>} The decoded payload of the table session token if verification is successful.
-   * @throws {InvalidAccessTokenException} If the token is invalid, malformed, or has been tampered with.
-   * @throws {AccessTokenHasExpiredException} If the token is expired.
+   * @throws {InvalidAccessTokenError} If the token is invalid, malformed, or has been tampered with.
+   * @throws {AccessTokenExpiredError} If the token is expired.
    * @throws {Error} For unexpected internal errors during token verification.
    */
   async verifyTableSessionToken(token: string): Promise<TableSessionPayload> {
@@ -151,9 +151,9 @@ export class TokenGeneratorsService {
       });
     } catch (e) {
       if (e instanceof JsonWebTokenError) {
-        throw new InvalidAccessTokenException();
+        throw new InvalidAccessTokenError();
       } else if (e instanceof TokenExpiredError) {
-        throw new AccessTokenHasExpiredException();
+        throw new AccessTokenExpiredError();
       }
       throw e;
     }

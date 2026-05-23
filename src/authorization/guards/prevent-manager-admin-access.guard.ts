@@ -9,7 +9,7 @@ import { PREVENT_MANAGER_ADMIN_ACCESS_KEY } from '../../common/decorators/preven
 import { Role } from '../../common/enums/role.enum';
 import { JwtPayload } from '../../authentication/interfaces/jwt-payload.interface';
 import { GetUsersService } from '../../models/users/get-users/get-users.service';
-import { UserNotFoundException } from '../../models/users/exceptions/UserNotFoundException';
+import { UserNotFoundError } from '../../models/users/errors/user-not-found.error';
 import { Request } from 'express';
 
 /**
@@ -74,7 +74,7 @@ export class PreventManagerAdminAccessGuard implements CanActivate {
         );
       }
     } catch (e) {
-      if (e instanceof UserNotFoundException) {
+      if (e instanceof UserNotFoundError) {
         throw new BadRequestException(e.message);
       }
       throw e;

@@ -8,7 +8,7 @@ import { PaymentMapper } from '../entities/payment.mapper';
 import { PaymentStatus } from '../enums/payment-status.enum';
 import { PaymentOrderBy, PaymentQueryParams } from '../interfaces/payment-query-params.interface';
 import { PaymentRepository } from './payment-repository.abstract';
-import { DuplicateEntryException } from '../../../../common/exceptions/DuplicateEntryException';
+import { DuplicateEntryError } from '../../../../common/errors/duplicate-entry.error';
 
 @Injectable()
 export class PaymentRepositoryImpl implements PaymentRepository {
@@ -37,7 +37,7 @@ export class PaymentRepositoryImpl implements PaymentRepository {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Payment with the same unique fields already exists',
           );
         }

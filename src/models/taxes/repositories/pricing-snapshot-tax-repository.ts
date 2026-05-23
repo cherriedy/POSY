@@ -4,8 +4,8 @@ import { PricingSnapshotTaxRepository } from './pricing-snapshot-tax-repository.
 import { PricingSnapshotTax } from '../entities/pricing-snapshot-tax';
 import { PricingSnapshotTaxMapper } from '../entities/pricing-snapshot-tax.mapper';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
-import { RelatedRecordNotFoundException } from '../../../common/exceptions/RelatedRecordNotFoundException';
+import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
+import { RelatedRecordNotFoundError } from '../../../common/errors/related-record-not-found.error';
 
 @Injectable()
 export class PricingSnapshotTaxRepositoryImpl implements PricingSnapshotTaxRepository {
@@ -16,8 +16,8 @@ export class PricingSnapshotTaxRepositoryImpl implements PricingSnapshotTaxRepos
    *
    * @param entities - Array of PricingSnapshotTax domain entities to persist.
    * @returns Promise resolving to the created PricingSnapshotTax domain entities.
-   * @throws DuplicateEntryException if a unique constraint is violated (P2002).
-   * @throws RelatedRecordNotFoundException if a foreign key constraint is violated (P2003).
+   * @throws DuplicateEntryError if a unique constraint is violated (P2002).
+   * @throws RelatedRecordNotFoundError if a foreign key constraint is violated (P2003).
    */
   async bulkCreate(
     entities: PricingSnapshotTax[],
@@ -41,11 +41,11 @@ export class PricingSnapshotTaxRepositoryImpl implements PricingSnapshotTaxRepos
       if (e instanceof PrismaClientKnownRequestError) {
         switch (e.code) {
           case 'P2002':
-            throw new DuplicateEntryException(
+            throw new DuplicateEntryError(
               'Please check the provided data for duplicates and try again.',
             );
           case 'P2003':
-            throw new RelatedRecordNotFoundException(
+            throw new RelatedRecordNotFoundError(
               'Please ensure all referenced records exist and try again.',
             );
         }

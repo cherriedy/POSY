@@ -3,8 +3,8 @@ import { Floor } from '../types/floor.class';
 import { FloorMapper } from '../types/floor.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
+import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
 import { paginationConfig } from '../../../common/constants/pagination.config';
 import { Page } from '../../../common/interfaces/page.interface';
 import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
@@ -28,7 +28,7 @@ export class FloorRepositoryImpl implements FloorRepository {
    * Creates a new floor in the database.
    * @param entity - The floor entity to create.
    * @returns A promise that resolves to the created floor.
-   * @throws DuplicateEntryException if a floor with a unique field already exists.
+   * @throws DuplicateEntryError if a floor with a unique field already exists.
    */
   async create(entity: Floor): Promise<Floor> {
     const prismaFloor = FloorMapper.toPrisma(entity);
@@ -39,7 +39,7 @@ export class FloorRepositoryImpl implements FloorRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Floor with provided unique field already exists',
           );
         }
@@ -53,7 +53,7 @@ export class FloorRepositoryImpl implements FloorRepository {
    * @param id - The unique identifier of the floor to delete.
    * @returns A promise that resolves when the floor is deleted.
    * @throws FloorNotFoundException if the floor does not exist.
-   * @throws ForeignKeyViolationException if the floor is referenced by another record.
+   * @throws ForeignKeyViolationError if the floor is referenced by another record.
    */
   async delete(id: string): Promise<void> {
     try {
@@ -64,7 +64,7 @@ export class FloorRepositoryImpl implements FloorRepository {
           throw new FloorNotFoundException(id);
         } else if (e.code === 'P2003') {
           const fields = e.meta?.field_name as string[];
-          throw new ForeignKeyViolationException(fields);
+          throw new ForeignKeyViolationError(fields);
         }
       }
       throw e;
@@ -111,7 +111,7 @@ export class FloorRepositoryImpl implements FloorRepository {
    * @param entity - Partial data to update the floor with.
    * @returns A promise that resolves to the updated floor.
    * @throws FloorNotFoundException if the floor does not exist.
-   * @throws DuplicateEntryException if a floor with a unique field already exists.
+   * @throws DuplicateEntryError if a floor with a unique field already exists.
    */
   async update(id: string, entity: Partial<Floor>): Promise<Floor> {
     const floor = await this.findById(id);
@@ -131,7 +131,7 @@ export class FloorRepositoryImpl implements FloorRepository {
         where: { name: dataSnakeCase.name },
       });
       if (existing && existing.id !== id) {
-        throw new DuplicateEntryException('Floor name already exists.');
+        throw new DuplicateEntryError('Floor name already exists.');
       }
     }
 
@@ -146,7 +146,7 @@ export class FloorRepositoryImpl implements FloorRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(e.message);
+          throw new DuplicateEntryError(e.message);
         }
       }
       throw e;

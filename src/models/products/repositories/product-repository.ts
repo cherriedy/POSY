@@ -5,8 +5,8 @@ import { ProductMapper } from '../entities/product.mapper';
 import { Page } from '../../../common/interfaces/page.interface';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
+import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
 import { ProductNotFoundException } from '../exceptions/product-not-found.exception';
 import { paginationConfig } from '../../../common/constants/pagination.config';
 import {
@@ -33,11 +33,11 @@ export class ProductRepositoryImpl implements ProductRepository {
    * Creates a new product in the database.
    *
    * Converts the domain product entity to a Prisma-compatible object and attempts to create it in the database.
-   * Throws a DuplicateEntryException if a product with the same unique data already exists.
+   * Throws a DuplicateEntryError if a product with the same unique data already exists.
    *
    * @param {Product} entity - The product domain entity to create.
    * @returns {Promise<Product>} A promise that resolves to the created product domain object.
-   * @throws {DuplicateEntryException} If a product with the provided data already exists.
+   * @throws {DuplicateEntryError} If a product with the provided data already exists.
    * @throws {Error} For other database or mapping errors.
    */
   async create(entity: Product): Promise<Product> {
@@ -54,11 +54,11 @@ export class ProductRepositoryImpl implements ProductRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Product with provided data already exists',
           );
         } else if (e.code === 'P2003') {
-          throw new ForeignKeyViolationException(entity);
+          throw new ForeignKeyViolationError(entity);
         }
       }
       throw e;

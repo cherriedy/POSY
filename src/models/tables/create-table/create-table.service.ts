@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TableRepository } from '../repositories/table.repository-abstract';
 import { Table } from '../types/table.class';
 import { ZoneRepository } from 'src/models/zones/repositories/zone.repository-abstract';
-import { RelatedRecordNotFoundException } from 'src/common/exceptions/RelatedRecordNotFoundException';
+import { RelatedRecordNotFoundError } from 'src/common/errors/related-record-not-found.error';
 
 @Injectable()
 export class CreateTableService {
@@ -18,14 +18,14 @@ export class CreateTableService {
    *
    * @param table - The table entity to be created. Should contain all required fields for creation.
    * @returns A promise that resolves to the created Table object.
-   * @throws DuplicateEntryException if a table with a unique field already exists (from repository layer).
-   * @throws RelatedRecordNotFoundException if a related record is not found (from repository layer).
+   * @throws DuplicateEntryError if a table with a unique field already exists (from repository layer).
+   * @throws RelatedRecordNotFoundError if a related record is not found (from repository layer).
    */
   async createTable(table: Table): Promise<Table> {
     if (table.zoneId) {
       const zone = await this.zoneRepository.findById(table.zoneId);
       if (!zone) {
-        throw new RelatedRecordNotFoundException(
+        throw new RelatedRecordNotFoundError(
           `Zone with id ${table.zoneId} not found`,
         );
       }

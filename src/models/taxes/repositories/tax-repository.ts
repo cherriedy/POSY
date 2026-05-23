@@ -3,7 +3,7 @@ import { TaxConfig } from '../entities/tax-config';
 import { TaxConfigMapper } from '../entities/tax-config.mapper';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
+import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
 import { Injectable } from '@nestjs/common';
 import { TaxNotFoundException } from '../exceptions/tax-not-found.exception';
 import { TaxOrderBy, TaxQueryFilters, TaxQueryParams } from '../interfaces/tax-query-params';
@@ -29,7 +29,7 @@ export class TaxRepositoryImpl implements TaxRepository {
    *
    * @param tax - The tax configuration domain object to create.
    * @returns The created tax configuration domain object.
-   * @throws {DuplicateEntryException} If a tax with a unique field already exists.
+   * @throws {DuplicateEntryError} If a tax with a unique field already exists.
    * @throws {PrismaClientKnownRequestError} For other Prisma errors.
    */
   async create(tax: TaxConfig): Promise<TaxConfig> {
@@ -43,7 +43,7 @@ export class TaxRepositoryImpl implements TaxRepository {
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Tax configuration with provided unique field already exists',
           );
         }
@@ -138,7 +138,7 @@ export class TaxRepositoryImpl implements TaxRepository {
    * @param tax - Partial tax configuration data to update.
    * @returns The updated tax configuration domain object.
    * @throws {TaxNotFoundException} If the tax configuration does not exist.
-   * @throws {DuplicateEntryException} If a tax with a unique field already exists.
+   * @throws {DuplicateEntryError} If a tax with a unique field already exists.
    * @throws {PrismaClientKnownRequestError} For other Prisma errors.
    */
   async update(id: string, tax: Partial<TaxConfig>): Promise<TaxConfig> {
@@ -159,7 +159,7 @@ export class TaxRepositoryImpl implements TaxRepository {
         if (e.code === 'P2025') {
           throw new TaxNotFoundException({ id });
         } else if (e.code === 'P2002') {
-          throw new DuplicateEntryException(
+          throw new DuplicateEntryError(
             'Tax configuration with provided unique field already exists',
           );
         }

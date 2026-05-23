@@ -1,12 +1,8 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
-  Inject,
-  InternalServerErrorException,
-  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -22,7 +18,6 @@ import { RoleGuard } from '../../authorization/guards/role.guard';
 import { Role } from '../../common/enums/role.enum';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { GetFloorsService } from './get-floors/get-floors.service';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { plainToInstance } from 'class-transformer';
 import { FloorDetailedResponseDto } from './dto/floor-detailed-response.dto';
 import { FloorPreviewResponseDto } from './dto/floor-preview-response.dto';
@@ -30,11 +25,7 @@ import { FloorQueryParamsDto } from './dto/floor-query-params.dto';
 import { FloorCreateRequestDto } from './dto/floor-create-request.dto';
 import { FloorUpdateRequestDto } from './dto/floor-update-request.dto';
 import { Page } from '../../common/interfaces/page.interface';
-import { FloorNotFoundException } from './exceptions/floor-not-found.exception';
 import { Floor } from './types/floor.class';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../common/exceptions/ForeignKeyViolationException';
-import { RelatedRecordNotFoundException } from '../../common/exceptions/RelatedRecordNotFoundException';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -50,9 +41,6 @@ import { createPageResponseSchema } from '../../common/dto/page-response';
 @ApiBearerAuth()
 @Controller('floors')
 export class FloorController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: import('winston').Logger;
-
   constructor(
     private readonly getFloorsService: GetFloorsService,
     private readonly createFloorService: CreateFloorService,
@@ -76,24 +64,17 @@ export class FloorController {
   async getFloors(
     @Query() query: FloorQueryParamsDto,
   ): Promise<Page<FloorPreviewResponseDto>> {
-    try {
-      const queryParams = query.toQueryParams();
-      const floorPage = await this.getFloorsService.getAll(queryParams);
-      const floorPreviewItems = plainToInstance(
-        FloorPreviewResponseDto,
-        floorPage.items,
-        { excludeExtraneousValues: true },
-      );
-      return {
-        ...floorPage,
-        items: floorPreviewItems,
-      };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const queryParams = query.toQueryParams();
+    const floorPage = await this.getFloorsService.getAll(queryParams);
+    const floorPreviewItems = plainToInstance(
+      FloorPreviewResponseDto,
+      floorPage.items,
+      { excludeExtraneousValues: true },
+    );
+    return {
+      ...floorPage,
+      items: floorPreviewItems,
+    };
   }
 
   @Get(':id')
@@ -114,20 +95,10 @@ export class FloorController {
   async getFloorById(
     @Param('id', new ParseUUIDPipe()) id: string,
   ): Promise<FloorDetailedResponseDto> {
-    try {
-      const floor = await this.getFloorsService.getFloorById(id);
-      return plainToInstance(FloorDetailedResponseDto, floor, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof FloorNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const floor = await this.getFloorsService.getFloorById(id);
+    return plainToInstance(FloorDetailedResponseDto, floor, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Post()
@@ -148,22 +119,10 @@ export class FloorController {
     description: 'Duplicate entry or related record not found',
   })
   async createFloor(@Body() dto: FloorCreateRequestDto) {
-    try {
-      const floor = await this.createFloorService.createFloor(dto as Floor);
-      return plainToInstance(FloorPreviewResponseDto, floor, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      } else if (e instanceof RelatedRecordNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const floor = await this.createFloorService.createFloor(dto as Floor);
+    return plainToInstance(FloorPreviewResponseDto, floor, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Put(':id')
@@ -189,25 +148,13 @@ export class FloorController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: FloorUpdateRequestDto,
   ) {
-    try {
-      const floor = await this.updateFloorService.updateFloor(
-        id,
-        dto as Partial<Floor>,
-      );
-      return plainToInstance(FloorDetailedResponseDto, floor, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof FloorNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const floor = await this.updateFloorService.updateFloor(
+      id,
+      dto as Partial<Floor>,
+    );
+    return plainToInstance(FloorDetailedResponseDto, floor, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Delete(':id')
@@ -225,19 +172,7 @@ export class FloorController {
     description: 'Floor not found or foreign key violation',
   })
   async deleteFloor(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      await this.deleteFloorService.deleteFloor(id);
-      return { message: 'Floor has been successfully deleted.' };
-    } catch (e) {
-      if (e instanceof FloorNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof ForeignKeyViolationException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.deleteFloorService.deleteFloor(id);
+    return { message: 'Floor has been successfully deleted.' };
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../repositories/user.repository-abstract';
 import { User } from '../types/user.class';
-import { UserNotFoundException } from '../exceptions/UserNotFoundException';
+import { UserNotFoundError } from '../errors/user-not-found.error';
 import { UserQueryParams } from '../interfaces/user-query-params.interface';
 import { Page } from '../../../common/interfaces/page.interface';
 
@@ -14,12 +14,12 @@ export class GetUsersService {
    *
    * @param {string} userId - The unique identifier of the user to retrieve.
    * @returns {Promise<User>} A promise that resolves to the user domain object.
-   * @throws {UserNotFoundException} If the user with the given ID does not exist.
+   * @throws {UserNotFoundError} If the user with the given ID does not exist.
    */
   async getUserById(userId: string): Promise<User> {
     const user = await this.userRepository.findById(userId);
     if (!user) {
-      throw new UserNotFoundException({ id: userId });
+      throw new UserNotFoundError({ id: userId });
     }
     return user;
   }

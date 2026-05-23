@@ -15,7 +15,7 @@ export class CreateCuisineService {
    *
    * @param payload - Data for creating the new cuisine
    * @returns The newly created cuisine
-   * @throws DuplicateEntryException - If a cuisine with the same name already exists
+   * @throws DuplicateEntryError - If a cuisine with the same name already exists
    */
   async create(payload: CuisineInsertPayload): Promise<Cuisine> {
     return await this.cuisineRepository.create(payload as Cuisine);

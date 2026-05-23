@@ -5,8 +5,8 @@ import {
 } from '@nestjs/common';
 import { JwtPayload } from '../../authentication/interfaces/jwt-payload.interface';
 import { TokenGeneratorsService } from '../../authentication/common/token-generators/token-generators.service';
-import { AccessTokenHasExpiredException } from '../../authentication/exceptions/AccessTokenHasExpiredException';
-import { InvalidAccessTokenException } from '../../authentication/exceptions/InvalidAccessTokenException';
+import { AccessTokenExpiredError } from '../../authentication/errors/access-token-expired.error';
+import { InvalidAccessTokenError } from '../../authentication/errors/invalid-access-token.error';
 import { SocketIOMiddleware } from '../types/socket-io-middleware.type';
 import { AuthenticatedStaffSocket } from '../interfaces/authenticated-staff-socket.interface';
 
@@ -68,8 +68,8 @@ async function verifyToken(
     return { userId: payload.sub, role: payload.role };
   } catch (e) {
     if (
-      e instanceof InvalidAccessTokenException ||
-      e instanceof AccessTokenHasExpiredException
+      e instanceof InvalidAccessTokenError ||
+      e instanceof AccessTokenExpiredError
     ) {
       throw new UnauthorizedException(e.message);
     }

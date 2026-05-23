@@ -1,12 +1,8 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
-  Inject,
-  InternalServerErrorException,
-  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -22,19 +18,14 @@ import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 import { Role } from '../../common/enums/role.enum';
 import { Roles } from '../../common/decorators/roles.decorator';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { plainToInstance } from 'class-transformer';
 import { CategoryDetailedResponseDto } from './shared/dto/category-detailed-response.dto';
 import { CategoryPreviewResponseDto } from './shared/dto/category-preview-response.dto';
 import { CategoryQueryParamsDto } from './shared/dto/category-query-params.dto';
 import { CreateCategoryDto } from './shared/dto/create-category.dto';
 import { UpdateCategoryDto } from './shared/dto/update-category.dto';
-import { CategoryNotFoundException } from './shared/exceptions/category-not-found.exception';
 import { Category } from './shared/entities/category';
 import { Page } from '../../common/interfaces/page.interface';
-import { DuplicateEntryException } from '../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../common/exceptions/ForeignKeyViolationException';
-import { RelatedRecordNotFoundException } from '../../common/exceptions/RelatedRecordNotFoundException';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -50,9 +41,6 @@ import { createPageResponseSchema } from '../../common/dto/page-response';
 @ApiBearerAuth()
 @Controller('categories')
 export class CategoryController {
-  @Inject(WINSTON_MODULE_NEST_PROVIDER)
-  private readonly logger: import('winston').Logger;
-
   constructor(
     private readonly getCategoriesService: GetCategoriesService,
     private readonly createCategoryService: CreateCategoryService,
@@ -68,25 +56,18 @@ export class CategoryController {
     description: 'Returns active and non-deleted categories',
   })
   async getAvailableCategories(): Promise<CategoryPreviewResponseDto[]> {
-    try {
-      const categoryPage = await this.getCategoriesService.getAll({
-        filter: {
-          isActive: true,
-          isDeleted: false,
-        },
-        page: 1,
-        pageSize: 1000,
-      });
+    const categoryPage = await this.getCategoriesService.getAll({
+      filter: {
+        isActive: true,
+        isDeleted: false,
+      },
+      page: 1,
+      pageSize: 1000,
+    });
 
-      return plainToInstance(CategoryPreviewResponseDto, categoryPage.items, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return plainToInstance(CategoryPreviewResponseDto, categoryPage.items, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Get(':id')
@@ -94,7 +75,7 @@ export class CategoryController {
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @ApiOperation({
     summary: 'Get category by ID',
-    description: `Fetches detailed information for a specific category by its unique ID. Accessible by 
+    description: `Fetches detailed information for a specific category by its unique ID. Accessible by
     MANAGER and ADMIN roles. Returns 400 if the category is not found.`,
   })
   @ApiParam({ name: 'id', type: String })
@@ -107,20 +88,10 @@ export class CategoryController {
   async getCategoryById(
     @Param('id', new ParseUUIDPipe()) id: string,
   ): Promise<CategoryDetailedResponseDto> {
-    try {
-      const category = await this.getCategoriesService.getCategoryById(id);
-      return plainToInstance(CategoryDetailedResponseDto, category, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof CategoryNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const category = await this.getCategoriesService.getCategoryById(id);
+    return plainToInstance(CategoryDetailedResponseDto, category, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Get()
@@ -128,8 +99,8 @@ export class CategoryController {
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @ApiOperation({
     summary: 'Get all categories',
-    description: `Returns a paginated list of all categories. Accessible by MANAGER and ADMIN roles. 
-    Supports filtering by query parameters such as search query (by name), active status, etc. 
+    description: `Returns a paginated list of all categories. Accessible by MANAGER and ADMIN roles.
+    Supports filtering by query parameters such as search query (by name), active status, etc.
     Used for listing and searching categories.`,
   })
   @ApiQuery({ name: 'query', required: false, type: CategoryQueryParamsDto })
@@ -141,26 +112,19 @@ export class CategoryController {
   async getCategories(
     @Query() query: CategoryQueryParamsDto,
   ): Promise<Page<CategoryPreviewResponseDto>> {
-    try {
-      const queryParams = query.toQueryParams();
-      const categoryPage = await this.getCategoriesService.getAll(queryParams);
+    const queryParams = query.toQueryParams();
+    const categoryPage = await this.getCategoriesService.getAll(queryParams);
 
-      const categoryPreviewItems = plainToInstance(
-        CategoryPreviewResponseDto,
-        categoryPage.items,
-        { excludeExtraneousValues: true },
-      );
+    const categoryPreviewItems = plainToInstance(
+      CategoryPreviewResponseDto,
+      categoryPage.items,
+      { excludeExtraneousValues: true },
+    );
 
-      return {
-        ...categoryPage,
-        items: categoryPreviewItems,
-      };
-    } catch (e) {
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    return {
+      ...categoryPage,
+      items: categoryPreviewItems,
+    };
   }
 
   @Post()
@@ -168,8 +132,8 @@ export class CategoryController {
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @ApiOperation({
     summary: 'Create a new category',
-    description: `Creates a new category with the provided details. Only accessible by ADMIN 
-    and MANAGER roles. Returns the created category preview. Throws 400 for duplicate entries 
+    description: `Creates a new category with the provided details. Only accessible by ADMIN
+    and MANAGER roles. Returns the created category preview. Throws 400 for duplicate entries
     or related record not found.`,
   })
   @ApiBody({ type: CreateCategoryDto })
@@ -183,24 +147,12 @@ export class CategoryController {
     description: 'Duplicate entry or related record not found',
   })
   async createCategory(@Body() dto: CreateCategoryDto) {
-    try {
-      const category = await this.createCategoryService.createCategory(
-        dto as Category,
-      );
-      return plainToInstance(CategoryPreviewResponseDto, category, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      } else if (e instanceof RelatedRecordNotFoundException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const category = await this.createCategoryService.createCategory(
+      dto as Category,
+    );
+    return plainToInstance(CategoryPreviewResponseDto, category, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Put(':id')
@@ -208,7 +160,7 @@ export class CategoryController {
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @ApiOperation({
     summary: 'Update a category',
-    description: `Updates an existing category by its ID. Only accessible by ADMIN and MANAGER roles. 
+    description: `Updates an existing category by its ID. Only accessible by ADMIN and MANAGER roles.
     Returns the updated category preview. Throws 400 for not found or duplicate entries.`,
   })
   @ApiParam({ name: 'id', type: String })
@@ -226,25 +178,13 @@ export class CategoryController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: UpdateCategoryDto,
   ) {
-    try {
-      const category = await this.updateCategoryService.updateCategoryById(
-        id,
-        dto as Partial<Category>,
-      );
-      return plainToInstance(CategoryDetailedResponseDto, category, {
-        excludeExtraneousValues: true,
-      });
-    } catch (e) {
-      if (e instanceof CategoryNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof DuplicateEntryException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    const category = await this.updateCategoryService.updateCategoryById(
+      id,
+      dto as Partial<Category>,
+    );
+    return plainToInstance(CategoryDetailedResponseDto, category, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Post(':id/toggle-active')
@@ -252,7 +192,7 @@ export class CategoryController {
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @ApiOperation({
     summary: 'Toggle category active status',
-    description: `Toggles the active status of a category by its ID. Only accessible by ADMIN and 
+    description: `Toggles the active status of a category by its ID. Only accessible by ADMIN and
     MANAGER roles. Returns a success message. Throws 400 if the category is not found.`,
   })
   @ApiParam({ name: 'id', type: String })
@@ -260,22 +200,12 @@ export class CategoryController {
     status: 200,
     description: 'Category active status toggled',
   })
-  @ApiResponse({ status: 400, description: 'Category not found' })
+  @ApiResponse({ status: 404, description: 'Category not found' })
   async toggleCategoryActive(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      await this.updateCategoryService.toggleCategoryActive(id);
-      return {
-        message: 'Category active status has been successfully toggled.',
-      };
-    } catch (e) {
-      if (e instanceof CategoryNotFoundException) {
-        throw new NotFoundException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.updateCategoryService.toggleCategoryActive(id);
+    return {
+      message: 'Category active status has been successfully toggled.',
+    };
   }
 
   @Delete(':id')
@@ -283,8 +213,8 @@ export class CategoryController {
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @ApiOperation({
     summary: 'Delete a category',
-    description: `Deletes a category by its ID. Only accessible by ADMIN and MANAGER roles. 
-    Returns a success message. Throws 400 if the category is not found or if it is referenced 
+    description: `Deletes a category by its ID. Only accessible by ADMIN and MANAGER roles.
+    Returns a success message. Throws 400 if the category is not found or if it is referenced
     by other records (foreign key violation).`,
   })
   @ApiParam({ name: 'id', type: String })
@@ -294,19 +224,7 @@ export class CategoryController {
     description: 'Category not found or foreign key violation',
   })
   async deleteCategory(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      await this.deleteCategoryService.deleteCategoryById(id);
-      return { message: 'Category has been successfully deleted.' };
-    } catch (e) {
-      if (e instanceof CategoryNotFoundException) {
-        throw new NotFoundException(e.message);
-      } else if (e instanceof ForeignKeyViolationException) {
-        throw new BadRequestException(e.message);
-      }
-      this.logger.error(e);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request.',
-      );
-    }
+    await this.deleteCategoryService.deleteCategoryById(id);
+    return { message: 'Category has been successfully deleted.' };
   }
 }

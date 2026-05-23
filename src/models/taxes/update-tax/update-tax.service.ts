@@ -14,7 +14,7 @@ export class UpdateTaxService {
    * @param {TaxUpdateRequestDto} dto - The update data.
    * @returns {Promise<TaxConfig>} A promise that resolves to the updated tax.
    * @throws {TaxNotFoundException} If the tax does not exist.
-   * @throws {DuplicateEntryException} If the update would create a duplicate.
+   * @throws {DuplicateEntryError} If the update would create a duplicate.
    */
   async update(id: string, dto: TaxUpdateRequestDto): Promise<TaxConfig> {
     // Check if tax exists

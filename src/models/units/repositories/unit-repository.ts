@@ -4,8 +4,8 @@ import { Unit } from '../entities/unit.class';
 import { UnitMapper } from '../entities/unit.mapper';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryException } from '../../../common/exceptions/DuplicateEntryException';
-import { ForeignKeyViolationException } from '../../../common/exceptions/ForeignKeyViolationException';
+import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
+import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
 import { UnitNotFoundException } from '../exceptions/unit-not-found.exception';
 import { Page } from '../../../common/interfaces/page.interface';
 import { paginationConfig } from '../../../common/constants/pagination.config';
@@ -25,7 +25,7 @@ export class UnitRepositoryImpl implements UnitRepository {
    *
    * @param {Unit} entity - The unit domain entity to create.
    * @returns {Promise<Unit>} The created unit.
-   * @throws {DuplicateEntryException} If a unit with the same name or abbreviation already exists.
+   * @throws {DuplicateEntryError} If a unit with the same name or abbreviation already exists.
    */
   async create(entity: Unit): Promise<Unit> {
     try {
@@ -35,7 +35,7 @@ export class UnitRepositoryImpl implements UnitRepository {
       return UnitMapper.toDomain(record);
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError && e.code === 'P2002') {
-        throw new DuplicateEntryException(
+        throw new DuplicateEntryError(
           'Unit name or abbreviation already exists',
         );
       }
@@ -61,7 +61,7 @@ export class UnitRepositoryImpl implements UnitRepository {
    * @param {Partial<Unit>} entity - The partial unit data to apply.
    * @returns {Promise<Unit>} The updated unit domain entity.
    * @throws {UnitNotFoundException} If no unit with the given ID exists.
-   * @throws {DuplicateEntryException} If the new name or abbreviation conflicts with an existing unit.
+   * @throws {DuplicateEntryError} If the new name or abbreviation conflicts with an existing unit.
    */
   async update(id: string, entity: Partial<Unit>): Promise<Unit> {
     try {
@@ -75,7 +75,7 @@ export class UnitRepositoryImpl implements UnitRepository {
       return UnitMapper.toDomain(record);
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError && e.code === 'P2002') {
-        throw new DuplicateEntryException(
+        throw new DuplicateEntryError(
           'Unit name or abbreviation already exists',
         );
       }
@@ -97,7 +97,7 @@ export class UnitRepositoryImpl implements UnitRepository {
       });
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError && e.code === 'P2003') {
-        throw new ForeignKeyViolationException();
+        throw new ForeignKeyViolationError();
       }
 
       throw e;
