@@ -7,9 +7,9 @@ import { AccessTokenExpiredError } from '../../errors/access-token-expired.error
 import { InvalidAccessTokenError } from '../../errors/invalid-access-token.error';
 import { InvalidRefreshTokenError } from '../../errors/invalid-refresh-token.error';
 import { RefreshTokenExpiredError } from '../../errors/refresh-token-expired.error';
-import { TableSessionConfig } from 'apps/api/src/models/table-sessions/table-session.config';
-import { TableSessionPayload } from 'apps/api/src/models/table-sessions/shared/interfaces/table-session-payload.interface';
-import { TableSessionRepository } from 'apps/api/src/models/table-sessions/shared/repositories/table-session-repository.abstract';
+import { TableSessionConfig } from 'src/models/table-sessions/table-session.config';
+import { TableSessionPayload } from 'src/models/table-sessions/shared/interfaces/table-session-payload.interface';
+import { TableSessionRepository } from 'src/models/table-sessions/shared/repositories/table-session-repository.abstract';
 
 @Injectable()
 export class TokenGeneratorsService {

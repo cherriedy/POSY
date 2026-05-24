@@ -12,8 +12,7 @@
       "@posy/orders": ["libs/orders/src/index.ts"],
       "@posy/orders/*": ["libs/orders/src/*"],
       "@posy/categories": ["libs/categories/src/index.ts"],
-      "@posy/categories/*": ["libs/categories/src/*"],
-      "src/*": ["apps/api/src/*"]
+      "@posy/categories/*": ["libs/categories/src/*"]
     }
   },
   "include": [],

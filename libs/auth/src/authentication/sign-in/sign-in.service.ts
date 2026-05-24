@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from 'apps/api/src/models/users/repositories/user-repository.abstract';
+import { UserRepository } from '@posy/users/shared/repositories/user-repository.abstract';
 import { SignInDto } from '../dto/sign-in.dto';
 import { AccountLockedError } from '../errors/account-locked.error';
 import { InvalidCredentialsError } from '../errors/invalid-credentials.error';
 import { hash, verifyHash } from '@posy/shared';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { AuthTokensSchema } from '../interfaces/auth-tokens-schema.interface';
-import { User } from 'apps/api/src/models/users/types/user';
+import { User } from '@posy/users/shared/entities/user';
 import { TokenGeneratorsService } from '../common/token-generators/token-generators.service';
 import { authConfig } from '../auth.config';
 

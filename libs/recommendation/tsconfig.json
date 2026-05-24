@@ -14,8 +14,7 @@
       "@posy/user-tracking": ["libs/user-tracking/src/index.ts"],
       "@posy/user-tracking/*": ["libs/user-tracking/src/*"],
       "@posy/recommendation": ["libs/recommendation/src/index.ts"],
-      "@posy/recommendation/*": ["libs/recommendation/src/*"],
-      "src/*": ["apps/api/src/*"]
+      "@posy/recommendation/*": ["libs/recommendation/src/*"]
     }
   },
   "include": [],

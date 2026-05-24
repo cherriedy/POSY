@@ -1,8 +1,8 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { IngredientUsageRepository } from '../../shared/repositories/ingredient-usage-repository.abstract';
 import { IngredientUsage } from '../../shared/entities/ingredient-usage';
-import { ProductIngredientRepository } from '../../../products/repositories/product-ingredient-repository.abstract';
-import { SeasonalPatternRepository } from '../../../products/repositories/seasonal-pattern-repository.abstract';
+import { ProductIngredientRepository } from '@posy/products/repositories/product-ingredient-repository.abstract';
+import { SeasonalPatternRepository } from '@posy/products/repositories/seasonal-pattern-repository.abstract';
 import { OrderItem } from '../../../orders/shared/entities/order-item';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 

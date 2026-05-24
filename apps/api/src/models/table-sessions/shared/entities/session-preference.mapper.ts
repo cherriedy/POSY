@@ -2,7 +2,7 @@ import {
   Prisma,
   SessionPreference as PrismaSessionPreference,
 } from '@prisma/client';
-import { DietaryTag, MealSession, Taste } from '../../../products/enums/product-attribute.enum';
+import { DietaryTag, MealSession, Taste } from '@posy/products/enums/product-attribute.enum';
 import { SessionPreference } from './session-preference';
 import { MissingRequiredFieldsError } from '@posy/shared';
 

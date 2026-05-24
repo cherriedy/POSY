@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { CreatePromotionService } from './create-promotion.service';
 import { CategoryModule } from '../../categories/category.module';
-import { ProductModule } from '../../products/product.module';
+import { ProductsModule } from '@posy/products/products.module';
 
 @Module({
-  imports: [CategoryModule, ProductModule],
+  imports: [CategoryModule, ProductsModule],
   providers: [CreatePromotionService],
   exports: [CreatePromotionService],
 })

@@ -14,8 +14,7 @@
       "@posy/ingredients": ["libs/ingredients/src/index.ts"],
       "@posy/ingredients/*": ["libs/ingredients/src/*"],
       "@posy/inventory": ["libs/inventory/src/index.ts"],
-      "@posy/inventory/*": ["libs/inventory/src/*"],
-      "src/*": ["apps/api/src/*"]
+      "@posy/inventory/*": ["libs/inventory/src/*"]
     }
   },
   "include": [],

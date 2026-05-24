@@ -2,10 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { authConfig } from '../auth.config';
 import { DeviceContext } from '@posy/shared';
 import crypto from 'crypto';
-import { UserNotFoundError } from 'apps/api/src/models/users/errors/user-not-found.error';
+import { UserNotFoundError } from '@posy/users/shared/errors/user-not-found.error';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import winston from 'winston';
-import { UserRepository } from 'apps/api/src/models/users/repositories/user-repository.abstract';
+import { UserRepository } from '@posy/users/shared/repositories/user-repository.abstract';
 import { HandlebarsService } from '@posy/shared';
 import { MailerSendService } from '@posy/shared';
 

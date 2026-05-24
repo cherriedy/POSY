@@ -3,23 +3,61 @@
   "compilerOptions": {
     "outDir": "../../dist",
     "declaration": true,
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "rootDir": "../../",
     "paths": {
-      "@posy/shared": ["dist/libs/shared/src"],
-      "@posy/auth": ["libs/auth/src/index.ts"],
-      "@posy/auth/*": ["libs/auth/src/*"],
-      "@posy/products": ["libs/products/src/index.ts"],
-      "@posy/products/*": ["libs/products/src/*"],
-      "@posy/orders": ["libs/orders/src/index.ts"],
-      "@posy/orders/*": ["libs/orders/src/*"],
-      "@posy/user-tracking": ["libs/user-tracking/src/index.ts"],
-      "@posy/user-tracking/*": ["libs/user-tracking/src/*"],
-      "@posy/recommendation": ["libs/recommendation/src/index.ts"],
-      "@posy/recommendation/*": ["libs/recommendation/src/*"],
-      "src/*": ["apps/api/src/*"]
+      "@posy/shared": [
+        "dist/libs/shared/src"
+      ],
+      "@posy/auth": [
+        "libs/auth/src/index.ts"
+      ],
+      "@posy/auth/*": [
+        "libs/auth/src/*"
+      ],
+      "@posy/users": [
+        "libs/users/src/index.ts"
+      ],
+      "@posy/users/*": [
+        "libs/users/src/*"
+      ],
+      "@posy/products": [
+        "libs/products/src/index.ts"
+      ],
+      "@posy/products/*": [
+        "libs/products/src/*"
+      ],
+      "@posy/orders": [
+        "libs/orders/src/index.ts"
+      ],
+      "@posy/orders/*": [
+        "libs/orders/src/*"
+      ],
+      "@posy/user-tracking": [
+        "libs/user-tracking/src/index.ts"
+      ],
+      "@posy/user-tracking/*": [
+        "libs/user-tracking/src/*"
+      ],
+      "@posy/recommendation": [
+        "libs/recommendation/src/index.ts"
+      ],
+      "@posy/recommendation/*": [
+        "libs/recommendation/src/*"
+      ],
+      "src/*": [
+        "apps/api/src/*"
+      ]
     }
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["jest.config.cts", "src/**/*.spec.ts", "src/**/*.test.ts"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "jest.config.cts",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts"
+  ]
 }

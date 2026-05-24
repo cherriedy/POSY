@@ -1,13 +1,13 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { OrderItem } from '../../../orders/shared/entities/order-item';
-import { MealSession } from '../../../products/enums/product-attribute.enum';
-import { ProductAttribute } from '../../../products/entities/product-attribute';
+import { MealSession } from '@posy/products/enums/product-attribute.enum';
+import { ProductAttribute } from '@posy/products/entities/product-attribute';
 import { SessionPreferenceRepository } from '../../shared/repositories/session-preference-repository.abstract';
 import { SessionPreference } from '../../shared/entities/session-preference';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { TableSessionConfig } from '../../table-session.config';
 import * as math from 'mathjs';
-import { ProductAttributeRepository } from '../../../products/repositories/product-attribute-repository.abstract';
+import { ProductAttributeRepository } from '@posy/products/repositories/product-attribute-repository.abstract';
 
 @Injectable()
 export class RecordPreferenceService {

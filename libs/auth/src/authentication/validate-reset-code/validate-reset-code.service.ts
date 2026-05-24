@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from 'apps/api/src/models/users/repositories/user-repository.abstract';
-import { UserNotFoundError } from 'apps/api/src/models/users/errors/user-not-found.error';
+import { UserRepository } from '@posy/users/shared/repositories/user-repository.abstract';
+import { UserNotFoundError } from '@posy/users/shared/errors/user-not-found.error';
 import { InvalidResetCodeError } from '../errors/invalid-reset-code.error';
 import { ResetCodeExpiredError } from '../errors/reset-code-expired.error';
 import { JwtConfigService } from '@posy/shared';

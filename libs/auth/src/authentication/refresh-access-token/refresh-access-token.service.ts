@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { AuthTokensSchema } from '../interfaces/auth-tokens-schema.interface';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
-import { UserRepository } from 'apps/api/src/models/users/repositories/user-repository.abstract';
-import { UserNotFoundError } from 'apps/api/src/models/users/errors/user-not-found.error';
+import { UserRepository } from '@posy/users/shared/repositories/user-repository.abstract';
+import { UserNotFoundError } from '@posy/users/shared/errors/user-not-found.error';
 import { hash, verifyHash } from '@posy/shared';
 import { InvalidRefreshTokenError } from '../errors/invalid-refresh-token.error';
 import { TokenGeneratorsService } from '../common/token-generators/token-generators.service';

@@ -9,6 +9,8 @@
       "@posy/shared": ["dist/libs/shared/src"],
       "@posy/auth": ["libs/auth/src/index.ts"],
       "@posy/auth/*": ["libs/auth/src/*"],
+      "@posy/users": ["libs/users/src/index.ts"],
+      "@posy/users/*": ["libs/users/src/*"],
       "@posy/products": ["libs/products/src/index.ts"],
       "@posy/products/*": ["libs/products/src/*"],
       "@posy/orders": ["libs/orders/src/index.ts"],
