@@ -27,7 +27,25 @@
       "@posy/products": ["libs/products/src/index.ts"],
       "@posy/products/*": ["libs/products/src/*"],
       "@posy/orders": ["libs/orders/src/index.ts"],
-      "@posy/orders/*": ["libs/orders/src/*"]
+      "@posy/orders/*": ["libs/orders/src/*"],
+      "@posy/users": ["libs/users/src/index.ts"],
+      "@posy/users/*": ["libs/users/src/*"],
+      "@posy/categories": ["libs/categories/src/index.ts"],
+      "@posy/categories/*": ["libs/categories/src/*"],
+      "@posy/ingredients": ["libs/ingredients/src/index.ts"],
+      "@posy/ingredients/*": ["libs/ingredients/src/*"],
+      "@posy/user-tracking": ["libs/user-tracking/src/index.ts"],
+      "@posy/user-tracking/*": ["libs/user-tracking/src/*"],
+      "@posy/inventory": ["libs/inventory/src/index.ts"],
+      "@posy/inventory/*": ["libs/inventory/src/*"],
+      "@posy/recommendation": ["libs/recommendation/src/index.ts"],
+      "@posy/recommendation/*": ["libs/recommendation/src/*"],
+      "@posy/promotions": ["libs/promotions/src/index.ts"],
+      "@posy/promotions/*": ["libs/promotions/src/*"],
+      "@posy/table-sessions": ["libs/table-sessions/src/index.ts"],
+      "@posy/table-sessions/*": ["libs/table-sessions/src/*"],
+      "@posy/payments": ["libs/payments/src/index.ts"],
+      "@posy/payments/*": ["libs/payments/src/*"]
     }
   }
 }

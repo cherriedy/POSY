@@ -1,0 +1,12 @@
+import { Promotion } from './promotion';
+import { Category } from '@posy/categories/shared/entities/category';
+
+export class PromotionCategory {
+  constructor(
+    public readonly id: string | null,
+    public readonly promotionId: string,
+    public readonly categoryId: string,
+    public readonly promotion?: Promotion,
+    public readonly category?: Category,
+  ) {}
+}

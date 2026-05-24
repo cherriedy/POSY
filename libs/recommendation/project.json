@@ -1,0 +1,26 @@
+{
+  "name": "recommendation",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/recommendation/src",
+  "projectType": "library",
+  "tags": [],
+  "implicitDependencies": ["shared", "products", "user-tracking"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/libs/recommendation"],
+      "options": {
+        "command": "npx tsc -p libs/recommendation/tsconfig.lib.json",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/recommendation/jest.config.cts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
