@@ -6,8 +6,8 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { lastValueFrom } from 'rxjs';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CollaborativeResponse } from './recommendation.types';
-import { ProductRepository } from '../models/products/repositories/product-repository.abstract';
-import { Product } from '../models/products/entities/product';
+import { ProductRepository } from '@posy/products/repositories/product-repository.abstract';
+import { Product } from '@posy/products/entities/product';
 import { ProductInteractionService } from '../user-tracking/features/product-interaction.service';
 
 @Injectable()

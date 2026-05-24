@@ -7,10 +7,10 @@ import { InvalidTaxEntityCombinationException } from '../exceptions/invalid-tax-
 import { EntityType } from '../enums/entity-type.enum';
 import { TaxType } from '../enums/tax-type.enum';
 import { ZoneRepository } from '../../zones/repositories/zone-repository.abstract';
-import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
+import { ProductRepository } from '@posy/products/repositories/product-repository.abstract';
 import { CategoryRepository } from '../../categories/shared/repositories/category-repository.abstract';
 import { ZoneNotFoundException } from '../../zones/exceptions/zone-not-found.exception';
-import { ProductNotFoundException } from '../../products/exceptions/product-not-found.exception';
+import { ProductNotFoundException } from '@posy/products/exceptions/product-not-found.exception';
 import { CategoryNotFoundException } from '../../categories/shared/exceptions/category-not-found.exception';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import {

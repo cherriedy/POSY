@@ -9,37 +9,23 @@ import { RecordPreferenceModule } from '../table-sessions/features/record-prefer
 import { GuestOrderController } from './handlers/guest-order.controller';
 import { StaffOrderController } from './handlers/staff-order.controller';
 import { CreateOrderService } from './services/create-order.service';
-import { GetOrdersService } from './services/get-orders.service';
 import { UpdateOrderService } from './services/update-order.service';
 import { UpdateOrderStatusService } from './services/update-order-status.service';
 import { UpdateOrderItemStatusService } from './services/update-order-item-status.service';
 import { GetReceiptService } from './services/get-receipt.service';
 import { ProcessPaymentService } from './services/process-payment.service';
-import { OrderRepository } from './shared/repositories/order-repository.abstract';
-import { OrderRepositoryImpl } from './shared/repositories/order-repository';
-import { OrderItemRepository } from './shared/repositories/order-item-repository.abstract';
-import { OrderItemRepositoryImpl } from './shared/repositories/order-item-repository';
 import { PricingSnapshotRepository } from './shared/repositories/pricing-snapshot-repository.abstract';
 import { PricingSnapshotRepositoryImpl } from './shared/repositories/pricing-snapshot-repository';
 import { RecommendationModule } from '../../recommendation/recommendation.module';
 import { OrderFacadeService } from './services/order-facade.service';
 import { PromotionRedemptionRepository } from '../promotions/repositories/promotion-redemption-repository.abstract';
 import { PromotionRedemptionRepositoryImpl } from '../promotions/repositories/promotion-redemption-repository';
-import { OrderTaxRepository } from '../taxes/repositories/order-tax-repository.abstract';
-import { OrderTaxRepositoryImpl } from '../taxes/repositories/order-tax-repository';
 import { PromotionModule } from '../promotions/promotion.module';
+import { OrdersModule } from '@posy/orders';
 
 @Global()
 @Module({
   providers: [
-    {
-      provide: OrderRepository,
-      useClass: OrderRepositoryImpl,
-    },
-    {
-      provide: OrderItemRepository,
-      useClass: OrderItemRepositoryImpl,
-    },
     {
       provide: PromotionRedemptionRepository,
       useClass: PromotionRedemptionRepositoryImpl,
@@ -51,7 +37,6 @@ import { PromotionModule } from '../promotions/promotion.module';
     StaffOrderGateway,
     GuestOrderGateway,
     CreateOrderService,
-    GetOrdersService,
     UpdateOrderService,
     UpdateOrderStatusService,
     UpdateOrderItemStatusService,
@@ -62,6 +47,7 @@ import { PromotionModule } from '../promotions/promotion.module';
   imports: [
     JwtModule,
     OrderCoreModule,
+    OrdersModule,
     TokenGeneratorsModule,
     StartSessionModule,
     RecordPreferenceModule,
@@ -71,13 +57,11 @@ import { PromotionModule } from '../promotions/promotion.module';
   controllers: [StaffOrderController, GuestOrderController],
   exports: [
     OrderCoreModule,
-    OrderRepository,
-    OrderItemRepository,
+    OrdersModule,
     PricingSnapshotRepository,
     StaffOrderGateway,
     GuestOrderGateway,
     CreateOrderService,
-    GetOrdersService,
     UpdateOrderService,
     UpdateOrderStatusService,
     UpdateOrderItemStatusService,

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Order } from '../shared/entities/order';
-import { OrderNotFoundException } from '../shared/exceptions/order-not-found.exception';
-import { OrderQueryParams } from '../shared/interfaces/order-query-params.interface';
+import { Order } from '@posy/orders/entities/order';
+import { OrderNotFoundException } from '@posy/orders/exceptions/order-not-found.exception';
+import { OrderQueryParams } from '@posy/orders/interfaces/order-query-params.interface';
 import { Page } from '@posy/shared';
-import { OrderRepository } from '../shared/repositories/order-repository.abstract';
+import { OrderRepository } from '@posy/orders/repositories/order-repository.abstract';
 
 @Injectable()
 export class GetOrdersService {

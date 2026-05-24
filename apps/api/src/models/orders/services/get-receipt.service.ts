@@ -1,11 +1,11 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { OrderTaxRepository } from '../../taxes/repositories/order-tax-repository.abstract';
 import { PromotionRedemptionRepository } from '../../promotions/repositories/promotion-redemption-repository.abstract';
-import { Order } from '../shared/entities/order';
+import { Order } from '@posy/orders/entities/order';
 import { OrderTax } from '../../taxes/entities/order-tax';
 import { PromotionRedemption } from '../../promotions/types/promotion-redemption';
-import { OrderNotFoundException } from '../shared/exceptions/order-not-found.exception';
-import { OrderRepository } from '../shared/repositories/order-repository.abstract';
+import { OrderNotFoundException } from '@posy/orders/exceptions/order-not-found.exception';
+import { OrderRepository } from '@posy/orders/repositories/order-repository.abstract';
 
 export interface ReceiptResult {
   order: Order;

@@ -17,10 +17,10 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
-import { OrderCreateRequestDto } from '../shared/dto/order-create-request.dto';
-import { OrderDetailedResponseDto } from '../shared/dto/order-detailed-response.dto';
-import { OrderPreviewResponseDto } from '../shared/dto/order-preview-response.dto';
-import { OrderUpdateRequestDto } from '../shared/dto/order-update-request.dto';
+import { OrderCreateRequestDto } from '@posy/orders/dto/order-create-request.dto';
+import { OrderDetailedResponseDto } from '@posy/orders/dto/order-detailed-response.dto';
+import { OrderPreviewResponseDto } from '@posy/orders/dto/order-preview-response.dto';
+import { OrderUpdateRequestDto } from '@posy/orders/dto/order-update-request.dto';
 import { CurrentSession } from '../../table-sessions/shared/decorators/current-session.decorator';
 import { TableSession } from '../../table-sessions/shared/entities/table-session';
 import { TableSessionGuard } from '../../table-sessions/shared/guards/table-session.guard';

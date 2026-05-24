@@ -1,11 +1,11 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
-import { Order } from '../shared/entities/order';
-import { OrderItem } from '../shared/entities/order-item';
-import { OrderItemStatus } from '../shared/enums/order-item-status.enum';
-import { OrderStatus } from '../shared/enums/order-status.enum';
+import { Order } from '@posy/orders/entities/order';
+import { OrderItem } from '@posy/orders/entities/order-item';
+import { OrderItemStatus } from '@posy/orders/enums/order-item-status.enum';
+import { OrderStatus } from '@posy/orders/enums/order-status.enum';
 import { UnitOfWork } from '@posy/shared';
 import { AtLeastOneItemRequiredException } from '@posy/shared';
-import { OrderItemPayload } from '../shared/interfaces/order-item-payload.interface';
+import { OrderItemPayload } from '@posy/orders/interfaces/order-item-payload.interface';
 import { PricingSnapshot } from '../../promotions/types/pricing-snapshot';
 import { OrderTax } from '../../taxes/entities/order-tax';
 import { PricingSnapshotTaxRepository } from '../../taxes/repositories/pricing-snapshot-tax-repository.abstract';
@@ -14,8 +14,8 @@ import { RecordPreferenceService } from 'src/models/table-sessions/features/reco
 import { StaffOrderGateway } from '../handlers/staff-order.gateway';
 import { OrderTaxCalculatorService } from '../shared/core/services/order-tax-calculator.service';
 import { OrderContextService } from '../shared/core/services/order-context.service';
-import { OrderRepository } from '../shared/repositories/order-repository.abstract';
-import { OrderItemRepository } from '../shared/repositories/order-item-repository.abstract';
+import { OrderRepository } from '@posy/orders/repositories/order-repository.abstract';
+import { OrderItemRepository } from '@posy/orders/repositories/order-item-repository.abstract';
 import { PricingSnapshotRepository } from '../shared/repositories/pricing-snapshot-repository.abstract';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { EventEmitter2 } from '@nestjs/event-emitter';

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ProductIngredientRepository } from '../../../../products/repositories/product-ingredient-repository.abstract';
+import { ProductIngredientRepository } from '@posy/products/repositories/product-ingredient-repository.abstract';
 import { IngredientRepository } from '../../../../ingredients/shared/repositories/ingredient-repository.abstract';
 import { IngredientNotFoundException } from '../../../../ingredients/shared/exceptions/ingredient-not-found.exception';
-import { InsufficientRequiredIngredientException } from '../../exceptions/insufficient-required-ingredient.exception';
+import { InsufficientRequiredIngredientException } from '@posy/orders/exceptions/insufficient-required-ingredient.exception';
 
 @Injectable()
 export class ReserveIngredientsService {

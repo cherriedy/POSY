@@ -4,7 +4,7 @@ import {
 } from '@prisma/client';
 import { SessionProductInteraction as DomainSessionProductInteraction } from './session-product-interaction';
 import { MissingRequiredFieldsError } from '@posy/shared';
-import { ProductMapper } from '../../../models/products/entities/product.mapper';
+import { ProductMapper } from '@posy/products/entities/product.mapper';
 import { TableSessionMapper } from '../../../models/table-sessions/shared/entities/table-session.mapper';
 
 export class SessionProductInteractionMapper {

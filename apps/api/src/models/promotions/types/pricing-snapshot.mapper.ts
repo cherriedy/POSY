@@ -5,7 +5,7 @@ import {
 } from '@prisma/client';
 import { PricingSnapshotTaxMapper } from '../../taxes/entities/pricing-snapshot-tax.mapper';
 import { PricingSnapshotPromotionMapper } from './pricing-snapshot-promotion.mapper';
-import { OrderMapper } from 'src/models/orders/shared/entities/order.mapper';
+import { OrderMapper } from '@posy/orders/entities/order.mapper';
 import { PromotionRedemptionMapper } from './promotion-redemption.mapper';
 
 export class PricingSnapshotMapper {

@@ -8,12 +8,12 @@ import { PromotionRedemptionMapper } from '../../promotions/types/promotion-rede
 import { Payment } from '../../payments/shared/entities/payment';
 import { PaymentMapper } from '../../payments/shared/entities/payment.mapper';
 import { PaymentStatus } from '../../payments/shared/enums/payment-status.enum';
-import { OrderStatus } from '../shared/enums/order-status.enum';
-import { OrderNotFoundException } from '../shared/exceptions/order-not-found.exception';
-import { OrderSnapshotNotFoundException } from '../shared/exceptions/order-snapshot-not-found.exception';
-import { OrderAlreadyCompletedException } from '../shared/exceptions/order-already-completed.exception';
+import { OrderStatus } from '@posy/orders/enums/order-status.enum';
+import { OrderNotFoundException } from '@posy/orders/exceptions/order-not-found.exception';
+import { OrderSnapshotNotFoundException } from '@posy/orders/exceptions/order-snapshot-not-found.exception';
+import { OrderAlreadyCompletedException } from '@posy/orders/exceptions/order-already-completed.exception';
 import { PricingSnapshotRepository } from '../shared/repositories/pricing-snapshot-repository.abstract';
-import { OrderRepository } from '../shared/repositories/order-repository.abstract';
+import { OrderRepository } from '@posy/orders/repositories/order-repository.abstract';
 
 export interface ProcessPaymentInput {
   methodId: string;

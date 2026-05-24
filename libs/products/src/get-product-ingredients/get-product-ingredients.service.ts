@@ -1,0 +1,20 @@
+import { Injectable } from '@nestjs/common';
+import { ProductIngredientRepository } from '../repositories/product-ingredient-repository.abstract';
+import { ProductIngredient } from '../entities/product-ingredient';
+import { ProductNotFoundException } from '../exceptions/product-not-found.exception';
+import { ProductRepository } from '../repositories/product-repository.abstract';
+
+@Injectable()
+export class GetProductIngredientsService {
+  constructor(
+    private readonly productIngredientRepository: ProductIngredientRepository,
+    private readonly productRepository: ProductRepository,
+  ) {}
+
+  async getByProductId(productId: string): Promise<ProductIngredient[]> {
+    const product = await this.productRepository.findById(productId);
+    if (!product) throw new ProductNotFoundException(productId);
+
+    return await this.productIngredientRepository.findByProductId(productId);
+  }
+}

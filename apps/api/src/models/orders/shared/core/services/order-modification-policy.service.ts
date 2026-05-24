@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Order } from '../../entities/order';
-import { OrderItem } from '../../entities/order-item';
-import { OrderModificationForbiddenException } from '../../exceptions/order-modification-forbidden.exception';
+import { Order } from '@posy/orders/entities/order';
+import { OrderItem } from '@posy/orders/entities/order-item';
+import { OrderModificationForbiddenException } from '@posy/orders/exceptions/order-modification-forbidden.exception';
 import { Role } from '@posy/shared';
-import { OrderItemStatus } from '../../enums/order-item-status.enum';
-import { OrderStatus } from '../../enums/order-status.enum';
+import { OrderItemStatus } from '@posy/orders/enums/order-item-status.enum';
+import { OrderStatus } from '@posy/orders/enums/order-status.enum';
 import { UserIdentity } from '@posy/auth';
 
 const COOKING_STATUS = [OrderItemStatus.PREPARING, OrderItemStatus.DONE];

@@ -7,9 +7,9 @@ import { OrderTax } from '../../../../taxes/entities/order-tax';
 import { PricingSnapshotTax } from '../../../../taxes/entities/pricing-snapshot-tax';
 import { TableRepository } from '../../../../tables/repositories/table-repository.abstract';
 import { TableNotFoundException } from '../../../../tables/exceptions/table-not-found.exception';
-import { OrderItemPayload } from '../../interfaces/order-item-payload.interface';
-import { ProductNotFoundException } from 'src/models/products/exceptions/product-not-found.exception';
-import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
+import { OrderItemPayload } from '@posy/orders/interfaces/order-item-payload.interface';
+import { ProductNotFoundException } from '@posy/products/exceptions/product-not-found.exception';
+import { ProductRepository } from '@posy/products/repositories/product-repository.abstract';
 
 @Injectable()
 export class OrderContextService {

@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UnitOfWork } from '@posy/shared';
-import { OrderNotFoundException } from '../../orders/shared/exceptions/order-not-found.exception';
-import { OrderSnapshotNotFoundException } from '../../orders/shared/exceptions/order-snapshot-not-found.exception';
-import { OrderStatus } from '../../orders/shared/enums/order-status.enum';
-import { OrderRepository } from '../../orders/shared/repositories/order-repository.abstract';
+import { OrderNotFoundException } from '@posy/orders/exceptions/order-not-found.exception';
+import { OrderSnapshotNotFoundException } from '@posy/orders/exceptions/order-snapshot-not-found.exception';
+import { OrderStatus } from '@posy/orders/enums/order-status.enum';
+import { OrderRepository } from '@posy/orders/repositories/order-repository.abstract';
 import { PricingSnapshotRepository } from '../../orders/shared/repositories/pricing-snapshot-repository.abstract';
 import { PaymentMethodNotFoundException } from '../shared/exceptions/payment-method-not-found.exception';
 import { PaymentMethodRepository } from '../shared/repositories/payment-method-repository.abstract';
@@ -21,9 +21,9 @@ import { MomoPaymentGateway } from '../shared/providers/momo-payment-gateway.ser
 import { UnsupportedValueException } from '@posy/shared';
 import { UpdateOrderStatusService } from 'src/models/orders/services/update-order-status.service';
 import { Role } from '@posy/shared';
-import { OrderNotReadyForCheckoutException } from 'src/models/orders/shared/exceptions/order-not-ready-for-checkout.exception';
-import { ProductNotFoundException } from 'src/models/products/exceptions/product-not-found.exception';
-import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
+import { OrderNotReadyForCheckoutException } from '@posy/orders/exceptions/order-not-ready-for-checkout.exception';
+import { ProductNotFoundException } from '@posy/products/exceptions/product-not-found.exception';
+import { ProductRepository } from '@posy/products/repositories/product-repository.abstract';
 import { PaymentRepository } from '../shared/repositories/payment-repository.abstract';
 
 @Injectable()

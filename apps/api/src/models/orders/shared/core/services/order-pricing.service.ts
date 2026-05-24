@@ -1,7 +1,7 @@
 import { Injectable, LoggerService, Inject } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { Order } from '../../entities/order';
-import { OrderItem } from '../../entities/order-item';
+import { Order } from '@posy/orders/entities/order';
+import { OrderItem } from '@posy/orders/entities/order-item';
 import { OrderContextService } from './order-context.service';
 import { OrderTaxCalculatorService } from './order-tax-calculator.service';
 import { PricingSnapshot } from '../../../../promotions/types/pricing-snapshot';

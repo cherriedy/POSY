@@ -7,6 +7,10 @@
       "@posy/shared": ["../../libs/shared/src/index.ts"],
       "@posy/auth": ["../../libs/auth/src/index.ts"],
       "@posy/auth/*": ["../../libs/auth/src/*"],
+      "@posy/products": ["../../libs/products/src/index.ts"],
+      "@posy/products/*": ["../../libs/products/src/*"],
+      "@posy/orders": ["../../libs/orders/src/index.ts"],
+      "@posy/orders/*": ["../../libs/orders/src/*"],
       "apps/api/src/*": ["src/*"]
     }
   },

@@ -20,7 +20,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CommonModule } from '@posy/shared';
 import { PromotionModule } from './models/promotions/promotion.module';
-import { ProductModule } from './models/products/product.module';
+import { ProductsApiModule } from './modules/products/products-api.module';
 import { MeilisearchModule } from '@posy/shared';
 import { ImageModule } from './models/images/image.module';
 import { TaxModule } from './models/taxes/tax.module';
@@ -60,7 +60,7 @@ import { InventoryModule } from './inventory/inventory.module';
     CategoryModule,
     MeilisearchConfigModule,
     MeilisearchModule,
-    ProductModule,
+    ProductsApiModule,
     ImageModule,
     CuisineModule,
     FloorModule,

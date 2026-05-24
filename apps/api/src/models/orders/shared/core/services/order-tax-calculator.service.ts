@@ -3,7 +3,7 @@ import { OrderTax } from '../../../../taxes/entities/order-tax';
 import { TaxConfig } from '../../../../taxes/entities/tax-config';
 import { EntityTaxConfig } from '../../../../taxes/entities/entity-tax-config';
 import { TaxRateType } from '../../../../taxes/enums/tax-rate-type.enum';
-import { OrderItem } from '../../entities/order-item';
+import { OrderItem } from '@posy/orders/entities/order-item';
 
 @Injectable()
 export class OrderTaxCalculatorService {

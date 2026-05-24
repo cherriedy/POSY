@@ -1,5 +1,5 @@
 import { Promotion } from './promotion';
-import { Product } from 'src/models/products/entities/product';
+import { Product } from '@posy/products/entities/product';
 
 export class PromotionProduct {
   constructor(

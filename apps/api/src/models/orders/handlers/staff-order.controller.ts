@@ -28,11 +28,11 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
-import { OrderCreateRequestDto } from '../shared/dto/order-create-request.dto';
-import { OrderDetailedResponseDto } from '../shared/dto/order-detailed-response.dto';
-import { OrderPreviewResponseDto } from '../shared/dto/order-preview-response.dto';
-import { OrderQueryParamsDto } from '../shared/dto/order-query-params.dto';
-import { OrderUpdateRequestDto } from '../shared/dto/order-update-request.dto';
+import { OrderCreateRequestDto } from '@posy/orders/dto/order-create-request.dto';
+import { OrderDetailedResponseDto } from '@posy/orders/dto/order-detailed-response.dto';
+import { OrderPreviewResponseDto } from '@posy/orders/dto/order-preview-response.dto';
+import { OrderQueryParamsDto } from '@posy/orders/dto/order-query-params.dto';
+import { OrderUpdateRequestDto } from '@posy/orders/dto/order-update-request.dto';
 import { StaffSessionContextService } from '../../table-sessions/features/start-session/staff-session-context.service';
 import { JwtPayload } from '@posy/auth';
 import { createPageResponseSchema } from '@posy/shared';
@@ -42,7 +42,7 @@ import {
   CreateOrderService,
   toPayload as toCreateOrderPayload,
 } from '../services/create-order.service';
-import { GetOrdersService } from '../services/get-orders.service';
+import { GetOrdersService } from '@posy/orders/services/get-orders.service';
 import { UpdateOrderService } from '../services/update-order.service';
 import {
   toPayload as toPayloadUpdateOrderStatus,
@@ -52,8 +52,8 @@ import {
   toPayload as toPayloadUpdateOrderItemStatus,
   UpdateOrderItemStatusService,
 } from '../services/update-order-item-status.service';
-import { UpdateOrderStatusDto } from '../shared/dto/update-order-status.dto';
-import { UpdateOrderItemStatusDto } from '../shared/dto/update-order-item-status.dto';
+import { UpdateOrderStatusDto } from '@posy/orders/dto/update-order-status.dto';
+import { UpdateOrderItemStatusDto } from '@posy/orders/dto/update-order-item-status.dto';
 
 @ApiTags('Orders')
 @ApiExtraModels(OrderPreviewResponseDto, OrderDetailedResponseDto)

@@ -1,7 +1,7 @@
 import { PromotionProduct as PrismaPromotionProduct } from '@prisma/client';
 import { PromotionProduct as DomainPromotionProduct } from './promotion-product';
 import { PromotionMapper } from './promotion.mapper';
-import { ProductMapper } from 'src/models/products/entities/product.mapper';
+import { ProductMapper } from '@posy/products/entities/product.mapper';
 
 export class PromotionProductMapper {
   static toDomain(

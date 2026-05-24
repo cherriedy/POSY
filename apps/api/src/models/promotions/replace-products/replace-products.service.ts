@@ -7,8 +7,8 @@ import { PromotionApplicability } from '../enums/promotion-applicability.enum';
 import { PromotionNotFoundError } from '../errors/promotion-not-found.error';
 import { PromotionUnusableError } from '../errors/promotion-unusable.error';
 import { DuplicateEntryError } from '@posy/shared';
-import { ProductsNotFoundException } from 'src/models/products/exceptions/product-not-found.exception';
-import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
+import { ProductsNotFoundException } from '@posy/products/exceptions/product-not-found.exception';
+import { ProductRepository } from '@posy/products/repositories/product-repository.abstract';
 
 @Injectable()
 export class ReplacePromotionProductService {
