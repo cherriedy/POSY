@@ -22,6 +22,12 @@
       ],
       "src/*": [
         "apps/api/src/*"
+      ],
+      "@posy/tables": [
+        "libs/tables/src/index.ts"
+      ],
+      "@posy/tables/*": [
+        "libs/tables/src/*"
       ]
     }
   },

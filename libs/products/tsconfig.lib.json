@@ -35,6 +35,12 @@
       "@posy/products/*": [
         "libs/products/src/*"
       ],
+      "@posy/vendors": [
+        "libs/vendors/src/index.ts"
+      ],
+      "@posy/vendors/*": [
+        "libs/vendors/src/*"
+      ],
       "src/*": [
         "apps/api/src/*"
       ]

@@ -3,26 +3,64 @@
   "compilerOptions": {
     "outDir": "../../dist",
     "declaration": true,
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "rootDir": "../../",
     "paths": {
-      "@posy/shared": ["dist/libs/shared/src"],
-      "@posy/auth": ["libs/auth/src/index.ts"],
-      "@posy/auth/*": ["libs/auth/src/*"],
-      "@posy/users": ["libs/users/src/index.ts"],
-      "@posy/users/*": ["libs/users/src/*"],
-      "@posy/products": ["libs/products/src/index.ts"],
-      "@posy/products/*": ["libs/products/src/*"],
-      "@posy/orders": ["libs/orders/src/index.ts"],
-      "@posy/orders/*": ["libs/orders/src/*"],
-      "@posy/categories": ["libs/categories/src/index.ts"],
-      "@posy/categories/*": ["libs/categories/src/*"],
-      "@posy/tables": ["libs/tables/src/index.ts"],
-      "@posy/tables/*": ["libs/tables/src/*"],
-      "src/*": ["apps/api/src/*"]
+      "@posy/shared": [
+        "dist/libs/shared/src"
+      ],
+      "@posy/auth": [
+        "libs/auth/src/index.ts"
+      ],
+      "@posy/auth/*": [
+        "libs/auth/src/*"
+      ],
+      "@posy/users": [
+        "libs/users/src/index.ts"
+      ],
+      "@posy/users/*": [
+        "libs/users/src/*"
+      ],
+      "@posy/products": [
+        "libs/products/src/index.ts"
+      ],
+      "@posy/products/*": [
+        "libs/products/src/*"
+      ],
+      "@posy/orders": [
+        "libs/orders/src/index.ts"
+      ],
+      "@posy/orders/*": [
+        "libs/orders/src/*"
+      ],
+      "@posy/categories": [
+        "libs/categories/src/index.ts"
+      ],
+      "@posy/categories/*": [
+        "libs/categories/src/*"
+      ],
+      "@posy/tables": [
+        "libs/tables/src/index.ts"
+      ],
+      "@posy/tables/*": [
+        "libs/tables/src/*"
+      ],
+      "src/*": [
+        "apps/api/src/*"
+      ],
+      "@posy/vendors": [
+        "libs/vendors/src/index.ts"
+      ],
+      "@posy/vendors/*": [
+        "libs/vendors/src/*"
+      ]
     }
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts"
+  ],
   "exclude": [
     "jest.config.ts",
     "jest.config.cts",

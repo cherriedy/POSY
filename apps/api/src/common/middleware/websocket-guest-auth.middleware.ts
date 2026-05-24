@@ -5,7 +5,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { SocketIOMiddleware } from '@posy/shared';
-import { AuthenticatedGuestSocket } from '../interfaces/authenticated-guest-socket.interface';
+import { AuthenticatedGuestSocket } from '@posy/table-sessions/shared/interfaces/authenticated-guest-socket.interface';
 import { AccessTokenExpiredError } from '@posy/auth';
 import { InvalidAccessTokenError } from '@posy/auth';
 import { TableSessionConfig } from '@posy/table-sessions/table-session.config';

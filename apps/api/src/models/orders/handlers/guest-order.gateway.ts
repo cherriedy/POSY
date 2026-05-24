@@ -11,7 +11,7 @@ import { Inject, Logger } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { TokenGeneratorsService } from '@posy/auth/authentication/common/token-generators/token-generators.service';
 import { TableSessionConfig } from '@posy/table-sessions/table-session.config';
-import { AuthenticatedGuestSocket } from '../../../common/interfaces/authenticated-guest-socket.interface';
+import { AuthenticatedGuestSocket } from '@posy/table-sessions/shared/interfaces/authenticated-guest-socket.interface';
 
 @WebSocketGateway({
   namespace: 'guest/orders',

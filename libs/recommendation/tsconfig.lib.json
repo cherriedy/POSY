@@ -61,6 +61,12 @@
       ],
       "src/*": [
         "apps/api/src/*"
+      ],
+      "@posy/vendors": [
+        "libs/vendors/src/index.ts"
+      ],
+      "@posy/vendors/*": [
+        "libs/vendors/src/*"
       ]
     }
   },

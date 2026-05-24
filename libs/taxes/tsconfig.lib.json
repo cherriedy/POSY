@@ -59,6 +59,24 @@
       "@posy/table-sessions/*": [
         "libs/table-sessions/src/*"
       ],
+      "@posy/zones": [
+        "libs/zones/src/index.ts"
+      ],
+      "@posy/zones/*": [
+        "libs/zones/src/*"
+      ],
+      "@posy/floors": [
+        "libs/floors/src/index.ts"
+      ],
+      "@posy/floors/*": [
+        "libs/floors/src/*"
+      ],
+      "@posy/vendors": [
+        "libs/vendors/src/index.ts"
+      ],
+      "@posy/vendors/*": [
+        "libs/vendors/src/*"
+      ],
       "src/*": [
         "apps/api/src/*"
       ]

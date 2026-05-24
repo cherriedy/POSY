@@ -29,6 +29,18 @@
       "@posy/floors/*": [
         "libs/floors/src/*"
       ],
+      "@posy/tables": [
+        "libs/tables/src/index.ts"
+      ],
+      "@posy/tables/*": [
+        "libs/tables/src/*"
+      ],
+      "@posy/zones": [
+        "libs/zones/src/index.ts"
+      ],
+      "@posy/zones/*": [
+        "libs/zones/src/*"
+      ],
       "src/*": [
         "apps/api/src/*"
       ]
