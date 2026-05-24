@@ -1,5 +1,5 @@
 import { PricingSnapshotPromotion } from './pricing-snapshot-promotion';
-import { PricingSnapshotTax } from 'src/models/taxes/entities/pricing-snapshot-tax';
+import { PricingSnapshotTax } from '@posy/taxes/shared/entities/pricing-snapshot-tax';
 import { PromotionRedemption } from './promotion-redemption';
 import { Order } from '@posy/orders/entities/order';
 

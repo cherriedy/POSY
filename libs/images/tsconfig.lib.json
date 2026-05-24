@@ -1,0 +1,37 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist",
+    "declaration": true,
+    "types": [
+      "node",
+      "multer"
+    ],
+    "rootDir": "../../",
+    "paths": {
+      "@posy/shared": [
+        "dist/libs/shared/src"
+      ],
+      "@posy/auth": [
+        "libs/auth/src/index.ts"
+      ],
+      "@posy/auth/*": [
+        "libs/auth/src/*"
+      ],
+      "@posy/images": [
+        "libs/images/src/index.ts"
+      ],
+      "@posy/images/*": [
+        "libs/images/src/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "jest.config.cts",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts"
+  ]
+}

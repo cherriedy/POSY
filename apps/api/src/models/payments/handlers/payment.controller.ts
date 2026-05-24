@@ -30,14 +30,14 @@ import { Role } from '@posy/shared';
 import {
   PaymentCheckoutPayloadMapper,
   PaymentCheckoutService,
-} from '../features/payment-checkout.service';
-import { PaymentCoreService } from '../features/payment-core.service';
-import { PaymentFacadeService } from '../features/payment-facade.service';
-import { PaymentQueryParamsDto } from '../shared/dto/payment-query-params.dto';
-import { PaymentResponseDto } from '../shared/dto/payment-response.dto';
-import { CheckoutRequestDto } from '../shared/dto/checkout.dto';
-import { MomoCallbackPayload } from '../shared/interfaces/payment-callback-payload.interface';
-import { PaymentRefundService } from '../features/payment-refund.service';
+} from '@posy/payments/features/payment-checkout.service';
+import { PaymentCoreService } from '@posy/payments/features/payment-core.service';
+import { PaymentFacadeService } from '@posy/payments/features/payment-facade.service';
+import { PaymentQueryParamsDto } from '@posy/payments/shared/dto/payment-query-params.dto';
+import { PaymentResponseDto } from '@posy/payments/shared/dto/payment-response.dto';
+import { CheckoutRequestDto } from '@posy/payments/shared/dto/checkout.dto';
+import { MomoCallbackPayload } from '@posy/payments/shared/interfaces/payment-callback-payload.interface';
+import { PaymentRefundService } from '@posy/payments/features/payment-refund.service';
 
 @ApiTags('Payments')
 @ApiBearerAuth()

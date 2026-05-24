@@ -7,11 +7,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUsersService } from '../models/users/get-users/get-users.service';
-import { UpdateUserService } from '../models/users/update-user/update-user.service';
-import { UpdatePasswordDto } from '../models/users/dto/update-password-request.dto';
-import { UpdateUserDto } from '../models/users/dto/user-update-request.dto';
-import { UserDetailedResponseDto } from '../models/users/dto/user-detailed-response.dto';
+import { GetUsersService } from '@posy/users/features/get-users/get-users.service';
+import { UpdateUserService } from '@posy/users/features/update-user/update-user.service';
+import { UpdatePasswordDto } from '@posy/users/shared/dto/update-password-request.dto';
+import { UpdateUserDto } from '@posy/users/shared/dto/user-update-request.dto';
+import { UserDetailedResponseDto } from '@posy/users/shared/dto/user-detailed-response.dto';
 import { JwtPayload } from '@posy/auth';
 import { Request } from 'express';
 import { plainToInstance } from 'class-transformer';

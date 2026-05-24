@@ -47,6 +47,30 @@
       "@posy/promotions/*": [
         "libs/promotions/src/*"
       ],
+      "@posy/taxes": [
+        "libs/taxes/src/index.ts"
+      ],
+      "@posy/taxes/*": [
+        "libs/taxes/src/*"
+      ],
+      "@posy/tables": [
+        "libs/tables/src/index.ts"
+      ],
+      "@posy/tables/*": [
+        "libs/tables/src/*"
+      ],
+      "@posy/table-sessions": [
+        "libs/table-sessions/src/index.ts"
+      ],
+      "@posy/table-sessions/*": [
+        "libs/table-sessions/src/*"
+      ],
+      "@posy/payments": [
+        "libs/payments/src/index.ts"
+      ],
+      "@posy/payments/*": [
+        "libs/payments/src/*"
+      ],
       "src/*": [
         "apps/api/src/*"
       ]

@@ -29,11 +29,23 @@
       "@posy/products/*": [
         "libs/products/src/*"
       ],
+      "@posy/categories": [
+        "libs/categories/src/index.ts"
+      ],
+      "@posy/categories/*": [
+        "libs/categories/src/*"
+      ],
       "@posy/orders": [
         "libs/orders/src/index.ts"
       ],
       "@posy/orders/*": [
         "libs/orders/src/*"
+      ],
+      "@posy/tables": [
+        "libs/tables/src/index.ts"
+      ],
+      "@posy/tables/*": [
+        "libs/tables/src/*"
       ],
       "@posy/user-tracking": [
         "libs/user-tracking/src/index.ts"

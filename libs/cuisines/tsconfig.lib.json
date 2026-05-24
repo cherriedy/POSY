@@ -1,0 +1,36 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist",
+    "declaration": true,
+    "types": [
+      "node"
+    ],
+    "rootDir": "../../",
+    "paths": {
+      "@posy/shared": [
+        "dist/libs/shared/src"
+      ],
+      "@posy/auth": [
+        "libs/auth/src/index.ts"
+      ],
+      "@posy/auth/*": [
+        "libs/auth/src/*"
+      ],
+      "@posy/cuisines": [
+        "libs/cuisines/src/index.ts"
+      ],
+      "@posy/cuisines/*": [
+        "libs/cuisines/src/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "jest.config.cts",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts"
+  ]
+}

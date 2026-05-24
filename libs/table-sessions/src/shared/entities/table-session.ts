@@ -1,7 +1,7 @@
 import { TableSessionStatus } from '../enums/table-session-status.enum';
 import { TableSessionType } from '../enums/table-session-type.enum';
 import { Table } from 'src/models/tables/types/table';
-import { User } from 'src/models/users/types/user';
+import { User } from '@posy/users/shared/entities/user';
 
 /**
  * @description

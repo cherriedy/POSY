@@ -12,15 +12,15 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { CreateUserService } from './create-user/create-user.service';
-import { UpdateUserService } from './update-user/update-user.service';
-import { User } from './types/user';
-import { CreateUserDto } from './dto/user-create-request.dto';
-import { UpdatePasswordDto } from './dto/update-password-request.dto';
-import { UpdateUserDto } from './dto/user-update-request.dto';
-import { UserDetailedResponseDto } from './dto/user-detailed-response.dto';
-import { UserPreviewResponseDto } from './dto/user-preview-response.dto';
-import { UserQueryParamsDto } from './dto/user-query-params.dto';
+import { CreateUserService } from '@posy/users/features/create-user/create-user.service';
+import { UpdateUserService } from '@posy/users/features/update-user/update-user.service';
+import { User } from '@posy/users/shared/entities/user';
+import { CreateUserDto } from '@posy/users/shared/dto/user-create-request.dto';
+import { UpdatePasswordDto } from '@posy/users/shared/dto/update-password-request.dto';
+import { UpdateUserDto } from '@posy/users/shared/dto/user-update-request.dto';
+import { UserDetailedResponseDto } from '@posy/users/shared/dto/user-detailed-response.dto';
+import { UserPreviewResponseDto } from '@posy/users/shared/dto/user-preview-response.dto';
+import { UserQueryParamsDto } from '@posy/users/shared/dto/user-query-params.dto';
 import { hash } from '@posy/shared';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '@posy/auth';
@@ -28,12 +28,12 @@ import { PreventManagerAdminAccessGuard } from './guards/prevent-manager-admin-a
 import { Roles } from '@posy/shared';
 import { PreventManagerAdminAccess } from '@posy/shared';
 import { Role } from '@posy/shared';
-import { GetUsersService } from './get-users/get-users.service';
+import { GetUsersService } from '@posy/users/features/get-users/get-users.service';
 import { plainToInstance } from 'class-transformer';
 import { Page } from '@posy/shared';
 import { JwtPayload } from '@posy/auth';
 import { Request } from 'express';
-import { DeleteUserService } from './delete-user/delete-user.service';
+import { DeleteUserService } from '@posy/users/features/delete-user/delete-user.service';
 import {
   ApiBearerAuth,
   ApiTags,

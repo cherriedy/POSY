@@ -1,0 +1,20 @@
+import { TableStatus } from '../enums/table-status.enum';
+import { Zone } from 'src/models/zones/types/zone';
+
+export class Table {
+  constructor(
+    public id: string | null,
+    public zoneId: string | null,
+    public name: string,
+    public hardwareId: string,
+    public currentToken: string | null,
+    public capacity: number,
+    public status: TableStatus = TableStatus.AVAILABLE,
+    public posX: number | null,
+    public posY: number | null,
+    public isActive: boolean = true,
+    public createdAt: Date | null,
+    public updatedAt: Date | null,
+    public zone: Zone | null,
+  ) {}
+}

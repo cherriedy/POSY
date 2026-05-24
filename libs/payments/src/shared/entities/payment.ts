@@ -1,7 +1,7 @@
 import { PaymentStatus } from '../enums/payment-status.enum';
-import { Order } from 'src/models/orders/shared/entities/order';
+import { Order } from '@posy/orders/entities/order';
 import { PaymentMethod } from './payment-method';
-import { User } from 'src/models/users/types/user';
+import { User } from '@posy/users/shared/entities/user';
 
 export class Payment {
   constructor(

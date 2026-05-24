@@ -1,0 +1,26 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../dist/libs/taxes",
+    "baseUrl": "../../",
+    "paths": {
+      "@posy/shared": ["libs/shared/src/index.ts"],
+      "@posy/auth": ["libs/auth/src/index.ts"],
+      "@posy/auth/*": ["libs/auth/src/*"],
+      "@posy/products": ["libs/products/src/index.ts"],
+      "@posy/products/*": ["libs/products/src/*"],
+      "@posy/categories": ["libs/categories/src/index.ts"],
+      "@posy/categories/*": ["libs/categories/src/*"],
+      "@posy/orders": ["libs/orders/src/index.ts"],
+      "@posy/orders/*": ["libs/orders/src/*"],
+      "@posy/taxes": ["libs/taxes/src/index.ts"],
+      "@posy/taxes/*": ["libs/taxes/src/*"],
+      "src/*": ["apps/api/src/*"]
+    }
+  },
+  "include": [],
+  "references": [
+    { "path": "./tsconfig.lib.json" },
+    { "path": "./tsconfig.spec.json" }
+  ]
+}

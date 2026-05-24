@@ -2,7 +2,7 @@ import { Payment as PrismaPayment, Prisma } from '@prisma/client';
 import { Payment as DomainPayment } from './payment';
 import { PaymentStatus as DomainPaymentStatus } from '../enums/payment-status.enum';
 import { OrderMapper } from '@posy/orders/entities/order.mapper';
-import { UserMapper } from 'src/models/users/types/user.mapper';
+import { UserMapper } from '@posy/users/shared/entities/user.mapper';
 import { PaymentMethodMapper } from './payment-method.mapper';
 
 export class PaymentMapper {

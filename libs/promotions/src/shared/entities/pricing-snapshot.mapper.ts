@@ -3,7 +3,7 @@ import {
   Prisma,
   PricingSnapshot as PrismaPricingSnapshot,
 } from '@prisma/client';
-import { PricingSnapshotTaxMapper } from 'src/models/taxes/entities/pricing-snapshot-tax.mapper';
+import { PricingSnapshotTaxMapper } from '@posy/taxes/shared/entities/pricing-snapshot-tax.mapper';
 import { PricingSnapshotPromotionMapper } from './pricing-snapshot-promotion.mapper';
 import { OrderMapper } from '@posy/orders/entities/order.mapper';
 import { PromotionRedemptionMapper } from './promotion-redemption.mapper';

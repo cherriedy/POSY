@@ -3,7 +3,6 @@ import { Prisma, OrderItem as PrismaOrderItem } from '@prisma/client';
 import { OrderItemStatus as DomainOrderItemStatus } from '../enums/order-item-status.enum';
 import { OrderMapper } from './order.mapper';
 import { ProductMapper } from '@posy/products/entities/product.mapper';
-import { OrderTaxMapper } from 'src/models/taxes/entities/order-tax.mapper';
 
 export class OrderItemMapper {
   static toDomain(this: void, prisma: PrismaOrderItem): DomainOrderItem {
@@ -36,11 +35,8 @@ export class OrderItemMapper {
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
           ProductMapper.toDomain((prisma as any).product)
         : null,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
-      (prisma as any).orderTaxes
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-          (prisma as any).orderTaxes.map(OrderTaxMapper.toDomain)
-        : null,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      (prisma as any).orderTaxes ?? null,
     );
   }
 

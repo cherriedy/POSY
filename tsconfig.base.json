@@ -45,7 +45,23 @@
       "@posy/table-sessions": ["libs/table-sessions/src/index.ts"],
       "@posy/table-sessions/*": ["libs/table-sessions/src/*"],
       "@posy/payments": ["libs/payments/src/index.ts"],
-      "@posy/payments/*": ["libs/payments/src/*"]
+      "@posy/payments/*": ["libs/payments/src/*"],
+      "@posy/cuisines": ["libs/cuisines/src/index.ts"],
+      "@posy/cuisines/*": ["libs/cuisines/src/*"],
+      "@posy/floors": ["libs/floors/src/index.ts"],
+      "@posy/floors/*": ["libs/floors/src/*"],
+      "@posy/images": ["libs/images/src/index.ts"],
+      "@posy/images/*": ["libs/images/src/*"],
+      "@posy/tables": ["libs/tables/src/index.ts"],
+      "@posy/tables/*": ["libs/tables/src/*"],
+      "@posy/taxes": ["libs/taxes/src/index.ts"],
+      "@posy/taxes/*": ["libs/taxes/src/*"],
+      "@posy/units": ["libs/units/src/index.ts"],
+      "@posy/units/*": ["libs/units/src/*"],
+      "@posy/vendors": ["libs/vendors/src/index.ts"],
+      "@posy/vendors/*": ["libs/vendors/src/*"],
+      "@posy/zones": ["libs/zones/src/index.ts"],
+      "@posy/zones/*": ["libs/zones/src/*"]
     }
   }
 }

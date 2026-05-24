@@ -10,21 +10,21 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CreateCategoryService } from './features/create-category/create-category.service';
-import { UpdateCategoryService } from './features/update-category/update-category.service';
-import { DeleteCategoryService } from './features/delete-category/delete-category.service';
-import { GetCategoriesService } from './features/get-categories/get-categories.service';
+import { CreateCategoryService } from '@posy/categories/features/create-category/create-category.service';
+import { UpdateCategoryService } from '@posy/categories/features/update-category/update-category.service';
+import { DeleteCategoryService } from '@posy/categories/features/delete-category/delete-category.service';
+import { GetCategoriesService } from '@posy/categories/features/get-categories/get-categories.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '@posy/auth';
 import { Role } from '@posy/shared';
 import { Roles } from '@posy/shared';
 import { plainToInstance } from 'class-transformer';
-import { CategoryDetailedResponseDto } from './shared/dto/category-detailed-response.dto';
-import { CategoryPreviewResponseDto } from './shared/dto/category-preview-response.dto';
-import { CategoryQueryParamsDto } from './shared/dto/category-query-params.dto';
-import { CreateCategoryDto } from './shared/dto/category-create-request.dto';
-import { UpdateCategoryDto } from './shared/dto/category-update-request.dto';
-import { Category } from './shared/entities/category';
+import { CategoryDetailedResponseDto } from '@posy/categories/shared/dto/category-detailed-response.dto';
+import { CategoryPreviewResponseDto } from '@posy/categories/shared/dto/category-preview-response.dto';
+import { CategoryQueryParamsDto } from '@posy/categories/shared/dto/category-query-params.dto';
+import { CreateCategoryDto } from '@posy/categories/shared/dto/category-create-request.dto';
+import { UpdateCategoryDto } from '@posy/categories/shared/dto/category-update-request.dto';
+import { Category } from '@posy/categories/shared/entities/category';
 import { Page } from '@posy/shared';
 import {
   ApiBearerAuth,

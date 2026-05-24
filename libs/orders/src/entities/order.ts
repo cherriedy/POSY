@@ -1,10 +1,8 @@
 import { OrderStatus } from '../enums/order-status.enum';
-import { User } from 'src/models/users/types/user';
-import { Table } from 'src/models/tables/types/table';
+import { User } from '@posy/users/shared/entities/user';
+import { Table } from '@posy/tables/shared/entities/table';
 import { TableSession } from 'src/models/table-sessions/shared/entities/table-session';
 import { OrderItem } from './order-item';
-import { Payment } from 'src/models/payments/shared/entities/payment';
-import { PricingSnapshot } from 'src/models/promotions/types/pricing-snapshot';
 
 export class Order {
   constructor(
@@ -23,7 +21,9 @@ export class Order {
     public table: Table | null,
     public session: TableSession | null,
     public orderItems: OrderItem[] | null,
-    public payments: Payment[] | null,
-    public pricingSnapshots: PricingSnapshot[] | null = null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public payments: any[] | null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public pricingSnapshots: any[] | null = null,
   ) {}
 }

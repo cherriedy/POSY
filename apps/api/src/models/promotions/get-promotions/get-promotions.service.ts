@@ -11,8 +11,8 @@ import { PromotionProduct } from '../types/promotion-product';
 import { ProductRepository } from '@posy/products/repositories/product-repository.abstract';
 import { ProductNotFoundException } from '@posy/products/exceptions/product-not-found.exception';
 import { Page } from '@posy/shared';
-import { CategoryRepository } from 'src/models/categories/shared/repositories/category-repository.abstract';
-import { CategoryNotFoundException } from 'src/models/categories/shared/exceptions/category-not-found.exception';
+import { CategoryRepository } from '@posy/categories/shared/repositories/category-repository.abstract';
+import { CategoryNotFoundException } from '@posy/categories/shared/errors/category-not-found.exception';
 
 @Injectable()
 export class GetPromotionsService {

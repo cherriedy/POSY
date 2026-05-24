@@ -8,8 +8,8 @@ import { Reflector } from '@nestjs/core';
 import { PREVENT_MANAGER_ADMIN_ACCESS_KEY } from '@posy/shared';
 import { Role } from '@posy/shared';
 import { JwtPayload } from '@posy/auth';
-import { GetUsersService } from '../get-users/get-users.service';
-import { UserNotFoundError } from '../errors/user-not-found.error';
+import { GetUsersService } from '@posy/users/features/get-users/get-users.service';
+import { UserNotFoundError } from '@posy/users/shared/errors/user-not-found.error';
 import { Request } from 'express';
 
 /**

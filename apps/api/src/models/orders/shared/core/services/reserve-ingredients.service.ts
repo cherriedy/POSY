@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ProductIngredientRepository } from '@posy/products/repositories/product-ingredient-repository.abstract';
-import { IngredientRepository } from '../../../../ingredients/shared/repositories/ingredient-repository.abstract';
-import { IngredientNotFoundException } from '../../../../ingredients/shared/exceptions/ingredient-not-found.exception';
+import { IngredientRepository } from '@posy/ingredients/shared/repositories/ingredient-repository.abstract';
+import { IngredientNotFoundException } from '@posy/ingredients/shared/errors/ingredient-not-found.exception';
 import { InsufficientRequiredIngredientException } from '@posy/orders/exceptions/insufficient-required-ingredient.exception';
 
 @Injectable()

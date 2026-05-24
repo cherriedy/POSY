@@ -1,7 +1,6 @@
 import { OrderItemStatus } from '../enums/order-item-status.enum';
 import { Order } from './order';
 import { Product } from '@posy/products/entities/product';
-import { OrderTax } from 'src/models/taxes/entities/order-tax';
 
 export class OrderItem {
   constructor(
@@ -21,6 +20,7 @@ export class OrderItem {
     // Relations
     public order: Order | null,
     public product: Product | null,
-    public orderTaxes: OrderTax[] | null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public orderTaxes: any[] | null,
   ) {}
 }

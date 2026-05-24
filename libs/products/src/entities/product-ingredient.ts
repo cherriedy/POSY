@@ -1,5 +1,5 @@
 import { Product } from './product';
-import { Ingredient } from 'src/models/ingredients/shared/entities/ingredient';
+import { Ingredient } from '../../../ingredients/src/shared/entities/ingredient';
 
 export class ProductIngredient {
   constructor(

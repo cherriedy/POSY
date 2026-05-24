@@ -8,7 +8,6 @@
   ],
   "implicitDependencies": [
     "shared",
-    "orders",
     "promotions",
     "!api"
   ],

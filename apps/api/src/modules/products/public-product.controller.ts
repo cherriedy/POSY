@@ -32,9 +32,9 @@ import { ProductPublicPreviewResponseDto } from '@posy/products/dto/product-publ
 import { ProductPublicQueryParamsDto } from '@posy/products/dto/product-public-query-params.dto';
 import { createPageResponseSchema } from '@posy/shared';
 import { ProductNotFoundException } from '@posy/products/exceptions/product-not-found.exception';
-import { CategoryPreviewResponseDto } from '../../models/categories/shared/dto/category-preview-response.dto';
-import { CategoryQueryParamsDto } from '../../models/categories/shared/dto/category-query-params.dto';
-import { GetCategoriesService } from '../../models/categories/features/get-categories/get-categories.service';
+import { CategoryPreviewResponseDto } from '@posy/categories/shared/dto/category-preview-response.dto';
+import { CategoryQueryParamsDto } from '@posy/categories/shared/dto/category-query-params.dto';
+import { GetCategoriesService } from '@posy/categories/features/get-categories/get-categories.service';
 import { Page } from '@posy/shared';
 import { Response } from 'express';
 

@@ -1,12 +1,10 @@
 import { Order as DomainOrder } from './order';
 import { Prisma, Order as PrismaOrder } from '@prisma/client';
 import { OrderStatus as DomainOrderStatus } from '../enums/order-status.enum';
-import { UserMapper } from 'src/models/users/types/user.mapper';
-import { TableMapper } from 'src/models/tables/types/table.mapper';
+import { UserMapper } from '@posy/users/shared/entities/user.mapper';
+import { TableMapper } from '@posy/tables/shared/entities/table.mapper';
 import { TableSessionMapper } from 'src/models/table-sessions/shared/entities/table-session.mapper';
 import { OrderItemMapper } from './order-item.mapper';
-import { PaymentMapper } from 'src/models/payments/shared/entities/payment.mapper';
-import { PricingSnapshotMapper } from 'src/models/promotions/types/pricing-snapshot.mapper';
 
 export class OrderMapper {
   static toDomain(this: void, prisma: PrismaOrder): DomainOrder {
@@ -46,16 +44,10 @@ export class OrderMapper {
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
           (prisma as any).orderItems.map(OrderItemMapper.toDomain)
         : null,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
-      (prisma as any).payments
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-          (prisma as any).payments.map(PaymentMapper.toDomain)
-        : null,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
-      (prisma as any).pricingSnapshots
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-          (prisma as any).pricingSnapshots.map(PricingSnapshotMapper.toDomain)
-        : null,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      (prisma as any).payments ?? null,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      (prisma as any).pricingSnapshots ?? null,
     );
   }
 

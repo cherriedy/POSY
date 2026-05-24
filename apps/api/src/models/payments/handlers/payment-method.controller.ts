@@ -21,9 +21,9 @@ import { RoleGuard } from '@posy/auth';
 import { Roles } from '@posy/shared';
 import { Role } from '@posy/shared';
 import { createPageResponseSchema } from '@posy/shared';
-import { PaymentMethodsService } from '../features/payment-methods.service';
-import { PaymentMethodQueryParamsDto } from '../shared/dto/payment-method-query-params.dto';
-import { PaymentMethodResponseDto } from '../shared/dto/payment-method-responses.dto';
+import { PaymentMethodsService } from '@posy/payments/features/payment-methods.service';
+import { PaymentMethodQueryParamsDto } from '@posy/payments/shared/dto/payment-method-query-params.dto';
+import { PaymentMethodResponseDto } from '@posy/payments/shared/dto/payment-method-responses.dto';
 
 @ApiTags('Payment Methods')
 @ApiBearerAuth()

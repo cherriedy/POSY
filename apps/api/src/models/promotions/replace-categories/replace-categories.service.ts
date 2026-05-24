@@ -7,8 +7,8 @@ import { PromotionApplicability } from '../enums/promotion-applicability.enum';
 import { PromotionNotFoundError } from '../errors/promotion-not-found.error';
 import { PromotionUnusableError } from '../errors/promotion-unusable.error';
 import { DuplicateEntryError } from '@posy/shared';
-import { CategoriesNotFoundException } from 'src/models/categories/shared/exceptions/category-not-found.exception';
-import { CategoryRepository } from 'src/models/categories/shared/repositories/category-repository.abstract';
+import { CategoriesNotFoundException } from '@posy/categories/shared/errors/category-not-found.exception';
+import { CategoryRepository } from '@posy/categories/shared/repositories/category-repository.abstract';
 
 @Injectable()
 export class ReplacePromotionCategoriesService {

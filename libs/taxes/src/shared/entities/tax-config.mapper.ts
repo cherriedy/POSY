@@ -1,0 +1,79 @@
+import { TaxConfig as DomainTaxConfig } from './tax-config';
+import { Prisma, TaxConfig as PrismaTaxConfig } from '@prisma/client';
+import { TaxType as DomainTaxType } from '../enums/tax-type.enum';
+import { TaxRateType as DomainTaxRateType } from '../enums/tax-rate-type.enum';
+
+export class TaxConfigMapper {
+  static toDomain(this: void, prisma: PrismaTaxConfig): DomainTaxConfig {
+    return new DomainTaxConfig(
+      prisma.id,
+      prisma.type as DomainTaxType,
+      prisma.name,
+      prisma.description ?? null,
+      prisma.rate_type as DomainTaxRateType,
+      prisma.charge_rate !== null && prisma.charge_rate !== undefined
+        ? Number(prisma.charge_rate)
+        : 0,
+      prisma.is_active ?? true,
+      prisma.is_included ?? false,
+      prisma.sort_order ?? 0,
+      prisma.is_deleted ?? false,
+      prisma.deleted_at ?? null,
+      prisma.created_at,
+      prisma.updated_at,
+    );
+  }
+
+  static toPrisma(domain: DomainTaxConfig): Prisma.TaxConfigCreateInput {
+    return {
+      ...(domain.id ? { id: domain.id } : {}),
+      type: domain.type,
+      name: domain.name,
+      description: domain.description,
+      rate_type: domain.rateType,
+      charge_rate:
+        domain.chargeRate !== undefined && domain.chargeRate !== null
+          ? new Prisma.Decimal(domain.chargeRate)
+          : new Prisma.Decimal(0),
+      is_active:
+        domain.isActive !== undefined && domain.isActive !== null
+          ? domain.isActive
+          : true,
+      is_included:
+        domain.isIncluded !== undefined && domain.isIncluded !== null
+          ? domain.isIncluded
+          : false,
+      sort_order:
+        domain.sortOrder !== undefined && domain.sortOrder !== null
+          ? domain.sortOrder
+          : 0,
+      is_deleted:
+        domain.isDeleted !== undefined && domain.isDeleted !== null
+          ? domain.isDeleted
+          : false,
+      deleted_at:
+        domain.deletedAt !== undefined && domain.deletedAt !== null
+          ? domain.deletedAt
+          : undefined,
+      created_at: domain.createdAt ?? undefined,
+      updated_at: domain.updatedAt ?? undefined,
+    };
+  }
+
+  static toPrismaUpdate(
+    domain: Partial<DomainTaxConfig>,
+  ): Prisma.TaxConfigUpdateInput {
+    return {
+      type: domain.type,
+      name: domain.name,
+      description: domain.description,
+      rate_type: domain.rateType,
+      charge_rate: domain.chargeRate,
+      is_active: domain.isActive,
+      is_included: domain.isIncluded,
+      sort_order: domain.sortOrder,
+      is_deleted: domain.isDeleted,
+      deleted_at: domain.deletedAt,
+    };
+  }
+}

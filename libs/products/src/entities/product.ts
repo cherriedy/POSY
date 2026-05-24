@@ -1,5 +1,5 @@
 import { ProductDiscountType } from '../enums/product.enum';
-import { Category } from 'src/models/categories/shared/entities/category';
+import { Category } from '@posy/categories/shared/entities/category';
 import { ProductAttribute } from './product-attribute';
 import { ProductIngredient } from './product-ingredient';
 

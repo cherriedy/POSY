@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ProductsModule } from '@posy/products';
-import { GetCategoriesModule } from '../../models/categories/features/get-categories/get-categories.module';
+import { GetCategoriesModule } from '@posy/categories/features/get-categories/get-categories.module';
 import { ProductController } from './product.controller';
 import { PublicProductController } from './public-product.controller';
 import { ProductFacadeService } from './product-facade.service';

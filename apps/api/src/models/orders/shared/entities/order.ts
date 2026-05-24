@@ -1,9 +1,9 @@
 import { OrderStatus } from '../enums/order-status.enum';
-import { User } from '../../../users/types/user';
+import { User } from '@posy/users/shared/entities/user';
 import { Table } from '../../../tables/types/table';
 import { TableSession } from '../../../table-sessions/shared/entities/table-session';
 import { OrderItem } from './order-item';
-import { Payment } from '../../../payments/shared/entities/payment';
+import { Payment } from '@posy/payments/shared/entities/payment';
 import { PricingSnapshot } from '../../../promotions/types/pricing-snapshot';
 
 export class Order {

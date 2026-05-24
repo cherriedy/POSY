@@ -1,19 +1,19 @@
 import { Global, Module } from '@nestjs/common';
 import { CategoryController } from './category.controller';
 import { PrismaModule } from '@posy/shared';
-import { CreateCategoryModule } from './features/create-category/create-category.module';
-import { UpdateCategoryModule } from './features/update-category/update-category.module';
-import { DeleteCategoryModule } from './features/delete-category/delete-category.module';
-import { GetCategoriesModule } from './features/get-categories/get-categories.module';
-import { CategoryRepository } from './shared/repositories/category-repository.abstract';
-import { CategoryRepositoryImpl } from './shared/repositories/category-repository';
+import { CreateCategoryModule } from '@posy/categories/features/create-category/create-category.module';
+import { UpdateCategoryModule } from '@posy/categories/features/update-category/update-category.module';
+import { DeleteCategoryModule } from '@posy/categories/features/delete-category/delete-category.module';
+import { GetCategoriesModule } from '@posy/categories/features/get-categories/get-categories.module';
+import { CategoryRepository } from '@posy/categories/shared/repositories/category-repository.abstract';
+import { PrismaCategoryRepository } from '@posy/categories/shared/repositories/prisma-category-repository';
 
 @Global()
 @Module({
   providers: [
     {
       provide: CategoryRepository,
-      useClass: CategoryRepositoryImpl,
+      useClass: PrismaCategoryRepository,
     },
   ],
   imports: [

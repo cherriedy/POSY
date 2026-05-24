@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../dist/libs/cuisines",
+    "baseUrl": "../../",
+    "paths": {
+      "@posy/shared": ["libs/shared/src/index.ts"],
+      "@posy/auth": ["libs/auth/src/index.ts"],
+      "@posy/auth/*": ["libs/auth/src/*"],
+      "@posy/cuisines": ["libs/cuisines/src/index.ts"],
+      "@posy/cuisines/*": ["libs/cuisines/src/*"]
+    }
+  },
+  "include": [],
+  "references": [
+    { "path": "./tsconfig.lib.json" },
+    { "path": "./tsconfig.spec.json" }
+  ]
+}

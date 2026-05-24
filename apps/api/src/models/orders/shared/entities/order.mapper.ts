@@ -1,11 +1,11 @@
 import { Order as DomainOrder } from './order';
 import { Prisma, Order as PrismaOrder } from '@prisma/client';
 import { OrderStatus as DomainOrderStatus } from '../enums/order-status.enum';
-import { UserMapper } from '../../../users/types/user.mapper';
+import { UserMapper } from '@posy/users/shared/entities/user.mapper';
 import { TableMapper } from '../../../tables/types/table.mapper';
 import { TableSessionMapper } from '../../../table-sessions/shared/entities/table-session.mapper';
 import { OrderItemMapper } from './order-item.mapper';
-import { PaymentMapper } from '../../../payments/shared/entities/payment.mapper';
+import { PaymentMapper } from '@posy/payments/shared/entities/payment.mapper';
 import { PricingSnapshotMapper } from '../../../promotions/types/pricing-snapshot.mapper';
 
 export class OrderMapper {

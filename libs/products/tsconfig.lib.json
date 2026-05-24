@@ -23,6 +23,12 @@
       "@posy/users/*": [
         "libs/users/src/*"
       ],
+      "@posy/categories": [
+        "libs/categories/src/index.ts"
+      ],
+      "@posy/categories/*": [
+        "libs/categories/src/*"
+      ],
       "@posy/products": [
         "libs/products/src/index.ts"
       ],

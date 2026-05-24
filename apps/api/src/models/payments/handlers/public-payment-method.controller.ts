@@ -15,9 +15,9 @@ import {
 import { plainToInstance } from 'class-transformer';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { createPageResponseSchema } from '@posy/shared';
-import { PaymentMethodsService } from '../features/payment-methods.service';
-import { PublicPaymentMethodQueryParamsDto } from '../shared/dto/public-payment-method-query-params.dto';
-import { PublicPaymentMethodResponseDto } from '../shared/dto/payment-method-responses.dto';
+import { PaymentMethodsService } from '@posy/payments/features/payment-methods.service';
+import { PublicPaymentMethodQueryParamsDto } from '@posy/payments/shared/dto/public-payment-method-query-params.dto';
+import { PublicPaymentMethodResponseDto } from '@posy/payments/shared/dto/payment-method-responses.dto';
 
 @ApiTags('(Public)')
 @ApiExtraModels(PublicPaymentMethodResponseDto)

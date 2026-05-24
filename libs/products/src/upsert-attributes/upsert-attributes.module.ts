@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
 import { UpsertAttributesService } from './upsert-attributes.service';
-import { IngredientRepositoryModule } from 'src/models/ingredients/shared/repositories/ingredient-repository.module';
 
 @Module({
-  imports: [IngredientRepositoryModule],
   providers: [UpsertAttributesService],
   exports: [UpsertAttributesService],
 })

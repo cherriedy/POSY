@@ -1,7 +1,7 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
-import { IngredientNotFoundException } from '../../models/ingredients/shared/exceptions/ingredient-not-found.exception';
-import { IngredientRepository } from '../../models/ingredients/shared/repositories/ingredient-repository.abstract';
-import { IngredientUsageRepository } from '../../models/ingredients/shared/repositories/ingredient-usage-repository.abstract';
+import { IngredientNotFoundException } from '@posy/ingredients/shared/errors/ingredient-not-found.exception';
+import { IngredientRepository } from '@posy/ingredients/shared/repositories/ingredient-repository.abstract';
+import { IngredientUsageRepository } from '@posy/ingredients/shared/repositories/ingredient-usage-repository.abstract';
 import { IngredientForecastRepository } from '../shared/repositories/ingredient-forecast-repository.abstract';
 import { IngredientOverview } from '../shared/entities/ingredient-overview';
 import { HttpService } from '@nestjs/axios';

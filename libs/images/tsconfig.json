@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../dist/libs/images",
+    "baseUrl": "../../",
+    "paths": {
+      "@posy/shared": ["libs/shared/src/index.ts"],
+      "@posy/auth": ["libs/auth/src/index.ts"],
+      "@posy/auth/*": ["libs/auth/src/*"],
+      "@posy/images": ["libs/images/src/index.ts"],
+      "@posy/images/*": ["libs/images/src/*"]
+    }
+  },
+  "include": [],
+  "references": [
+    { "path": "./tsconfig.lib.json" },
+    { "path": "./tsconfig.spec.json" }
+  ]
+}
