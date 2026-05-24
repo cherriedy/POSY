@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { FloorController } from './floor.controller';
-import { PrismaModule } from 'src/providers/prisma/prisma.module';
+import { PrismaModule } from '@posy/shared';
 import { CreateFloorModule } from './create-floor/create-floor.module';
 import { UpdateFloorModule } from './update-floor/update-floor.module';
 import { DeleteFloorModule } from './delete-floor/delete-floor.module';

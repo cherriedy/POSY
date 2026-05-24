@@ -15,7 +15,7 @@ import { OrderTaxRepository } from '../../../src/models/taxes/repositories/order
 import { PromotionRedemptionRepository } from '../../../src/models/promotions/repositories/promotion-redemption-repository.abstract';
 import { ZoneRepository } from '../../../src/models/zones/repositories/zone-repository.abstract';
 import { CategoryRepository } from '../../../src/models/categories/shared/repositories/category-repository.abstract';
-import { UnitOfWork } from '../../../src/common/unit-of-works/unit-of-work.abstract';
+import { UnitOfWork } from '@posy/shared';
 
 // ─── Prisma mock ─────────────────────────────────────────────────────────────
 export const mockPrisma = {

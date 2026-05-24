@@ -1,6 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from '../../../common/enums/role.enum';
+import { Role } from '@posy/shared';
 
 @Exclude()
 export class UserPreviewResponseDto {

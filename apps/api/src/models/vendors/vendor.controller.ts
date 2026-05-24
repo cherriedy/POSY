@@ -22,8 +22,8 @@ import {
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { Role } from '../../common/enums/role.enum';
+import { Roles } from '@posy/shared';
+import { Role } from '@posy/shared';
 import { VendorCreateRequestDto } from './dto/vendor-create-request.dto';
 import { VendorPreviewResponseDto } from './dto/vendor-preview-response.dto';
 import { VendorDetailedResponseDto } from './dto/vendor-detailed-response.dto';
@@ -35,8 +35,8 @@ import { GetVendorsService } from './get-vendors/get-vendors.service';
 import { UpdateVendorService } from './update-vendor/update-vendor.service';
 import { UpdateVendorPayloadMapper } from './update-vendor/update-vendor-payload.mapper';
 import { DeleteVendorService } from './delete-vendor/delete-vendor.service';
-import { Page } from '../../common/interfaces/page.interface';
-import { createPageResponseSchema } from '../../common/dto/page-response.dto';
+import { Page } from '@posy/shared';
+import { createPageResponseSchema } from '@posy/shared';
 
 @ApiTags('Vendors')
 @ApiBearerAuth()

@@ -7,8 +7,8 @@ import { JwtPayload } from '../../authentication/interfaces/jwt-payload.interfac
 import { TokenGeneratorsService } from '../../authentication/common/token-generators/token-generators.service';
 import { AccessTokenExpiredError } from '../../authentication/errors/access-token-expired.error';
 import { InvalidAccessTokenError } from '../../authentication/errors/invalid-access-token.error';
-import { SocketIOMiddleware } from '../types/socket-io-middleware.type';
-import { AuthenticatedStaffSocket } from '../interfaces/authenticated-staff-socket.interface';
+import { SocketIOMiddleware } from '@posy/shared';
+import { AuthenticatedStaffSocket } from '@posy/shared';
 
 /**
  * Middleware for authenticating staff members connecting via WebSocket. It checks for the presence of an access token

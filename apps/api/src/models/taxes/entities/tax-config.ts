@@ -2,11 +2,11 @@ import {
   assertFinite,
   assertLarger,
   assertNonNegative,
-} from '../../../common/utilities/number-assertions.util';
+} from '@posy/shared';
 import { TaxRateType } from '../enums/tax-rate-type.enum';
 import { TaxType } from '../enums/tax-type.enum';
-import { UnsupportedValueException } from '../../../common/exceptions/unsupported-value.exception';
-import { roundToCurrency } from '../../../common/utilities/number.util';
+import { UnsupportedValueException } from '@posy/shared';
+import { roundToCurrency } from '@posy/shared';
 
 export class TaxConfig {
   constructor(

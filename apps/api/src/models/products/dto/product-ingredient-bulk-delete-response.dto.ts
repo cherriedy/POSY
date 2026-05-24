@@ -1,7 +1,7 @@
 import { Expose, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { BulkOperationStatusEnum } from '../../../common/enums/bulk-operation-status.enum';
-import { BulkOperationStatus } from '../../../common/types/bulk-operation.type';
+import { BulkOperationStatusEnum } from '@posy/shared';
+import { BulkOperationStatus } from '@posy/shared';
 
 /**
  * Represents the response for an individual ingredient in a bulk delete operation.

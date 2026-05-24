@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Role } from '../../common/enums/role.enum';
+import { Role } from '@posy/shared';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 interface IsAuthorizedParams {

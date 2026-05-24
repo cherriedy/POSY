@@ -1,5 +1,5 @@
-import { BaseRepository } from '../../../../common/interfaces/base-repository.interface';
-import { Page } from '../../../../common/interfaces/page.interface';
+import { BaseRepository } from '@posy/shared';
+import { Page } from '@posy/shared';
 import { Payment } from '../entities/payment';
 import { PaymentStatus } from '../enums/payment-status.enum';
 import { PaymentQueryParams } from '../interfaces/payment-query-params.interface';

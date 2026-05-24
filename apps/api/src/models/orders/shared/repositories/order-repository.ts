@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { OrderRepository } from './order-repository.abstract';
 import { Order } from '../entities/order';
 import { OrderMapper } from '../entities/order.mapper';
-import { Page } from '../../../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 import { OrderQueryParams } from '../interfaces/order-query-params.interface';
-import { DuplicateEntryError } from '../../../../common/errors/duplicate-entry.error';
-import { ForeignKeyViolationError } from '../../../../common/errors/foreign-key-violation.error';
+import { DuplicateEntryError } from '@posy/shared';
+import { ForeignKeyViolationError } from '@posy/shared';
 import { OrderNotFoundException } from '../exceptions/order-not-found.exception';
-import { paginationConfig } from '../../../../common/constants/pagination.config';
+import { paginationConfig } from '@posy/shared';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 

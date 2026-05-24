@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import mqtt from 'mqtt';
-import { MqttConfigService } from 'src/config/mqtt/config.service';
+import { MqttConfigService } from '../../config/mqtt/config.service';
 
 @Injectable()
 export class MqttService implements OnModuleInit, OnModuleDestroy {

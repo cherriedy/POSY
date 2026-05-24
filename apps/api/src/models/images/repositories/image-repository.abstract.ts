@@ -1,5 +1,5 @@
 import { Image } from '../types/image';
-import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { BaseRepository } from '@posy/shared';
 
 export abstract class ImageRepository implements BaseRepository<Image> {
   /**

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { JwtConfigService } from '../../config/jwt/config.service';
-import { AppConfigService } from '../../config/app/config.service';
+import { JwtConfigService } from '@posy/shared';
+import { AppConfigService } from '@posy/shared';
 import { CookieOptions } from 'express';
-import { JwtConfig } from '../../common/interfaces/jwt-config.interface';
+import { JwtConfig } from '@posy/shared';
 import { SessionPreferenceConfig } from './shared/interfaces/session-preference-config.interface';
 
 @Injectable()

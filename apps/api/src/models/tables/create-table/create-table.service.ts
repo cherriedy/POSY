@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TableRepository } from '../repositories/table-repository.abstract';
 import { Table } from '../types/table';
 import { ZoneRepository } from 'src/models/zones/repositories/zone-repository.abstract';
-import { RelatedRecordNotFoundError } from 'src/common/errors/related-record-not-found.error';
+import { RelatedRecordNotFoundError } from '@posy/shared';
 
 @Injectable()
 export class CreateTableService {

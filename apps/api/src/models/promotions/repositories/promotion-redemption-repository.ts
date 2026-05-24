@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { PromotionRedemptionRepository } from './promotion-redemption-repository.abstract';
 import { PromotionRedemption } from '../types/promotion-redemption';
 import { PromotionRedemptionMapper } from '../types/promotion-redemption.mapper';

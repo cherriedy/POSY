@@ -1,6 +1,6 @@
 import { IsValidCategoryName } from '../decorators/is-valid-name.decorator';
 import { IsValidCategoryDescription } from '../decorators/is-valid-description.decorator';
-import { IsValidSlug } from '../../../../common/decorators/is-valid-slug.decorator';
+import { IsValidSlug } from '@posy/shared';
 import { IsOptional } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 

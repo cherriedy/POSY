@@ -1,6 +1,6 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { REDIS_INSTANCE_PROVIDER } from '../../providers/redis/redis.constant';
+import { REDIS_INSTANCE_PROVIDER } from '@posy/shared';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { SessionProductInteractionRepository } from '../shared/repositories/session-product-interaction-repository.abstract';
 import { SessionProductInteraction } from '../shared/entities/session-product-interaction';

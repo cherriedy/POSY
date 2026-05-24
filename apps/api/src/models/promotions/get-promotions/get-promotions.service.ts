@@ -4,13 +4,13 @@ import { PromotionProductRepository } from '../repositories/promotion-product-re
 import { PromotionRepository } from '../repositories/promotion-repository.abstract';
 import { PromotionQueryParams } from '../interfaces/promotion-query-params.interface';
 import { PromotionNotFoundError } from '../errors/promotion-not-found.error';
-import { Role } from '../../../common/enums/role.enum';
+import { Role } from '@posy/shared';
 import { Promotion } from '../types/promotion';
 import { PromotionCategory } from '../types/promotion-category';
 import { PromotionProduct } from '../types/promotion-product';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 import { ProductNotFoundException } from '../../products/exceptions/product-not-found.exception';
-import { Page } from '../../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 import { CategoryRepository } from 'src/models/categories/shared/repositories/category-repository.abstract';
 import { CategoryNotFoundException } from 'src/models/categories/shared/exceptions/category-not-found.exception';
 

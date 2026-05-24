@@ -8,7 +8,7 @@ import {
 import { Inject, Logger } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Server } from 'socket.io';
-import { AuthenticatedStaffSocket } from '../../../common/interfaces/authenticated-staff-socket.interface';
+import { AuthenticatedStaffSocket } from '@posy/shared';
 import { wsStaffAuthMiddleware } from '../../../common/middleware/websocket-staff-auth.middleware';
 import { TokenGeneratorsService } from '../../../authentication/common/token-generators/token-generators.service';
 

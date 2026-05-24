@@ -15,8 +15,8 @@ import { UpdateTableService } from './update-table/update-table.service';
 import { DeleteTableService } from './delete-table/delete-table.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Role } from '../../common/enums/role.enum';
-import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '@posy/shared';
+import { Roles } from '@posy/shared';
 import { GetTablesService } from './get-tables/get-tables.service';
 import { plainToInstance } from 'class-transformer';
 import { TableDetailedResponseDto } from './dto/table-detailed-response.dto';
@@ -24,7 +24,7 @@ import { TablePreviewResponseDto } from './dto/table-preview-response.dto';
 import { TableQueryParamsDto } from './dto/table-query-params.dto';
 import { TableCreateRequestDto } from './dto/table-create-request.dto';
 import { TableUpdateRequestDto } from './dto/table-update-request.dto';
-import { Page } from '../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 import { Table } from './types/table';
 import {
   ApiBearerAuth,
@@ -35,7 +35,7 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto/page-response.dto';
+import { createPageResponseSchema } from '@posy/shared';
 
 @ApiTags('Tables')
 @ApiBearerAuth()

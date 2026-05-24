@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { EntityTaxConfigRepository } from './entity-tax-config-repository.abstract';
 import { EntityTaxConfig } from '../entities/entity-tax-config';
 import { EntityTaxConfigMapper } from '../entities/entity-tax-config.mapper';

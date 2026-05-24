@@ -13,8 +13,8 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { Role } from '../../common/enums/role.enum';
+import { Roles } from '@posy/shared';
+import { Role } from '@posy/shared';
 import { TaxCreateRequestDto, TaxUpdateRequestDto } from './dto/tax-requests.dto';
 import { TaxDetailedResponseDto, TaxPreviewResponseDto } from './dto/tax-responses.dto';
 import { TaxQueryParamsDto } from './dto/tax-query-params.dto';
@@ -44,7 +44,7 @@ import {
   ApiNotFoundResponse,
   ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto/page-response.dto';
+import { createPageResponseSchema } from '@posy/shared';
 import { EntityType } from './enums/entity-type.enum';
 
 @ApiTags('Taxes')

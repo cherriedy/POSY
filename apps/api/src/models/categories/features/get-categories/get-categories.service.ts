@@ -3,7 +3,7 @@ import { CategoryRepository } from '../../shared/repositories/category-repositor
 import { Category } from '../../shared/entities/category';
 import { CategoryNotFoundException } from '../../shared/exceptions/category-not-found.exception';
 import { CategoryQueryParams } from '../../shared/interfaces/category-query-params.interface';
-import { Page } from '../../../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 
 @Injectable()
 export class GetCategoriesService {

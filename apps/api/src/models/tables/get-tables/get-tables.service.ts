@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TableRepository } from '../repositories/table-repository.abstract';
-import { Page } from '../../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 import { Table } from '../types/table';
 import { TableNotFoundException } from '../exceptions/table-not-found.exception';
 import { TableQueryParams } from '../interfaces/table-query-params.interface';

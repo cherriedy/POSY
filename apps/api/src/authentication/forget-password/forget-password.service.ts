@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { authConfig } from '../auth.config';
-import { DeviceContext } from '../../common/interfaces/device-context.interface';
+import { DeviceContext } from '@posy/shared';
 import crypto from 'crypto';
 import { UserNotFoundError } from '../../models/users/errors/user-not-found.error';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import winston from 'winston';
 import { UserRepository } from '../../models/users/repositories/user-repository.abstract';
-import { HandlebarsService } from '../../mails/handlebars.service';
-import { MailerSendService } from '../../mails/mailersend.service';
+import { HandlebarsService } from '@posy/shared';
+import { MailerSendService } from '@posy/shared';
 
 @Injectable()
 export class ForgetPasswordService {

@@ -10,7 +10,7 @@ import {
   Max,
 } from 'class-validator';
 import { MealSession, Taste, DietaryTag, Season } from '../enums/product-attribute.enum';
-import { RequiredWhen } from '../../../common/decorators/required-when.decorator';
+import { RequiredWhen } from '@posy/shared';
 
 /**
  * DTO for creating or updating product attributes.

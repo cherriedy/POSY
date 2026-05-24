@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { TableOrderBy, TableQueryParams, TableSortField } from '../interfaces/table-query-params.interface';
-import { SortDirection } from '../../../common/interfaces/sort-field.interface';
+import { SortDirection } from '@posy/shared';
 import { TableStatus } from '../enums/table-status.enum';
 
 export class TableQueryParamsDto {

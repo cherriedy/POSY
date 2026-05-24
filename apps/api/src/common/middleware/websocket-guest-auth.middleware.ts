@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { SocketIOMiddleware } from '../types/socket-io-middleware.type';
+import { SocketIOMiddleware } from '@posy/shared';
 import { AuthenticatedGuestSocket } from '../interfaces/authenticated-guest-socket.interface';
 import { AccessTokenExpiredError } from '../../authentication/errors/access-token-expired.error';
 import { InvalidAccessTokenError } from '../../authentication/errors/invalid-access-token.error';

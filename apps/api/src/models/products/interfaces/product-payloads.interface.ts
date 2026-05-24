@@ -1,4 +1,4 @@
-import { BulkOperationStatus } from 'src/common/types/bulk-operation.type';
+import { BulkOperationStatus } from '@posy/shared';
 import { DietaryTag, MealSession, Season, Taste } from '../enums/product-attribute.enum';
 
 /**

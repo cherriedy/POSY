@@ -1,7 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtConfigService } from '../../config/jwt/config.service';
+import { JwtConfigService } from '@posy/shared';
 import { UserRepository } from '../../models/users/repositories/user-repository.abstract';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';

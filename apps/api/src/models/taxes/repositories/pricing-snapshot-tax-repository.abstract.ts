@@ -1,5 +1,5 @@
 import { PricingSnapshotTax } from '../entities/pricing-snapshot-tax';
-import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { BaseRepository } from '@posy/shared';
 
 export abstract class PricingSnapshotTaxRepository extends BaseRepository<PricingSnapshotTax> {
   /**

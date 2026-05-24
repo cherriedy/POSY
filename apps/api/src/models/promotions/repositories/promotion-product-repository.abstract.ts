@@ -1,5 +1,5 @@
-import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
-import { PaginationParams } from '../../../common/interfaces/pagination-params.interface';
+import { BaseRepository } from '@posy/shared';
+import { PaginationParams } from '@posy/shared';
 import { Promotion } from '../types/promotion';
 import { PromotionProduct } from '../types/promotion-product';
 

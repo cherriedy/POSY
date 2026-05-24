@@ -12,7 +12,7 @@ import { TableSessionType } from '../../table-sessions/shared/enums/table-sessio
 import { OrderRepository } from '../shared/repositories/order-repository.abstract';
 import { UserIdentity } from '../../../authentication/interfaces/user-identity.interface';
 import { UpdateOrderStatusDto } from '../shared/dto/update-order-status.dto';
-import { UnsupportedValueException } from '../../../common/exceptions/unsupported-value.exception';
+import { UnsupportedValueException } from '@posy/shared';
 import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';
 import { TableStatus } from 'src/models/tables/enums/table-status.enum';
 

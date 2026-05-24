@@ -3,7 +3,7 @@ import { Promotion } from '../types/promotion';
 import { PromotionCategory } from '../types/promotion-category';
 import { PromotionCategoryMapper } from '../types/promotion-category.mapper';
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { PromotionStatus } from '@prisma/client';
 
 @Injectable()

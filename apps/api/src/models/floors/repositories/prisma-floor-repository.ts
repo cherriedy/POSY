@@ -1,13 +1,13 @@
 import { FloorRepository } from './floor-repository.abstract';
 import { Floor } from '../types/floor';
 import { FloorMapper } from '../types/floor.mapper';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
-import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
-import { paginationConfig } from '../../../common/constants/pagination.config';
-import { Page } from '../../../common/interfaces/page.interface';
-import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
+import { DuplicateEntryError } from '@posy/shared';
+import { ForeignKeyViolationError } from '@posy/shared';
+import { paginationConfig } from '@posy/shared';
+import { Page } from '@posy/shared';
+import { camelCaseToSnakeCase } from '@posy/shared';
 import { Injectable } from '@nestjs/common';
 import { FloorNotFoundException } from '../exceptions/floor-not-found.exception';
 import {

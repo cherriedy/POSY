@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { ProductAttributeRepository } from './product-attribute-repository.abstract';
 import { ProductAttribute } from '../entities/product-attribute';
 import { ProductAttributeMapper } from '../entities/product-attribute.mapper';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
-import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
-import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
+import { DuplicateEntryError } from '@posy/shared';
+import { ForeignKeyViolationError } from '@posy/shared';
+import { camelCaseToSnakeCase } from '@posy/shared';
 
 @Injectable()
 export class ProductAttributeRepositoryImpl implements ProductAttributeRepository {

@@ -12,7 +12,7 @@ import { OrderModificationForbiddenException } from '../../exceptions/order-modi
 import { ReserveIngredientsService } from './reserve-ingredients.service';
 import { OrderItemRepository } from '../../repositories/order-item-repository.abstract';
 import { OrderRepository } from '../../repositories/order-repository.abstract';
-import { UnitOfWork } from '../../../../../common/unit-of-works/unit-of-work.abstract';
+import { UnitOfWork } from '@posy/shared';
 import { TableSessionRepository } from 'src/models/table-sessions/shared/repositories/table-session-repository.abstract';
 import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';
 import { TableStatus } from 'src/models/tables/enums/table-status.enum';

@@ -5,7 +5,7 @@ import {
   CuisineQueryParams,
   CuisineSortField,
 } from '../interfaces/cuisine-query-params.interface';
-import { SortDirection } from '../../../common/interfaces/sort-field.interface';
+import { SortDirection } from '@posy/shared';
 import { Transform } from 'class-transformer';
 
 /**

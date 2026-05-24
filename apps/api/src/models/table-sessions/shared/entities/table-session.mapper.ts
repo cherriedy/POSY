@@ -4,7 +4,7 @@ import { TableSessionStatus } from '../enums/table-session-status.enum';
 import { TableSessionType } from '../enums/table-session-type.enum';
 import { TableMapper } from '../../../tables/types/table.mapper';
 import { UserMapper } from '../../../users/types/user.mapper';
-import { MissingRequiredFieldsError } from '../../../../common/errors/missing-required-fields.error';
+import { MissingRequiredFieldsError } from '@posy/shared';
 
 export class TableSessionMapper {
   /**

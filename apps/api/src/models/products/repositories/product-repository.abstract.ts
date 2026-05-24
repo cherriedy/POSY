@@ -1,6 +1,6 @@
-import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
-import { Page } from '../../../common/interfaces/page.interface';
-import { PaginationParams } from '../../../common/interfaces/pagination-params.interface';
+import { BaseRepository } from '@posy/shared';
+import { Page } from '@posy/shared';
+import { PaginationParams } from '@posy/shared';
 import { Product } from '../entities/product';
 import { ProductIncludeOptions } from '../interfaces/product-query-params.interface';
 

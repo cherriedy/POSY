@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UnitOfWork } from '../../../common/unit-of-works/unit-of-work.abstract';
+import { UnitOfWork } from '@posy/shared';
 import { OrderNotFoundException } from '../../orders/shared/exceptions/order-not-found.exception';
 import { OrderSnapshotNotFoundException } from '../../orders/shared/exceptions/order-snapshot-not-found.exception';
 import { OrderStatus } from '../../orders/shared/enums/order-status.enum';
@@ -18,9 +18,9 @@ import { PromotionNotFoundError } from '../../promotions/errors/promotion-not-fo
 import { PaymentCoreService } from './payment-core.service';
 import { CheckoutRequestDto } from '../shared/dto/checkout.dto';
 import { MomoPaymentGateway } from '../shared/providers/momo-payment-gateway.service';
-import { UnsupportedValueException } from '../../../common/exceptions/unsupported-value.exception';
+import { UnsupportedValueException } from '@posy/shared';
 import { UpdateOrderStatusService } from 'src/models/orders/services/update-order-status.service';
-import { Role } from 'src/common/enums/role.enum';
+import { Role } from '@posy/shared';
 import { OrderNotReadyForCheckoutException } from 'src/models/orders/shared/exceptions/order-not-ready-for-checkout.exception';
 import { ProductNotFoundException } from 'src/models/products/exceptions/product-not-found.exception';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';

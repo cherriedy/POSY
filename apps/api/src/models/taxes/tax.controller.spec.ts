@@ -18,13 +18,13 @@ import { GetEntityTaxAssociationsService } from './get-entity-tax-associations/g
 import { RemoveEntityTaxAssociationService } from './remove-entity-tax-association/remove-entity-tax-association.service';
 
 import { TaxNotFoundException } from './exceptions/tax-not-found.exception';
-import { DuplicateEntryError } from '../../common/errors/duplicate-entry.error';
+import { DuplicateEntryError } from '@posy/shared';
 
 import { TaxCreateRequestDto, TaxUpdateRequestDto } from './dto/tax-requests.dto';
 import { TaxQueryParamsDto } from './dto/tax-query-params.dto';
 import { TaxAssociationBulkUpsertRequestDto } from './dto/tax-association-requests.dto';
 import { EntityType } from './enums/entity-type.enum';
-import { Role } from '../../common/enums/role.enum';
+import { Role } from '@posy/shared';
 
 // ─── Guard mock ──────────────────────────────────────────────────────────────
 

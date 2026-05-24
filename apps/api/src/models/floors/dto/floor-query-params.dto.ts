@@ -2,7 +2,7 @@ import { Transform } from 'class-transformer';
 import { IsOptional, IsBoolean, IsNumber, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { FloorOrderBy, FloorQueryParams, FloorSortField } from '../interfaces/floor-query-params.interface';
-import { SortDirection } from '../../../common/interfaces/sort-field.interface';
+import { SortDirection } from '@posy/shared';
 
 export class FloorQueryParamsDto {
   @ApiPropertyOptional({

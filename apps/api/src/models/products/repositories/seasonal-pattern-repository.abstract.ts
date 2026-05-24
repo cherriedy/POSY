@@ -1,4 +1,4 @@
-import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { BaseRepository } from '@posy/shared';
 import { SeasonalPattern } from '../entities/seasonal-pattern';
 
 export abstract class SeasonalPatternRepository extends BaseRepository<SeasonalPattern> {

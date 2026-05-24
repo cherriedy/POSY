@@ -1,5 +1,5 @@
-import { PaginationParams } from '../../../common/interfaces/pagination-params.interface';
-import { OrderBy } from '../../../common/interfaces/sort-field.interface';
+import { PaginationParams } from '@posy/shared';
+import { OrderBy } from '@posy/shared';
 import { TaxType } from '../enums/tax-type.enum';
 import { TaxRateType } from '../enums/tax-rate-type.enum';
 

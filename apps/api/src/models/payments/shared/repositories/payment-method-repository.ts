@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { Page } from '../../../../common/interfaces/page.interface';
-import { paginationConfig } from '../../../../common/constants/pagination.config';
-import { PrismaService } from '../../../../providers/prisma/prisma.service';
+import { Page } from '@posy/shared';
+import { paginationConfig } from '@posy/shared';
+import { PrismaService } from '@posy/shared';
 import { PaymentMethod } from '../entities/payment-method';
 import { PaymentMethodMapper } from '../entities/payment-method.mapper';
 import { PaymentMethodNotFoundException } from '../exceptions/payment-method-not-found.exception';

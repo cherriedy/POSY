@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Role } from '../../common/enums/role.enum';
-import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '@posy/shared';
+import { Roles } from '@posy/shared';
 import { plainToInstance } from 'class-transformer';
 import {
   ApiBearerAuth,
@@ -24,7 +24,7 @@ import {
   ApiBody,
   ApiExtraModels,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto/page-response.dto';
+import { createPageResponseSchema } from '@posy/shared';
 import { CuisineCreateRequestDto } from './dto/cuisine-create-request.dto';
 import { CuisineUpdateRequestDto } from './dto/cuisine-update-request.dto';
 import { CuisineResponseDto } from './dto/cuisine-response.dto';

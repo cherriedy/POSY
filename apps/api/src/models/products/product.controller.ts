@@ -14,8 +14,8 @@ import {
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { Role } from '../../common/enums/role.enum';
+import { Roles } from '@posy/shared';
+import { Role } from '@posy/shared';
 import { CreateProductDto } from './dto/product-create-request.dto';
 import { ProductDetailedResponseDto } from './dto/product-detailed-response.dto';
 import { ProductPreviewResponseDto } from './dto/product-preview-response.dto';
@@ -32,7 +32,7 @@ import { CreateProductService } from './create-product/create-product.service';
 import { UpdateProductService } from './update-product/update-product.service';
 import { GetProductsService } from './get-products/get-products.service';
 import { DeleteProductService } from './delete-product/delete-product.service';
-import { createPageResponseSchema } from '../../common/dto/page-response.dto';
+import { createPageResponseSchema } from '@posy/shared';
 import {
   ApiBearerAuth,
   ApiTags,

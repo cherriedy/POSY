@@ -1,4 +1,4 @@
-import { BaseRepository } from '../../../../common/interfaces/base-repository.interface';
+import { BaseRepository } from '@posy/shared';
 import { IngredientUsage } from '../entities/ingredient-usage';
 
 export abstract class IngredientUsageRepository extends BaseRepository<IngredientUsage> {

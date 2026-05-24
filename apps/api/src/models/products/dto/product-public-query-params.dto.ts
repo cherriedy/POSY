@@ -13,7 +13,7 @@ import {
   ProductQueryParams,
   ProductSortField,
 } from '../interfaces/product-query-params.interface';
-import { SortDirection } from '../../../common/interfaces/sort-field.interface';
+import { SortDirection } from '@posy/shared';
 
 /**
  * DTO for public product listing query parameters.

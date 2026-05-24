@@ -13,6 +13,7 @@ const config: Config = {
   testEnvironment: 'node',
   moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/$1',
+    '^@posy/shared$': '<rootDir>/../../../libs/shared/src/index.ts',
   },
 };
 

@@ -2,16 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { UnitRepository } from './unit-repository.abstract';
 import { Unit } from '../entities/unit';
 import { UnitMapper } from '../entities/unit.mapper';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
-import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
+import { DuplicateEntryError } from '@posy/shared';
+import { ForeignKeyViolationError } from '@posy/shared';
 import { UnitNotFoundException } from '../exceptions/unit-not-found.exception';
-import { Page } from '../../../common/interfaces/page.interface';
-import { paginationConfig } from '../../../common/constants/pagination.config';
+import { Page } from '@posy/shared';
+import { paginationConfig } from '@posy/shared';
 import { UnitOrderBy, UnitQueryFilter, UnitQueryParams } from '../interfaces/unit-query-params.interface';
 import { Prisma } from '@prisma/client';
-import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
+import { camelCaseToSnakeCase } from '@posy/shared';
 
 @Injectable()
 export class UnitRepositoryImpl implements UnitRepository {

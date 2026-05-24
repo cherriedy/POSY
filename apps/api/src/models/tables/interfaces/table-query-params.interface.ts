@@ -1,5 +1,5 @@
-import { PaginationParams } from '../../../common/interfaces/pagination-params.interface';
-import { OrderBy } from '../../../common/interfaces/sort-field.interface';
+import { PaginationParams } from '@posy/shared';
+import { OrderBy } from '@posy/shared';
 import { TableStatus } from '../enums/table-status.enum';
 
 export type TableSortField =

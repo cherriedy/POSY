@@ -1,6 +1,6 @@
 import { ProductDiscountType } from '../enums/product.enum';
-import { PaginationParams } from '../../../common/interfaces/pagination-params.interface';
-import { OrderBy } from '../../../common/interfaces/sort-field.interface';
+import { PaginationParams } from '@posy/shared';
+import { OrderBy } from '@posy/shared';
 
 export type ProductSortField =
   | 'price'

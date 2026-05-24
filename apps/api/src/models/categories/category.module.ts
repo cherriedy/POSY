@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { CategoryController } from './category.controller';
-import { PrismaModule } from 'src/providers/prisma/prisma.module';
+import { PrismaModule } from '@posy/shared';
 import { CreateCategoryModule } from './features/create-category/create-category.module';
 import { UpdateCategoryModule } from './features/update-category/update-category.module';
 import { DeleteCategoryModule } from './features/delete-category/delete-category.module';

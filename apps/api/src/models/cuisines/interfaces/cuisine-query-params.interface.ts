@@ -1,5 +1,5 @@
-import { PaginationParams } from 'src/common/interfaces/pagination-params.interface';
-import { OrderBy } from 'src/common/interfaces/sort-field.interface';
+import { PaginationParams } from '@posy/shared';
+import { OrderBy } from '@posy/shared';
 
 /**
  * Represents the allowed fields by which cuisines can be sorted.

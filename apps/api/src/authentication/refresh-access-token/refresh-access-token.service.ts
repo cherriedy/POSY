@@ -3,7 +3,7 @@ import { AuthTokensSchema } from '../interfaces/auth-tokens-schema.interface';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { UserRepository } from '../../models/users/repositories/user-repository.abstract';
 import { UserNotFoundError } from '../../models/users/errors/user-not-found.error';
-import { hash, verifyHash } from '../../common/utilities/hash.util';
+import { hash, verifyHash } from '@posy/shared';
 import { InvalidRefreshTokenError } from '../errors/invalid-refresh-token.error';
 import { TokenGeneratorsService } from '../common/token-generators/token-generators.service';
 import { authConfig } from '../auth.config';

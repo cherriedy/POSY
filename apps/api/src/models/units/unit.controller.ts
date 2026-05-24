@@ -21,8 +21,8 @@ import {
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { Role } from '../../common/enums/role.enum';
+import { Roles } from '@posy/shared';
+import { Role } from '@posy/shared';
 import { UnitCreateRequestDto } from './dto/unit-create-request.dto';
 import { UnitQueryParamsDto } from './dto/unit-query-params.dto';
 import { UnitResponseDto } from './dto/unit-response.dto';
@@ -32,7 +32,7 @@ import { GetUnitsService } from './get-units/get-units.service';
 import { UpdateUnitService } from './update-unit/update-unit.service';
 import { UpdateUnitPayloadMapper } from './update-unit/update-unit-payload.mapper';
 import { DeleteUnitService } from './delete-unit/delete-unit.service';
-import { Page } from '../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 
 @ApiTags('Units')
 @ApiBearerAuth()

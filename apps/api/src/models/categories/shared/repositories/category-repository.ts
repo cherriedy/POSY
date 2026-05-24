@@ -1,11 +1,11 @@
 import { CategoryRepository } from './category-repository.abstract';
 import { Category } from '../entities/category';
 import { CategoryMapper } from '../entities/category.mapper';
-import { PrismaService } from '../../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryError } from '../../../../common/errors/duplicate-entry.error';
-import { paginationConfig } from '../../../../common/constants/pagination.config';
-import { Page } from '../../../../common/interfaces/page.interface';
+import { DuplicateEntryError } from '@posy/shared';
+import { paginationConfig } from '@posy/shared';
+import { Page } from '@posy/shared';
 import { Injectable } from '@nestjs/common';
 import { CategoryNotFoundException } from '../exceptions/category-not-found.exception';
 import { CategoryOrderBy, CategoryQueryFilter, CategoryQueryParams } from '../interfaces/category-query-params.interface';

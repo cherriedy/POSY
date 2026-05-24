@@ -3,14 +3,14 @@ import { TaxConfig } from '../entities/tax-config';
 import { TaxConfigMapper } from '../entities/tax-config.mapper';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
+import { DuplicateEntryError } from '@posy/shared';
 import { Injectable } from '@nestjs/common';
 import { TaxNotFoundException } from '../exceptions/tax-not-found.exception';
 import { TaxOrderBy, TaxQueryFilters, TaxQueryParams } from '../interfaces/tax-query-params';
-import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
-import { paginationConfig } from '../../../common/constants/pagination.config';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
-import { Page } from '../../../common/interfaces/page.interface';
+import { camelCaseToSnakeCase } from '@posy/shared';
+import { paginationConfig } from '@posy/shared';
+import { PrismaService } from '@posy/shared';
+import { Page } from '@posy/shared';
 import { TaxType } from '../enums/tax-type.enum';
 
 const { page: defaultPage, pageSize: defaultPageSize } =

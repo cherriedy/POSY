@@ -13,8 +13,8 @@ import {
 import { CreatePromotionService } from './create-promotion/create-promotion.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { Role } from '../../common/enums/role.enum';
+import { Roles } from '@posy/shared';
+import { Role } from '@posy/shared';
 import { CreatePromotionDto } from './dto/promotion-create-request.dto';
 import { PromotionCategoryPreviewResponseDto } from './dto/promotion-category-response.dto';
 import { PromotionDetailedResponseDto } from './dto/promotion-detailed-response.dto';
@@ -37,7 +37,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { PromotionProductPreviewResponseDto } from './dto/promotion-product-response.dto';
-import { createPageResponseSchema } from '../../common/dto/page-response.dto';
+import { createPageResponseSchema } from '@posy/shared';
 import { ReplacePromotionProductService } from './replace-products/replace-products.service';
 import { ReplacePromotionCategoriesService } from './replace-categories/replace-categories.service';
 import { BulkReplacePromotionCategoryDto } from './dto/promotion-category-replace.dto';

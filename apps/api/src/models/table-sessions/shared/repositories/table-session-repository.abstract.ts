@@ -1,5 +1,5 @@
 import { TableSession } from '../entities/table-session';
-import { BaseRepository } from '../../../../common/interfaces/base-repository.interface';
+import { BaseRepository } from '@posy/shared';
 
 export abstract class TableSessionRepository implements BaseRepository<TableSession> {
   /**

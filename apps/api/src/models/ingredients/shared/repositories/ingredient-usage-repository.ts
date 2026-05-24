@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { IngredientUsageRepository } from './ingredient-usage-repository.abstract';
 import { IngredientUsage } from '../entities/ingredient-usage';
 import { IngredientUsageMapper } from '../entities/ingredient-usage.mapper';

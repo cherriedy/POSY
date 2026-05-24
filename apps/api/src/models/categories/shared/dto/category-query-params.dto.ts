@@ -2,7 +2,7 @@ import { Transform } from 'class-transformer';
 import { IsOptional, IsBoolean, IsNumber, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { CategoryOrderBy, CategoryQueryParams, CategorySortField } from '../interfaces/category-query-params.interface';
-import { SortDirection } from '../../../../common/interfaces/sort-field.interface';
+import { SortDirection } from '@posy/shared';
 
 export class CategoryQueryParamsDto {
   @ApiPropertyOptional({

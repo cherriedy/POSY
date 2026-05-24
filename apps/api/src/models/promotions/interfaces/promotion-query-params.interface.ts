@@ -1,4 +1,4 @@
-import { PaginationParams } from '../../../common/interfaces/pagination-params.interface';
+import { PaginationParams } from '@posy/shared';
 import { PromotionApplicability } from '../enums/promotion-applicability.enum';
 import { PromotionDiscountType } from '../enums/promotion-discount-type.enum';
 import { PromotionStatus } from '../enums/promotion-status.enum';

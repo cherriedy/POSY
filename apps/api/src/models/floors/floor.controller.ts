@@ -15,8 +15,8 @@ import { UpdateFloorService } from './update-floor/update-floor.service';
 import { DeleteFloorService } from './delete-floor/delete-floor.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Role } from '../../common/enums/role.enum';
-import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '@posy/shared';
+import { Roles } from '@posy/shared';
 import { GetFloorsService } from './get-floors/get-floors.service';
 import { plainToInstance } from 'class-transformer';
 import { FloorDetailedResponseDto } from './dto/floor-detailed-response.dto';
@@ -24,7 +24,7 @@ import { FloorPreviewResponseDto } from './dto/floor-preview-response.dto';
 import { FloorQueryParamsDto } from './dto/floor-query-params.dto';
 import { FloorCreateRequestDto } from './dto/floor-create-request.dto';
 import { FloorUpdateRequestDto } from './dto/floor-update-request.dto';
-import { Page } from '../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 import { Floor } from './types/floor';
 import {
   ApiBearerAuth,
@@ -35,7 +35,7 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto/page-response.dto';
+import { createPageResponseSchema } from '@posy/shared';
 
 @ApiTags('Floors')
 @ApiBearerAuth()

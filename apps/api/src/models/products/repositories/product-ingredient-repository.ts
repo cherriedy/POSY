@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { ProductIngredientRepository } from './product-ingredient-repository.abstract';
 import { ProductIngredient } from '../entities/product-ingredient';
 import { ProductIngredientMapper } from '../entities/product-ingredient.mapper';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
-import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
+import { DuplicateEntryError } from '@posy/shared';
+import { ForeignKeyViolationError } from '@posy/shared';
 import { ProductIngredientNotFoundException } from '../exceptions/product-ingredient-not-found.exception';
 import { Prisma } from '@prisma/client';
 

@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { execSync } from 'child_process';
-import { PrismaService } from '../../src/providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { applyValidationPipe } from '../integration/shared/core';
 import { AppModule } from '../../src/app.module';
 import { ProductRepository } from '../../src/models/products/repositories/product-repository.abstract';

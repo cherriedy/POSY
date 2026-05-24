@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Page } from '../../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 import { Payment } from '../shared/entities/payment';
 import { PaymentQueryParams } from '../shared/interfaces/payment-query-params.interface';
 import { PaymentRepository } from '../shared/repositories/payment-repository.abstract';

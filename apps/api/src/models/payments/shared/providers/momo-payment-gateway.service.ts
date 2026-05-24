@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@nestjs/common';
 import { PaymentVerificationResult, PaymentVerificationStatus } from '../interfaces/payment-verification-result.interface';
-import { MomoConfigService } from '../../../../config/momo/config.service';
+import { MomoConfigService } from '@posy/shared';
 import * as crypto from 'crypto';
 import axios from 'axios';
 import { PaymentGateway } from './payment-gateway.interface';

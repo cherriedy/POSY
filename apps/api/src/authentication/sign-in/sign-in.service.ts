@@ -3,7 +3,7 @@ import { UserRepository } from '../../models/users/repositories/user-repository.
 import { SignInDto } from '../dto/sign-in.dto';
 import { AccountLockedError } from '../errors/account-locked.error';
 import { InvalidCredentialsError } from '../errors/invalid-credentials.error';
-import { hash, verifyHash } from '../../common/utilities/hash.util';
+import { hash, verifyHash } from '@posy/shared';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { AuthTokensSchema } from '../interfaces/auth-tokens-schema.interface';
 import { User } from '../../models/users/types/user';

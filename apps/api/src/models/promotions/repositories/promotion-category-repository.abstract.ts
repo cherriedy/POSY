@@ -1,4 +1,4 @@
-import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { BaseRepository } from '@posy/shared';
 import { Promotion } from '../types/promotion';
 import { PromotionCategory } from '../types/promotion-category';
 

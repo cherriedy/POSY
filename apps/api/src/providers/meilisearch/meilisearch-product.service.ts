@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MeilisearchEngineTemplate } from './templates/meilisearch-engine-template';
+import { MeilisearchEngineTemplate } from '@posy/shared';
 import { MeiliSearchProduct } from './types/meilisearch-product';
-import { MeilisearchService } from './meilisearch.service';
+import { MeilisearchService } from '@posy/shared';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import type { Logger } from 'winston';
 import { Product } from '../../models/products/entities/product';

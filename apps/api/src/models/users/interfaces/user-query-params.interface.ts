@@ -1,6 +1,6 @@
-import { Role } from 'src/common/enums/role.enum';
-import { PaginationParams } from '../../../common/interfaces/pagination-params.interface';
-import { OrderBy } from '../../../common/interfaces/sort-field.interface';
+import { Role } from '@posy/shared';
+import { PaginationParams } from '@posy/shared';
+import { OrderBy } from '@posy/shared';
 
 export type UserSortField =
   | 'fullName'

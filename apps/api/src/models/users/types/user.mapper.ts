@@ -1,6 +1,6 @@
 import { User as PrismaUser } from '@prisma/client';
 import { User as DomainUser } from './user';
-import { MissingRequiredFieldsError } from '../../../common/errors/missing-required-fields.error';
+import { MissingRequiredFieldsError } from '@posy/shared';
 import { mapRole } from './role.mapper';
 
 export class UserMapper {

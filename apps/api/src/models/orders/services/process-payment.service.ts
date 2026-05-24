@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { OrderTaxMapper } from '../../taxes/entities/order-tax.mapper';
 import { OrderTax } from '../../taxes/entities/order-tax';
 import { PromotionRedemption } from '../../promotions/types/promotion-redemption';

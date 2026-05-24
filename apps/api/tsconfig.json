@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./dist",
+    "outDir": "../../dist/apps/api",
     "baseUrl": "./",
     "paths": {
       "@posy/shared": ["../../libs/shared/src/index.ts"]

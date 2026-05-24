@@ -10,7 +10,7 @@ import { Transform, Type } from 'class-transformer';
 import { TaxType } from '../enums/tax-type.enum';
 import { TaxRateType } from '../enums/tax-rate-type.enum';
 import { TaxOrderBy, TaxQueryParams, TaxSortField } from '../interfaces/tax-query-params';
-import { SortDirection } from '../../../common/interfaces/sort-field.interface';
+import { SortDirection } from '@posy/shared';
 
 export class TaxQueryParamsDto {
   @ApiPropertyOptional({ type: Number, description: 'Page number', default: 1 })

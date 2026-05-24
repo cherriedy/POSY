@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { CuisineRepository } from './cuisine-repository.abstract';
 import { Cuisine } from '../types/cuisine';
 import { CuisineMapper } from '../types/cuisine.mapper';
-import { Page } from '../../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 import { CuisineOrderBy, CuisineQueryParams } from '../interfaces/cuisine-query-params.interface';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
-import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
+import { DuplicateEntryError } from '@posy/shared';
+import { ForeignKeyViolationError } from '@posy/shared';
 import { CuisineNotFoundException } from '../exceptions/cuisine-not-found.exception';
-import { paginationConfig } from '../../../common/constants/pagination.config';
-import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
+import { paginationConfig } from '@posy/shared';
+import { camelCaseToSnakeCase } from '@posy/shared';
 import { Prisma } from '@prisma/client';
 
 @Injectable()

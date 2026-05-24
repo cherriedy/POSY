@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { MqttModule } from '../providers/mqtt/mqtt.module';
+import { MqttModule } from '@posy/shared';
 import { QrService } from './qr.service';
-import { AppConfigModule } from '../config/app/config.module';
+import { AppConfigModule } from '@posy/shared';
 import { TableModule } from '../models/tables/table.module';
 import { QrController } from './qr.controller';
 

@@ -1,5 +1,5 @@
-import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
-import { Page } from '../../../common/interfaces/page.interface';
+import { BaseRepository } from '@posy/shared';
+import { Page } from '@posy/shared';
 import { TaxConfig } from '../entities/tax-config';
 import { TaxQueryParams } from '../interfaces/tax-query-params';
 import { TaxType } from '../enums/tax-type.enum';

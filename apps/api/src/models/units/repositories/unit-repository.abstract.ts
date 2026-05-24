@@ -1,5 +1,5 @@
-import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
-import { Page } from '../../../common/interfaces/page.interface';
+import { BaseRepository } from '@posy/shared';
+import { Page } from '@posy/shared';
 import { Unit } from '../entities/unit';
 import { UnitQueryParams } from '../interfaces/unit-query-params.interface';
 

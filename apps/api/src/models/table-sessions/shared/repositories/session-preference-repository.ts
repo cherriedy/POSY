@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryError } from '../../../../common/errors/duplicate-entry.error';
-import { PrismaService } from '../../../../providers/prisma/prisma.service';
+import { DuplicateEntryError } from '@posy/shared';
+import { PrismaService } from '@posy/shared';
 import { SessionPreferenceNotFoundException } from '../exceptions/session-preference-not-found.exception';
 import { SessionPreference } from '../entities/session-preference';
 import { SessionPreferenceMapper } from '../entities/session-preference.mapper';

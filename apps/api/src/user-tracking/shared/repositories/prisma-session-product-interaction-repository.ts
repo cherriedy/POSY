@@ -1,6 +1,6 @@
 import { SessionProductInteractionRepository } from './session-product-interaction-repository.abstract';
 import { SessionProductInteraction } from '../entities/session-product-interaction';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 
 export class SessionProductInteractionRepositoryImpl implements SessionProductInteractionRepository {
   constructor(private readonly prismaService: PrismaService) {}

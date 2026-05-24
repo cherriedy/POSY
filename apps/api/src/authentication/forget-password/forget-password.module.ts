@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ForgetPasswordService } from './forget-password.service';
 import { UserModule } from '../../models/users/user.module';
-import { MailModule } from '../../mails/mail.module';
+import { MailModule } from '@posy/shared';
 
 @Module({
   imports: [UserModule, MailModule],

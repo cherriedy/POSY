@@ -2,13 +2,13 @@ import { ProductRepository } from './product-repository.abstract';
 import { Injectable } from '@nestjs/common';
 import { Product } from '../entities/product';
 import { ProductMapper } from '../entities/product.mapper';
-import { Page } from '../../../common/interfaces/page.interface';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { Page } from '@posy/shared';
+import { PrismaService } from '@posy/shared';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
-import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
+import { DuplicateEntryError } from '@posy/shared';
+import { ForeignKeyViolationError } from '@posy/shared';
 import { ProductNotFoundException } from '../exceptions/product-not-found.exception';
-import { paginationConfig } from '../../../common/constants/pagination.config';
+import { paginationConfig } from '@posy/shared';
 import {
   ProductIncludeOptions,
   ProductOrderBy,
@@ -16,7 +16,7 @@ import {
   ProductQueryParams,
 } from '../interfaces/product-query-params.interface';
 import { Prisma } from '@prisma/client';
-import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
+import { camelCaseToSnakeCase } from '@posy/shared';
 import { MeilisearchProductService } from '../../../providers/meilisearch/meilisearch-product.service';
 
 const { page: defaultPage, pageSize: defaultPageSize } =

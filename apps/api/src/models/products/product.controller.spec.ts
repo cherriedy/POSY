@@ -22,15 +22,15 @@ import { RemoveProductIngredientService } from './remove-product-ingredient/remo
 import { CreateProductMapper } from './create-product/create-product.mapper';
 
 import { ProductNotFoundException } from './exceptions/product-not-found.exception';
-import { DuplicateEntryError } from '../../common/errors/duplicate-entry.error';
-import { ForeignKeyViolationError } from '../../common/errors/foreign-key-violation.error';
+import { DuplicateEntryError } from '@posy/shared';
+import { ForeignKeyViolationError } from '@posy/shared';
 
 import { CreateProductDto } from './dto/product-create-request.dto';
 import { UpdateProductDto } from './dto/product-update-request.dto';
 import { ProductQueryParamsDto } from './dto/product-query-params.dto';
 import { ProductAttributeUpsertRequestDto } from './dto/product-attribute-upsert-request.dto';
 import { ProductIngredientBulkUpsertRequestDto } from './dto/product-ingredient-bulk-upsert-request.dto';
-import { Role } from '../../common/enums/role.enum';
+import { Role } from '@posy/shared';
 import { Request } from 'express';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────

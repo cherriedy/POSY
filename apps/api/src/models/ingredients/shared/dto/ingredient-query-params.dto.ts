@@ -2,7 +2,7 @@ import { Transform } from 'class-transformer';
 import { IsOptional, IsNumber, IsString, IsUUID } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IngredientOrderBy, IngredientQueryParams, IngredientSortField } from '../interfaces/ingredient-query-params.interface';
-import { SortDirection } from '../../../../common/interfaces/sort-field.interface';
+import { SortDirection } from '@posy/shared';
 
 export class IngredientQueryParamsDto {
   @ApiPropertyOptional({

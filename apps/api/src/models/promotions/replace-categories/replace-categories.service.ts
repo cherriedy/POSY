@@ -6,7 +6,7 @@ import { PromotionCategory } from '../types/promotion-category';
 import { PromotionApplicability } from '../enums/promotion-applicability.enum';
 import { PromotionNotFoundError } from '../errors/promotion-not-found.error';
 import { PromotionUnusableError } from '../errors/promotion-unusable.error';
-import { DuplicateEntryError } from 'src/common/errors/duplicate-entry.error';
+import { DuplicateEntryError } from '@posy/shared';
 import { CategoriesNotFoundException } from 'src/models/categories/shared/exceptions/category-not-found.exception';
 import { CategoryRepository } from 'src/models/categories/shared/repositories/category-repository.abstract';
 

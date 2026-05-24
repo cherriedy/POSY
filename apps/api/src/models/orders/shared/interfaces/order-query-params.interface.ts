@@ -1,4 +1,4 @@
-import { PaginationParams } from '../../../../common/interfaces/pagination-params.interface';
+import { PaginationParams } from '@posy/shared';
 import { OrderStatus } from '../enums/order-status.enum';
 
 export interface OrderQueryFilter {

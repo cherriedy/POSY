@@ -1,4 +1,4 @@
-import { Role } from 'src/common/enums/role.enum';
+import { Role } from '@posy/shared';
 
 /**
  * Interface representing the structure of a JWT payload.

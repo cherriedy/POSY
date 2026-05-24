@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { JwtConfigService } from '../../config/jwt/config.service';
+import { JwtConfigService } from '@posy/shared';
 import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { InvalidResetTokenError } from '../errors/invalid-reset-token.error';
 import { ResetTokenExpiredError } from '../errors/reset-token-expired.error';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 import { UserRepository } from '../../models/users/repositories/user-repository.abstract';
-import { hash } from '../../common/utilities/hash.util';
+import { hash } from '@posy/shared';
 
 @Injectable()
 export class ResetPasswordService {

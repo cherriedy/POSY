@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { IsValidPassword } from '../../../common/decorators/is-valid-password.decorator';
-import { Match } from '../../../common/decorators/match.decorator';
+import { IsValidPassword } from '@posy/shared';
+import { Match } from '@posy/shared';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdatePasswordDto {

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { OrderTaxRepository } from './order-tax-repository.abstract';
 import { OrderTax } from '../entities/order-tax';
 import { OrderTaxMapper } from '../entities/order-tax.mapper';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
-import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
+import { DuplicateEntryError } from '@posy/shared';
+import { ForeignKeyViolationError } from '@posy/shared';
 
 @Injectable()
 export class OrderTaxRepositoryImpl implements OrderTaxRepository {

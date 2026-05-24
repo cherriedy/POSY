@@ -1,4 +1,4 @@
-import { Role } from '../../common/enums/role.enum';
+import { Role } from '@posy/shared';
 
 export interface UserIdentity {
   id: string;

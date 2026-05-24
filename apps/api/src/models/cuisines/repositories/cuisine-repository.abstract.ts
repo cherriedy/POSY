@@ -1,5 +1,5 @@
-import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
-import { Page } from '../../../common/interfaces/page.interface';
+import { BaseRepository } from '@posy/shared';
+import { Page } from '@posy/shared';
 import { Cuisine } from '../types/cuisine';
 import { CuisineQueryParams } from '../interfaces/cuisine-query-params.interface';
 

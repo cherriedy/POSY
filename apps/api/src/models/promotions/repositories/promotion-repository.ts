@@ -3,14 +3,14 @@ import { Promotion } from '../types/promotion';
 import { PromotionMapper } from '../types/promotion.mapper';
 import { Prisma, PromotionStatus } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
+import { DuplicateEntryError } from '@posy/shared';
 import { Injectable } from '@nestjs/common';
 import { PromotionNotFoundError } from '../errors/promotion-not-found.error';
 import { PromotionQueryFilters, PromotionQueryParams } from '../interfaces/promotion-query-params.interface';
-import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
-import { paginationConfig } from '../../../common/constants/pagination.config';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
-import { Page } from '../../../common/interfaces/page.interface';
+import { camelCaseToSnakeCase } from '@posy/shared';
+import { paginationConfig } from '@posy/shared';
+import { PrismaService } from '@posy/shared';
+import { Page } from '@posy/shared';
 
 const { page: defaultPage, pageSize: defaultPageSize } =
   paginationConfig.default;

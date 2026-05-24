@@ -1,9 +1,9 @@
 import { ImageRepository } from './image-repository.abstract';
 import { Image } from '../types/image';
 import { ImageMapper } from '../types/image.mapper';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
+import { DuplicateEntryError } from '@posy/shared';
 import { Injectable } from '@nestjs/common';
 import { ImageNotFoundError } from '../errors/image-not-found.error';
 

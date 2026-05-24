@@ -1,5 +1,5 @@
 import { PrismaClient, TableStatus } from '@prisma/client';
-import { generateBase64UrlToken } from '../../common/utilities/string.util';
+import { generateBase64UrlToken } from '@posy/shared';
 import { randomBytes } from 'crypto';
 
 export async function seedTables(prisma: PrismaClient) {

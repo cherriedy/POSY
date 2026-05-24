@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { JwtConfigService } from '../../../config/jwt/config.service';
+import { JwtConfigService } from '@posy/shared';
 import { authConfig } from '../../auth.config';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { AccessTokenExpiredError } from '../../errors/access-token-expired.error';

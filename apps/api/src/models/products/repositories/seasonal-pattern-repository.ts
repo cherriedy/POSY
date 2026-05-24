@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { SeasonalPatternRepository } from './seasonal-pattern-repository.abstract';
 import { SeasonalPattern } from '../entities/seasonal-pattern';
 import { SeasonalPatternMapper } from '../entities/seasonal-pattern.mapper';

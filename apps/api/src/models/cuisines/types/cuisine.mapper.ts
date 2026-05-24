@@ -1,6 +1,6 @@
 import { Cuisine as PrismaCuisine } from '@prisma/client';
 import { Cuisine } from './cuisine';
-import { MissingRequiredFieldsError } from '../../../common/errors/missing-required-fields.error';
+import { MissingRequiredFieldsError } from '@posy/shared';
 
 /**
  * Mapper for converting between Prisma and domain Cuisine entities.

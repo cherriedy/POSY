@@ -9,7 +9,7 @@ import { PaymentCheckoutService } from './features/payment-checkout.service';
 import { PaymentMiscellaneousService } from './features/payment-miscellaneous.service';
 import { PaymentFacadeService } from './features/payment-facade.service';
 import { MomoPaymentGateway } from './shared/providers/momo-payment-gateway.service';
-import { MomoConfigModule } from '../../config/momo/config.module';
+import { MomoConfigModule } from '@posy/shared';
 import { PaymentRefundService } from './features/payment-refund.service';
 
 @Module({

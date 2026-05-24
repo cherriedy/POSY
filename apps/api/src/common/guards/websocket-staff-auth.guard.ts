@@ -10,7 +10,7 @@ import { TokenGeneratorsService } from '../../authentication/common/token-genera
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { WsException } from '@nestjs/websockets';
 import { JwtPayload } from '../../authentication/interfaces/jwt-payload.interface';
-import { AuthenticatedStaffSocket } from '../interfaces/authenticated-staff-socket.interface';
+import { AuthenticatedStaffSocket } from '@posy/shared';
 import { AccessTokenExpiredError } from '../../authentication/errors/access-token-expired.error';
 import { InvalidAccessTokenError } from '../../authentication/errors/invalid-access-token.error';
 

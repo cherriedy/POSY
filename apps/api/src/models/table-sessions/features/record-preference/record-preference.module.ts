@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { RecordPreferenceService } from './record-preference.service';
 import { TableSessionConfig } from '../../table-session.config';
-import { AppConfigModule } from '../../../../config/app/config.module';
-import { JwtConfigModule } from '../../../../config/jwt/config.module';
+import { AppConfigModule } from '@posy/shared';
+import { JwtConfigModule } from '@posy/shared';
 
 @Module({
   imports: [AppConfigModule, JwtConfigModule],

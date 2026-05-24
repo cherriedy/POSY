@@ -14,7 +14,7 @@ import { TableSessionRepository } from '../repositories/table-session-repository
 import { TableSessionConfig } from '../../table-session.config';
 import { TableSessionStatus } from '../enums/table-session-status.enum';
 import { DeviceFingerprintUtility } from '../utilities/device-fingerprint.util';
-import { assertDevice, InvalidDeviceException } from '../../../../common/interfaces/device-context.interface';
+import { assertDevice, InvalidDeviceException } from '@posy/shared';
 
 class InvalidSessionTokenException extends UnauthorizedException {
   constructor() {

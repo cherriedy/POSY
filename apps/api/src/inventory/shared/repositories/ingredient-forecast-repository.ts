@@ -3,7 +3,7 @@ import {
   ForecastRow,
 } from './ingredient-forecast-repository.abstract';
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { IngredientForecast as PrismaIngredientForecast } from '@prisma/client';
 
 @Injectable()

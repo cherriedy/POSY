@@ -15,8 +15,8 @@ import { UpdateZoneService } from './update-zone/update-zone.service';
 import { DeleteZoneService } from './delete-zone/delete-zone.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Role } from '../../common/enums/role.enum';
-import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '@posy/shared';
+import { Roles } from '@posy/shared';
 import { GetZonesService } from './get-zones/get-zones.service';
 import { plainToInstance } from 'class-transformer';
 import { ZoneDetailedResponseDto } from './dto/zone-detailed-response.dto';
@@ -24,7 +24,7 @@ import { ZonePreviewResponseDto } from './dto/zone-preview-response.dto';
 import { ZoneQueryParamsDto } from './dto/zone-query-params.dto';
 import { ZoneCreateRequestDto } from './dto/zone-create-request.dto';
 import { ZoneUpdateRequestDto } from './dto/zone-update-request.dto';
-import { Page } from '../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 import { Zone } from './types/zone';
 import {
   ApiBearerAuth,
@@ -35,7 +35,7 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto/page-response.dto';
+import { createPageResponseSchema } from '@posy/shared';
 
 @ApiTags('Zones')
 @ApiBearerAuth()

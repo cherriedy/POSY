@@ -4,7 +4,7 @@ import { IngredientForecastService } from './features/ingredient-forecast.servic
 import { IngredientForecastRepository } from './shared/repositories/ingredient-forecast-repository.abstract';
 import { IngredientForecastRepositoryImpl } from './shared/repositories/ingredient-forecast-repository';
 import { HttpModule } from '@nestjs/axios';
-import { PythonConfigModule } from '../config/python/config.module';
+import { PythonConfigModule } from '@posy/shared';
 
 @Module({
   imports: [

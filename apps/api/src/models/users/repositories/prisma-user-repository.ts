@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../types/user';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { UserMapper } from '../types/user.mapper';
 import { UserRepository } from './user-repository.abstract';
 import { UserNotFoundError } from '../errors/user-not-found.error';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
-import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
-import { Page } from '../../../common/interfaces/page.interface';
-import { paginationConfig } from '../../../common/constants/pagination.config';
+import { DuplicateEntryError } from '@posy/shared';
+import { camelCaseToSnakeCase } from '@posy/shared';
+import { Page } from '@posy/shared';
+import { paginationConfig } from '@posy/shared';
 import { UserOrderBy, UserQueryFilter, UserQueryParams } from '../interfaces/user-query-params.interface';
 import { Prisma } from '@prisma/client';
-import { Role } from '../../../common/enums/role.enum';
+import { Role } from '@posy/shared';
 
 @Injectable()
 export class PrismaUserRepository implements UserRepository {

@@ -1,6 +1,6 @@
 import { Category } from '../entities/category';
-import { BaseRepository } from '../../../../common/interfaces/base-repository.interface';
-import { Page } from '../../../../common/interfaces/page.interface';
+import { BaseRepository } from '@posy/shared';
+import { Page } from '@posy/shared';
 import { CategoryQueryParams } from '../interfaces/category-query-params.interface';
 
 export abstract class CategoryRepository implements BaseRepository<Category> {

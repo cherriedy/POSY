@@ -6,11 +6,11 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { IsValidPassword } from '../../../common/decorators/is-valid-password.decorator';
-import { IsValidPhoneNumber } from '../../../common/decorators/is-valid-phone-number.decorator';
-import { IsValidRole } from '../../../common/decorators/is-valid-role.decorator';
+import { IsValidPassword } from '@posy/shared';
+import { IsValidPhoneNumber } from '@posy/shared';
+import { IsValidRole } from '@posy/shared';
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from '../../../common/enums/role.enum';
+import { Role } from '@posy/shared';
 
 export class CreateUserDto {
   @ApiProperty({

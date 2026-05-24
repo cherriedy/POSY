@@ -1,4 +1,4 @@
-import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { BaseRepository } from '@posy/shared';
 import { EntityTaxConfig } from '../entities/entity-tax-config';
 import { TaxableEntityReference } from '../interfaces/taxable-entity-reference';
 

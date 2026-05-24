@@ -1,4 +1,4 @@
-import { BaseRepository } from '../../../../common/interfaces/base-repository.interface';
+import { BaseRepository } from '@posy/shared';
 import { SessionPreference } from '../entities/session-preference';
 
 export abstract class SessionPreferenceRepository implements BaseRepository<SessionPreference> {

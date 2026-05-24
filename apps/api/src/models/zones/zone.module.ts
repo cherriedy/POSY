@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { ZoneController } from './zone.controller';
-import { PrismaModule } from 'src/providers/prisma/prisma.module';
+import { PrismaModule } from '@posy/shared';
 import { CreateZoneModule } from './create-zone/create-zone.module';
 import { UpdateZoneModule } from './update-zone/update-zone.module';
 import { DeleteZoneModule } from './delete-zone/delete-zone.module';

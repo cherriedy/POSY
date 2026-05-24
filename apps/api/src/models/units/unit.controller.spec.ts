@@ -6,7 +6,7 @@ import { CreateUnitService } from './create-unit/create-unit.service';
 import { GetUnitsService } from './get-units/get-units.service';
 import { UpdateUnitService } from './update-unit/update-unit.service';
 import { DeleteUnitService } from './delete-unit/delete-unit.service';
-import { DuplicateEntryError } from '../../common/errors/duplicate-entry.error';
+import { DuplicateEntryError } from '@posy/shared';
 import { UnitNotFoundException } from './exceptions/unit-not-found.exception';
 import { UnitCreateRequestDto } from './dto/unit-create-request.dto';
 

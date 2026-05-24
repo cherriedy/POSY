@@ -3,7 +3,7 @@ import { TaxRepository } from '../repositories/tax-repository.abstract';
 import { TaxQueryParams } from '../interfaces/tax-query-params';
 import { TaxNotFoundException } from '../exceptions/tax-not-found.exception';
 import { TaxConfig } from '../entities/tax-config';
-import { Page } from '../../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 
 @Injectable()
 export class GetTaxesService {

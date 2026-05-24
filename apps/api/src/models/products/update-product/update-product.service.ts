@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 import { Product } from '../entities/product';
-import { getSlug } from '../../../common/utilities/string.util';
+import { getSlug } from '@posy/shared';
 import { ProductNotFoundException } from '../exceptions/product-not-found.exception';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 

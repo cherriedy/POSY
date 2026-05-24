@@ -22,8 +22,8 @@ import { IngredientOverviewResponseDto } from './shared/dto/ingredient-overview-
 import { StockStatus } from './shared/enums/stock-status.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../authorization/guards/role.guard';
-import { Role } from '../common/enums/role.enum';
-import { Roles } from '../common/decorators/roles.decorator';
+import { Role } from '@posy/shared';
+import { Roles } from '@posy/shared';
 import { inventoryConfig } from './inventory.config';
 
 @UseGuards(AuthGuard('jwt'), RoleGuard)

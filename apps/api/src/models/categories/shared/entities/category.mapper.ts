@@ -1,7 +1,7 @@
 import { Category as PrismaCategory, Prisma } from '@prisma/client';
 import { Category } from './category';
-import { MissingRequiredFieldsError } from '../../../../common/errors/missing-required-fields.error';
-import { getSlug } from 'src/common/utilities/string.util';
+import { MissingRequiredFieldsError } from '@posy/shared';
+import { getSlug } from '@posy/shared';
 
 export class CategoryMapper {
   static toDomain(this: void, prismaCategory: PrismaCategory): Category {

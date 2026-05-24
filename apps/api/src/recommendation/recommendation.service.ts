@@ -1,7 +1,7 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { PythonConfigService } from '../config/python/config.service';
+import { PythonConfigService } from '@posy/shared';
 import { OnEvent } from '@nestjs/event-emitter';
 import { lastValueFrom } from 'rxjs';
 import { Cron, CronExpression } from '@nestjs/schedule';

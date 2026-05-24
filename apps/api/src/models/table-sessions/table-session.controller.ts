@@ -22,7 +22,7 @@ import { EndSessionService } from './features/end-session/end-session.service';
 import { StartSessionRequestDto } from './shared/dto/start-session-request.dto';
 import { TableSessionResponseDto } from './shared/dto/table-session-response.dto';
 import { TableSessionConfig } from './table-session.config';
-import { assertDevice } from '../../common/interfaces/device-context.interface';
+import { assertDevice } from '@posy/shared';
 
 @ApiTags('Sessions')
 @Controller('session')

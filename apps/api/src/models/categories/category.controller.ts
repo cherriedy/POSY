@@ -16,8 +16,8 @@ import { DeleteCategoryService } from './features/delete-category/delete-categor
 import { GetCategoriesService } from './features/get-categories/get-categories.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Role } from '../../common/enums/role.enum';
-import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '@posy/shared';
+import { Roles } from '@posy/shared';
 import { plainToInstance } from 'class-transformer';
 import { CategoryDetailedResponseDto } from './shared/dto/category-detailed-response.dto';
 import { CategoryPreviewResponseDto } from './shared/dto/category-preview-response.dto';
@@ -25,7 +25,7 @@ import { CategoryQueryParamsDto } from './shared/dto/category-query-params.dto';
 import { CreateCategoryDto } from './shared/dto/category-create-request.dto';
 import { UpdateCategoryDto } from './shared/dto/category-update-request.dto';
 import { Category } from './shared/entities/category';
-import { Page } from '../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -35,7 +35,7 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto/page-response.dto';
+import { createPageResponseSchema } from '@posy/shared';
 
 @ApiTags('Categories')
 @ApiBearerAuth()

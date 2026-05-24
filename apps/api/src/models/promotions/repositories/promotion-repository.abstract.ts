@@ -1,6 +1,6 @@
 import { Promotion } from '../types/promotion';
-import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
-import { Page } from '../../../common/interfaces/page.interface';
+import { BaseRepository } from '@posy/shared';
+import { Page } from '@posy/shared';
 import { PromotionQueryParams } from '../interfaces/promotion-query-params.interface';
 
 export abstract class PromotionRepository implements BaseRepository<Promotion> {

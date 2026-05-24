@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { VendorRepository } from '../repositories/vendor-repository.abstract';
 import { Vendor } from '../entities/vendor';
 import { VendorNotFoundException } from '../exceptions/vendor-not-found.exception';
-import { Page } from '../../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 import { VendorQueryParams } from '../interfaces/vendor-query-params.interface';
 
 @Injectable()

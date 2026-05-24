@@ -1,6 +1,6 @@
 import { Floor as PrismaFloor } from '@prisma/client';
 import { Floor as DomainFloor } from './floor';
-import { MissingRequiredFieldsError } from '../../../common/errors/missing-required-fields.error';
+import { MissingRequiredFieldsError } from '@posy/shared';
 import { ZoneMapper } from 'src/models/zones/types/zone.mapper';
 
 export class FloorMapper {

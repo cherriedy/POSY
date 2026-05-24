@@ -8,8 +8,8 @@ import {
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { UserOrderBy, UserQueryParams, UserSortField } from '../interfaces/user-query-params.interface';
-import { SortDirection } from '../../../common/interfaces/sort-field.interface';
-import { Role } from '../../../common/enums/role.enum';
+import { SortDirection } from '@posy/shared';
+import { Role } from '@posy/shared';
 
 export class UserQueryParamsDto {
   @ApiPropertyOptional({

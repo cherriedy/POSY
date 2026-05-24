@@ -21,16 +21,16 @@ import { UpdateUserDto } from './dto/user-update-request.dto';
 import { UserDetailedResponseDto } from './dto/user-detailed-response.dto';
 import { UserPreviewResponseDto } from './dto/user-preview-response.dto';
 import { UserQueryParamsDto } from './dto/user-query-params.dto';
-import { hash } from '../../common/utilities/hash.util';
+import { hash } from '@posy/shared';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 import { PreventManagerAdminAccessGuard } from '../../authorization/guards/prevent-manager-admin-access.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { PreventManagerAdminAccess } from '../../common/decorators/prevent-manager-admin-access.decorator';
-import { Role } from '../../common/enums/role.enum';
+import { Roles } from '@posy/shared';
+import { PreventManagerAdminAccess } from '@posy/shared';
+import { Role } from '@posy/shared';
 import { GetUsersService } from './get-users/get-users.service';
 import { plainToInstance } from 'class-transformer';
-import { Page } from '../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 import { JwtPayload } from '../../authentication/interfaces/jwt-payload.interface';
 import { Request } from 'express';
 import { DeleteUserService } from './delete-user/delete-user.service';
@@ -43,7 +43,7 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { createPageResponseSchema } from '../../common/dto/page-response.dto';
+import { createPageResponseSchema } from '@posy/shared';
 
 @ApiTags('Users')
 @ApiBearerAuth()

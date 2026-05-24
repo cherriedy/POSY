@@ -1,6 +1,6 @@
 import { Zone as PrismaZone } from '@prisma/client';
 import { Zone as DomainZone } from './zone';
-import { MissingRequiredFieldsError } from '../../../common/errors/missing-required-fields.error';
+import { MissingRequiredFieldsError } from '@posy/shared';
 import { TableMapper } from '../../tables/types/table.mapper';
 import { FloorMapper } from 'src/models/floors/types/floor.mapper';
 

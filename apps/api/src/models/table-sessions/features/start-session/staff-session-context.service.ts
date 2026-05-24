@@ -7,7 +7,7 @@ import { UnavailableTableException } from '../../shared/exceptions/unavailable-t
 import { TableSessionNotFoundException } from '../../shared/exceptions/table-session-not-found.exception';
 import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';
 import { TableNotFoundException } from 'src/models/tables/exceptions/table-not-found.exception';
-import { DuplicateEntryError } from 'src/common/errors/duplicate-entry.error';
+import { DuplicateEntryError } from '@posy/shared';
 
 @Injectable()
 export class StaffSessionContextService {

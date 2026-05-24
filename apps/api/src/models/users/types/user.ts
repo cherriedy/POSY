@@ -1,4 +1,4 @@
-import { Role } from 'src/common/enums/role.enum';
+import { Role } from '@posy/shared';
 
 export class User {
   constructor(

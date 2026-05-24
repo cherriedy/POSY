@@ -5,7 +5,7 @@ import { ProductAttributeRepository } from './product-attribute-repository.abstr
 import { ProductAttributeRepositoryImpl } from './product-attribute-repository';
 import { ProductIngredientRepository } from './product-ingredient-repository.abstract';
 import { ProductIngredientRepositoryImpl } from './product-ingredient-repository';
-import { MeilisearchModule } from '../../../providers/meilisearch/meilisearch.module';
+import { MeilisearchModule } from '@posy/shared';
 import { SeasonalPatternRepository } from './seasonal-pattern-repository.abstract';
 import { SeasonalPatternRepositoryImpl } from './seasonal-pattern-repository';
 

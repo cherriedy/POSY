@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IngredientRepository } from '../../shared/repositories/ingredient-repository.abstract';
 import { Ingredient } from '../../shared/entities/ingredient';
-import { Page } from '../../../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 import { IngredientNotFoundException } from '../../shared/exceptions/ingredient-not-found.exception';
 import { IngredientQueryParams } from '../../shared/interfaces/ingredient-query-params.interface';
 

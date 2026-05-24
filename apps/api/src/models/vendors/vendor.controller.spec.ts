@@ -6,7 +6,7 @@ import { CreateVendorService } from './create-vendor/create-vendor.service';
 import { GetVendorsService } from './get-vendors/get-vendors.service';
 import { UpdateVendorService } from './update-vendor/update-vendor.service';
 import { DeleteVendorService } from './delete-vendor/delete-vendor.service';
-import { DuplicateEntryError } from '../../common/errors/duplicate-entry.error';
+import { DuplicateEntryError } from '@posy/shared';
 import { VendorNotFoundException } from './exceptions/vendor-not-found.exception';
 import { VendorCreateRequestDto } from './dto/vendor-create-request.dto';
 import { VendorQueryParamsDto } from './dto/vendor-query-params.dto';

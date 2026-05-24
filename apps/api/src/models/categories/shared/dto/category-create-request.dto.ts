@@ -1,7 +1,7 @@
 import { IsBoolean } from 'class-validator';
 import { IsValidCategoryName } from '../decorators/is-valid-name.decorator';
 import { IsValidCategoryDescription } from '../decorators/is-valid-description.decorator';
-import { IsValidSlug } from '../../../../common/decorators/is-valid-slug.decorator';
+import { IsValidSlug } from '@posy/shared';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateCategoryDto {

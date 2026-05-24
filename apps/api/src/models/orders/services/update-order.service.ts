@@ -8,7 +8,7 @@ import { OrderNotFoundForSessionException } from '../shared/exceptions/order-not
 import { Order } from '../shared/entities/order';
 import { OrderItem } from '../shared/entities/order-item';
 import { GuestOrderGateway } from '../handlers/guest-order.gateway';
-import { AtLeastOneItemRequiredException } from '../../../common/exceptions/at-least-one-item-required.exception';
+import { AtLeastOneItemRequiredException } from '@posy/shared';
 import { ProductRepository } from '../../products/repositories/product-repository.abstract';
 import { ProductNotFoundException } from '../../products/exceptions/product-not-found.exception';
 import { OrderPricingService } from '../shared/core/services/order-pricing.service';

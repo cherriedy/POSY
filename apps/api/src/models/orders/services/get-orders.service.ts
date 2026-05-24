@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Order } from '../shared/entities/order';
 import { OrderNotFoundException } from '../shared/exceptions/order-not-found.exception';
 import { OrderQueryParams } from '../shared/interfaces/order-query-params.interface';
-import { Page } from '../../../common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 import { OrderRepository } from '../shared/repositories/order-repository.abstract';
 
 @Injectable()

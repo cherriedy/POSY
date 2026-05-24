@@ -3,7 +3,7 @@ import {
   SessionProductInteraction as PrismaSessionProductInteraction,
 } from '@prisma/client';
 import { SessionProductInteraction as DomainSessionProductInteraction } from './session-product-interaction';
-import { MissingRequiredFieldsError } from '../../../common/errors/missing-required-fields.error';
+import { MissingRequiredFieldsError } from '@posy/shared';
 import { ProductMapper } from '../../../models/products/entities/product.mapper';
 import { TableSessionMapper } from '../../../models/table-sessions/shared/entities/table-session.mapper';
 

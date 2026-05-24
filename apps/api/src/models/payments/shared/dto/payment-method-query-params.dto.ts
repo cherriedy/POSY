@@ -1,7 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { SortDirection } from '../../../../common/interfaces/sort-field.interface';
+import { SortDirection } from '@posy/shared';
 import {
   PaymentMethodOrderBy,
   PaymentMethodQueryParams,

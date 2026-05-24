@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { TableSession } from '../entities/table-session';
 import { TableSessionMapper } from '../entities/table-session.mapper';
 import { TableSessionStatus } from '../enums/table-session-status.enum';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryError } from '../../../../common/errors/duplicate-entry.error';
-import { ForeignKeyViolationError } from '../../../../common/errors/foreign-key-violation.error';
+import { DuplicateEntryError } from '@posy/shared';
+import { ForeignKeyViolationError } from '@posy/shared';
 import { TableSessionNotFoundException } from '../exceptions/table-session-not-found.exception';
 import { TableSessionRepository } from './table-session-repository.abstract';
 

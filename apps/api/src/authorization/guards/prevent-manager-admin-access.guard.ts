@@ -5,8 +5,8 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { PREVENT_MANAGER_ADMIN_ACCESS_KEY } from '../../common/decorators/prevent-manager-admin-access.decorator';
-import { Role } from '../../common/enums/role.enum';
+import { PREVENT_MANAGER_ADMIN_ACCESS_KEY } from '@posy/shared';
+import { Role } from '@posy/shared';
 import { JwtPayload } from '../../authentication/interfaces/jwt-payload.interface';
 import { GetUsersService } from '../../models/users/get-users/get-users.service';
 import { UserNotFoundError } from '../../models/users/errors/user-not-found.error';

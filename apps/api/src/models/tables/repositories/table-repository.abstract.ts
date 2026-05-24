@@ -1,6 +1,6 @@
 import { Table } from '../types/table';
-import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
-import { Page } from '../../../common/interfaces/page.interface';
+import { BaseRepository } from '@posy/shared';
+import { Page } from '@posy/shared';
 import { TableQueryParams } from '../interfaces/table-query-params.interface';
 
 export abstract class TableRepository implements BaseRepository<Table> {

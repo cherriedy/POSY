@@ -1,5 +1,5 @@
 import { Role as PrismaRole } from '@prisma/client';
-import { Role as DomainRole } from 'src/common/enums/role.enum';
+import { Role as DomainRole } from '@posy/shared';
 
 export function mapRole(prismaRole: PrismaRole): DomainRole {
   switch (prismaRole) {

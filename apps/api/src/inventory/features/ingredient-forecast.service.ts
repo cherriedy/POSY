@@ -5,7 +5,7 @@ import { IngredientUsageRepository } from '../../models/ingredients/shared/repos
 import { IngredientForecastRepository } from '../shared/repositories/ingredient-forecast-repository.abstract';
 import { IngredientOverview } from '../shared/entities/ingredient-overview';
 import { HttpService } from '@nestjs/axios';
-import { PythonConfigService } from '../../config/python/config.service';
+import { PythonConfigService } from '@posy/shared';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { inventoryConfig } from '../inventory.config';
 import { lastValueFrom } from 'rxjs';

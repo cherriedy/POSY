@@ -1,5 +1,5 @@
-import { OrderBy } from '../../../../common/interfaces/sort-field.interface';
-import { PaginationParams } from '../../../../common/interfaces/pagination-params.interface';
+import { OrderBy } from '@posy/shared';
+import { PaginationParams } from '@posy/shared';
 import { PaymentStatus } from '../enums/payment-status.enum';
 
 /**

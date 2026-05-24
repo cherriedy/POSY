@@ -7,7 +7,7 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-import { SortDirection } from '../../../../common/interfaces/sort-field.interface';
+import { SortDirection } from '@posy/shared';
 import { PaymentStatus } from '../enums/payment-status.enum';
 import {
   PaymentOrderBy,

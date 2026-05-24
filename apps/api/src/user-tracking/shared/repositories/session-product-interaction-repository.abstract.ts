@@ -1,4 +1,4 @@
-import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
+import { BaseRepository } from '@posy/shared';
 import { SessionProductInteraction } from '../entities/session-product-interaction';
 
 export abstract class SessionProductInteractionRepository extends BaseRepository<SessionProductInteraction> {

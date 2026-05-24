@@ -12,7 +12,7 @@ import { StaffOrderGateway } from 'src/models/orders/handlers/staff-order.gatewa
 import { UpdateOrderStatusService } from 'src/models/orders/services/update-order-status.service';
 import { OrderSnapshotNotFoundException } from 'src/models/orders/shared/exceptions/order-snapshot-not-found.exception';
 import { OrderStatus } from 'src/models/orders/shared/enums/order-status.enum';
-import { Role } from 'src/common/enums/role.enum';
+import { Role } from '@posy/shared';
 import { PromotionRedemption } from 'src/models/promotions/types/promotion-redemption';
 
 @Injectable()

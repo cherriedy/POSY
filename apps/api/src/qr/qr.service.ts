@@ -1,10 +1,10 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { TableRepository } from '../models/tables/repositories/table-repository.abstract';
 import { TableNotFoundException } from '../models/tables/exceptions/table-not-found.exception';
-import { generateBase64UrlToken } from '../common/utilities/string.util';
+import { generateBase64UrlToken } from '@posy/shared';
 import { tableConfig } from '../models/tables/table.config';
-import { AppConfigService } from '../config/app/config.service';
-import { MqttService } from '../providers/mqtt/mqtt.service';
+import { AppConfigService } from '@posy/shared';
+import { MqttService } from '@posy/shared';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 

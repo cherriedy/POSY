@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Order } from '../../entities/order';
 import { OrderItem } from '../../entities/order-item';
 import { OrderModificationForbiddenException } from '../../exceptions/order-modification-forbidden.exception';
-import { Role } from '../../../../../common/enums/role.enum';
+import { Role } from '@posy/shared';
 import { OrderItemStatus } from '../../enums/order-item-status.enum';
 import { OrderStatus } from '../../enums/order-status.enum';
 import { UserIdentity } from '../../../../../authentication/interfaces/user-identity.interface';

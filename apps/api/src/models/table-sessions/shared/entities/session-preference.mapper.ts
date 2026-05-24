@@ -4,7 +4,7 @@ import {
 } from '@prisma/client';
 import { DietaryTag, MealSession, Taste } from '../../../products/enums/product-attribute.enum';
 import { SessionPreference } from './session-preference';
-import { MissingRequiredFieldsError } from '../../../../common/errors/missing-required-fields.error';
+import { MissingRequiredFieldsError } from '@posy/shared';
 
 export class SessionPreferenceMapper {
   /**

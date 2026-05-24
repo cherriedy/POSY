@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { AppConfigService } from './config/app/config.service';
-import { DomainErrorFilter } from './common/filters/domain-error.filter';
+import { AppConfigService } from '@posy/shared';
+import { DomainErrorFilter } from '@posy/shared';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';

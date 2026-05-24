@@ -1,8 +1,8 @@
 import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { AppConfigModule } from '../../config/app/config.module';
-import { JwtConfigModule } from '../../config/jwt/config.module';
-import { PrismaModule } from '../../providers/prisma/prisma.module';
+import { AppConfigModule } from '@posy/shared';
+import { JwtConfigModule } from '@posy/shared';
+import { PrismaModule } from '@posy/shared';
 import { EndSessionModule } from './features/end-session/end-session.module';
 import { TableSessionGuard } from './shared/guards/table-session.guard';
 import { SessionPreferenceRepository } from './shared/repositories/session-preference-repository.abstract';

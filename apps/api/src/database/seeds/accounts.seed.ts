@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { hash } from '../../common/utilities/hash.util';
+import { hash } from '@posy/shared';
 
 export async function seedAdmin(prisma: PrismaClient) {
   const exists = await prisma.user.findUnique({

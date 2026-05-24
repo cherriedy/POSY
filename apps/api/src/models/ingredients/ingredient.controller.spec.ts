@@ -11,8 +11,8 @@ import { Ingredient } from './shared/entities/ingredient';
 import { IngredientCreateUpdateDto } from './shared/dto/ingredient-create-update.dto';
 import { IngredientUpdateRequestDto } from './shared/dto/ingredient-update-request.dto';
 import { IngredientQueryParamsDto } from './shared/dto/ingredient-query-params.dto';
-import { DuplicateEntryError } from '../../common/errors/duplicate-entry.error';
-import { ForeignKeyViolationError } from '../../common/errors/foreign-key-violation.error';
+import { DuplicateEntryError } from '@posy/shared';
+import { ForeignKeyViolationError } from '@posy/shared';
 import { RoleGuard } from '../../authorization/guards/role.guard';
 
 const mockIngredient = (): Ingredient =>

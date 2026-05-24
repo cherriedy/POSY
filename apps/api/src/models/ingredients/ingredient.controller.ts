@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../authorization/guards/role.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { Role } from '../../common/enums/role.enum';
+import { Roles } from '@posy/shared';
+import { Role } from '@posy/shared';
 import { IngredientCreateUpdateDto } from './shared/dto/ingredient-create-update.dto';
 import { IngredientUpdateRequestDto } from './shared/dto/ingredient-update-request.dto';
 import { IngredientResponseDto } from './shared/dto/ingredient-response.dto';

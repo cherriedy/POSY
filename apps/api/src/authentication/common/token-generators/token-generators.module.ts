@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TokenGeneratorsService } from './token-generators.service';
-import { JwtConfigModule } from '../../../config/jwt/config.module';
+import { JwtConfigModule } from '@posy/shared';
 import { JwtModule } from '@nestjs/jwt';
 import { TableSessionModule } from '../../../models/table-sessions/table-session.module';
 

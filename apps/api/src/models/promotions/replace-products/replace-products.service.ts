@@ -6,7 +6,7 @@ import { PromotionProduct } from '../types/promotion-product';
 import { PromotionApplicability } from '../enums/promotion-applicability.enum';
 import { PromotionNotFoundError } from '../errors/promotion-not-found.error';
 import { PromotionUnusableError } from '../errors/promotion-unusable.error';
-import { DuplicateEntryError } from 'src/common/errors/duplicate-entry.error';
+import { DuplicateEntryError } from '@posy/shared';
 import { ProductsNotFoundException } from 'src/models/products/exceptions/product-not-found.exception';
 import { ProductRepository } from 'src/models/products/repositories/product-repository.abstract';
 

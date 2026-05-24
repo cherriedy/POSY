@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AppConfigService } from '../../../config/app/config.service';
+import { AppConfigService } from '@posy/shared';
 import { Image } from '../types/image';
 
 /**

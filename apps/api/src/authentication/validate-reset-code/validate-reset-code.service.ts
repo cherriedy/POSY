@@ -3,7 +3,7 @@ import { UserRepository } from '../../models/users/repositories/user-repository.
 import { UserNotFoundError } from '../../models/users/errors/user-not-found.error';
 import { InvalidResetCodeError } from '../errors/invalid-reset-code.error';
 import { ResetCodeExpiredError } from '../errors/reset-code-expired.error';
-import { JwtConfigService } from '../../config/jwt/config.service';
+import { JwtConfigService } from '@posy/shared';
 import { authConfig } from '../auth.config';
 import { JwtService } from '@nestjs/jwt';
 import { ValidateResetCodeDto } from '../dto/validate-reset-code.dto';

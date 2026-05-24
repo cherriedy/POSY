@@ -30,12 +30,12 @@ import { GetProductsService } from './get-products/get-products.service';
 import { ProductPublicDetailedResponseDto } from './dto/product-public-detailed-response.dto';
 import { ProductPublicPreviewResponseDto } from './dto/product-public-preview-response.dto';
 import { ProductPublicQueryParamsDto } from './dto/product-public-query-params.dto';
-import { createPageResponseSchema } from '../../common/dto/page-response.dto';
+import { createPageResponseSchema } from '@posy/shared';
 import { ProductNotFoundException } from './exceptions/product-not-found.exception';
 import { CategoryPreviewResponseDto } from '../categories/shared/dto/category-preview-response.dto';
 import { CategoryQueryParamsDto } from '../categories/shared/dto/category-query-params.dto';
 import { GetCategoriesService } from '../categories/features/get-categories/get-categories.service';
-import { Page } from 'src/common/interfaces/page.interface';
+import { Page } from '@posy/shared';
 import { Response } from 'express';
 
 @ApiTags('(Public)')

@@ -1,5 +1,5 @@
 import { TaxableEntityReference } from '../../interfaces/taxable-entity-reference';
-import { BulkOperationStatus } from '../../../../common/types/bulk-operation.type';
+import { BulkOperationStatus } from '@posy/shared';
 import { EntityTaxConfig } from '../../entities/entity-tax-config';
 
 /**

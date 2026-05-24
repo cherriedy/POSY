@@ -4,8 +4,8 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../../../src/authorization/guards/role.guard';
-import { PrismaService } from '../../../src/providers/prisma/prisma.service';
-import { PrismaModule } from '../../../src/providers/prisma/prisma.module';
+import { PrismaService } from '@posy/shared';
+import { PrismaModule } from '@posy/shared';
 import {
   passThroughGuard,
   applyValidationPipe,
@@ -24,7 +24,7 @@ import {
   mockTableSessionRepository,
   mockPricingSnapshotRepository,
 } from '../shared/repositories';
-import { UnitOfWork } from '../../../src/common/unit-of-works/unit-of-work.abstract';
+import { UnitOfWork } from '@posy/shared';
 import { OrderRepository } from '../../../src/models/orders/shared/repositories/order-repository.abstract';
 import { OrderItemRepository } from '../../../src/models/orders/shared/repositories/order-item-repository.abstract';
 import { PricingSnapshotRepository } from '../../../src/models/orders/shared/repositories/pricing-snapshot-repository.abstract';

@@ -24,9 +24,9 @@ import { plainToInstance } from 'class-transformer';
 import { Request, Response } from 'express';
 import { JwtPayload } from '../../../authentication/interfaces/jwt-payload.interface';
 import { RoleGuard } from '../../../authorization/guards/role.guard';
-import { createPageResponseSchema } from '../../../common/dto/page-response.dto';
-import { Roles } from '../../../common/decorators/roles.decorator';
-import { Role } from '../../../common/enums/role.enum';
+import { createPageResponseSchema } from '@posy/shared';
+import { Roles } from '@posy/shared';
+import { Role } from '@posy/shared';
 import {
   PaymentCheckoutPayloadMapper,
   PaymentCheckoutService,

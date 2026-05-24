@@ -2,17 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { VendorRepository } from './vendor-repository.abstract';
 import { Vendor } from '../entities/vendor';
 import { VendorMapper } from '../entities/vendor.mapper';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { PrismaService } from '@posy/shared';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { DuplicateEntryError } from '../../../common/errors/duplicate-entry.error';
-import { ForeignKeyViolationError } from '../../../common/errors/foreign-key-violation.error';
-import { MissingRequiredFieldsError } from '../../../common/errors/missing-required-fields.error';
+import { DuplicateEntryError } from '@posy/shared';
+import { ForeignKeyViolationError } from '@posy/shared';
+import { MissingRequiredFieldsError } from '@posy/shared';
 import { VendorNotFoundException } from '../exceptions/vendor-not-found.exception';
-import { camelCaseToSnakeCase } from '../../../common/utilities/string.util';
-import { Page } from '../../../common/interfaces/page.interface';
+import { camelCaseToSnakeCase } from '@posy/shared';
+import { Page } from '@posy/shared';
 import { VendorQueryParams, VendorQueryFilter, VendorOrderBy } from '../interfaces/vendor-query-params.interface';
 import { Prisma } from '@prisma/client';
-import { paginationConfig } from '../../../common/constants/pagination.config';
+import { paginationConfig } from '@posy/shared';
 
 @Injectable()
 export class VendorRepositoryImpl implements VendorRepository {

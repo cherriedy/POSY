@@ -4,7 +4,7 @@ import { Table } from '../types/table';
 import { ZoneRepository } from 'src/models/zones/repositories/zone-repository.abstract';
 import { TableNotFoundException } from '../exceptions/table-not-found.exception';
 import { ZoneNotFoundException } from 'src/models/zones/exceptions/zone-not-found.exception';
-import { DuplicateEntryError } from 'src/common/errors/duplicate-entry.error';
+import { DuplicateEntryError } from '@posy/shared';
 
 @Injectable()
 export class UpdateTableService {
