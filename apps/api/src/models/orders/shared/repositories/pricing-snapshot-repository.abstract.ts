@@ -1,4 +1,4 @@
-import { PricingSnapshot } from '../../../promotions/types/pricing-snapshot';
+import { PricingSnapshot } from '@posy/promotions/shared/entities/pricing-snapshot';
 
 export abstract class PricingSnapshotRepository {
   /**

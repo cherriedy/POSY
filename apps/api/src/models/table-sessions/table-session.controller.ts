@@ -17,11 +17,11 @@ import {
   ApiOkResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
-import { GuestSessionContextService } from './features/start-session/guest-session-context.service';
-import { EndSessionService } from './features/end-session/end-session.service';
-import { StartSessionRequestDto } from './shared/dto/start-session-request.dto';
-import { TableSessionResponseDto } from './shared/dto/table-session-response.dto';
-import { TableSessionConfig } from './table-session.config';
+import { GuestSessionContextService } from '@posy/table-sessions/features/start-session/guest-session-context.service';
+import { EndSessionService } from '@posy/table-sessions/features/end-session/end-session.service';
+import { StartSessionRequestDto } from '@posy/table-sessions/shared/dto/start-session-request.dto';
+import { TableSessionResponseDto } from '@posy/table-sessions/shared/dto/table-session-response.dto';
+import { TableSessionConfig } from '@posy/table-sessions/table-session.config';
 import { assertDevice } from '@posy/shared';
 
 @ApiTags('Sessions')
@@ -65,13 +65,12 @@ export class TableSessionController {
       );
     }
 
-    // Set HTTP-only cookie with session token
     res.cookie(this.tableSessionConfig.cookie.name, session.sessionToken, {
       httpOnly: this.tableSessionConfig.cookie.httpOnly,
       secure: this.tableSessionConfig.cookie.secure,
       sameSite: this.tableSessionConfig.cookie.sameSite,
       path: this.tableSessionConfig.cookie.path,
-      maxAge: this.tableSessionConfig.jwt.expiresIn * 1000, // expiresIn is in seconds; maxAge expects milliseconds
+      maxAge: this.tableSessionConfig.jwt.expiresIn * 1000,
     });
 
     return {
@@ -87,17 +86,6 @@ export class TableSessionController {
 
   @Get('end')
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(SessionGuard)
-  // @ApiCookieAuth('session_token')
-  // @ApiOperation({ summary: 'End the current table session' })
-  // @ApiResponse({
-  //   status: 200,
-  //   description: 'Session ended successfully',
-  // })
-  // @ApiResponse({
-  //   status: 401,
-  //   description: 'Invalid or expired session token',
-  // })
   async endSession(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
@@ -107,7 +95,6 @@ export class TableSessionController {
 
     await this.endSessionService.execute(sessionToken);
 
-    // Clear the session cookie
     res.clearCookie(this.tableSessionConfig.cookie.name, {
       path: this.tableSessionConfig.cookie.path,
     });
@@ -146,15 +133,13 @@ export class TableSessionController {
     }
 
     try {
-      // Set HTTP-only cookie with session token
       res.cookie(this.tableSessionConfig.cookie.name, result.sessionToken, {
         httpOnly: this.tableSessionConfig.cookie.httpOnly,
         secure: this.tableSessionConfig.cookie.secure,
         sameSite: this.tableSessionConfig.cookie.sameSite,
         path: this.tableSessionConfig.cookie.path,
-        maxAge: this.tableSessionConfig.jwt.expiresIn * 1000, // expiresIn is in seconds; maxAge expects milliseconds
+        maxAge: this.tableSessionConfig.jwt.expiresIn * 1000,
       });
-      // Return HTML result (no emoji)
       return res.send(`
         <div style="text-align: center; font-family: Arial, sans-serif; padding: 40px; background: #f0f8ff; height: 100vh;"><h1 style="color: #27ae60;">QUÉT THÀNH CÔNG!</h1>
           <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 20px;">

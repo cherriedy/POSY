@@ -1,10 +1,10 @@
 import { OrderStatus } from '../enums/order-status.enum';
 import { User } from '@posy/users/shared/entities/user';
 import { Table } from '../../../tables/types/table';
-import { TableSession } from '../../../table-sessions/shared/entities/table-session';
+import { TableSession } from '@posy/table-sessions/shared/entities/table-session';
 import { OrderItem } from './order-item';
 import { Payment } from '@posy/payments/shared/entities/payment';
-import { PricingSnapshot } from '../../../promotions/types/pricing-snapshot';
+import { PricingSnapshot } from '@posy/promotions/shared/entities/pricing-snapshot';
 
 export class Order {
   constructor(

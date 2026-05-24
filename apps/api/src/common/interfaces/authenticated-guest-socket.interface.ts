@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { TableSessionPayload } from '../../models/table-sessions/shared/interfaces/table-session-payload.interface';
+import { TableSessionPayload } from '@posy/table-sessions/shared/interfaces/table-session-payload.interface';
 
 /**
  * @description An websocket interface including authenticated guest information.

@@ -1,7 +1,6 @@
 import { OrderStatus } from '../enums/order-status.enum';
 import { User } from '@posy/users/shared/entities/user';
 import { Table } from '@posy/tables/shared/entities/table';
-import { TableSession } from 'src/models/table-sessions/shared/entities/table-session';
 import { OrderItem } from './order-item';
 
 export class Order {
@@ -19,7 +18,8 @@ export class Order {
     // Relations
     public user: User | null,
     public table: Table | null,
-    public session: TableSession | null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public session: any | null,
     public orderItems: OrderItem[] | null,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public payments: any[] | null,

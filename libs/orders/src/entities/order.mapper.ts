@@ -3,7 +3,6 @@ import { Prisma, Order as PrismaOrder } from '@prisma/client';
 import { OrderStatus as DomainOrderStatus } from '../enums/order-status.enum';
 import { UserMapper } from '@posy/users/shared/entities/user.mapper';
 import { TableMapper } from '@posy/tables/shared/entities/table.mapper';
-import { TableSessionMapper } from 'src/models/table-sessions/shared/entities/table-session.mapper';
 import { OrderItemMapper } from './order-item.mapper';
 
 export class OrderMapper {
@@ -35,10 +34,7 @@ export class OrderMapper {
           TableMapper.toDomain((prisma as any).table)
         : null,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      (prisma as any).session
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
-          TableSessionMapper.toDomain((prisma as any).session)
-        : null,
+      (prisma as any).session ?? null,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
       (prisma as any).orderItems
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call

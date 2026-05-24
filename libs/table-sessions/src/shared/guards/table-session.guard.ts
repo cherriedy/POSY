@@ -50,13 +50,11 @@ export class TableSessionGuard implements CanActivate {
       );
     }
 
-    // Extract session token from cookie
     const cookieName = this.tableSessionConfig.cookie.name;
     const token = request.cookies?.[cookieName] as string;
     if (!token) throw new InvalidSessionTokenException();
 
     try {
-      // Verify JWT token and extract payload
       const secret = this.tableSessionConfig.jwt.secret;
       await this.jwtService.verifyAsync(token, { secret });
     } catch (error) {
@@ -69,11 +67,9 @@ export class TableSessionGuard implements CanActivate {
     }
 
     try {
-      // Verify session exists in database and is active
       const session = await this.tableSessionRepository.findByToken(token);
       if (!session) throw new InvalidSessionTokenException();
 
-      // Check if session is still active and not expired
       if (
         session.status !== TableSessionStatus.ACTIVE ||
         new Date() > session.expiresAt!
@@ -81,7 +77,6 @@ export class TableSessionGuard implements CanActivate {
         throw new InvalidSessionTokenException();
       }
 
-      // CRITICAL: Only the device that scanned the QR code can make requests
       const isValidDevice = DeviceFingerprintUtility.validate(
         userAgent,
         ipAddress,
@@ -91,7 +86,6 @@ export class TableSessionGuard implements CanActivate {
         throw new InvalidSessionTokenException();
       }
 
-      // Attach session info to request for use in controllers
       request['session'] = session;
       return true;
     } catch (error) {

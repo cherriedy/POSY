@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@posy/shared';
 import { PricingSnapshotRepository } from './pricing-snapshot-repository.abstract';
-import { PricingSnapshot } from '../../../promotions/types/pricing-snapshot';
-import { PricingSnapshotMapper } from '../../../promotions/types/pricing-snapshot.mapper';
+import { PricingSnapshot } from '@posy/promotions/shared/entities/pricing-snapshot';
+import { PricingSnapshotMapper } from '@posy/promotions/shared/entities/pricing-snapshot.mapper';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { OrderSnapshotNotFoundException } from '../exceptions/order-snapshot-not-found.exception';
 import { Prisma } from '@prisma/client';

@@ -1,28 +1,26 @@
 import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { AppConfigModule } from '@posy/shared';
-import { JwtConfigModule } from '@posy/shared';
-import { PrismaModule } from '@posy/shared';
-import { EndSessionModule } from './features/end-session/end-session.module';
-import { TableSessionGuard } from './shared/guards/table-session.guard';
-import { SessionPreferenceRepository } from './shared/repositories/session-preference-repository.abstract';
-import { SessionPreferenceRepositoryImpl } from './shared/repositories/session-preference-repository';
-import { TableSessionRepository } from './shared/repositories/table-session-repository.abstract';
-import { TableSessionRepositoryImpl } from './shared/repositories/table-session-repository';
-import { StartSessionModule } from './features/start-session/start-session.module';
-import { TableSessionConfig } from './table-session.config';
+import { AppConfigModule, JwtConfigModule, PrismaModule } from '@posy/shared';
 import { TableSessionController } from './table-session.controller';
+import { TableSessionGuard } from '@posy/table-sessions/shared/guards/table-session.guard';
+import { SessionPreferenceRepository } from '@posy/table-sessions/shared/repositories/session-preference-repository.abstract';
+import { PrismaSessionPreferenceRepository } from '@posy/table-sessions/shared/repositories/prisma-session-preference-repository';
+import { TableSessionRepository } from '@posy/table-sessions/shared/repositories/table-session-repository.abstract';
+import { PrismaTableSessionRepository } from '@posy/table-sessions/shared/repositories/prisma-table-session-repository';
+import { TableSessionConfig } from '@posy/table-sessions/table-session.config';
+import { StartSessionModule } from '@posy/table-sessions/features/start-session/start-session.module';
+import { EndSessionModule } from '@posy/table-sessions/features/end-session/end-session.module';
 
 @Global()
 @Module({
   providers: [
     {
       provide: TableSessionRepository,
-      useClass: TableSessionRepositoryImpl,
+      useClass: PrismaTableSessionRepository,
     },
     {
       provide: SessionPreferenceRepository,
-      useClass: SessionPreferenceRepositoryImpl,
+      useClass: PrismaSessionPreferenceRepository,
     },
     TableSessionGuard,
     TableSessionConfig,

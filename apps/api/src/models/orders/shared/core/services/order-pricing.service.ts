@@ -4,7 +4,7 @@ import { Order } from '@posy/orders/entities/order';
 import { OrderItem } from '@posy/orders/entities/order-item';
 import { OrderContextService } from './order-context.service';
 import { OrderTaxCalculatorService } from './order-tax-calculator.service';
-import { PricingSnapshot } from '../../../../promotions/types/pricing-snapshot';
+import { PricingSnapshot } from '@posy/promotions/shared/entities/pricing-snapshot';
 import { PricingSnapshotRepository } from '../../repositories/pricing-snapshot-repository.abstract';
 import { PricingSnapshotTaxRepository } from '../../../../taxes/repositories/pricing-snapshot-tax-repository.abstract';
 import { TaxType } from '../../../../taxes/enums/tax-type.enum';

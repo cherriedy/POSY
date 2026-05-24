@@ -10,23 +10,10 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CreatePromotionService } from './create-promotion/create-promotion.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '@posy/auth';
-import { Roles } from '@posy/shared';
-import { Role } from '@posy/shared';
-import { CreatePromotionDto } from './dto/promotion-create-request.dto';
-import { PromotionCategoryPreviewResponseDto } from './dto/promotion-category-response.dto';
-import { PromotionDetailedResponseDto } from './dto/promotion-detailed-response.dto';
-import { PromotionPreviewResponseDto } from './dto/promotion-preview-response.dto';
-import { PromotionQueryParamsDto } from './dto/promotion-query-params.dto';
-import { PromotionUpdateDto } from './dto/promotion-update-request.dto';
-import { Promotion } from './types/promotion';
+import { Roles, Role, createPageResponseSchema } from '@posy/shared';
 import { plainToInstance } from 'class-transformer';
-import { UpdatePromotionService } from './update-promotion/update-promotion.service';
-import { GetPromotionsService } from './get-promotions/get-promotions.service';
-import { DeletePromotionService } from './delete-promotion/delete-promotion.service';
-import { ValidatePromotionService } from './validate-promotion/validate-promotion.service';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -36,17 +23,28 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { PromotionProductPreviewResponseDto } from './dto/promotion-product-response.dto';
-import { createPageResponseSchema } from '@posy/shared';
-import { ReplacePromotionProductService } from './replace-products/replace-products.service';
-import { ReplacePromotionCategoriesService } from './replace-categories/replace-categories.service';
-import { BulkReplacePromotionCategoryDto } from './dto/promotion-category-replace.dto';
-import { BulkReplacePromotionProductDto } from './dto/promotion-product-replace.dto';
-import { GetAvailablePromotionsService } from './get-available-promotions/get-available-promotions.service';
+import { CreatePromotionService } from '@posy/promotions/features/create-promotion/create-promotion.service';
+import { UpdatePromotionService } from '@posy/promotions/features/update-promotion/update-promotion.service';
+import { GetPromotionsService } from '@posy/promotions/features/get-promotions/get-promotions.service';
+import { DeletePromotionService } from '@posy/promotions/features/delete-promotion/delete-promotion.service';
+import { ValidatePromotionService } from '@posy/promotions/features/validate-promotion/validate-promotion.service';
+import { ReplacePromotionCategoriesService } from '@posy/promotions/features/replace-categories/replace-categories.service';
+import { ReplacePromotionProductService } from '@posy/promotions/features/replace-products/replace-products.service';
+import { GetAvailablePromotionsService } from '@posy/promotions/features/get-available-promotions/get-available-promotions.service';
+import { CreatePromotionDto } from '@posy/promotions/shared/dto/promotion-create-request.dto';
+import { PromotionCategoryPreviewResponseDto } from '@posy/promotions/shared/dto/promotion-category-response.dto';
+import { PromotionDetailedResponseDto } from '@posy/promotions/shared/dto/promotion-detailed-response.dto';
+import { PromotionPreviewResponseDto } from '@posy/promotions/shared/dto/promotion-preview-response.dto';
+import { PromotionQueryParamsDto } from '@posy/promotions/shared/dto/promotion-query-params.dto';
+import { PromotionUpdateDto } from '@posy/promotions/shared/dto/promotion-update-request.dto';
+import { PromotionProductPreviewResponseDto } from '@posy/promotions/shared/dto/promotion-product-response.dto';
+import { BulkReplacePromotionCategoryDto } from '@posy/promotions/shared/dto/promotion-category-replace.dto';
+import { BulkReplacePromotionProductDto } from '@posy/promotions/shared/dto/promotion-product-replace.dto';
 import {
   PromotionAvailableListResponseDto,
   PromotionAvailableResponseDto,
-} from './dto/promotion-available-response.dto';
+} from '@posy/promotions/shared/dto/promotion-available-response.dto';
+import { Promotion } from '@posy/promotions/shared/entities/promotion';
 
 @ApiTags('Promotions')
 @ApiBearerAuth()
@@ -166,35 +164,6 @@ export class PromotionController {
     );
   }
 
-  // @Get('applicable/:productId')
-  // @UseGuards(AuthGuard('jwt'))
-  // @ApiOperation({ summary: 'Get applicable promotions for a product' })
-  // @ApiParam({ name: 'productId', type: String })
-  // @ApiResponse({
-  //   status: 200,
-  //   description: 'List of applicable promotions',
-  //   type: [PromotionPreviewResponseDto],
-  // })
-  // async getApplicablePromotions(@Param('productId') productId: string) {
-  //   try {
-  //     const promotions =
-  //       await this.getPromotionsService.getApplicablePromotionsForProduct(
-  //         productId,
-  //       );
-  //     return plainToInstance(PromotionPreviewResponseDto, promotions, {
-  //       excludeExtraneousValues: true,
-  //     });
-  //   } catch (e) {
-  //     if (e instanceof ProductNotFoundException) {
-  //       throw new BadRequestException(e.message);
-  //     }
-  //     this.logger.error(e);
-  //     throw new InternalServerErrorException(
-  //       'An error occurred while processing your request.',
-  //     );
-  //   }
-  // }
-
   @Get(':id/products')
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
@@ -249,71 +218,6 @@ export class PromotionController {
       enableImplicitConversion: true,
     });
   }
-
-  // @Get('/products/:id')
-  // @UseGuards(AuthGuard('jwt'), RoleGuard)
-  // @Roles(Role.ADMIN, Role.MANAGER)
-  // @ApiOperation({
-  //   summary: 'Get promotion product by ID',
-  //   description: `Fetches details for a specific promotion-product relationship by its ID.
-  //   Only accessible by ADMIN and MANAGER roles. Returns 400 if not found.`,
-  // })
-  // @ApiParam({ name: 'id', type: String })
-  // @ApiResponse({
-  //   status: 200,
-  //   description: 'Promotion product details',
-  //   type: PromotionProductPreviewResponseDto,
-  // })
-  // @ApiResponse({ status: 400, description: 'Promotion product not found' })
-  // async getPromotionProductById(@Param('id', new ParseUUIDPipe()) id: string) {
-  //   try {
-  //     const promotionProduct =
-  //       await this.getPromotionsService.getPromotionProductById(id);
-  //     return plainToInstance(
-  //       PromotionProductPreviewResponseDto,
-  //       promotionProduct,
-  //       {
-  //         excludeExtraneousValues: true,
-  //         enableImplicitConversion: true,
-  //       },
-  //     );
-  //   } catch (e) {
-  //     if (e instanceof PromotionProductNotFoundError) {
-  //       throw new BadRequestException(e.message);
-  //     }
-  //     this.logger.error(e);
-  //     throw new InternalServerErrorException(
-  //       'An error occurred while processing your request.',
-  //     );
-  //   }
-  // }
-
-  // @Delete('product/:id')
-  // @UseGuards(AuthGuard('jwt'), RoleGuard)
-  // @Roles(Role.ADMIN, Role.MANAGER)
-  // @ApiOperation({
-  //   summary: 'Delete a promotion product',
-  //   description: `Deletes a promotion-product relationship by its ID.
-  //   Only accessible by ADMIN and MANAGER roles.
-  //   Returns a success message. Throws 400 if not found.`,
-  // })
-  // @ApiParam({ name: 'id', type: String })
-  // @ApiResponse({ status: 200, description: 'Promotion product deleted' })
-  // @ApiResponse({ status: 400, description: 'Promotion product not found' })
-  // async deletePromotionProduct(@Param('id', new ParseUUIDPipe()) id: string) {
-  //   try {
-  //     await this.deletePromotionService.deletePromotionProduct(id);
-  //     return { message: 'Promotion product deleted successfully.' };
-  //   } catch (e) {
-  //     if (e instanceof PromotionProductNotFoundError) {
-  //       throw new BadRequestException(e.message);
-  //     }
-  //     this.logger.error(e);
-  //     throw new InternalServerErrorException(
-  //       'An error occurred while processing your request.',
-  //     );
-  //   }
-  // }
 
   @Get('by-code/:code')
   @UseGuards(AuthGuard('jwt'))
@@ -458,75 +362,6 @@ export class PromotionController {
     await this.deletePromotionService.delete(id);
     return { message: 'Promotion deleted successfully.' };
   }
-
-  // @Post('validate')
-  // @UseGuards(AuthGuard('jwt'))
-  // @ApiOperation({
-  //   summary: 'Validate a promotion for a specific product',
-  //   description: `Validates if a promotion can be applied to a specific product at purchase time.
-  //   Checks status, dates, usage limit, minimum value, and product/category eligibility.
-  //   Used at checkout to ensure a promotion is valid for the product and context.`,
-  // })
-  // @ApiBody({
-  //   schema: {
-  //     type: 'object',
-  //     properties: {
-  //       promotionId: {
-  //         type: 'string',
-  //         description: 'Promotion ID to validate',
-  //       },
-  //       productId: {
-  //         type: 'string',
-  //         description: 'Specific product ID',
-  //       },
-  //       productPrice: {
-  //         type: 'number',
-  //         description: 'Price of the specific product',
-  //       },
-  //       quantity: {
-  //         type: 'number',
-  //         description: 'Quantity of the specific product',
-  //       },
-  //       categoryId: {
-  //         type: 'string',
-  //         description:
-  //           'Product category (optional, required for SPECIFIC_CATEGORIES)',
-  //       },
-  //     },
-  //     required: ['promotionId', 'productId', 'productPrice', 'quantity'],
-  //   },
-  // })
-  // @ApiResponse({
-  //   status: 200,
-  //   description: 'Validation result',
-  //   schema: {
-  //     type: 'object',
-  //     properties: {
-  //       isValid: { type: 'boolean' },
-  //       reason: { type: 'string' },
-  //       metadata: { type: 'object' },
-  //     },
-  //   },
-  // })
-  // async validatePromotion(
-  //   @Body()
-  //   dto: {
-  //     promotionId: string;
-  //     productId: string;
-  //     productPrice: number;
-  //     quantity: number;
-  //     categoryId?: string;
-  //   },
-  // ) {
-  //   try {
-  //     return await this.validatePromotionService.validate(dto);
-  //   } catch (e) {
-  //     this.logger.error(e);
-  //     throw new InternalServerErrorException(
-  //       'An error occurred while processing your request.',
-  //     );
-  //   }
-  // }
 
   @Get('available/:orderId')
   @ApiOperation({

@@ -1,11 +1,11 @@
 import { forwardRef, Global, Module } from '@nestjs/common';
 import { TokenGeneratorsModule } from '@posy/auth/authentication/common/token-generators/token-generators.module';
-import { StartSessionModule } from '../table-sessions/features/start-session/start-session.module';
+import { StartSessionModule } from '@posy/table-sessions/features/start-session/start-session.module';
 import { JwtModule } from '@nestjs/jwt';
 import { GuestOrderGateway } from './handlers/guest-order.gateway';
 import { StaffOrderGateway } from './handlers/staff-order.gateway';
 import { OrderCoreModule } from './shared/core/order-core.module';
-import { RecordPreferenceModule } from '../table-sessions/features/record-preference/record-preference.module';
+import { RecordPreferenceModule } from '@posy/table-sessions/features/record-preference/record-preference.module';
 import { GuestOrderController } from './handlers/guest-order.controller';
 import { StaffOrderController } from './handlers/staff-order.controller';
 import { CreateOrderService } from './services/create-order.service';
@@ -18,18 +18,12 @@ import { PricingSnapshotRepository } from './shared/repositories/pricing-snapsho
 import { PricingSnapshotRepositoryImpl } from './shared/repositories/pricing-snapshot-repository';
 import { RecommendationModule } from '../../recommendation/recommendation.module';
 import { OrderFacadeService } from './services/order-facade.service';
-import { PromotionRedemptionRepository } from '../promotions/repositories/promotion-redemption-repository.abstract';
-import { PromotionRedemptionRepositoryImpl } from '../promotions/repositories/promotion-redemption-repository';
 import { PromotionModule } from '../promotions/promotion.module';
 import { OrdersModule } from '@posy/orders';
 
 @Global()
 @Module({
   providers: [
-    {
-      provide: PromotionRedemptionRepository,
-      useClass: PromotionRedemptionRepositoryImpl,
-    },
     {
       provide: PricingSnapshotRepository,
       useClass: PricingSnapshotRepositoryImpl,

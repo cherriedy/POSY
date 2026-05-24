@@ -22,8 +22,8 @@ import {
 } from '@nestjs/swagger';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ProductFacadeService } from './product-facade.service';
-import { CurrentSession } from 'src/models/table-sessions/shared/decorators/current-session.decorator';
-import { TableSession } from 'src/models/table-sessions/shared/entities/table-session';
+import { CurrentSession } from '@posy/table-sessions/shared/decorators/current-session.decorator';
+import { TableSession } from '@posy/table-sessions/shared/entities/table-session';
 // ...existing code...
 import { plainToInstance } from 'class-transformer';
 import { GetProductsService } from '@posy/products/get-products/get-products.service';

@@ -21,9 +21,9 @@ import { OrderCreateRequestDto } from '@posy/orders/dto/order-create-request.dto
 import { OrderDetailedResponseDto } from '@posy/orders/dto/order-detailed-response.dto';
 import { OrderPreviewResponseDto } from '@posy/orders/dto/order-preview-response.dto';
 import { OrderUpdateRequestDto } from '@posy/orders/dto/order-update-request.dto';
-import { CurrentSession } from '../../table-sessions/shared/decorators/current-session.decorator';
-import { TableSession } from '../../table-sessions/shared/entities/table-session';
-import { TableSessionGuard } from '../../table-sessions/shared/guards/table-session.guard';
+import { CurrentSession } from '@posy/table-sessions/shared/decorators/current-session.decorator';
+import { TableSession } from '@posy/table-sessions/shared/entities/table-session';
+import { TableSessionGuard } from '@posy/table-sessions/shared/guards/table-session.guard';
 import { toPayload as toCreateOrderPayload } from '../services/create-order.service';
 import { UpdateOrderService } from '../services/update-order.service';
 import { OrderFacadeService } from '../services/order-facade.service';

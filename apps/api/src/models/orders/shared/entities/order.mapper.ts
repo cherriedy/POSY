@@ -3,10 +3,10 @@ import { Prisma, Order as PrismaOrder } from '@prisma/client';
 import { OrderStatus as DomainOrderStatus } from '../enums/order-status.enum';
 import { UserMapper } from '@posy/users/shared/entities/user.mapper';
 import { TableMapper } from '../../../tables/types/table.mapper';
-import { TableSessionMapper } from '../../../table-sessions/shared/entities/table-session.mapper';
+import { TableSessionMapper } from '@posy/table-sessions/shared/entities/table-session.mapper';
 import { OrderItemMapper } from './order-item.mapper';
 import { PaymentMapper } from '@posy/payments/shared/entities/payment.mapper';
-import { PricingSnapshotMapper } from '../../../promotions/types/pricing-snapshot.mapper';
+import { PricingSnapshotMapper } from '@posy/promotions/shared/entities/pricing-snapshot.mapper';
 
 export class OrderMapper {
   static toDomain(this: void, prisma: PrismaOrder): DomainOrder {

@@ -4,7 +4,7 @@ import { GetProductsService } from '@posy/products/get-products/get-products.ser
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ProductInteractionPayload } from 'src/user-tracking/shared/interfaces/product-interaction-payload';
 import { ProductInteractionType } from 'src/user-tracking/shared/enums/product-interaction-type.enum';
-import { TableSession } from 'src/models/table-sessions/shared/entities/table-session';
+import { TableSession } from '@posy/table-sessions/shared/entities/table-session';
 import { Product } from '@posy/products/entities/product';
 import { ProductNotFoundException } from '@posy/products/exceptions/product-not-found.exception';
 

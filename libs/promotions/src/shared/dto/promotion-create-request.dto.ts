@@ -11,11 +11,11 @@ import {
 import { PromotionApplicability } from '../enums/promotion-applicability.enum';
 import { PromotionDiscountType } from '../enums/promotion-discount-type.enum';
 import { PromotionStatus } from '../enums/promotion-status.enum';
-import { IsValidDescription } from 'src/models/promotions/decorators/is-valid-description.decorator';
-import { IsValidDiscountValue } from 'src/models/promotions/decorators/is-valid-discount-value.decorator';
-import { IsValidTitle } from 'src/models/promotions/decorators/is-valid-title.decorator';
+import { IsValidDescription } from '../decorators/is-valid-description.decorator';
+import { IsValidDiscountValue } from '../decorators/is-valid-discount-value.decorator';
+import { IsValidTitle } from '../decorators/is-valid-title.decorator';
 import { IsAfter } from '@posy/shared';
-import { promotionConfig } from 'src/models/promotions/promotion.config';
+import { promotionConfig } from '../promotion.config';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 

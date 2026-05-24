@@ -1,65 +1,60 @@
 import { Global, Module } from '@nestjs/common';
 import { PromotionController } from './promotion.controller';
-import { PromotionCategoryRepository } from './repositories/promotion-category-repository.abstract';
-import { PromotionCategoryRepositoryImpl } from './repositories/promotion-category-repository';
-import { PromotionProductRepository } from './repositories/promotion-product-repository.abstract';
-import { PromotionProductRepositoryImpl } from './repositories/promotion-product-repository';
-import { PromotionRepository } from './repositories/promotion-repository.abstract';
-import { PromotionRepositoryImpl } from './repositories/promotion-repository';
-import { PromotionRedemptionRepository } from './repositories/promotion-redemption-repository.abstract';
-import { PromotionRedemptionRepositoryImpl } from './repositories/promotion-redemption-repository';
-import { PricingSnapshotPromotionRepository } from './repositories/pricing-snapshot-promotion-repository.abstract';
-import { PricingSnapshotPromotionRepositoryImpl } from './repositories/pricing-snapshot-promotion-repository';
-import { CreatePromotionModule } from './create-promotion/create-promotion.module';
-import { UpdatePromotionModule } from './update-promotion/update-promotion.module';
-import { GetPromotionsModule } from './get-promotions/get-promotions.module';
-import { DeletePromotionModule } from './delete-promotion/delete-promotion.module';
-import { ValidatePromotionModule } from './validate-promotion/validate-promotion.module';
-import { CategoryModule } from '../categories/category.module';
-import { ReplacePromotionCategoriesModule } from './replace-categories/replace-categories.module';
-import { ReplacePromotionProductModule } from './replace-products/replace-products.module';
-import { GetAvailablePromotionsModule } from './get-available-promotions/get-available-promotions.module';
-import { PricingSnapshotRepositoryImpl } from '../orders/shared/repositories/pricing-snapshot-repository';
+import { PromotionRepository } from '@posy/promotions/shared/repositories/promotion-repository.abstract';
+import { PrismaPromotionRepository } from '@posy/promotions/shared/repositories/prisma-promotion-repository';
+import { PromotionCategoryRepository } from '@posy/promotions/shared/repositories/promotion-category-repository.abstract';
+import { PrismaPromotionCategoryRepository } from '@posy/promotions/shared/repositories/prisma-promotion-category-repository';
+import { PromotionProductRepository } from '@posy/promotions/shared/repositories/promotion-product-repository.abstract';
+import { PrismaPromotionProductRepository } from '@posy/promotions/shared/repositories/prisma-promotion-product-repository';
+import { PromotionRedemptionRepository } from '@posy/promotions/shared/repositories/promotion-redemption-repository.abstract';
+import { PrismaPromotionRedemptionRepository } from '@posy/promotions/shared/repositories/prisma-promotion-redemption-repository';
+import { PricingSnapshotPromotionRepository } from '@posy/promotions/shared/repositories/pricing-snapshot-promotion-repository.abstract';
+import { PrismaPricingSnapshotPromotionRepository } from '@posy/promotions/shared/repositories/prisma-pricing-snapshot-promotion-repository';
 import { PricingSnapshotRepository } from '../orders/shared/repositories/pricing-snapshot-repository.abstract';
+import { PricingSnapshotRepositoryImpl } from '../orders/shared/repositories/pricing-snapshot-repository';
+import { CreatePromotionService } from '@posy/promotions/features/create-promotion/create-promotion.service';
+import { UpdatePromotionService } from '@posy/promotions/features/update-promotion/update-promotion.service';
+import { UpdateExpiredPromotionJobService } from '@posy/promotions/features/update-promotion/update-expired-promotion-job.service';
+import { GetPromotionsService } from '@posy/promotions/features/get-promotions/get-promotions.service';
+import { DeletePromotionService } from '@posy/promotions/features/delete-promotion/delete-promotion.service';
+import { ValidatePromotionService } from '@posy/promotions/features/validate-promotion/validate-promotion.service';
+import { ReplacePromotionCategoriesService } from '@posy/promotions/features/replace-categories/replace-categories.service';
+import { ReplacePromotionProductService } from '@posy/promotions/features/replace-products/replace-products.service';
+import { GetAvailablePromotionsService } from '@posy/promotions/features/get-available-promotions/get-available-promotions.service';
 
 @Global()
 @Module({
   providers: [
-    {
-      provide: PromotionRepository,
-      useClass: PromotionRepositoryImpl,
-    },
+    { provide: PromotionRepository, useClass: PrismaPromotionRepository },
     {
       provide: PromotionCategoryRepository,
-      useClass: PromotionCategoryRepositoryImpl,
+      useClass: PrismaPromotionCategoryRepository,
     },
     {
       provide: PromotionProductRepository,
-      useClass: PromotionProductRepositoryImpl,
+      useClass: PrismaPromotionProductRepository,
     },
     {
       provide: PromotionRedemptionRepository,
-      useClass: PromotionRedemptionRepositoryImpl,
+      useClass: PrismaPromotionRedemptionRepository,
     },
     {
       provide: PricingSnapshotPromotionRepository,
-      useClass: PricingSnapshotPromotionRepositoryImpl,
+      useClass: PrismaPricingSnapshotPromotionRepository,
     },
     {
       provide: PricingSnapshotRepository,
       useClass: PricingSnapshotRepositoryImpl,
     },
-  ],
-  imports: [
-    CreatePromotionModule,
-    UpdatePromotionModule,
-    ReplacePromotionCategoriesModule,
-    ReplacePromotionProductModule,
-    GetPromotionsModule,
-    DeletePromotionModule,
-    ValidatePromotionModule,
-    CategoryModule,
-    GetAvailablePromotionsModule,
+    CreatePromotionService,
+    UpdatePromotionService,
+    UpdateExpiredPromotionJobService,
+    GetPromotionsService,
+    DeletePromotionService,
+    ValidatePromotionService,
+    ReplacePromotionCategoriesService,
+    ReplacePromotionProductService,
+    GetAvailablePromotionsService,
   ],
   controllers: [PromotionController],
   exports: [

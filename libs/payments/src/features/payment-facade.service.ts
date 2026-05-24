@@ -13,7 +13,7 @@ import { UpdateOrderStatusService } from 'src/models/orders/services/update-orde
 import { OrderSnapshotNotFoundException } from '@posy/orders/exceptions/order-snapshot-not-found.exception';
 import { OrderStatus } from '@posy/orders/enums/order-status.enum';
 import { Role } from '@posy/shared';
-import { PromotionRedemption } from 'src/models/promotions/types/promotion-redemption';
+import { PromotionRedemption } from '@posy/promotions/shared/entities/promotion-redemption';
 
 @Injectable()
 export class PaymentFacadeService {

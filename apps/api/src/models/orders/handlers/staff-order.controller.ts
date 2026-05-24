@@ -33,7 +33,7 @@ import { OrderDetailedResponseDto } from '@posy/orders/dto/order-detailed-respon
 import { OrderPreviewResponseDto } from '@posy/orders/dto/order-preview-response.dto';
 import { OrderQueryParamsDto } from '@posy/orders/dto/order-query-params.dto';
 import { OrderUpdateRequestDto } from '@posy/orders/dto/order-update-request.dto';
-import { StaffSessionContextService } from '../../table-sessions/features/start-session/staff-session-context.service';
+import { StaffSessionContextService } from '@posy/table-sessions/features/start-session/staff-session-context.service';
 import { JwtPayload } from '@posy/auth';
 import { createPageResponseSchema } from '@posy/shared';
 import { Roles } from '@posy/shared';

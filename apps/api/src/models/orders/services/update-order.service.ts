@@ -17,9 +17,9 @@ import { OrderRepository } from '@posy/orders/repositories/order-repository.abst
 import { OrderItemRepository } from '@posy/orders/repositories/order-item-repository.abstract';
 import { UserIdentity } from '@posy/auth';
 import { computeOrderStatus } from '@posy/orders/utilities/order-status.util';
-import { TableSessionRepository } from 'src/models/table-sessions/shared/repositories/table-session-repository.abstract';
-import { TableSessionStatus } from 'src/models/table-sessions/shared/enums/table-session-status.enum';
-import { TableSessionType } from 'src/models/table-sessions/shared/enums/table-session-type.enum';
+import { TableSessionRepository } from '@posy/table-sessions/shared/repositories/table-session-repository.abstract';
+import { TableSessionStatus } from '@posy/table-sessions/shared/enums/table-session-status.enum';
+import { TableSessionType } from '@posy/table-sessions/shared/enums/table-session-type.enum';
 import { StaffOrderGateway } from '../handlers/staff-order.gateway';
 import { TableStatus } from 'src/models/tables/enums/table-status.enum';
 import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';
