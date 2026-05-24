@@ -2,6 +2,12 @@
 /dist
 /node_modules
 /build
+apps/*/dist
+
+# Nx
+.nx/cache
+.nx/workspace-data
+*.tsbuildinfo
 
 # Logs
 logs
