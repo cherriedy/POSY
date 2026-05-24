@@ -15,7 +15,7 @@ import { OrderRepository } from '@posy/orders/repositories/order-repository.abst
 import { UnitOfWork } from '@posy/shared';
 import { TableSessionRepository } from '@posy/table-sessions/shared/repositories/table-session-repository.abstract';
 import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';
-import { TableStatus } from 'src/models/tables/enums/table-status.enum';
+import { TableStatus } from '@posy/tables/shared/enums/table-status.enum';
 
 @Injectable()
 export class OrderItemStatusService {

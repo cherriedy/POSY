@@ -1,11 +1,11 @@
 import { Global, Module } from '@nestjs/common';
 import { CuisineController } from './cuisine.controller';
-import { CuisineRepository } from './repositories/cuisine-repository.abstract';
-import { PrismaCuisineRepository } from './repositories/prisma-cuisine-repository';
-import { GetCuisinesModule } from './get-cuisines/get-cuisines.module';
-import { CreateCuisineModule } from './create-cuisine/create-cuisine.module';
-import { UpdateCuisineModule } from './update-cuisine/update-cuisine.module';
-import { DeleteCuisineModule } from './delete-cuisine/delete-cuisine.module';
+import { CuisineRepository } from '@posy/cuisines/shared/repositories/cuisine-repository.abstract';
+import { PrismaCuisineRepository } from '@posy/cuisines/shared/repositories/prisma-cuisine-repository';
+import { GetCuisinesService } from '@posy/cuisines/features/get-cuisines/get-cuisines.service';
+import { CreateCuisineService } from '@posy/cuisines/features/create-cuisine/create-cuisine.service';
+import { UpdateCuisineService } from '@posy/cuisines/features/update-cuisine/update-cuisine.service';
+import { DeleteCuisineService } from '@posy/cuisines/features/delete-cuisine/delete-cuisine.service';
 
 @Global()
 @Module({
@@ -14,12 +14,10 @@ import { DeleteCuisineModule } from './delete-cuisine/delete-cuisine.module';
       provide: CuisineRepository,
       useClass: PrismaCuisineRepository,
     },
-  ],
-  imports: [
-    GetCuisinesModule,
-    CreateCuisineModule,
-    UpdateCuisineModule,
-    DeleteCuisineModule,
+    GetCuisinesService,
+    CreateCuisineService,
+    UpdateCuisineService,
+    DeleteCuisineService,
   ],
   controllers: [CuisineController],
   exports: [CuisineRepository],

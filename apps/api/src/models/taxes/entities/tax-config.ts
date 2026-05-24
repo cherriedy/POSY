@@ -3,8 +3,8 @@ import {
   assertLarger,
   assertNonNegative,
 } from '@posy/shared';
-import { TaxRateType } from '../enums/tax-rate-type.enum';
-import { TaxType } from '../enums/tax-type.enum';
+import { TaxRateType } from '@posy/taxes/shared/enums/tax-rate-type.enum';
+import { TaxType } from '@posy/taxes/shared/enums/tax-type.enum';
 import { UnsupportedValueException } from '@posy/shared';
 import { roundToCurrency } from '@posy/shared';
 

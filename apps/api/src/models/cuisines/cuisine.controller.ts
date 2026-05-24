@@ -25,14 +25,14 @@ import {
   ApiExtraModels,
 } from '@nestjs/swagger';
 import { createPageResponseSchema } from '@posy/shared';
-import { CuisineCreateRequestDto } from './dto/cuisine-create-request.dto';
-import { CuisineUpdateRequestDto } from './dto/cuisine-update-request.dto';
-import { CuisineResponseDto } from './dto/cuisine-response.dto';
-import { CuisineQueryParamsDto } from './dto/cuisine-query-params.dto';
-import { GetCuisinesService } from './get-cuisines/get-cuisines.service';
-import { CreateCuisineService } from './create-cuisine/create-cuisine.service';
-import { UpdateCuisineService } from './update-cuisine/update-cuisine.service';
-import { DeleteCuisineService } from './delete-cuisine/delete-cuisine.service';
+import { CuisineCreateRequestDto } from '@posy/cuisines/shared/dto/cuisine-create-request.dto';
+import { CuisineUpdateRequestDto } from '@posy/cuisines/shared/dto/cuisine-update-request.dto';
+import { CuisineResponseDto } from '@posy/cuisines/shared/dto/cuisine-response.dto';
+import { CuisineQueryParamsDto } from '@posy/cuisines/shared/dto/cuisine-query-params.dto';
+import { GetCuisinesService } from '@posy/cuisines/features/get-cuisines/get-cuisines.service';
+import { CreateCuisineService } from '@posy/cuisines/features/create-cuisine/create-cuisine.service';
+import { UpdateCuisineService } from '@posy/cuisines/features/update-cuisine/update-cuisine.service';
+import { DeleteCuisineService } from '@posy/cuisines/features/delete-cuisine/delete-cuisine.service';
 
 @ApiTags('Cuisines')
 @ApiBearerAuth()

@@ -10,7 +10,7 @@ import { Page } from '@posy/shared';
 import { camelCaseToSnakeCase } from '@posy/shared';
 import { Injectable } from '@nestjs/common';
 import { TableNotFoundException } from '../exceptions/table-not-found.exception';
-import { TableOrderBy, TableQueryFilter, TableQueryParams } from '../interfaces/table-query-params.interface';
+import { TableOrderBy, TableQueryFilter, TableQueryParams } from '@posy/tables/shared/interfaces/table-query-params.interface';
 import { Prisma } from '@prisma/client';
 
 @Injectable()

@@ -2,8 +2,8 @@ import {
   Prisma,
   PricingSnapshotTax as PrismaPricingSnapshotTax,
 } from '@prisma/client';
-import { TaxType as DomainTaxType } from '../enums/tax-type.enum';
-import { TaxRateType as DomainTaxRateType } from '../enums/tax-rate-type.enum';
+import { TaxType as DomainTaxType } from '@posy/taxes/shared/enums/tax-type.enum';
+import { TaxRateType as DomainTaxRateType } from '@posy/taxes/shared/enums/tax-rate-type.enum';
 import { PricingSnapshotTax } from './pricing-snapshot-tax';
 
 export class PricingSnapshotTaxMapper {

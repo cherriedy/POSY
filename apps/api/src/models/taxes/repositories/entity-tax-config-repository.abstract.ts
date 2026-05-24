@@ -1,6 +1,6 @@
 import { BaseRepository } from '@posy/shared';
 import { EntityTaxConfig } from '../entities/entity-tax-config';
-import { TaxableEntityReference } from '../interfaces/taxable-entity-reference';
+import { TaxableEntityReference } from '@posy/taxes/shared/interfaces/taxable-entity-reference';
 
 /**
  * Abstract repository for managing entity-tax associations.

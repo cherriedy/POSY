@@ -6,12 +6,12 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { DuplicateEntryError } from '@posy/shared';
 import { Injectable } from '@nestjs/common';
 import { TaxNotFoundException } from '../exceptions/tax-not-found.exception';
-import { TaxOrderBy, TaxQueryFilters, TaxQueryParams } from '../interfaces/tax-query-params';
+import { TaxOrderBy, TaxQueryFilters, TaxQueryParams } from '@posy/taxes/shared/interfaces/tax-query-params';
 import { camelCaseToSnakeCase } from '@posy/shared';
 import { paginationConfig } from '@posy/shared';
 import { PrismaService } from '@posy/shared';
 import { Page } from '@posy/shared';
-import { TaxType } from '../enums/tax-type.enum';
+import { TaxType } from '@posy/taxes/shared/enums/tax-type.enum';
 
 const { page: defaultPage, pageSize: defaultPageSize } =
   paginationConfig.default;

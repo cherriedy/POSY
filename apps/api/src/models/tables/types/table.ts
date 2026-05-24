@@ -1,4 +1,4 @@
-import { TableStatus } from '../enums/table-status.enum';
+import { TableStatus } from '@posy/tables/shared/enums/table-status.enum';
 import { Zone } from '../../zones/types/zone';
 
 export class Table {

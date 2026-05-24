@@ -10,22 +10,22 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CreateFloorService } from './create-floor/create-floor.service';
-import { UpdateFloorService } from './update-floor/update-floor.service';
-import { DeleteFloorService } from './delete-floor/delete-floor.service';
+import { CreateFloorService } from '@posy/floors/features/create-floor/create-floor.service';
+import { UpdateFloorService } from '@posy/floors/features/update-floor/update-floor.service';
+import { DeleteFloorService } from '@posy/floors/features/delete-floor/delete-floor.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '@posy/auth';
 import { Role } from '@posy/shared';
 import { Roles } from '@posy/shared';
-import { GetFloorsService } from './get-floors/get-floors.service';
+import { GetFloorsService } from '@posy/floors/features/get-floors/get-floors.service';
 import { plainToInstance } from 'class-transformer';
-import { FloorDetailedResponseDto } from './dto/floor-detailed-response.dto';
-import { FloorPreviewResponseDto } from './dto/floor-preview-response.dto';
-import { FloorQueryParamsDto } from './dto/floor-query-params.dto';
-import { FloorCreateRequestDto } from './dto/floor-create-request.dto';
-import { FloorUpdateRequestDto } from './dto/floor-update-request.dto';
+import { FloorDetailedResponseDto } from '@posy/floors/shared/dto/floor-detailed-response.dto';
+import { FloorPreviewResponseDto } from '@posy/floors/shared/dto/floor-preview-response.dto';
+import { FloorQueryParamsDto } from '@posy/floors/shared/dto/floor-query-params.dto';
+import { FloorCreateRequestDto } from '@posy/floors/shared/dto/floor-create-request.dto';
+import { FloorUpdateRequestDto } from '@posy/floors/shared/dto/floor-update-request.dto';
 import { Page } from '@posy/shared';
-import { Floor } from './types/floor';
+import { Floor } from '@posy/floors/shared/entities/floor';
 import {
   ApiBearerAuth,
   ApiTags,

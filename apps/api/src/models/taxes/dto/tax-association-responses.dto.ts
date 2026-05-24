@@ -1,6 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { TaxRateType } from '../enums/tax-rate-type.enum';
+import { TaxRateType } from '@posy/taxes/shared/enums/tax-rate-type.enum';
 import { TaxableEntityReferenceDto } from './taxable-entity-reference.dto';
 import { BulkOperationStatusEnum } from '@posy/shared';
 import { BulkOperationStatus } from '@posy/shared';

@@ -1,12 +1,11 @@
 import { Global, Module } from '@nestjs/common';
 import { ZoneController } from './zone.controller';
-import { PrismaModule } from '@posy/shared';
-import { CreateZoneModule } from './create-zone/create-zone.module';
-import { UpdateZoneModule } from './update-zone/update-zone.module';
-import { DeleteZoneModule } from './delete-zone/delete-zone.module';
 import { ZoneRepository } from './repositories/zone-repository.abstract';
 import { PrismaZoneRepository } from './repositories/prisma-zone-repository';
-import { GetZonesModule } from './get-zones/get-zones.module';
+import { GetZonesService } from '@posy/zones/features/get-zones/get-zones.service';
+import { CreateZoneService } from '@posy/zones/features/create-zone/create-zone.service';
+import { UpdateZoneService } from '@posy/zones/features/update-zone/update-zone.service';
+import { DeleteZoneService } from '@posy/zones/features/delete-zone/delete-zone.service';
 
 @Global()
 @Module({
@@ -15,13 +14,10 @@ import { GetZonesModule } from './get-zones/get-zones.module';
       provide: ZoneRepository,
       useClass: PrismaZoneRepository,
     },
-  ],
-  imports: [
-    PrismaModule,
-    CreateZoneModule,
-    UpdateZoneModule,
-    DeleteZoneModule,
-    GetZonesModule,
+    GetZonesService,
+    CreateZoneService,
+    UpdateZoneService,
+    DeleteZoneService,
   ],
   controllers: [ZoneController],
   exports: [ZoneRepository],

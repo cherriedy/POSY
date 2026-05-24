@@ -1,7 +1,7 @@
 import { Floor } from '../types/floor';
 import { BaseRepository } from '@posy/shared';
 import { Page } from '@posy/shared';
-import { FloorQueryParams } from '../interfaces/floor-query-params.interface';
+import { FloorQueryParams } from '@posy/floors/shared/interfaces/floor-query-params.interface';
 
 export abstract class FloorRepository implements BaseRepository<Floor> {
   /**

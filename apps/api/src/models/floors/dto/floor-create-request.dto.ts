@@ -1,7 +1,7 @@
 import { IsBoolean, IsInt } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsValidFloorName } from '../decorators/is-valid-name.decorator';
-import { IsValidFloorOrder } from '../decorators/is-valid-order.decorator';
+import { IsValidFloorName } from '@posy/floors/shared/decorators/is-valid-name.decorator';
+import { IsValidFloorOrder } from '@posy/floors/shared/decorators/is-valid-order.decorator';
 
 export class FloorCreateRequestDto {
   @ApiProperty({

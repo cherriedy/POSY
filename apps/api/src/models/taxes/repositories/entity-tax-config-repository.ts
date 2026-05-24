@@ -6,7 +6,7 @@ import { EntityTaxConfigMapper } from '../entities/entity-tax-config.mapper';
 import { Prisma, TaxConfigEntityType } from '@prisma/client';
 import { DuplicateEntityTaxAssociationException } from '../exceptions/duplicate-entity-tax-association.exception';
 import { TaxAssociationNotFoundException } from '../exceptions/tax-association-not-found.exception';
-import { TaxableEntityReference } from '../interfaces/taxable-entity-reference';
+import { TaxableEntityReference } from '@posy/taxes/shared/interfaces/taxable-entity-reference';
 
 @Injectable()
 export class EntityTaxConfigRepositoryImpl implements EntityTaxConfigRepository {

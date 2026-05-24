@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { TaxRateType } from '../enums/tax-rate-type.enum';
-import { TaxType } from '../enums/tax-type.enum';
+import { TaxRateType } from '@posy/taxes/shared/enums/tax-rate-type.enum';
+import { TaxType } from '@posy/taxes/shared/enums/tax-type.enum';
 
 @Exclude()
 export class TaxPreviewResponseDto {

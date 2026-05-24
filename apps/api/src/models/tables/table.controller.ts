@@ -10,14 +10,14 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CreateTableService } from './create-table/create-table.service';
-import { UpdateTableService } from './update-table/update-table.service';
-import { DeleteTableService } from './delete-table/delete-table.service';
+import { CreateTableService } from '@posy/tables/features/create-table/create-table.service';
+import { UpdateTableService } from '@posy/tables/features/update-table/update-table.service';
+import { DeleteTableService } from '@posy/tables/features/delete-table/delete-table.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '@posy/auth';
 import { Role } from '@posy/shared';
 import { Roles } from '@posy/shared';
-import { GetTablesService } from './get-tables/get-tables.service';
+import { GetTablesService } from '@posy/tables/features/get-tables/get-tables.service';
 import { plainToInstance } from 'class-transformer';
 import { TableDetailedResponseDto } from './dto/table-detailed-response.dto';
 import { TablePreviewResponseDto } from './dto/table-preview-response.dto';

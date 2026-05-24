@@ -21,7 +21,7 @@ import { TableSessionRepository } from '@posy/table-sessions/shared/repositories
 import { TableSessionStatus } from '@posy/table-sessions/shared/enums/table-session-status.enum';
 import { TableSessionType } from '@posy/table-sessions/shared/enums/table-session-type.enum';
 import { StaffOrderGateway } from '../handlers/staff-order.gateway';
-import { TableStatus } from 'src/models/tables/enums/table-status.enum';
+import { TableStatus } from '@posy/tables/shared/enums/table-status.enum';
 import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';
 @Injectable()
 export class UpdateOrderService {

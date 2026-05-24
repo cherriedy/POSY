@@ -1,12 +1,11 @@
 import { Global, Module } from '@nestjs/common';
 import { TableController } from './table.controller';
-import { PrismaModule } from '@posy/shared';
-import { CreateTableModule } from './create-table/create-table.module';
-import { UpdateTableModule } from './update-table/update-table.module';
-import { DeleteTableModule } from './delete-table/delete-table.module';
 import { TableRepository } from './repositories/table-repository.abstract';
 import { PrismaTableRepository } from './repositories/prisma-table-repository';
-import { GetTablesModule } from './get-tables/get-tables.module';
+import { GetTablesService } from '@posy/tables/features/get-tables/get-tables.service';
+import { CreateTableService } from '@posy/tables/features/create-table/create-table.service';
+import { UpdateTableService } from '@posy/tables/features/update-table/update-table.service';
+import { DeleteTableService } from '@posy/tables/features/delete-table/delete-table.service';
 
 @Global()
 @Module({
@@ -15,13 +14,10 @@ import { GetTablesModule } from './get-tables/get-tables.module';
       provide: TableRepository,
       useClass: PrismaTableRepository,
     },
-  ],
-  imports: [
-    PrismaModule,
-    CreateTableModule,
-    UpdateTableModule,
-    DeleteTableModule,
-    GetTablesModule,
+    GetTablesService,
+    CreateTableService,
+    UpdateTableService,
+    DeleteTableService,
   ],
   controllers: [TableController],
   exports: [TableRepository],

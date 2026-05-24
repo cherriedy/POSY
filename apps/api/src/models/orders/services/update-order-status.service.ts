@@ -14,7 +14,7 @@ import { UserIdentity } from '@posy/auth';
 import { UpdateOrderStatusDto } from '@posy/orders/dto/update-order-status.dto';
 import { UnsupportedValueException } from '@posy/shared';
 import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';
-import { TableStatus } from 'src/models/tables/enums/table-status.enum';
+import { TableStatus } from '@posy/tables/shared/enums/table-status.enum';
 
 @Injectable()
 export class UpdateOrderStatusService {

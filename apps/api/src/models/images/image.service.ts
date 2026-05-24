@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ImageRepository } from './repositories/image-repository.abstract';
-import { Image } from './types/image';
-import { ImageMapper } from './types/image.mapper';
-import { ImageNotFoundError } from './errors/image-not-found.error';
+import { ImageRepository } from '@posy/images/shared/repositories/image-repository.abstract';
+import { Image } from '@posy/images/shared/entities/image';
+import { ImageMapper } from '@posy/images/shared/entities/image.mapper';
+import { ImageNotFoundError } from '@posy/images/shared/errors/image-not-found.error';
 import * as fs from 'fs/promises';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { imageConfig } from './image.config';
+import { imageConfig } from '@posy/images/shared/image.config';
 
 @Injectable()
 export class ImageService {

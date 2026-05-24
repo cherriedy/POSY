@@ -1,8 +1,8 @@
 import { BaseRepository } from '@posy/shared';
 import { Page } from '@posy/shared';
 import { TaxConfig } from '../entities/tax-config';
-import { TaxQueryParams } from '../interfaces/tax-query-params';
-import { TaxType } from '../enums/tax-type.enum';
+import { TaxQueryParams } from '@posy/taxes/shared/interfaces/tax-query-params';
+import { TaxType } from '@posy/taxes/shared/enums/tax-type.enum';
 
 export abstract class TaxRepository extends BaseRepository<TaxConfig> {
   /**

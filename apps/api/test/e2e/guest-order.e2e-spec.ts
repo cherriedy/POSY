@@ -14,7 +14,7 @@ import { ZoneRepository } from '../../src/models/zones/repositories/zone-reposit
 import { Floor } from '../../src/models/floors/types/floor';
 import { Zone } from '../../src/models/zones/types/zone';
 import { Table } from '../../src/models/tables/types/table';
-import { TableStatus } from '../../src/models/tables/enums/table-status.enum';
+import { TableStatus } from '@posy/tables/shared/enums/table-status.enum';
 import { CategoryRepository } from '../../src/models/categories/shared/repositories/category-repository.abstract';
 import { Category } from '../../src/models/categories/shared/entities/category';
 

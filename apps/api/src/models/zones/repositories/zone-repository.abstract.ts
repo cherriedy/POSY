@@ -1,7 +1,7 @@
 import { Zone } from '../types/zone';
 import { BaseRepository } from '@posy/shared';
 import { Page } from '@posy/shared';
-import { ZoneQueryParams } from '../interfaces/zone-query-params.interface';
+import { ZoneQueryParams } from '@posy/zones/shared/interfaces/zone-query-params.interface';
 
 export abstract class ZoneRepository implements BaseRepository<Zone> {
   /**

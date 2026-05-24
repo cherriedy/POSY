@@ -15,22 +15,22 @@ import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '@posy/auth';
 import { Roles } from '@posy/shared';
 import { Role } from '@posy/shared';
-import { TaxCreateRequestDto, TaxUpdateRequestDto } from './dto/tax-requests.dto';
-import { TaxDetailedResponseDto, TaxPreviewResponseDto } from './dto/tax-responses.dto';
-import { TaxQueryParamsDto } from './dto/tax-query-params.dto';
-import { TaxAssociationResponseDto, TaxAssociationBulkUpsertItemResponseDto, TaxAssociationBulkUpsertResponseDto, TaxAssociationBulkRemoveItemResponseDto, TaxAssociationBulkRemoveResponseDto } from './dto/tax-association-responses.dto';
-import { TaxAssociationBulkUpsertRequestDto, TaxAssociationDeleteRequestDto } from './dto/tax-association-requests.dto';
-import { TaxConfig } from './entities/tax-config';
+import { TaxCreateRequestDto, TaxUpdateRequestDto } from '@posy/taxes/shared/dto/tax-requests.dto';
+import { TaxDetailedResponseDto, TaxPreviewResponseDto } from '@posy/taxes/shared/dto/tax-responses.dto';
+import { TaxQueryParamsDto } from '@posy/taxes/shared/dto/tax-query-params.dto';
+import { TaxAssociationResponseDto, TaxAssociationBulkUpsertItemResponseDto, TaxAssociationBulkUpsertResponseDto, TaxAssociationBulkRemoveItemResponseDto, TaxAssociationBulkRemoveResponseDto } from '@posy/taxes/shared/dto/tax-association-responses.dto';
+import { TaxAssociationBulkUpsertRequestDto, TaxAssociationDeleteRequestDto } from '@posy/taxes/shared/dto/tax-association-requests.dto';
+import { TaxConfig } from '@posy/taxes/shared/entities/tax-config';
 import { plainToInstance } from 'class-transformer';
-import { GetTaxesService } from './get-taxes/get-taxes.service';
-import { CreateTaxService } from './create-tax/create-tax.service';
-import { UpdateTaxService } from './update-tax/update-tax.service';
-import { DeleteTaxService } from './delete-tax/delete-tax.service';
-import { AssociateEntityTaxService } from './associate-entity-tax/associate-entity-tax.service';
-import { AssociateEntityTaxMapper } from './associate-entity-tax/associate-entity-tax.mapper';
-import { GetEntityTaxAssociationsService } from './get-entity-tax-associations/get-entity-tax-associations.service';
-import { RemoveEntityTaxAssociationService } from './remove-entity-tax-association/remove-entity-tax-association.service';
-import { RemoveEntityTaxAssociationMapper } from './remove-entity-tax-association/remove-entity-tax-association.mapper';
+import { GetTaxesService } from '@posy/taxes/features/get-taxes/get-taxes.service';
+import { CreateTaxService } from '@posy/taxes/features/create-tax/create-tax.service';
+import { UpdateTaxService } from '@posy/taxes/features/update-tax/update-tax.service';
+import { DeleteTaxService } from '@posy/taxes/features/delete-tax/delete-tax.service';
+import { AssociateEntityTaxService } from '@posy/taxes/features/associate-entity-tax/associate-entity-tax.service';
+import { AssociateEntityTaxMapper } from '@posy/taxes/features/associate-entity-tax/associate-entity-tax.mapper';
+import { GetEntityTaxAssociationsService } from '@posy/taxes/features/get-entity-tax-associations/get-entity-tax-associations.service';
+import { RemoveEntityTaxAssociationService } from '@posy/taxes/features/remove-entity-tax-association/remove-entity-tax-association.service';
+import { RemoveEntityTaxAssociationMapper } from '@posy/taxes/features/remove-entity-tax-association/remove-entity-tax-association.mapper';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -45,7 +45,7 @@ import {
   ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
 import { createPageResponseSchema } from '@posy/shared';
-import { EntityType } from './enums/entity-type.enum';
+import { EntityType } from '@posy/taxes/shared/enums/entity-type.enum';
 
 @ApiTags('Taxes')
 @ApiBearerAuth()

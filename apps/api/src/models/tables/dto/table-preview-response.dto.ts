@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
-import { TableStatus } from '../enums/table-status.enum';
+import { TableStatus } from '@posy/tables/shared/enums/table-status.enum';
 import { ZonePreviewResponseDto } from 'src/models/zones/dto/zone-preview-response.dto';
 
 @Exclude()

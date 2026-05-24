@@ -1,12 +1,11 @@
 import { Global, Module } from '@nestjs/common';
 import { FloorController } from './floor.controller';
-import { PrismaModule } from '@posy/shared';
-import { CreateFloorModule } from './create-floor/create-floor.module';
-import { UpdateFloorModule } from './update-floor/update-floor.module';
-import { DeleteFloorModule } from './delete-floor/delete-floor.module';
-import { FloorRepository } from './repositories/floor-repository.abstract';
-import { PrismaFloorRepository } from './repositories/prisma-floor-repository';
-import { GetFloorsModule } from './get-floors/get-floors.module';
+import { FloorRepository } from '@posy/floors/shared/repositories/floor-repository.abstract';
+import { PrismaFloorRepository } from '@posy/floors/shared/repositories/prisma-floor-repository';
+import { GetFloorsService } from '@posy/floors/features/get-floors/get-floors.service';
+import { CreateFloorService } from '@posy/floors/features/create-floor/create-floor.service';
+import { UpdateFloorService } from '@posy/floors/features/update-floor/update-floor.service';
+import { DeleteFloorService } from '@posy/floors/features/delete-floor/delete-floor.service';
 
 @Global()
 @Module({
@@ -15,13 +14,10 @@ import { GetFloorsModule } from './get-floors/get-floors.module';
       provide: FloorRepository,
       useClass: PrismaFloorRepository,
     },
-  ],
-  imports: [
-    PrismaModule,
-    CreateFloorModule,
-    UpdateFloorModule,
-    DeleteFloorModule,
-    GetFloorsModule,
+    GetFloorsService,
+    CreateFloorService,
+    UpdateFloorService,
+    DeleteFloorService,
   ],
   controllers: [FloorController],
   exports: [FloorRepository],

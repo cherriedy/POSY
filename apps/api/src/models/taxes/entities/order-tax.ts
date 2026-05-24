@@ -1,7 +1,7 @@
 import { Order } from '../../orders/shared/entities/order';
 import { OrderItem } from '../../orders/shared/entities/order-item';
-import { TaxRateType } from '../enums/tax-rate-type.enum';
-import { TaxType } from '../enums/tax-type.enum';
+import { TaxRateType } from '@posy/taxes/shared/enums/tax-rate-type.enum';
+import { TaxType } from '@posy/taxes/shared/enums/tax-type.enum';
 
 export class OrderTax {
   constructor(

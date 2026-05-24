@@ -1,22 +1,22 @@
 import { Global, Module } from '@nestjs/common';
 import { VendorController } from './vendor.controller';
-import { VendorRepository } from './repositories/vendor-repository.abstract';
-import { VendorRepositoryImpl } from './repositories/vendor-repository';
-import { CreateVendorModule } from './create-vendor/create-vendor.module';
-import { GetVendorsModule } from './get-vendors/get-vendors.module';
-import { UpdateVendorModule } from './update-vendor/update-vendor.module';
-import { DeleteVendorModule } from './delete-vendor/delete-vendor.module';
+import { VendorRepository } from '@posy/vendors/shared/repositories/vendor-repository.abstract';
+import { VendorRepositoryImpl } from '@posy/vendors/shared/repositories/prisma-vendor-repository';
+import { CreateVendorService } from '@posy/vendors/features/create-vendor/create-vendor.service';
+import { GetVendorsService } from '@posy/vendors/features/get-vendors/get-vendors.service';
+import { UpdateVendorService } from '@posy/vendors/features/update-vendor/update-vendor.service';
+import { DeleteVendorService } from '@posy/vendors/features/delete-vendor/delete-vendor.service';
 
 @Global()
 @Module({
-  providers: [{ provide: VendorRepository, useClass: VendorRepositoryImpl }],
-  exports: [VendorRepository],
-  imports: [
-    CreateVendorModule,
-    GetVendorsModule,
-    UpdateVendorModule,
-    DeleteVendorModule,
+  providers: [
+    { provide: VendorRepository, useClass: VendorRepositoryImpl },
+    CreateVendorService,
+    GetVendorsService,
+    UpdateVendorService,
+    DeleteVendorService,
   ],
+  exports: [VendorRepository],
   controllers: [VendorController],
 })
 export class VendorModule {}

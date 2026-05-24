@@ -9,13 +9,13 @@ import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '@posy/auth';
 
 import { TaxController } from './tax.controller';
-import { GetTaxesService } from './get-taxes/get-taxes.service';
-import { CreateTaxService } from './create-tax/create-tax.service';
-import { UpdateTaxService } from './update-tax/update-tax.service';
-import { DeleteTaxService } from './delete-tax/delete-tax.service';
-import { AssociateEntityTaxService } from './associate-entity-tax/associate-entity-tax.service';
-import { GetEntityTaxAssociationsService } from './get-entity-tax-associations/get-entity-tax-associations.service';
-import { RemoveEntityTaxAssociationService } from './remove-entity-tax-association/remove-entity-tax-association.service';
+import { GetTaxesService } from '@posy/taxes/features/get-taxes/get-taxes.service';
+import { CreateTaxService } from '@posy/taxes/features/create-tax/create-tax.service';
+import { UpdateTaxService } from '@posy/taxes/features/update-tax/update-tax.service';
+import { DeleteTaxService } from '@posy/taxes/features/delete-tax/delete-tax.service';
+import { AssociateEntityTaxService } from '@posy/taxes/features/associate-entity-tax/associate-entity-tax.service';
+import { GetEntityTaxAssociationsService } from '@posy/taxes/features/get-entity-tax-associations/get-entity-tax-associations.service';
+import { RemoveEntityTaxAssociationService } from '@posy/taxes/features/remove-entity-tax-association/remove-entity-tax-association.service';
 
 import { TaxNotFoundException } from './exceptions/tax-not-found.exception';
 import { DuplicateEntryError } from '@posy/shared';
@@ -23,7 +23,7 @@ import { DuplicateEntryError } from '@posy/shared';
 import { TaxCreateRequestDto, TaxUpdateRequestDto } from './dto/tax-requests.dto';
 import { TaxQueryParamsDto } from './dto/tax-query-params.dto';
 import { TaxAssociationBulkUpsertRequestDto } from './dto/tax-association-requests.dto';
-import { EntityType } from './enums/entity-type.enum';
+import { EntityType } from '@posy/taxes/shared/enums/entity-type.enum';
 import { Role } from '@posy/shared';
 
 // ─── Guard mock ──────────────────────────────────────────────────────────────

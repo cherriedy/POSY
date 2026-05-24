@@ -7,9 +7,9 @@ import {
   IsString,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
-import { TaxType } from '../enums/tax-type.enum';
-import { TaxRateType } from '../enums/tax-rate-type.enum';
-import { TaxOrderBy, TaxQueryParams, TaxSortField } from '../interfaces/tax-query-params';
+import { TaxType } from '@posy/taxes/shared/enums/tax-type.enum';
+import { TaxRateType } from '@posy/taxes/shared/enums/tax-rate-type.enum';
+import { TaxOrderBy, TaxQueryParams, TaxSortField } from '@posy/taxes/shared/interfaces/tax-query-params';
 import { SortDirection } from '@posy/shared';
 
 export class TaxQueryParamsDto {

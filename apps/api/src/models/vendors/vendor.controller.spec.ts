@@ -2,15 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '@posy/auth';
 import { VendorController } from './vendor.controller';
-import { CreateVendorService } from './create-vendor/create-vendor.service';
-import { GetVendorsService } from './get-vendors/get-vendors.service';
-import { UpdateVendorService } from './update-vendor/update-vendor.service';
-import { DeleteVendorService } from './delete-vendor/delete-vendor.service';
+import { CreateVendorService } from '@posy/vendors/features/create-vendor/create-vendor.service';
+import { GetVendorsService } from '@posy/vendors/features/get-vendors/get-vendors.service';
+import { UpdateVendorService } from '@posy/vendors/features/update-vendor/update-vendor.service';
+import { DeleteVendorService } from '@posy/vendors/features/delete-vendor/delete-vendor.service';
 import { DuplicateEntryError } from '@posy/shared';
-import { VendorNotFoundException } from './exceptions/vendor-not-found.exception';
-import { VendorCreateRequestDto } from './dto/vendor-create-request.dto';
-import { VendorQueryParamsDto } from './dto/vendor-query-params.dto';
-import { VendorStatus } from './enums/vendor-status.enum';
+import { VendorNotFoundException } from '@posy/vendors/shared/errors/vendor-not-found.exception';
+import { VendorCreateRequestDto } from '@posy/vendors/shared/dto/vendor-create-request.dto';
+import { VendorQueryParamsDto } from '@posy/vendors/shared/dto/vendor-query-params.dto';
+import { VendorStatus } from '@posy/vendors/shared/enums/vendor-status.enum';
 
 // ─── Guard mock ──────────────────────────────────────────────────────────────
 

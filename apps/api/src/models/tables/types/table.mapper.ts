@@ -1,7 +1,7 @@
 import { Table as PrismaTable } from '@prisma/client';
 import { Table as DomainTable } from './table';
 import { MissingRequiredFieldsError } from '@posy/shared';
-import { TableStatus } from '../enums/table-status.enum';
+import { TableStatus } from '@posy/tables/shared/enums/table-status.enum';
 import { ZoneMapper } from '../../zones/types/zone.mapper';
 
 export class TableMapper {

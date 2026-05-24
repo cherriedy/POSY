@@ -1,4 +1,4 @@
-import { EntityType } from '../enums/entity-type.enum';
+import { EntityType } from '@posy/taxes/shared/enums/entity-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsEnum, IsUUID } from 'class-validator';

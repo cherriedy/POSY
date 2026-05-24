@@ -1,4 +1,4 @@
-import { VendorStatus } from '../enums/vendor-status.enum';
+import { VendorStatus } from '@posy/vendors/shared/enums/vendor-status.enum';
 
 export class Vendor {
   constructor(

@@ -2,12 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '@posy/auth';
 import { UnitController } from './unit.controller';
-import { CreateUnitService } from './create-unit/create-unit.service';
-import { GetUnitsService } from './get-units/get-units.service';
-import { UpdateUnitService } from './update-unit/update-unit.service';
-import { DeleteUnitService } from './delete-unit/delete-unit.service';
+import { CreateUnitService } from '@posy/units/features/create-unit/create-unit.service';
+import { GetUnitsService } from '@posy/units/features/get-units/get-units.service';
+import { UpdateUnitService } from '@posy/units/features/update-unit/update-unit.service';
+import { DeleteUnitService } from '@posy/units/features/delete-unit/delete-unit.service';
 import { DuplicateEntryError } from '@posy/shared';
-import { UnitNotFoundException } from './exceptions/unit-not-found.exception';
+import { UnitNotFoundException } from '@posy/units/shared/errors/unit-not-found.exception';
 import { UnitCreateRequestDto } from './dto/unit-create-request.dto';
 
 // ─── Guard mock ──────────────────────────────────────────────────────────────

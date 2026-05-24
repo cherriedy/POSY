@@ -9,12 +9,12 @@ import { paginationConfig } from '@posy/shared';
 import { Page } from '@posy/shared';
 import { camelCaseToSnakeCase } from '@posy/shared';
 import { Injectable } from '@nestjs/common';
-import { FloorNotFoundException } from '../exceptions/floor-not-found.exception';
+import { FloorNotFoundException } from '@posy/floors/shared/errors/floor-not-found.exception';
 import {
   FloorOrderBy,
   FloorQueryFilter,
   FloorQueryParams,
-} from '../interfaces/floor-query-params.interface';
+} from '@posy/floors/shared/interfaces/floor-query-params.interface';
 import { Prisma } from '@prisma/client';
 
 @Injectable()

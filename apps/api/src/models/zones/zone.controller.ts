@@ -10,14 +10,14 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CreateZoneService } from './create-zone/create-zone.service';
-import { UpdateZoneService } from './update-zone/update-zone.service';
-import { DeleteZoneService } from './delete-zone/delete-zone.service';
+import { CreateZoneService } from '@posy/zones/features/create-zone/create-zone.service';
+import { UpdateZoneService } from '@posy/zones/features/update-zone/update-zone.service';
+import { DeleteZoneService } from '@posy/zones/features/delete-zone/delete-zone.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '@posy/auth';
 import { Role } from '@posy/shared';
 import { Roles } from '@posy/shared';
-import { GetZonesService } from './get-zones/get-zones.service';
+import { GetZonesService } from '@posy/zones/features/get-zones/get-zones.service';
 import { plainToInstance } from 'class-transformer';
 import { ZoneDetailedResponseDto } from './dto/zone-detailed-response.dto';
 import { ZonePreviewResponseDto } from './dto/zone-preview-response.dto';

@@ -30,10 +30,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '@posy/auth';
 import { Roles } from '@posy/shared';
 import { Role } from '@posy/shared';
-import { FileValidationPipe } from './pipes/file-validation.pipe';
-import { ImageUrlTransformInterceptor } from './interceptors/image-url-transform.interceptor';
-import { UploadImageDto } from './dto/upload-image.dto';
-import { DeleteImagesDto } from './dto/delete-images.dto';
+import { FileValidationPipe } from '@posy/images/shared/pipes/file-validation.pipe';
+import { ImageUrlTransformInterceptor } from '@posy/images/shared/interceptors/image-url-transform.interceptor';
+import { UploadImageDto } from '@posy/images/shared/dto/upload-image.dto';
+import { DeleteImagesDto } from '@posy/images/shared/dto/delete-images.dto';
 
 @ApiTags('Images')
 @ApiBearerAuth()

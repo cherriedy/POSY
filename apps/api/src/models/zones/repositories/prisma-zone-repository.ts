@@ -10,7 +10,7 @@ import { Page } from '@posy/shared';
 import { camelCaseToSnakeCase } from '@posy/shared';
 import { Injectable } from '@nestjs/common';
 import { ZoneNotFoundException } from '../exceptions/zone-not-found.exception';
-import { ZoneOrderBy, ZoneQueryFilter, ZoneQueryParams } from '../interfaces/zone-query-params.interface';
+import { ZoneOrderBy, ZoneQueryFilter, ZoneQueryParams } from '@posy/zones/shared/interfaces/zone-query-params.interface';
 import { Prisma } from '@prisma/client';
 
 @Injectable()

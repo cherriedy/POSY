@@ -26,12 +26,12 @@ import { Role } from '@posy/shared';
 import { UnitCreateRequestDto } from './dto/unit-create-request.dto';
 import { UnitQueryParamsDto } from './dto/unit-query-params.dto';
 import { UnitResponseDto } from './dto/unit-response.dto';
-import { CreateUnitService } from './create-unit/create-unit.service';
-import { CreateUnitPayloadMapper } from './create-unit/create-unit-payload.mapper';
-import { GetUnitsService } from './get-units/get-units.service';
-import { UpdateUnitService } from './update-unit/update-unit.service';
-import { UpdateUnitPayloadMapper } from './update-unit/update-unit-payload.mapper';
-import { DeleteUnitService } from './delete-unit/delete-unit.service';
+import { CreateUnitService } from '@posy/units/features/create-unit/create-unit.service';
+import { CreateUnitPayloadMapper } from '@posy/units/features/create-unit/create-unit-payload.mapper';
+import { GetUnitsService } from '@posy/units/features/get-units/get-units.service';
+import { UpdateUnitService } from '@posy/units/features/update-unit/update-unit.service';
+import { UpdateUnitPayloadMapper } from '@posy/units/features/update-unit/update-unit-payload.mapper';
+import { DeleteUnitService } from '@posy/units/features/delete-unit/delete-unit.service';
 import { Page } from '@posy/shared';
 
 @ApiTags('Units')
