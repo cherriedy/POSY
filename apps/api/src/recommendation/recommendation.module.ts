@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { RecommendationService } from './recommendation.service';
+import { RecommendationService } from '@posy/recommendation/features/recommendation.service';
 import { HttpModule } from '@nestjs/axios';
 import { ProductRepositoryModule } from '@posy/products/repositories/product-repository.module';
 import { PythonConfigModule } from '@posy/shared';

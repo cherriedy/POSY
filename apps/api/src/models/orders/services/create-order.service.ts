@@ -19,8 +19,8 @@ import { OrderItemRepository } from '@posy/orders/repositories/order-item-reposi
 import { PricingSnapshotRepository } from '../shared/repositories/pricing-snapshot-repository.abstract';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ProductInteractionPayload } from 'src/user-tracking/shared/interfaces/product-interaction-payload';
-import { ProductInteractionType } from 'src/user-tracking/shared/enums/product-interaction-type.enum';
+import { ProductInteractionPayload } from '@posy/user-tracking/shared/interfaces/product-interaction-payload';
+import { ProductInteractionType } from '@posy/user-tracking/shared/enums/product-interaction-type.enum';
 import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';
 import { TableStatus } from '@posy/tables/shared/enums/table-status.enum';
 import { UpdateOrderService } from './update-order.service';

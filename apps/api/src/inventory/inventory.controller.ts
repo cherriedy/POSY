@@ -15,16 +15,16 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
-import { IngredientForecastService } from './features/ingredient-forecast.service';
-import { ForecastChartQueryParamsDto } from './shared/dto/forecast-chart-query-params.dto';
-import { ForecastChartResponseDto } from './shared/dto/forecast-chart-response.dto';
-import { IngredientOverviewResponseDto } from './shared/dto/ingredient-overview-response.dto';
-import { StockStatus } from './shared/enums/stock-status.enum';
+import { IngredientForecastService } from '@posy/inventory/features/ingredient-forecast.service';
+import { ForecastChartQueryParamsDto } from '@posy/inventory/shared/dto/forecast-chart-query-params.dto';
+import { ForecastChartResponseDto } from '@posy/inventory/shared/dto/forecast-chart-response.dto';
+import { IngredientOverviewResponseDto } from '@posy/inventory/shared/dto/ingredient-overview-response.dto';
+import { StockStatus } from '@posy/inventory/shared/enums/stock-status.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '@posy/auth';
 import { Role } from '@posy/shared';
 import { Roles } from '@posy/shared';
-import { inventoryConfig } from './inventory.config';
+import { inventoryConfig } from '@posy/inventory/inventory.config';
 
 @UseGuards(AuthGuard('jwt'), RoleGuard)
 @Roles(Role.MANAGER, Role.ADMIN)

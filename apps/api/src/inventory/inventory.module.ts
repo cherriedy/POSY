@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { InventoryController } from './inventory.controller';
-import { IngredientForecastService } from './features/ingredient-forecast.service';
-import { IngredientForecastRepository } from './shared/repositories/ingredient-forecast-repository.abstract';
-import { IngredientForecastRepositoryImpl } from './shared/repositories/ingredient-forecast-repository';
+import { IngredientForecastService } from '@posy/inventory/features/ingredient-forecast.service';
+import { IngredientForecastRepository } from '@posy/inventory/shared/repositories/ingredient-forecast-repository.abstract';
+import { PrismaIngredientForecastRepository } from '@posy/inventory/shared/repositories/prisma-ingredient-forecast-repository';
 import { HttpModule } from '@nestjs/axios';
 import { PythonConfigModule } from '@posy/shared';
 
@@ -19,7 +19,7 @@ import { PythonConfigModule } from '@posy/shared';
     IngredientForecastService,
     {
       provide: IngredientForecastRepository,
-      useClass: IngredientForecastRepositoryImpl,
+      useClass: PrismaIngredientForecastRepository,
     },
   ],
 })

@@ -10,7 +10,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { RecommendationService } from './recommendation.service';
+import { RecommendationService } from '@posy/recommendation/features/recommendation.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '@posy/auth';
 import { Roles } from '@posy/shared';

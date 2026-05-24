@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { GetOrdersService } from '@posy/orders/services/get-orders.service';
 import { CreateOrderService, CreateOrderPayload } from './create-order.service';
-import { RecommendationService } from '../../../recommendation/recommendation.service';
+import { RecommendationService } from '@posy/recommendation/features/recommendation.service';
 import { OrderDetailedResponseDto } from '@posy/orders/dto/order-detailed-response.dto';
 
 @Injectable()
