@@ -10,7 +10,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Server } from 'socket.io';
 import { AuthenticatedStaffSocket } from '@posy/shared';
 import { wsStaffAuthMiddleware } from '../../../common/middleware/websocket-staff-auth.middleware';
-import { TokenGeneratorsService } from '../../../authentication/common/token-generators/token-generators.service';
+import { TokenGeneratorsService } from '@posy/auth/authentication/common/token-generators/token-generators.service';
 
 @WebSocketGateway({
   namespace: 'staff/orders',

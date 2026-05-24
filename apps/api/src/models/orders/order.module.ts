@@ -1,5 +1,5 @@
 import { forwardRef, Global, Module } from '@nestjs/common';
-import { TokenGeneratorsModule } from '../../authentication/common/token-generators/token-generators.module';
+import { TokenGeneratorsModule } from '@posy/auth/authentication/common/token-generators/token-generators.module';
 import { StartSessionModule } from '../table-sessions/features/start-session/start-session.module';
 import { JwtModule } from '@nestjs/jwt';
 import { GuestOrderGateway } from './handlers/guest-order.gateway';

@@ -6,7 +6,7 @@ import { UserController } from './user.controller';
 import { UpdateUserModule } from './update-user/update-user.module';
 import { DeleteUserModule } from './delete-user/delete-user.module';
 import { GetUsersModule } from './get-users/get-users.module';
-import { PreventManagerAdminAccessGuard } from '../../authorization/guards/prevent-manager-admin-access.guard';
+import { PreventManagerAdminAccessGuard } from './guards/prevent-manager-admin-access.guard';
 
 @Global()
 @Module({

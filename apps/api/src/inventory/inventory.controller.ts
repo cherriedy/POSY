@@ -21,7 +21,7 @@ import { ForecastChartResponseDto } from './shared/dto/forecast-chart-response.d
 import { IngredientOverviewResponseDto } from './shared/dto/ingredient-overview-response.dto';
 import { StockStatus } from './shared/enums/stock-status.enum';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from '../authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 import { Role } from '@posy/shared';
 import { Roles } from '@posy/shared';
 import { inventoryConfig } from './inventory.config';

@@ -23,15 +23,15 @@ import { UserPreviewResponseDto } from './dto/user-preview-response.dto';
 import { UserQueryParamsDto } from './dto/user-query-params.dto';
 import { hash } from '@posy/shared';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from '../../authorization/guards/role.guard';
-import { PreventManagerAdminAccessGuard } from '../../authorization/guards/prevent-manager-admin-access.guard';
+import { RoleGuard } from '@posy/auth';
+import { PreventManagerAdminAccessGuard } from './guards/prevent-manager-admin-access.guard';
 import { Roles } from '@posy/shared';
 import { PreventManagerAdminAccess } from '@posy/shared';
 import { Role } from '@posy/shared';
 import { GetUsersService } from './get-users/get-users.service';
 import { plainToInstance } from 'class-transformer';
 import { Page } from '@posy/shared';
-import { JwtPayload } from '../../authentication/interfaces/jwt-payload.interface';
+import { JwtPayload } from '@posy/auth';
 import { Request } from 'express';
 import { DeleteUserService } from './delete-user/delete-user.service';
 import {

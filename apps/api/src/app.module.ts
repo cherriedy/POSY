@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CategoryModule } from './models/categories/category.module';
 import { CuisineModule } from './models/cuisines/cuisine.module';
-import { AuthModule } from './authentication/auth.module';
+import { AuthApiModule } from './modules/auth/auth-api.module';
 import { UserModule } from './models/users/user.module';
 import { MailModule } from '@posy/shared';
 import { AppConfigModule } from '@posy/shared';
@@ -14,7 +14,7 @@ import { MomoConfigModule } from '@posy/shared';
 import { RedisConfigModule } from '@posy/shared';
 import { LoggerModule } from '@posy/shared';
 import { DeviceContextMiddleware } from '@posy/shared';
-import { AuthorizationModule } from './authorization/authorization.module';
+import { AuthorizationModule } from '@posy/auth';
 import { MyProfileModule } from './my-profile/my-profile.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -54,7 +54,7 @@ import { InventoryModule } from './inventory/inventory.module';
     AuthorizationModule,
     MailModule,
     LoggerModule,
-    AuthModule,
+    AuthApiModule,
     UserModule,
     MyProfileModule,
     CategoryModule,

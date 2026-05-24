@@ -10,7 +10,7 @@ import { TableSessionRepository } from '../../table-sessions/shared/repositories
 import { TableSessionStatus } from '../../table-sessions/shared/enums/table-session-status.enum';
 import { TableSessionType } from '../../table-sessions/shared/enums/table-session-type.enum';
 import { OrderRepository } from '../shared/repositories/order-repository.abstract';
-import { UserIdentity } from '../../../authentication/interfaces/user-identity.interface';
+import { UserIdentity } from '@posy/auth';
 import { UpdateOrderStatusDto } from '../shared/dto/update-order-status.dto';
 import { UnsupportedValueException } from '@posy/shared';
 import { TableRepository } from 'src/models/tables/repositories/table-repository.abstract';

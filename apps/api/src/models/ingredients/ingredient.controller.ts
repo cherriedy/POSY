@@ -11,7 +11,7 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from '../../authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 import { Roles } from '@posy/shared';
 import { Role } from '@posy/shared';
 import { IngredientCreateUpdateDto } from './shared/dto/ingredient-create-update.dto';

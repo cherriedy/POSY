@@ -14,7 +14,7 @@ import { CreateTableService } from './create-table/create-table.service';
 import { UpdateTableService } from './update-table/update-table.service';
 import { DeleteTableService } from './delete-table/delete-table.service';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from '../../authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 import { Role } from '@posy/shared';
 import { Roles } from '@posy/shared';
 import { GetTablesService } from './get-tables/get-tables.service';

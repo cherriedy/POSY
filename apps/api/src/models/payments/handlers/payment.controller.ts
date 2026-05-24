@@ -22,8 +22,8 @@ import {
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { Request, Response } from 'express';
-import { JwtPayload } from '../../../authentication/interfaces/jwt-payload.interface';
-import { RoleGuard } from '../../../authorization/guards/role.guard';
+import { JwtPayload } from '@posy/auth';
+import { RoleGuard } from '@posy/auth';
 import { createPageResponseSchema } from '@posy/shared';
 import { Roles } from '@posy/shared';
 import { Role } from '@posy/shared';

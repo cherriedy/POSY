@@ -19,8 +19,11 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "strictPropertyInitialization": false,
+    "baseUrl": ".",
     "paths": {
-      "@posy/shared": ["libs/shared/src/index.ts"]
+      "@posy/shared": ["libs/shared/src/index.ts"],
+      "@posy/auth": ["libs/auth/src/index.ts"],
+      "@posy/auth/*": ["libs/auth/src/*"]
     }
   }
 }

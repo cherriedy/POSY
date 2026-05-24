@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from '../../authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 import { VendorController } from './vendor.controller';
 import { CreateVendorService } from './create-vendor/create-vendor.service';
 import { GetVendorsService } from './get-vendors/get-vendors.service';

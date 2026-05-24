@@ -20,7 +20,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { TableNotFoundException } from '../models/tables/exceptions/table-not-found.exception';
-import { RoleGuard } from '../authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '@posy/shared';
 import { Role } from '@posy/shared';

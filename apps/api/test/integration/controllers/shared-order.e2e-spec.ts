@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from '../../../src/authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 import { PrismaService } from '@posy/shared';
 import { PrismaModule } from '@posy/shared';
 import {

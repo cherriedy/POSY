@@ -13,7 +13,7 @@ import { IngredientUpdateRequestDto } from './shared/dto/ingredient-update-reque
 import { IngredientQueryParamsDto } from './shared/dto/ingredient-query-params.dto';
 import { DuplicateEntryError } from '@posy/shared';
 import { ForeignKeyViolationError } from '@posy/shared';
-import { RoleGuard } from '../../authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 
 const mockIngredient = (): Ingredient =>
   new Ingredient(

@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { CreatePromotionService } from './create-promotion/create-promotion.service';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from '../../authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 import { Roles } from '@posy/shared';
 import { Role } from '@posy/shared';
 import { CreatePromotionDto } from './dto/promotion-create-request.dto';

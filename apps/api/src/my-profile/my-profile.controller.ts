@@ -12,7 +12,7 @@ import { UpdateUserService } from '../models/users/update-user/update-user.servi
 import { UpdatePasswordDto } from '../models/users/dto/update-password-request.dto';
 import { UpdateUserDto } from '../models/users/dto/user-update-request.dto';
 import { UserDetailedResponseDto } from '../models/users/dto/user-detailed-response.dto';
-import { JwtPayload } from '../authentication/interfaces/jwt-payload.interface';
+import { JwtPayload } from '@posy/auth';
 import { Request } from 'express';
 import { plainToInstance } from 'class-transformer';
 import {

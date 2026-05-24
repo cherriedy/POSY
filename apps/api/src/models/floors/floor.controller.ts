@@ -14,7 +14,7 @@ import { CreateFloorService } from './create-floor/create-floor.service';
 import { UpdateFloorService } from './update-floor/update-floor.service';
 import { DeleteFloorService } from './delete-floor/delete-floor.service';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from '../../authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 import { Role } from '@posy/shared';
 import { Roles } from '@posy/shared';
 import { GetFloorsService } from './get-floors/get-floors.service';

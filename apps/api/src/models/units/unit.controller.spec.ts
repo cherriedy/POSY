@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from '../../authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 import { UnitController } from './unit.controller';
 import { CreateUnitService } from './create-unit/create-unit.service';
 import { GetUnitsService } from './get-units/get-units.service';

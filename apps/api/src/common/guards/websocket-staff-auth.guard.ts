@@ -6,13 +6,13 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import { TokenGeneratorsService } from '../../authentication/common/token-generators/token-generators.service';
+import { TokenGeneratorsService } from '@posy/auth/authentication/common/token-generators/token-generators.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { WsException } from '@nestjs/websockets';
-import { JwtPayload } from '../../authentication/interfaces/jwt-payload.interface';
+import { JwtPayload } from '@posy/auth';
 import { AuthenticatedStaffSocket } from '@posy/shared';
-import { AccessTokenExpiredError } from '../../authentication/errors/access-token-expired.error';
-import { InvalidAccessTokenError } from '../../authentication/errors/invalid-access-token.error';
+import { AccessTokenExpiredError } from '@posy/auth';
+import { InvalidAccessTokenError } from '@posy/auth';
 
 /**
  * @description A WebSocket guard that verifies the presence and validity of an access token for staff members.

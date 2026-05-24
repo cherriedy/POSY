@@ -5,7 +5,7 @@ import { OrderModificationForbiddenException } from '../../exceptions/order-modi
 import { Role } from '@posy/shared';
 import { OrderItemStatus } from '../../enums/order-item-status.enum';
 import { OrderStatus } from '../../enums/order-status.enum';
-import { UserIdentity } from '../../../../../authentication/interfaces/user-identity.interface';
+import { UserIdentity } from '@posy/auth';
 
 const COOKING_STATUS = [OrderItemStatus.PREPARING, OrderItemStatus.DONE];
 

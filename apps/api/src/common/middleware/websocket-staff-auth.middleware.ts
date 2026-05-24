@@ -3,10 +3,10 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtPayload } from '../../authentication/interfaces/jwt-payload.interface';
-import { TokenGeneratorsService } from '../../authentication/common/token-generators/token-generators.service';
-import { AccessTokenExpiredError } from '../../authentication/errors/access-token-expired.error';
-import { InvalidAccessTokenError } from '../../authentication/errors/invalid-access-token.error';
+import { JwtPayload } from '@posy/auth';
+import { TokenGeneratorsService } from '@posy/auth/authentication/common/token-generators/token-generators.service';
+import { AccessTokenExpiredError } from '@posy/auth';
+import { InvalidAccessTokenError } from '@posy/auth';
 import { SocketIOMiddleware } from '@posy/shared';
 import { AuthenticatedStaffSocket } from '@posy/shared';
 

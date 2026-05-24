@@ -15,7 +15,7 @@ import { OrderPricingService } from '../shared/core/services/order-pricing.servi
 import { OrderModificationPolicyService } from '../shared/core/services/order-modification-policy.service';
 import { OrderRepository } from '../shared/repositories/order-repository.abstract';
 import { OrderItemRepository } from '../shared/repositories/order-item-repository.abstract';
-import { UserIdentity } from '../../../authentication/interfaces/user-identity.interface';
+import { UserIdentity } from '@posy/auth';
 import { computeOrderStatus } from '../shared/utilities/order-status.util';
 import { TableSessionRepository } from 'src/models/table-sessions/shared/repositories/table-session-repository.abstract';
 import { TableSessionStatus } from 'src/models/table-sessions/shared/enums/table-session-status.enum';

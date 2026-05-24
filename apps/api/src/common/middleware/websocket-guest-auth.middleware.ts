@@ -1,4 +1,4 @@
-import { TokenGeneratorsService } from '../../authentication/common/token-generators/token-generators.service';
+import { TokenGeneratorsService } from '@posy/auth/authentication/common/token-generators/token-generators.service';
 import {
   Logger,
   UnauthorizedException,
@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { SocketIOMiddleware } from '@posy/shared';
 import { AuthenticatedGuestSocket } from '../interfaces/authenticated-guest-socket.interface';
-import { AccessTokenExpiredError } from '../../authentication/errors/access-token-expired.error';
-import { InvalidAccessTokenError } from '../../authentication/errors/invalid-access-token.error';
+import { AccessTokenExpiredError } from '@posy/auth';
+import { InvalidAccessTokenError } from '@posy/auth';
 import { TableSessionConfig } from '../../models/table-sessions/table-session.config';
 import { TableSessionPayload } from '../../models/table-sessions/shared/interfaces/table-session-payload.interface';
 

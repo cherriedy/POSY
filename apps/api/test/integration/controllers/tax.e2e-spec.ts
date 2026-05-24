@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import request from 'supertest';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from '../../../src/authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 import { TaxModule } from '../../../src/models/taxes/tax.module';
 import { PrismaService } from '@posy/shared';
 import { PrismaModule } from '@posy/shared';

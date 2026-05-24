@@ -15,7 +15,7 @@ import { UpdateCategoryService } from './features/update-category/update-categor
 import { DeleteCategoryService } from './features/delete-category/delete-category.service';
 import { GetCategoriesService } from './features/get-categories/get-categories.service';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from '../../authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 import { Role } from '@posy/shared';
 import { Roles } from '@posy/shared';
 import { plainToInstance } from 'class-transformer';

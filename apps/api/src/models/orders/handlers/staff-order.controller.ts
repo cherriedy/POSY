@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from '../../../authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -34,7 +34,7 @@ import { OrderPreviewResponseDto } from '../shared/dto/order-preview-response.dt
 import { OrderQueryParamsDto } from '../shared/dto/order-query-params.dto';
 import { OrderUpdateRequestDto } from '../shared/dto/order-update-request.dto';
 import { StaffSessionContextService } from '../../table-sessions/features/start-session/staff-session-context.service';
-import { JwtPayload } from '../../../authentication/interfaces/jwt-payload.interface';
+import { JwtPayload } from '@posy/auth';
 import { createPageResponseSchema } from '@posy/shared';
 import { Roles } from '@posy/shared';
 import { Role } from '@posy/shared';

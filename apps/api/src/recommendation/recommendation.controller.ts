@@ -12,7 +12,7 @@ import {
 } from '@nestjs/swagger';
 import { RecommendationService } from './recommendation.service';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from '../authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 import { Roles } from '@posy/shared';
 import { Role } from '@posy/shared';
 

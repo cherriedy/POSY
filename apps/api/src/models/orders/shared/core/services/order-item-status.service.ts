@@ -6,7 +6,7 @@ import { Order } from '../../entities/order';
 import { OrderModificationPolicyService } from './order-modification-policy.service';
 import { computeOrderStatus } from '../../utilities/order-status.util';
 import { OrderPricingService } from './order-pricing.service';
-import { UserIdentity } from '../../../../../authentication/interfaces/user-identity.interface';
+import { UserIdentity } from '@posy/auth';
 import { OrderItemNotFoundException } from '../../exceptions/order-item-not-found.exception';
 import { OrderModificationForbiddenException } from '../../exceptions/order-modification-forbidden.exception';
 import { ReserveIngredientsService } from './reserve-ingredients.service';

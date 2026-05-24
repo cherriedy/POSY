@@ -14,7 +14,7 @@ import { CreateZoneService } from './create-zone/create-zone.service';
 import { UpdateZoneService } from './update-zone/update-zone.service';
 import { DeleteZoneService } from './delete-zone/delete-zone.service';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from '../../authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 import { Role } from '@posy/shared';
 import { Roles } from '@posy/shared';
 import { GetZonesService } from './get-zones/get-zones.service';

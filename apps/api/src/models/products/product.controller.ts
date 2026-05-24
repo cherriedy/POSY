@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
-import { RoleGuard } from '../../authorization/guards/role.guard';
+import { RoleGuard } from '@posy/auth';
 import { Roles } from '@posy/shared';
 import { Role } from '@posy/shared';
 import { CreateProductDto } from './dto/product-create-request.dto';
@@ -43,7 +43,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { ProductNotFoundException } from './exceptions/product-not-found.exception';
-import { JwtPayload } from '../../authentication/interfaces/jwt-payload.interface';
+import { JwtPayload } from '@posy/auth';
 import { GetAttributesService } from './get-attributes/get-attributes.service';
 import { UpsertAttributesMapper } from './upsert-attributes/upsert-attributes.mapper';
 import { UpsertAttributesService } from './upsert-attributes/upsert-attributes.service';

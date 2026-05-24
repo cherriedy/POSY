@@ -4,7 +4,10 @@
     "outDir": "../../dist/apps/api",
     "baseUrl": "./",
     "paths": {
-      "@posy/shared": ["../../libs/shared/src/index.ts"]
+      "@posy/shared": ["../../libs/shared/src/index.ts"],
+      "@posy/auth": ["../../libs/auth/src/index.ts"],
+      "@posy/auth/*": ["../../libs/auth/src/*"],
+      "apps/api/src/*": ["src/*"]
     }
   },
   "include": ["src/**/*", "test/**/*"],
